@@ -277,11 +277,15 @@ class AscendMoERunner(MoERunner):
         # MoERunner.forward() so _maybe_reduce_final_output does not apply a
         # second TP all-reduce (which would double-count the contributions).
         moe_comm_type = _EXTRA_CTX.moe_comm_type
+        # NOTE: ALLGATHER (TP-only MoE) keeps the TP all-reduce even when
+        # flash_comm_v1 (SP) is on -- SP only replaces the MoE combine when
+        # experts are EP-distributed. So do NOT signal upstream to skip the
+        # final reduce for ALLGATHER.
         return moe_comm_type in {
             MoECommType.ALLTOALL,
             MoECommType.MC2,
             MoECommType.FUSED_MC2,
-        } or (moe_comm_type == MoECommType.ALLGATHER and _EXTRA_CTX.flash_comm_v1_enabled)
+        }
 
     def _maybe_reduce_shared_expert_output(
         self,
@@ -338,14 +342,44 @@ class AscendFusedMoE(FusedMoE):
 
     def __init__(self, *args, **kwargs):
         # Save original routed_scaling_factor before super().__init__ modifies it.
-        # When apply_routed_scale_to_output=True, vLLM sets self.routed_scaling_factor
-        # to 1.0 and expects the runner to apply scaling to output. But vllm-ascend
-        # uses its own forward path, so we need the original value.
         _ = kwargs.pop("hash") if "hash" in kwargs else None
         tid2eid = kwargs.pop("tid2eid") if "tid2eid" in kwargs else None
 
         self._original_routed_scaling_factor = kwargs.get("routed_scaling_factor", 1.0)
+
+        # ---- MoE CPU offload: intercept quant_config BEFORE super().__init__
+        # (FusedMoE.__init__ calls create_weights which must use our method).
+        _offload_intercept = False
+        _orig_gqm = None
+        quant_config = kwargs.get("quant_config")
+        if get_ascend_config().enable_moe_cpu_offload and quant_config is not None:
+            from vllm_ascend.quantization.methods.w4a16_cpu_offload import (
+                AscendW4A16CPUOffloadMoEMethod,
+            )
+            _orig_gqm = quant_config.get_quant_method
+
+            def _offload_gqm(layer, prefix, *a, **kw):
+                m = _orig_gqm(layer, prefix, *a, **kw)
+                # Extract the FusedMoEConfig from the original method so our
+                # method's super().__init__() gets a valid config.
+                moe_cfg = getattr(m, "moe", None) or getattr(m, "moe_config", None)
+                # Replace the entire quant_method (not just the inner scheme)
+                # because our class directly provides create_weights/apply.
+                m = AscendW4A16CPUOffloadMoEMethod(moe_cfg)
+                logger.info(
+                    "[MoE CPU Offload] layer %s: replaced with CPU offload",
+                    getattr(layer, "layer_id", prefix),
+                )
+                return m
+
+            quant_config.get_quant_method = _offload_gqm
+            _offload_intercept = True
+        # ---------------------------------------------------------------
+
         super().__init__(*args, **kwargs)
+
+        # Keep _offload_gqm active: AscendFusedMoE.__init__ also calls
+        # get_quant_method() below, and we must still return our method.
         self.use_overlapped = True
         self._routed_input_transform = kwargs.get("routed_input_transform")
         self._shared_experts = kwargs.get("shared_experts")
@@ -454,6 +488,9 @@ class AscendFusedMoE(FusedMoE):
         if self.quant_method.__class__.__name__ in ("GPTQMarlinMoEMethod", "CompressedTensorsWNA16MoEMethod"):
             moe_quant_params["intermediate_size_full"] = intermediate_size
         self.quant_method.create_weights(layer=self, **moe_quant_params)
+
+        if _offload_intercept:
+            quant_config.get_quant_method = _orig_gqm
 
         self.enable_shared_expert_dp = ascend_config.enable_shared_expert_dp
         self.enable_npugraph_ex_static_kernel = ascend_config.ascend_compilation_config.enable_static_kernel
@@ -644,7 +681,10 @@ class AscendFusedMoE(FusedMoE):
         prepare_output = _EXTRA_CTX.moe_comm_method.prepare(
             hidden_states=hidden_states,
             router_logits=router_logits,
-            replace_allreduce=_EXTRA_CTX.flash_comm_v1_enabled,
+            # Keep TP all-reduce for TP-only MoE (ALLGATHER, ep_size==1): SP
+            # (flash_comm_v1) only replaces the MoE combine when experts are
+            # EP-distributed; otherwise the combine must stay TP all-reduce.
+            replace_allreduce=_EXTRA_CTX.flash_comm_v1_enabled and self.moe_config.ep_size > 1,
             enable_shared_expert_dp=self.enable_shared_expert_dp,
             quant_type=self.quant_type,
         )

@@ -69,6 +69,9 @@ env_variables: dict[str, Callable[[], Any]] = {
     # Whether to enable MatmulAllReduce fusion kernel when tensor parallel is enabled.
     # this feature is supported in A2, and eager mode will get better performance.
     "VLLM_ASCEND_ENABLE_MATMUL_ALLREDUCE": lambda: bool(int(os.getenv("VLLM_ASCEND_ENABLE_MATMUL_ALLREDUCE", "0"))),
+    # Whether to enable MoE CPU offload (compute MoE layers on ARM CPU via nanovllm_ext).
+    # Reduces NPU memory by keeping MoE weights on CPU.  Requires nanovllm_ext installed.
+    "VLLM_ASCEND_MOE_CPU_OFFLOAD": lambda: bool(int(os.getenv("VLLM_ASCEND_MOE_CPU_OFFLOAD", "0"))),
     # Whether to enable FlashComm optimization when tensor parallel is enabled.
     # This feature will get better performance when concurrency is large.
     # DEPRECATED: use additional_config.enable_flashcomm1 instead.

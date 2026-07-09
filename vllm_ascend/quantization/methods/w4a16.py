@@ -21,6 +21,8 @@ from typing import Any
 
 import torch
 import torch_npu
+import triton
+import triton.language as tl
 from vllm.config import get_current_vllm_config
 
 from vllm_ascend.ascend_config import get_ascend_config
@@ -30,6 +32,109 @@ from vllm_ascend.ops.fused_moe.moe_runtime_args import build_fused_experts_input
 
 from .base import AscendMoEScheme, QuantType, get_moe_num_logical_experts
 from .registry import register_scheme
+
+
+@triton.jit
+def _int4_repack_kernel(in_ptr, out_ptr, N, K, stride_in_n, stride_in_k8,
+                       stride_out_k, stride_out_n8, NUM_CORES: tl.constexpr,
+                       BLOCK_N8: tl.constexpr):
+    """Fused unpack + transpose + repack of int4 weights (one NPU vector-core
+    kernel). Input ``[K//8, N]`` int32 (8 nibbles packed along K) -> output
+    ``[K, N//8]`` int32 (8 nibbles packed along N), two's-complement encoded.
+    Bitwise-equivalent to ``unpack_from_int32`` -> ``transpose`` ->
+    ``npu_convert_weight_to_int4pack`` but allocates only the output tensor
+    (no 8x-int32 intermediate), avoiding OOM in ``process_weights_after_loading``.
+    """
+    pid = tl.program_id(0)
+    total_k8_rows = K // 8
+    rows_per_core = (total_k8_rows + NUM_CORES - 1) // NUM_CORES
+    start_row = pid * rows_per_core
+    if start_row >= total_k8_rows:
+        return
+    end_row = tl.minimum(start_row + rows_per_core, total_k8_rows)
+    for k8_idx in range(start_row, end_row):
+        num_n8 = N // 8
+        for n8_base in range(0, num_n8, BLOCK_N8):
+            n8_idx = n8_base + tl.arange(0, BLOCK_N8)
+            mask_out_n = n8_idx < num_n8
+            out_0 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_1 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_2 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_3 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_4 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_5 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_6 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            out_7 = tl.zeros([BLOCK_N8], dtype=tl.uint32)
+            for i in tl.static_range(8):
+                n_idx = n8_idx * 8 + i
+                mask_n = n_idx < N
+                in_ptrs = in_ptr + n_idx * stride_in_n + k8_idx * stride_in_k8
+                packed_in = tl.load(in_ptrs, mask=mask_n, other=0).to(tl.uint32)
+                shift_n = i * 4
+                out_0 |= ((((packed_in >> 0) & 0xF) - 8) & 0xF) << shift_n
+                out_1 |= ((((packed_in >> 4) & 0xF) - 8) & 0xF) << shift_n
+                out_2 |= ((((packed_in >> 8) & 0xF) - 8) & 0xF) << shift_n
+                out_3 |= ((((packed_in >> 12) & 0xF) - 8) & 0xF) << shift_n
+                out_4 |= ((((packed_in >> 16) & 0xF) - 8) & 0xF) << shift_n
+                out_5 |= ((((packed_in >> 20) & 0xF) - 8) & 0xF) << shift_n
+                out_6 |= ((((packed_in >> 24) & 0xF) - 8) & 0xF) << shift_n
+                out_7 |= ((((packed_in >> 28) & 0xF) - 8) & 0xF) << shift_n
+            k_idx_base = k8_idx * 8
+            tl.store(out_ptr + (k_idx_base + 0) * stride_out_k + n8_idx * stride_out_n8, out_0.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 1) * stride_out_k + n8_idx * stride_out_n8, out_1.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 2) * stride_out_k + n8_idx * stride_out_n8, out_2.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 3) * stride_out_k + n8_idx * stride_out_n8, out_3.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 4) * stride_out_k + n8_idx * stride_out_n8, out_4.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 5) * stride_out_k + n8_idx * stride_out_n8, out_5.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 6) * stride_out_k + n8_idx * stride_out_n8, out_6.to(tl.int32), mask=mask_out_n)
+            tl.store(out_ptr + (k_idx_base + 7) * stride_out_k + n8_idx * stride_out_n8, out_7.to(tl.int32), mask=mask_out_n)
+
+
+def _repack_int4_npu(weight_packed_t: torch.Tensor) -> torch.Tensor:
+    """Repack int4 ``[K//8, N]`` int32 -> ``[K, N//8]`` int32 on NPU vector cores."""
+    K_8, N = weight_packed_t.shape
+    K = K_8 * 8
+    out = torch.empty((K, N // 8), device=weight_packed_t.device, dtype=torch.int32)
+    num_vectorcore = 48  # Ascend 910B3 AIV cores per die
+    _int4_repack_kernel[(num_vectorcore,)](
+        weight_packed_t, out, N, K,
+        weight_packed_t.stride(1), weight_packed_t.stride(0),
+        out.stride(0), out.stride(1),
+        NUM_CORES=num_vectorcore, BLOCK_N8=256)
+    return out
+
+
+def _transpose_and_repack_int4(weight_packed: torch.Tensor) -> torch.Tensor:
+    """``[E, N, K//8]`` compressed-tensors weight -> ``[E, K, N//8]`` kernel layout.
+
+    Fuses unpack + transpose(1,2) + repack into one triton kernel; only the
+    output ``[E, K, N//8]`` int32 tensor is allocated (vs the old path which
+    materialised an ``[E, K, N]`` int32 intermediate, 8x larger).
+    """
+    E, N, K_div_8 = weight_packed.shape
+    K = K_div_8 * 8
+    weight_t = weight_packed.transpose(1, 2).contiguous()      # [E, K//8, N]
+    weight_t_flat = weight_t.view(E * K_div_8, N)              # [E*K//8, N]
+    weight_repacked_flat = _repack_int4_npu(weight_t_flat)     # [E*K, N//8]
+    return weight_repacked_flat.view(E, K, N // 8)
+
+
+_ZERO_OFFSET_CACHE: dict = {}
+
+
+def _get_zero_offset(ref: torch.Tensor) -> torch.Tensor:
+    """Zero tensor matching ref's shape/dtype/device, cached per device.
+
+    All MoE layers share the same w13 / w2 offset shape, so this allocates the
+    all-zero offset ONCE per (shape, dtype, device) (~75 MB total) instead of a
+    5.4 GB per-layer copy, while still not pre-allocating at load time.
+    """
+    key = (tuple(ref.shape), ref.dtype, ref.device.index)
+    z = _ZERO_OFFSET_CACHE.get(key)
+    if z is None:
+        z = torch.zeros(ref.shape, dtype=ref.dtype, device=ref.device)
+        _ZERO_OFFSET_CACHE[key] = z
+    return z
 
 
 def unpack_from_int32(
@@ -236,12 +341,9 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
         )
         param_dict["w13_weight_shape"] = torch.empty(num_experts, 2, dtype=torch.int32)
         param_dict["w2_weight_shape"] = torch.empty(num_experts, 2, dtype=torch.int32)
-        param_dict["w13_weight_offset"] = torch.zeros(
-            num_experts, 2 * intermediate_size_per_partition, hidden_sizes // self.group_size, dtype=params_dtype
-        )
-        param_dict["w2_weight_offset"] = torch.zeros(
-            num_experts, hidden_sizes, intermediate_size_per_partition // self.group_size, dtype=params_dtype
-        )
+        # NOTE: weight_offset is NOT pre-allocated. W4A16 is symmetric
+        # (offset == 0); a zero tensor is created on-the-fly in apply() to
+        # avoid holding a multi-GB all-zero tensor per card.
 
         return param_dict
 
@@ -323,42 +425,19 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
                 activation=activation,
                 w1_scale=layer.w13_weight_scale,
                 w2_scale=layer.w2_weight_scale,
-                w1_offset=layer.w13_weight_offset,
-                w2_offset=layer.w2_weight_offset,
+                w1_offset=_get_zero_offset(layer.w13_weight_scale),
+                w2_offset=_get_zero_offset(layer.w2_weight_scale),
                 swiglu_limit=layer.swiglu_limit,
             )
         )
 
     def process_weights_after_loading(self, layer: torch.nn.Module) -> None:
-        w13_shape = layer.w13_weight_packed.data.shape
-        w2_shape = layer.w2_weight_packed.data.shape
-        unpacked_w13_weight = (
-            unpack_from_int32(
-                layer.w13_weight_packed.data.flatten(0, 1),
-                torch.Size([w13_shape[0] * w13_shape[1], w13_shape[2] * self.pack_factor]),
-                self.num_bits,
-            )
-            .view(w13_shape[0], w13_shape[1], -1)
-            .transpose(1, 2)
-            .contiguous()
-            .int()
-        )
-        unpacked_w2_weight = (
-            unpack_from_int32(
-                layer.w2_weight_packed.data.flatten(0, 1),
-                torch.Size([w2_shape[0] * w2_shape[1], w2_shape[2] * self.pack_factor]),
-                self.num_bits,
-            )
-            .view(w2_shape[0], w2_shape[1], -1)
-            .transpose(1, 2)
-            .contiguous()
-            .int()
-        )
-        layer.w13_weight_packed.data = pack_to_int32(unpacked_w13_weight)
-        layer.w2_weight_packed.data = pack_to_int32(unpacked_w2_weight)
+        # Fused triton unpack+transpose+repack: bitwise-equivalent to the old
+        # unpack_from_int32 -> transpose(1,2) -> npu_convert_weight_to_int4pack
+        # path, but allocates only the output (no 8x int32 intermediate) so it
+        # no longer OOMs on large MoE layers (e.g. 256 experts on 64G HBM).
+        layer.w13_weight_packed.data = _transpose_and_repack_int4(layer.w13_weight_packed.data)
+        layer.w2_weight_packed.data = _transpose_and_repack_int4(layer.w2_weight_packed.data)
 
         layer.w13_weight_scale.data = layer.w13_weight_scale.data.transpose(1, 2).contiguous()
         layer.w2_weight_scale.data = layer.w2_weight_scale.data.transpose(1, 2).contiguous()
-
-        layer.w13_weight_offset.data = layer.w13_weight_offset.data.transpose(1, 2).contiguous()
-        layer.w2_weight_offset.data = layer.w2_weight_offset.data.transpose(1, 2).contiguous()

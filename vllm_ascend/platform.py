@@ -642,10 +642,9 @@ class NPUPlatform(Platform):
             assert vllm_config.parallel_config.tensor_parallel_size > 1, (
                 "Flash Comm v1 is only supported when tp_size > 1."
             )
-
-            assert not is_moe_model(vllm_config) or vllm_config.parallel_config.enable_expert_parallel, (
-                "Flash Comm v1 requires enable_expert_parallel=True for MoE models."
-            )
+            # Flash Comm v1 (SP) is allowed for MoE models regardless of EP:
+            # when EP is off, the MoE path keeps the TP all-reduce (SP only
+            # applies to attention/CP), so there is no correctness issue.
 
         # Set "PYTORCH_NPU_ALLOC_CONF=expandable_segments:True" by default to optimize NPU memory management.
         # Find more details at https://docs.vllm.ai/projects/ascend/en/latest/faqs.html#how-to-handle-the-out-of-memory-issue

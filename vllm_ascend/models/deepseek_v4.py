@@ -284,7 +284,11 @@ class DeepseekV4MoE(nn.Module):
                 hidden_act=config.hidden_act,
                 swiglu_limit=self.swiglu_limit,
                 quant_config=quant_config,
-                is_sequence_parallel=self.is_sequence_parallel,
+                # Keep shared experts TP-sharded even under SP: replicating them
+                # costs ~2.8 GB/card (8x) and tips 64G HBM into OOM. TP-sharded
+                # shared experts still produce correct output via the normal
+                # TP all-reduce path.
+                is_sequence_parallel=False,
                 reduce_results=False,
                 prefix=f"{prefix}.shared_experts",
             )
