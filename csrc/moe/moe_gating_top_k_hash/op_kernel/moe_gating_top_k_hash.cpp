@@ -16,6 +16,7 @@
 #include "moe_gating_top_k_hash_e_k_fullload.h"
 #include "moe_gating_top_k_hash_without_group.h"
 #include "moe_gating_top_k_hash_generalized.h"
+#include "moe_gating_top_k_hash_without_group_batch.h"
 #if defined(__DAV_C310__)
   #include "moe_gating_top_k_hash_regbase.h"
   using namespace MoeGatingTopKHashRegbaseNS;
@@ -23,10 +24,9 @@
 #define TILING_KEY_PER_GROUP_COUNT_32 0
 #define TILING_KEY_WITHOUT_GROUP 1
 #define TILING_KEY_GENERALIZED 2
-#define TILING_KEY_WITHOUT_GROUP_1 3
 #define TILING_KEY_WITHOUT_GROUP_2 4
-#define TILING_KEY_WITHOUT_GROUP_3 5
 #define TILING_KEY_WITHOUT_GROUP_4 6
+#define TILING_KEY_WITHOUT_GROUP_BATCH 7
 #define TILING_KEY_REGBASE 10000
 #define TILING_KEY_REGBASE_1 10001
 #define TILING_KEY_REGBASE_2 10002
@@ -65,22 +65,10 @@ extern "C" __global__ __aicore__ void moe_gating_top_k_hash(GM_ADDR x, GM_ADDR b
         MoeGatingTopKHashWithoutGroup<DTYPE_X, int32_t, int32_t> op;
         op.Init(x, bias, inputIds, tid2eid, y, expertIdx, out, userWS, t, &tPipe);
         op.Process();
-    } else if (TILING_KEY_IS(TILING_KEY_WITHOUT_GROUP_1)) {
-        GET_TILING_DATA_WITH_STRUCT(MoeGatingTopKHashTilingData, tilingData, tiling);
-        const MoeGatingTopKHashTilingData *__restrict t = &tilingData;
-        MoeGatingTopKHashWithoutGroup<DTYPE_X, int32_t, int64_t> op;
-        op.Init(x, bias, inputIds, tid2eid, y, expertIdx, out, userWS, t, &tPipe);
-        op.Process();
     } else if (TILING_KEY_IS(TILING_KEY_WITHOUT_GROUP_2)) {
         GET_TILING_DATA_WITH_STRUCT(MoeGatingTopKHashTilingData, tilingData, tiling);
         const MoeGatingTopKHashTilingData *__restrict t = &tilingData;
         MoeGatingTopKHashWithoutGroup<DTYPE_X, int32_t, int32_t> op;
-        op.Init(x, bias, inputIds, tid2eid, y, expertIdx, out, userWS, t, &tPipe);
-        op.Process();
-    } else if (TILING_KEY_IS(TILING_KEY_WITHOUT_GROUP_3)) {
-        GET_TILING_DATA_WITH_STRUCT(MoeGatingTopKHashTilingData, tilingData, tiling);
-        const MoeGatingTopKHashTilingData *__restrict t = &tilingData;
-        MoeGatingTopKHashWithoutGroup<DTYPE_X, int64_t, int64_t> op;
         op.Init(x, bias, inputIds, tid2eid, y, expertIdx, out, userWS, t, &tPipe);
         op.Process();
     } else if (TILING_KEY_IS(TILING_KEY_WITHOUT_GROUP_4)) {
@@ -93,6 +81,12 @@ extern "C" __global__ __aicore__ void moe_gating_top_k_hash(GM_ADDR x, GM_ADDR b
         GET_TILING_DATA_WITH_STRUCT(MoeGatingTopKHashTilingData, tilingData, tiling);
         const MoeGatingTopKHashTilingData *__restrict t = &tilingData;
         MoeGatingTopKHashGenerlized<DTYPE_X> op;
+        op.Init(x, bias, y, expertIdx, out, userWS, t, &tPipe);
+        op.Process();
+    } else if (TILING_KEY_IS(TILING_KEY_WITHOUT_GROUP_BATCH)) {
+        GET_TILING_DATA_WITH_STRUCT(MoeGatingTopKHashTilingData, tilingData, tiling);
+        const MoeGatingTopKHashTilingData *__restrict t = &tilingData;
+        MoeGatingTopKWithoutGroupBatch<DTYPE_X> op;
         op.Init(x, bias, y, expertIdx, out, userWS, t, &tPipe);
         op.Process();
     }

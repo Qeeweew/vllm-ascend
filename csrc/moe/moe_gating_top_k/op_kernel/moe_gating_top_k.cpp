@@ -16,11 +16,13 @@
 #include "moe_gating_top_k_e_k_fullload.h"
 #include "moe_gating_top_k_without_group.h"
 #include "moe_gating_top_k_generalized.h"
+#include "moe_gating_top_k_without_group_batch.h"
 #include "error_log.h"
 
 #define TILING_KEY_PER_GROUP_COUNT_32 0
 #define TILING_KEY_WITHOUT_GROUP 1
 #define TILING_KEY_GENERALIZED 2
+#define TILING_KEY_WITHOUT_GROUP_BATCH 7
 
 using namespace AscendC;
 using namespace MoeGatingTopK;
@@ -56,6 +58,10 @@ extern "C" __global__ __aicore__ void moe_gating_top_k(GM_ADDR x, GM_ADDR bias, 
         op.Process();
     } else if (TILING_KEY_IS(TILING_KEY_GENERALIZED)) {
         MoeGatingTopKGenerlized<DTYPE_X> op;
+        op.Init(x, bias, y, expertIdx, out, userWS, t, &tPipe);
+        op.Process();
+    } else if (TILING_KEY_IS(TILING_KEY_WITHOUT_GROUP_BATCH)) {
+        MoeGatingTopKWithoutGroupBatch<DTYPE_X> op;
         op.Init(x, bias, y, expertIdx, out, userWS, t, &tPipe);
         op.Process();
     }

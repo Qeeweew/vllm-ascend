@@ -62,10 +62,17 @@ constexpr int32_t ROW_COUNT_PER_TASK = 1;
 const static uint64_t TILING_KEY_EXPERTNUM_GROUPNUM_ALIGN_HIGH_PERF = 0;
 const static uint64_t TILING_KEY_WITHOUT_GROUP = 1;
 const static uint64_t TILING_KEY_GENERALIZED = 2;
-const static uint64_t TILING_KEY_WITHOUT_GROUP_0 = 3;
 const static uint64_t TILING_KEY_WITHOUT_GROUP_1 = 4;
-const static uint64_t TILING_KEY_WITHOUT_GROUP_2 = 5;
 const static uint64_t TILING_KEY_WITHOUT_GROUP_3 = 6;
+const static uint64_t TILING_KEY_WITHOUT_GROUP_BATCH = 7;
+
+const static int64_t BATCH_TOPK_MAX = 32;
+const static int64_t SORT32_BLOCK = 32;
+const static int64_t MERGE_WAY = 4;
+const static int64_t MAX_SORT_REPEAT = 255;
+const static int64_t ROW_BATCH_MAX = 64;
+const static int64_t UB_SAFETY_MARGIN = 8192;
+const static int64_t BATCH_TARGET_ELEMS = 4096;
 
 template <typename T>
 static inline T CeilDiv(T num, T rnd)
@@ -83,6 +90,31 @@ static inline T CeilAlign(T num, T rnd)
 inline static int64_t CeilLog4(int64_t x)
 {
     return static_cast<int64_t>(std::ceil(std::log(x) / std::log(4))); // 4 for four
+}
+
+inline static int64_t NextPow2(int64_t x)
+{
+    int64_t p = 1;
+    while (p < x) {
+        p <<= 1;
+    }
+    return p;
+}
+
+inline static int64_t PadToValidRuns(int64_t runs)
+{
+    for (int64_t k = 0;; k++) {
+        int64_t pow4 = 1LL << (2 * k);
+        if (pow4 >= runs) {
+            return pow4;
+        }
+        if (2 * pow4 >= runs) {
+            return 2 * pow4;
+        }
+        if (3 * pow4 >= runs) {
+            return 3 * pow4;
+        }
+    }
 }
 
 class MoeGatingTopKHashTilingBase {
@@ -118,7 +150,9 @@ private:
     ge::graphStatus CheckAttr();
     ge::graphStatus CheckOutShape();
     void SplitRows();
+    void CalcRowBatch();
     void CalTmpBufUbSize();
+    bool IsWithoutGroupBatch() const;
 
     const gert::Shape *xShape_ = nullptr;
     const gert::Shape *biasShape_ = nullptr;
@@ -131,6 +165,7 @@ private:
     ge::DataType tid2eidDtype;
 
     uint64_t coreNum_ = 0;
+    uint64_t ubSize_ = 0;
     int64_t rows_ = 0;
     int64_t expertCount_ = 0;
     int64_t addBias_ = 0;
@@ -325,8 +360,8 @@ ge::graphStatus MoeGatingTopKHashTilingBase::GetShapeAttrsInfo()
     }
     if (tid2eidShapePtr != nullptr) {
         tid2eidDtype = context_->GetOptionalInputDesc(TID_TO_EID_INPUT_INDEX)->GetDataType();
-        OPS_ERR_IF((tid2eidDtype != ge::DataType::DT_INT32 && tid2eidDtype != ge::DataType::DT_INT64),
-                    OPS_LOG_E(context_, "tid2eid dtype %s error, only supports int32 and int64. please check.",
+        OPS_ERR_IF((tid2eidDtype != ge::DataType::DT_INT32),
+                    OPS_LOG_E(context_, "tid2eid dtype %s error, only supports int32. please check.",
                       ge::TypeUtils::DataTypeToSerialString(tid2eidDtype).c_str()),
                 return ge::GRAPH_FAILED);
     }
@@ -433,6 +468,8 @@ ge::graphStatus MoeGatingTopKHashTilingBase::GetPlatformInfo()
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfo);
     coreNum_ = ascendcPlatform.GetCoreNumAiv();
     uint64_t ubSizePlatForm;
+    ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::UB, ubSizePlatForm);
+    ubSize_ = ubSizePlatForm;
     return ge::GRAPH_SUCCESS;
 }
 
@@ -497,6 +534,59 @@ void MoeGatingTopKHashTilingBase::SplitRows()
     moeGatingTopKTilingData_.set_vmsCount(vmsCount); // 需要归并的轮数
 }
 
+bool MoeGatingTopKHashTilingBase::IsWithoutGroupBatch() const
+{
+    bool withoutGroup = (groupCount_ == 1 || groupCount_ == expertCount_ || kGroup_ == groupCount_);
+    return hashFlag_ == 0 && withoutGroup && k_ <= BATCH_TOPK_MAX && expertCount_ % SORT32_BLOCK == 0;
+}
+
+void MoeGatingTopKHashTilingBase::CalcRowBatch()
+{
+    if (!IsWithoutGroupBatch()) {
+        return;
+    }
+    int64_t paddedExpertCount = PadToValidRuns((expertCount_ + SORT32_BLOCK - 1) / SORT32_BLOCK) * SORT32_BLOCK;
+    moeGatingTopKTilingData_.set_perGroupExpertCountAlign(paddedExpertCount);
+
+    int64_t runs = paddedExpertCount / SORT32_BLOCK;
+    int64_t firstGroups = runs > MERGE_WAY ? runs / MERGE_WAY : 1;
+    int64_t repeatLimit = std::min(MAX_SORT_REPEAT / runs, MAX_SORT_REPEAT / firstGroups);
+
+    int64_t rowBatch = std::max(BATCH_TARGET_ELEMS / paddedExpertCount, 1L);
+    rowBatch = std::min({rowBatch, repeatLimit, ROW_BATCH_MAX, moeGatingTopKTilingData_.get_perCoreRowCount()});
+
+    int64_t stageBytes = inputDtypeSize_ == static_cast<int64_t>(sizeof(float))
+                             ? 0
+                             : paddedExpertCount * inputDtypeSize_;
+    int64_t perRowBytes = paddedExpertCount * (4 + 4 + 4 + 4 + 8 + 8) + stageBytes + 1024 + 384;
+    perRowBytes += 4 * SORT32_BLOCK * (inputDtypeSize_ + static_cast<int64_t>(sizeof(int32_t)));
+    perRowBytes += inputDtypeSize_ == static_cast<int64_t>(sizeof(float)) ? paddedExpertCount * 4 : stageBytes;
+    if (addBias_ != 1) {
+        perRowBytes -= paddedExpertCount * 4;
+    }
+    if (addBias_ == 1) {
+        perRowBytes += paddedExpertCount * 4;
+    }
+    int64_t fixedBytes = paddedExpertCount * sizeof(float);
+    if (addBias_ == 1 && inputDtypeSize_ != static_cast<int64_t>(sizeof(float))) {
+        fixedBytes += paddedExpertCount * inputDtypeSize_;
+    }
+    auto calcTmpSize = [&](int64_t r) -> int64_t {
+        std::vector<int64_t> shapeVec = {r * paddedExpertCount};
+        ge::Shape shape(shapeVec);
+        uint32_t maxValue = 0;
+        uint32_t minValue = 0;
+        AscendC::GetSigmoidMaxMinTmpSize(shape, sizeof(float), false, maxValue, minValue);
+        return static_cast<int64_t>(std::max(maxValue, minValue)) + 4096;
+    };
+    int64_t ubLimit = static_cast<int64_t>(ubSize_) - UB_SAFETY_MARGIN;
+    while (rowBatch > 1 && fixedBytes + rowBatch * perRowBytes + calcTmpSize(rowBatch) > ubLimit) {
+        rowBatch--;
+    }
+    rowBatch = std::max(rowBatch, 1L);
+    moeGatingTopKTilingData_.set_vmsCount(rowBatch);
+}
+
 void MoeGatingTopKHashTilingBase::CalTmpBufUbSize()
 {
     std::vector<int64_t> shape_vec = {expertCount_};
@@ -506,7 +596,20 @@ void MoeGatingTopKHashTilingBase::CalTmpBufUbSize()
     AscendC::GetSigmoidMaxMinTmpSize(shape, sizeof(float), false, maxValue, minValue);
 
     int64_t indexTmpBuf = (expertCount_ + 31) / 32 * 32 * static_cast<int64_t>(sizeof(float));
-    moeGatingTopKTilingData_.set_calTmpBufUbSize(std::max(indexTmpBuf, static_cast<int64_t>(minValue)));
+    int64_t calTmpBufUbSize = std::max(indexTmpBuf, static_cast<int64_t>(minValue));
+
+    int64_t rowBatch = IsWithoutGroupBatch() ? moeGatingTopKTilingData_.get_vmsCount() : 0;
+    int64_t paddedExpertCount = IsWithoutGroupBatch() ? moeGatingTopKTilingData_.get_perGroupExpertCountAlign() : 0;
+    if (rowBatch > 0 && paddedExpertCount > 0) {
+        std::vector<int64_t> batchShapeVec = {rowBatch * paddedExpertCount};
+        ge::Shape batchShape(batchShapeVec);
+        uint32_t batchMaxValue = 0;
+        uint32_t batchMinValue = 0;
+        AscendC::GetSigmoidMaxMinTmpSize(batchShape, sizeof(float), false, batchMaxValue, batchMinValue);
+        int64_t batchTmp = static_cast<int64_t>(std::max(batchMaxValue, batchMinValue)) + 4096;
+        calTmpBufUbSize = std::max(calTmpBufUbSize, batchTmp);
+    }
+    moeGatingTopKTilingData_.set_calTmpBufUbSize(calTmpBufUbSize);
 }
 
 ge::graphStatus MoeGatingTopKHashTilingBase::DoOpTiling()
@@ -536,8 +639,9 @@ ge::graphStatus MoeGatingTopKHashTilingBase::DoOpTiling()
         return ret;
     }
 
-    CalTmpBufUbSize();
     SplitRows();
+    CalcRowBatch();
+    CalTmpBufUbSize();
 
     ret = PostTiling();
     if (ret != ge::GRAPH_SUCCESS) {
@@ -586,14 +690,18 @@ uint64_t MoeGatingTopKHashTilingBase::GetTilingKey() const
          * 3. 选择所有组
          */
         if (inputIdsShape_ == nullptr) {
+          if (IsWithoutGroupBatch()) {
+              return TILING_KEY_WITHOUT_GROUP_BATCH;
+          }
           return TILING_KEY_WITHOUT_GROUP;
-        } else if (inputIdsDtype == ge::DataType::DT_INT32 && tid2eidDtype == ge::DataType::DT_INT64) {
-          return TILING_KEY_WITHOUT_GROUP_0;
         } else if (inputIdsDtype == ge::DataType::DT_INT32 && tid2eidDtype == ge::DataType::DT_INT32) {
           return TILING_KEY_WITHOUT_GROUP_1;
-        } else if (inputIdsDtype == ge::DataType::DT_INT64 && tid2eidDtype == ge::DataType::DT_INT64) {
-          return TILING_KEY_WITHOUT_GROUP_2;
         } else if (inputIdsDtype == ge::DataType::DT_INT64 && tid2eidDtype == ge::DataType::DT_INT32) {
+          return TILING_KEY_WITHOUT_GROUP_3;
+        } else {
+          OPS_LOG_E(context_, "Unsupported hash dtype combo: inputIds=%s tid2eid=%s",
+                    ge::TypeUtils::DataTypeToSerialString(inputIdsDtype).c_str(),
+                    ge::TypeUtils::DataTypeToSerialString(tid2eidDtype).c_str());
           return TILING_KEY_WITHOUT_GROUP_3;
         }
     } else {
