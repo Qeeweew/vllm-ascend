@@ -7,6 +7,7 @@ import torch.distributed as dist
 import torch.nn.functional as F
 import torch_npu
 import vllm.envs as envs_vllm
+import vllm_ascend.envs as envs_ascend
 from vllm.config import VllmConfig, get_current_vllm_config
 from vllm.distributed import get_tensor_model_parallel_world_size
 from vllm.forward_context import get_forward_context
@@ -1593,6 +1594,17 @@ class AscendDSAImpl(DSAAttentionImpl):
             topk_indices_to_cache = topk_indices_to_cache.squeeze(1)
         topk_indices_buffer.copy_(topk_indices_to_cache)
 
+    def _run_compressor(self, x, wkv_w, wgate_w, state_cache, ape, norm_weight, rope_sin, rope_cos, **kwargs):
+        """DSA compressor：默认走融合算子；VLLM_ASCEND_DSA_COMPRESSOR_SPLIT=1 时拆成
+        MatMulV3 GEMM ×2 + compressor_epilogue（GEMM 可达 97% cube，融合算子仅 51%）。"""
+        if envs_ascend.VLLM_ASCEND_DSA_COMPRESSOR_SPLIT:
+            mm_kv = F.linear(x, wkv_w)
+            mm_score = F.linear(x, wgate_w)
+            return torch.ops._C_ascend.compressor_epilogue(mm_kv, mm_score, state_cache, ape, norm_weight,
+                                                           rope_sin, rope_cos, **kwargs)
+        return torch.ops._C_ascend.compressor(x, wkv_w, wgate_w, state_cache, ape, norm_weight, rope_sin, rope_cos,
+                                              **kwargs)
+
     def _compute_compressor_metadata(
         self,
         metadata: AscendDSAPrefillMetadata | AscendDSADecodeMetadata,
@@ -2114,7 +2126,7 @@ class AscendDSAImpl(DSAAttentionImpl):
             )
 
             # Inline compressor + scatter (c128, c4 non-dual)
-            compressed_kv = torch.ops._C_ascend.compressor(
+            compressed_kv = self._run_compressor(
                 hidden_states,
                 self.compressor_wkv.weight,
                 self.compressor_wgate.weight,
@@ -2412,7 +2424,7 @@ class AscendDSAImpl(DSAAttentionImpl):
             )
 
             # Inline compressor + scatter (c128, c4 non-dual)
-            compressed_kv = torch.ops._C_ascend.compressor(
+            compressed_kv = self._run_compressor(
                 hidden_states,
                 self.compressor_wkv.weight,
                 self.compressor_wgate.weight,
@@ -2624,7 +2636,7 @@ class AscendDSAImpl(DSAAttentionImpl):
                 indexer_scale_decode_metadata,
             )
 
-        kv = torch.ops._C_ascend.compressor(
+        kv = self._run_compressor(
             x,
             self.indexcom_wkv.weight,
             self.indexcom_wgate.weight,
@@ -2850,7 +2862,7 @@ class AscendDSAImpl(DSAAttentionImpl):
                 indexer_scale_decode_metadata,
             )
 
-        kv = torch.ops._C_ascend.compressor(
+        kv = self._run_compressor(
             x,
             self.indexcom_wkv.weight,
             self.indexcom_wgate.weight,

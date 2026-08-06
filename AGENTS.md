@@ -1,419 +1,108 @@
-# vLLM Ascend Development Guidelines
+# AGENTS.md
 
-This document provides instructions for contributors to the vLLM Ascend project. Please read and follow these guidelines to ensure code quality, maintainability, and consistency.
+本文件是 AI agent 在 vllm-ascend 仓库工作时的核心约束。
 
----
+## 项目定位
 
-## Table of Contents
+vllm-ascend 是 vLLM 的昇腾 NPU 硬件插件。不直接加模型文件；模型相关功能通过 `vllm_ascend/patch/`（patch 上游）或继承（`NPUModelRunner` 等）实现。新增 patch / model_runner 行为需架构评审。
 
-- [Setup and Environment](#setup-and-environment)
-    - [Environment Variables](#environment-variables)
-    - [Environment Variable Review Requirement](#environment-variable-review-requirement)
-- [Testing](#testing)
-    - [Unit and System Tests](#unit-and-system-tests)
-    - [Running Tests](#running-tests)
-- [Code Style](#code-style)
-    - [Python Conventions](#python-conventions)
-    - [Naming Conventions](#naming-conventions)
-- [NPU-Specific Considerations](#npu-specific-considerations)
-    - [Tensor item() Operations](#tensor-item-operations)
-    - [Memory and Performance](#memory-and-performance)
-- [Model and Plugin Architecture](#model-and-plugin-architecture)
-    - [vLLM Ascend Plugin Architecture](#vllm-ascend-plugin-architecture)
-    - [Patching Requirement](#patching-requirement)
-    - [Model Runner Changes](#model-runner-changes)
-- [Commit Messages and Pull Requests](#commit-messages-and-pull-requests)
-    - [Commit Message Format](#commit-message-format)
-- [Review Checklist](#review-checklist)
-    - [Code Quality](#code-quality)
-    - [Testing](#testing-1)
-    - [Documentation](#documentation)
-    - [NPU Considerations](#npu-considerations)
-    - [Commit and PR](#commit-and-pr)
-- [Quick Start for Contributors](#quick-start-for-contributors)
-- [References](#references)
+## 环境
 
----
+- torch 2.10.0 + torch_npu 2.10.0，triton 3.2.0（CANN ascend 后端）
+- 8 × Ascend910B4-1（单 die，20 AIC + 40 AIV，HBM 64GB @ 1600MHz）
+- `msprof`：`/usr/local/Ascend/cann-9.0.0/bin/msprof`（需在 PATH）
+- 仅用 `npu:0` 测试时设 `ASCEND_RT_VISIBLE_DEVICES=0`
 
-## Setup and Environment
+### 910B4-1 硬件性能（SOL 基准）
 
-### Environment Variables
+数据来源：`/usr/local/Ascend/cann-9.0.0/aarch64-linux/data/platform_config/Ascend910B4-1.ini`（`cube_freq=1500`、`cube_m/n/k=16`、`DT_INT8=16,32,16`、`l2_size=96MB`）。
 
-All environment variables must be defined in `vllm_ascend/envs.py` using the centralized `env_variables` dictionary.
+| 指标 | 值 | 计算 |
+|------|-----|------|
+| BF16/FP16 cube | **245.76 TFLOPS** | 20 AIC × 16×16×16 MAC × 2 × 1.5GHz |
+| INT8 | **491.52 TOPS** | K=32，较 BF16 翻倍（INT4 再翻倍） |
+| HBM 带宽 | **1.6 TB/s** | |
+| L2 | 96 MB | 单 die 共享 |
+| L1 / L0A / L0B / L0C / UB | 512KB / 64KB / 64KB / 128KB / 192KB | 每 AIC |
+| 机器平衡点 | 153.6 FLOP/B | 245.76e12 / 1.6e12，低于此即 mem-bound |
 
-**Requirements:**
+**算子性能评价一律以这组峰值计算 SOL**（bench_deepseek_v4.py 中的 `P_CUBE_FLOPS=246e12`、`BW_HBM_BPS=1.6e12` 即来源于此），禁止用其它型号（910B3/Atlas A3 等）的峰值。
 
-- Add documentation for each environment variable in the `env_variables` dict comment
-- Specify default values and valid ranges
-- Indicate whether the variable is sensitive (credentials, keys)
+## 算子三类与启用方式
 
-**Example:**
+| 类别 | 调用 | 启用 |
+|------|------|------|
+| torch_npu（aclnn） | `torch_npu.npu_*` | `import torch_npu` |
+| AscendC 自定义 | `torch.ops._C_ascend.*` | `from vllm_ascend.utils import enable_custom_op; enable_custom_op()` |
+| Triton | `vllm_ascend/ops/triton/*` | `from vllm_ascend.ops.triton.triton_utils import init_device_properties_triton; init_device_properties_triton()` |
 
-```python
-import os
+## 编译与安装（自定义算子）
 
-env_variables = {
-    "VLLM_ASCEND_ENABLE_NZ": lambda: int(os.getenv("VLLM_ASCEND_ENABLE_NZ", 1)),
-    # ...
-}
-```
-
-**Never**: Hardcode environment variable names throughout the codebase. Reference them from the central module using `from vllm_ascend import envs`.
-
-### Environment Variable Review Requirement
-
-**Strict Review Required**: All new environment variables must undergo code review.
-
-Reviewers must verify:
-
-- The variable name follows the `VLLM_ASCEND_*` naming convention
-- Default value is appropriate for all supported hardware
-- Documentation is added to the `env_variables` dict
-- The variable is used in a performance-critical path
-
----
-
-## Testing
-
-### Unit and System Tests
-
-**Requirement**: All new functionality requires corresponding tests.
-
-- **Unit Tests (UT)**: Located in `tests/ut/`, cover core logic, edge cases, and error conditions
-- **System Tests (ST)**: Located in `tests/e2e/`, verify end-to-end behavior and integration points
-- **Nightly Tests**: Include benchmarks for NPU-specific code paths in `tests/e2e/nightly/`
-
-**Test Coverage Guidelines:**
-
-- New features: Tests must cover happy path and failure modes
-- Bug fixes: Tests must include a regression test for the bug
-- Performance-critical code: Include benchmarks and performance regression tests
-
-### Running Tests
+**唯一推荐入口**（setup.py 一站式驱动，不要手工拼各步）：
 
 ```bash
-
-
-# Run specific unit test file
-pytest -sv tests/ut/ops/test_prepare_finalize.py
-
-# Run specific unit test
-pytest -sv tests/ut/ops/test_prepare_finalize.py::test_prepare_inputs
-
-# Run NPU-specific tests (requires NPU hardware)
-pytest -sv tests/e2e/pull_request/one_card/aclgraph/test_aclgraph_accuracy.py::test_default_full_and_piecewise_res_consistency
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+SOC_VERSION=910b MAX_JOBS=256 pip install -e . --no-build-isolation --no-deps
 ```
 
-**Requirement**: Run all tests locally before requesting review. Verify tests pass on NPU hardware for NPU-specific changes.
+- `--no-deps` 必须：离线环境 pip 会卡在依赖解析的网络重试上。
+- 流程：setup.py → `csrc/build_aclnn.sh`（编 vendor 算子包并装到 `vllm_ascend/_cann_ops_custom`）→ cmake 编 `vllm_ascend_C*.so` / `libvllm_ascend_kernels.so` → 部署到源码树 `vllm_ascend/`。
+- csrc/build 树是热的时算子包为增量编译（几分钟）；冷启动全量 30–60 min。
 
----
+### 新增/修改算子
 
-## Code Style
+1. `csrc/<group>/<op>/` 下建 `op_kernel/` + `op_host/` + `CMakeLists.txt`（复制同类算子改）；算子名加入 `csrc/build_aclnn.sh` 对应 SOC 分支的 `CUSTOM_OPS_ARRAY`。
+2. torch 注册三处：`csrc/torch_binding.cpp`（函数 + schema + impl）、`csrc/torch_binding_meta.cpp`（meta + impl）。
+3. **host 侧 ODR 坑**：所有算子的 tiling .cpp 链接进同一个 `libcust_opmaster_rt2.0.so`，非 static 自由函数（如 `LayoutTypeToStr`）跨算子重名 → multiple definition。复制算子代码时必须连自由函数一起改名。
+4. **kernel 源码拷贝坑**：op_kernel 源码被复制到 `csrc/build/binary/ascend910b/src/<op>/` 并打 `.done` 标记；改了 kernel 源码必须删该目录（或 `.done`），否则编译的还是旧拷贝。
+5. **stale 缓存坑**：删算子/删源文件后必须清构建树——`AICPU_CUST_OBJ_TARGETS` 是 CMake `CACHE INTERNAL`，会累积已删除算子导致 generate 失败；`build/temp.*` 里的 `auto_gen/`、`vllm_ascend_kernels_merge_obj_dir/`、`*-prefix/` 同理。清不干净就整个删 `csrc/build` 和 `build/`。
+6. **杀构建进程**：`pkill -f "build.sh"` 会匹配到自己 shell 的命令行（自杀），用字符类写法 `pkill -f "build[.]sh"`；杀完删 `csrc/build` 下的 `kernel_meta.lock` 残留，否则 opc 报 `Another process is using this dir`。
+7. `.run` 安装器的 `--install-path` 必须是绝对路径。
 
-### Python Conventions
-
-- **Imports**: All imports at the top of the file. Valid exceptions:
-    - Circular imports (use inline imports)
-    - Lazy loading for worker/isolation processes
-    - Type-checking imports wrapped in `if TYPE_CHECKING:`
-
-- **Global Variables**: Avoid new global variables. Pass dependencies explicitly through function parameters.
-
-    **Allowed:**
-    - Constants named `ALL_UPPER_CASE` (e.g., `MAX_BATCH_SIZE` in `envs.py`)
-    - Immutable configuration objects
-
-    **Requires Approval:**
-    - Any new mutable global state
-
-- **No Magic Numbers**: Use named constants with descriptive names:
-
-    ```python
-    # Bad
-    if seq_len > 2048: ...
-
-    # Good
-    MAX_CONTEXT_LENGTH = 2048
-    if seq_len > MAX_CONTEXT_LENGTH: ...
-    ```
-
-- **Descriptive Naming**: Use names that describe functionality, not implementation details.
-
-    ```python
-    # Bad
-    is_deepseek_v3_r1
-    flag1
-    tmp_var
-
-    # Good
-    supports_dynamic_temperature
-    uses_speculative_decoding
-    ```
-
-### Naming Conventions
-
-- **Classes**: `PascalCase` (e.g., `NPUModelRunner`, `AscendSampler`, `ACLGraphManager`)
-- **Functions/Methods**: `snake_case` (e.g., `forward_pass`, `compute_attention`)
-- **Constants**: `ALL_UPPER_CASE` (e.g., `MAX_BATCH_SIZE`, `VLLM_ASCEND_ENABLE_NZ`)
-- **Variables**: `snake_case` (e.g., `token_ids`, `sequence_lengths`)
-
----
-
-## NPU-Specific Considerations
-
-### Tensor item() Operations
-
-**Warning**: `tensor.item()` operations cause synchronization overhead on NPU when the `tensor` is on device.
-
-If the `tensor` is a device tensor, calling `item()` will triggers a synchronous data transfer from NPU to CPU. This can severely degrade performance in hot paths, causing `AsyncScheduler` to block here.
-
-**Review Requirements:**
-
-1. Profile performance impact before merging
-2. Consider alternative patterns:
-    - Keep values on device when possible
-    - Batch operations to reduce sync frequency
-    - Use device-side operations (e.g., `torch.argmax`, `torch.sum`)
-3. Document when `item()` is unavoidable (e.g., logging, conditional logic)
-
-**Example Patterns:**
-
-```python
-# Bad: In hot loop - causes sync per iteration
-for tensor in tensors:
-    value = tensor.item()
-
-# Better: Batch operations - single sync
-values = [t.item() for t in tensors]  # Single batch sync
-
-# Good: Keep on device when possible
-max_value = torch.max(tensor)  # No sync needed
-if max_value > threshold:  # Comparison can stay on device
-    ...
-```
-
-### Memory and Performance
-
-Additional NPU-specific best practices:
-
-- Avoid CPU-NPU memory transfers in hot paths
-- Prefer in-place operations where safe (e.g., `x.add_()`, `x.mul_()`)
-- Monitor memory fragmentation, especially for long-running processes
-- Test with realistic workloads on actual NPU hardware (Ascend 910B/C)
-
----
-
-## Model and Plugin Architecture
-
-### vLLM Ascend Plugin Architecture
-
-vLLM Ascend is a **hardware plugin** that integrates with upstream vLLM via the pluggable hardware interface. It does not add new model files directly.
-
-**Required Pattern**: Model-specific functionality should be implemented via:
-
-1. **Patching** (in `vllm_ascend/patch/`):
-    - `vllm_ascend/patch/platform/` - Platform-level patches (distributed, scheduling)
-    - `vllm_ascend/patch/worker/` - Worker-level patches (model-specific behavior)
-    - Example: `patch_deepseek.py` modifies upstream Deepseek model behavior
-    - Patch is not the best solution for all cases. Use it when necessary.
-
-2. **Inheritance**:
-    - `NPUModelRunner(GPUModelRunner)` - Extend vLLM model runner with NPU-specific behavior
-    - `AscendSampler` - Extend vLLM sampler with NPU-specific operations
-    - Add NPU-specific components via composition (e.g., `AclGraphManager`)
-    - Custom Operators - NPU-specific custom operators (e.g., `AscendRMSNorm`)
-
-3. **External upstream contributions** where appropriate
-
-### Patching Requirement
-
-**Strict Review Required**: All new patches must undergo thorough architectural review.
-
-Reviewers must verify:
-
-- The patch targets the correct upstream component
-- The patch is minimal and focused
-- Performance implications are understood
-- A long-term plan exists for upstream contribution
-
-**Example Patch Pattern:**
-
-```python
-# vllm_ascend/patch/worker/patch_deepseek.py
-from vllm.model_executor.models.deepseek_v2 import DeepseekV2Model
-
-def forward(self, input_ids, positions, ...):
-    # NPU-specific forward implementation
-    ...
-
-DeepseekV2Model.forward = forward  # Patch upstream class
-```
-
-### Model Runner Changes
-
-**Strict Review Required**: All new behaviors added to `model_runner` must undergo thorough architectural review.
-
-Reviewers must verify:
-
-- The necessity of the new behavior (why can't this be in a patch?)
-- Performance implications on NPU hardware
-- Compatibility with existing model implementations
-- Long-term maintainability and test coverage
-
-**NPU Model Runner Files:**
-
-- `vllm_ascend/worker/model_runner_v1.py` - vLLM v1 model runner
-- `vllm_ascend/worker/v2/model_runner.py` - vLLM v2 model runner
-- `vllm_ascend/_310p/model_runner_310p.py` - Ascend 310P model runner
-
----
-
-## Commit Messages and Pull Requests
-
-### Commit Message Format
-
-Follow the [Conventional Commits](https://www.conventionalcommits.org/) format and **must include a sign-off**:
+### 单独重编（不跑 pip）
 
 ```bash
-git commit -s -m "<type>: <summary>" -m "<body - explaining what changed and why>"
+# vendor 算子包（ops 列表从 build_aclnn.sh 对应分支抄）
+cd csrc && bash build.sh --pkg --ops="op1;op2;..." --soc="ascend910b" -j256
+./build/cann-ops-transformer-custom_linux-aarch64.run --install-path=$PWD/../vllm_ascend/_cann_ops_custom  # 绝对路径
+# 主扩展（torch_binding 改动）
+cmake --build build/temp.linux-aarch64-cpython-311 -j256
+cp build/temp.linux-aarch64-cpython-311/vllm_ascend_C*.so build/temp.linux-aarch64-cpython-311/lib/libvllm_ascend_kernels.so vllm_ascend/
 ```
 
-Or using the full message format:
+### 验证
 
-```txt
-<type>: <summary>
-
-<body - explaining what changed and why>
-
-Signed-off-by: Your Name <your.email@example.com>
+```bash
+python -c "from vllm_ascend.utils import enable_custom_op; enable_custom_op(); import torch; print(hasattr(torch.ops._C_ascend, '<op_name>'))"
 ```
 
-**Valid Types**: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `chore`
+## NPU 性能硬规则
 
-**Good Examples:**
+- **禁止在热路径用 `tensor.item()`**：device tensor 的 `.item()` 触发 NPU->CPU 同步，阻塞 AsyncScheduler。改用 device 侧算子（`torch.argmax`/`torch.sum`）或批量同步。
+- 热路径禁止 CPU-NPU 内存搬运。
+- 计时基准用 msprof 的 `Task Duration(us)`，**不要用 host `time.perf_counter`**（含 launch 开销，会失真）。
 
-```txt
-feat(npu): add flash attention support for Ascend CANN
+## Profiling 工具
 
-- Implements FlashAttention-2 kernel for NPU backend
-- Reduces memory usage by 30% compared to baseline
+- **msprof 测量必须独占 NPU**：卡上有其它负载时同输入 T_k 可漂移数倍且无规律（曾把 30us 测成 1.1ms）。测试前用 `npu-smi info` 确认卡空闲，用 `ASCEND_RT_VISIBLE_DEVICES=<空闲卡>` 指定。
 
-fix(model_runner): correct padding token handling
+- 算子基准与 msprof 封装：`benchmarks/ops_profiling/`（见其 `README.md`）
+    - `msprof app` -> `op_summary_*.csv`（每 kernel 设备侧耗时 + AIC/AIV/MTE 分项）
+    - `msprof op`（默认参数）-> `PipeUtilization.csv`（每 block 各 pipe 占用率）
+- Triton IR dump：`TRITON_DEBUG=1 TRITON_DUMP_DIR=<dir>`，产出 `kernel.ttir/ttadapter/npuir.mlir`
+- 评测方法论：`docs/昇腾 910B 硬件架构与 SOL 性能评测方法论.md`（理论）+ `docs/vllm-ascend 算子性能评测实践指南.md`（实践）。**算子性能评价以 SOL gap 为准，不是 speedup。**
 
-- Fixes token padding that caused incorrect attention masks
-- Addresses issue #1234
+## 环境变量
 
-perf: avoid CPU-NPU sync in attention computation
+新增环境变量必须加到 `vllm_ascend/envs.py` 的 `env_variables` 字典并写文档，命名 `VLLM_ASCEND_*`，禁止在代码里硬编码 env 名。性能关键路径上的新 env 需评审。
 
-- Inline computation to avoid tensor.item() calls
-- Improves throughput by 15%
-```
+## 测试与提交
 
-**Bad Examples:**
+- UT：`tests/ut/`，E2E：`tests/e2e/`。新功能必须带测试，bugfix 带回归测试。
+- 提交前：`ruff check vllm_ascend/`、`ruff format vllm_ascend/`、`bash format.sh ci`（含 markdownlint）。
+- Commit 用 Conventional Commits 且**必须 sign-off**（`git commit -s`）：`feat(npu): summary` + body。
+- PR 从个人 fork 提交，标题 `[Type][Module] Description`，描述遵循 `.github/PULL_REQUEST_TEMPLATE.md`。
 
-```txt
-fix bug
-add feature
-update code
-```
+## 命名
 
-### Pull Request Title Format
-
-PR titles should follow the format: `[Type][Module] Description`
-
-- **Type**: The type of change (e.g., `CI`, `Doc`, `BugFix`, `Feat`, `Platform`, `Refactor`)
-- **Module**: The affected module (optional, e.g., `Misc`, `Model`, `Worker`)
-- **Description**: Brief description of the change
-
-**Examples:**
-
-- `[Doc][Misc] Update contribution guidelines`
-- `[BugFix] Fix CPU binding logic`
-- `[CI] Update image build workflow`
-
-### Pull Request Template
-
-When creating a PR, please follow the template in `.github/PULL_REQUEST_TEMPLATE.md` and ensure the following sections are completed:
-
-> **Note**: The PR description will be automatically updated by GitHub Actions to include vLLM version info at the bottom. If you update the PR description via API or CLI, make sure to preserve the `- vLLM version:` and `- vLLM main:` lines.
-
-- **What this PR does / why we need it?** - Clearly describe the changes and their purpose
-- **Does this PR introduce _any_ user-facing change?** - Indicate if there are any user-visible changes
-- **How was this patch tested?** - Describe how you tested the changes. Examples:
-    - Unit tests added/updated: list the test files
-    - Manual testing: provide the test steps and commands
-    - CI testing: indicate if only CI verification is needed
-
----
-
-## Review Checklist
-
-Before merging, verify:
-
-### Code Quality
-
-- [ ] Code follows style guidelines (naming, imports, no magic numbers)
-- [ ] No global state added without justification
-- [ ] Patching pattern used correctly (if applicable)
-- [ ] No direct model file additions
-
-### Testing
-
-- [ ] New tests added for new functionality (`tests/ut/` or `tests/e2e/`)
-- [ ] Existing tests pass
-- [ ] NPU-specific tests verified on actual hardware
-- [ ] Performance benchmarks included where applicable
-
-### Documentation
-
-- [ ] Environment variables documented
-- [ ] Public APIs documented
-- [ ] User-facing changes reflected in docs
-
-### NPU Considerations
-
-- [ ] `tensor.item()` usage reviewed for performance impact
-- [ ] No unnecessary CPU-NPU transfers in hot paths
-- [ ] Memory usage verified on NPU hardware
-
-### Commit and PR
-
-- [ ] Commit messages are clear and descriptive, following Conventional Commits format
-- [ ] **All commits are signed off** (`git commit -s`)
-- [ ] PR is created from your fork repository, not directly from the main repository
-- [ ] PR description is complete, following the PR template
-- [ ] All review comments addressed
-
----
-
-## Quick Start for Contributors
-
-1. Install development dependencies: `pip install -e .[dev]`
-2. Run tests: `pytest tests/`
-3. Check linting: `ruff check vllm_ascend/`
-4. Format code: `ruff format vllm_ascend/`
-5. Make your changes following guidelines in this document
-6. Add tests for new behavior
-7. Run full test suite before committing
-8. Commit with sign-off: `git commit -s`
-9. Run linting check before pushing:
-   ```bash
-   bash format.sh ci
-   ```
-   > **Note**: This check is required for **all file types**, including markdown files. If `markdownlint` modifies files, re-add them with `git add` and commit again.
-10. Push to your fork repository (NOT the main repository):
-
-   ```bash
-   git remote add myfork https://github.com/YOUR_USERNAME/vllm-ascend.git
-   git push -u myfork your-branch-name
-   ```
-
-11. Create a PR from your fork to the main repository with clear description
-
----
-
-## References
-
-- [vLLM Hardware Plugin RFC](https://github.com/vllm-project/vllm/issues/11162)
-- [Documentation](https://docs.vllm.ai/projects/ascend/en/latest/)
-- [Contributors Guide](https://docs.vllm.ai/projects/ascend/en/latest/community/contributors.html)
+类 `PascalCase`，函数/变量 `snake_case`，常量 `ALL_UPPER_CASE`。禁止 magic number，用命名常量。避免新增可变全局状态。

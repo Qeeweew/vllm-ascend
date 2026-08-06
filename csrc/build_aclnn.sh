@@ -110,6 +110,7 @@ elif [[ "$SOC_VERSION" =~ ^ascend910b ]]; then
         "causal_conv1d"
         "lightning_indexer_quant"
         "compressor"
+        "compressor_epilogue"
         "compressor_metadata"
         "vllm_quant_lightning_indexer"
         "vllm_quant_lightning_indexer_metadata"
@@ -158,6 +159,7 @@ elif [[ "$SOC_VERSION" =~ ^ascend910_93 ]]; then
         "moe_grouped_matmul"
         "lightning_indexer_quant"
         "compressor"
+
         "compressor_metadata"
         "vllm_quant_lightning_indexer"
         "vllm_quant_lightning_indexer_metadata"
@@ -193,6 +195,7 @@ elif [[ "$SOC_VERSION" =~ ^ascend950 ]]; then
         "inplace_partial_rotary_mul"
         "kv_compress_epilog"
         "compressor"
+
         "compressor_metadata"
         "vllm_quant_lightning_indexer"
         "vllm_quant_lightning_indexer_metadata"
@@ -225,7 +228,6 @@ fi
 
 log_selected_ops
 
-
 # # build custom ops
 # cd csrc
 # rm -rf build output build_out
@@ -234,7 +236,6 @@ log_selected_ops
 
 # # install custom ops to vllm_ascend/_cann_ops_custom
 # ./build/cann-ops-transformer*.run --install-path=$ROOT_DIR/vllm_ascend/_cann_ops_custom
-
 
 (
   set -euo pipefail

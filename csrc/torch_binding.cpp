@@ -878,6 +878,42 @@ std::tuple<at::Tensor> compressor(const at::Tensor &x, const at::Tensor &wkv, co
     return std::tuple<at::Tensor>(cmp_kv);
 }
 
+std::tuple<at::Tensor> compressor_epilogue(const at::Tensor &mm_kv, const at::Tensor &mm_score,
+                                           at::Tensor &state_cache, const at::Tensor &ape, const at::Tensor &norm_weight,
+                                           const at::Tensor &rope_sin, const at::Tensor &rope_cos,
+                                           const c10::optional<at::Tensor> &state_block_table,
+                                           const c10::optional<at::Tensor> &cu_seqlens,
+                                           const c10::optional<at::Tensor> &seqused,
+                                           const c10::optional<at::Tensor> &start_pos, int64_t rope_head_dim,
+                                           int64_t cmp_ratio, int64_t coff, double norm_eps, int64_t rotary_mode,
+                                           int64_t cache_mode)
+{
+    constexpr int DIM_3 = 3;
+    auto x_dim = mm_kv.dim();
+    TORCH_CHECK(x_dim == 2 || x_dim == DIM_3, "mm_kv dim num[", x_dim, "] should be 2 or 3");
+    TORCH_CHECK(norm_weight.defined() && norm_weight.dim() == 1, "norm_weight should be 1D");
+    TORCH_CHECK(rope_sin.defined() && rope_sin.dim() == x_dim, "rope_sin dim should equal mm_kv dim");
+    TORCH_CHECK(cmp_ratio > 0, "cmp_ratio should be greater than 0");
+
+    at::SmallVector<int64_t, 8> cmp_kv_size;
+    if (x_dim == DIM_3) {
+        auto cmp_s = (mm_kv.size(1) + cmp_ratio - 1) / cmp_ratio;
+        cmp_kv_size = {mm_kv.size(0), cmp_s, norm_weight.size(0)};
+    } else {
+        cmp_kv_size = {rope_sin.size(0), norm_weight.size(0)};
+    }
+    at::Tensor cmp_kv = at::empty(cmp_kv_size, mm_kv.options().dtype(mm_kv.dtype()));
+
+    TORCH_CHECK(state_cache.dim() == DIM_3, "state_cache dim num[", state_cache.dim(), "] should be 3");
+    int64_t state_cache_stride_dim0 = state_cache.stride(0);
+
+    EXEC_NPU_CMD(aclnnCompressorEpilogue, mm_kv, mm_score, state_cache, ape, norm_weight, rope_sin, rope_cos,
+                 state_block_table, cu_seqlens, seqused, start_pos, rope_head_dim, cmp_ratio, coff, norm_eps,
+                 rotary_mode, cache_mode, state_cache_stride_dim0, cmp_kv);
+
+    return std::tuple<at::Tensor>(cmp_kv);
+}
+
 void check_compressor_metadata_common(
     const at::Tensor &rope_cos, const at::Tensor &rope_sin, const at::Tensor &cu_seqlens,
     const at::Tensor &start_pos, const at::Tensor &kv_block_table, int64_t kv_block_size,
@@ -2374,6 +2410,19 @@ TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
         ") -> Tensor"
         );
     ops.impl("compressor", torch::kPrivateUse1, &vllm_ascend::compressor);
+
+    ops.def(
+        "compressor_epilogue("
+            "Tensor mm_kv, Tensor mm_score, "
+            "Tensor(a!) state_cache, Tensor ape, Tensor norm_weight, "
+            "Tensor rope_sin, Tensor rope_cos, "
+            "Tensor? state_block_table, Tensor? cu_seqlens, "
+            "Tensor? seqused, Tensor? start_pos, "
+            "int rope_head_dim, int cmp_ratio, int coff, "
+            "float norm_eps, int rotary_mode, int cache_mode"
+        ") -> Tensor"
+        );
+    ops.impl("compressor_epilogue", torch::kPrivateUse1, &vllm_ascend::compressor_epilogue);
 
     ops.def(
         "compressor_metadata("

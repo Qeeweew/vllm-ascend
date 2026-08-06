@@ -9,12 +9,12 @@
  */
 
 /*!
- * \file COMPRESSOR_template_tiling_key.h
+ * \file COMPRESSOR_EPILOGUE_template_tiling_key.h
  * \brief
  */
 
-#ifndef COMPRESSOR_TEMPLATE_TILING_KEY_H
-#define COMPRESSOR_TEMPLATE_TILING_KEY_H
+#ifndef COMPRESSOR_EPILOGUE_TEMPLATE_TILING_KEY_H
+#define COMPRESSOR_EPILOGUE_TEMPLATE_TILING_KEY_H
 
 #include "ascendc/host_api/tiling/template_argument.h"
 
@@ -23,7 +23,7 @@
 #define ASCENDC_TPL_4_BW 4 // 每个参数占用4个bit位
 
 // 可表示的tilingkey范围为64bit，注意不可超过限制
-ASCENDC_TPL_ARGS_DECL(compressor, // 算子唯一标识，与opType保持一致
+ASCENDC_TPL_ARGS_DECL(compressor_epilogue, // 算子唯一标识，与opType保持一致
     // 可能需要切分之后的headdim
     // bit:0 LAYOUT 0:BSH 1:TH
     ASCENDC_TPL_UINT_DECL(X_LAYOUT, ASCENDC_TPL_1_BW, ASCENDC_TPL_UI_LIST, 0, 1),
@@ -41,9 +41,9 @@ ASCENDC_TPL_ARGS_DECL(compressor, // 算子唯一标识，与opType保持一致
     ASCENDC_TPL_UINT_DECL(ROPE_DTYPE, ASCENDC_TPL_1_BW, ASCENDC_TPL_UI_LIST, 0, 1),
 );
 
-// DAY0（DeepSeek-V4 on 910B）：生产调用恒为 TH + bf16 + rotary=2 + cache=1 + rope fp32，
-// coff∈{1,2}（cmpRatio 128/4），模板 EMPTY/PERF。全组合 192 key 编译过慢，裁剪到 4 key。
-// 非生产组合运行时会在 tiling key 匹配处报错，需要时再放开。
+// DAY0（DeepSeek-V4 on 910B）：生产调用恒为 TH layout + bf16 + rotary=2(interleave) + cache=1
+// + rope fp32 + PERF/EMPTY 模板，coff∈{1,2}（cmpRatio 128/4）。全组合 192 key 编译过慢，
+// 裁剪到 2×2=4 个 key。非生产组合运行时会在 tiling key 匹配处报错，需要时再放开。
 ASCENDC_TPL_SEL(
 
     ASCENDC_TPL_ARGS_SEL(ASCENDC_TPL_UINT_SEL(X_LAYOUT, ASCENDC_TPL_UI_LIST, 1),
@@ -53,7 +53,7 @@ ASCENDC_TPL_SEL(
                         ASCENDC_TPL_UINT_SEL(CACHE_MODE, ASCENDC_TPL_UI_LIST, 1),
                         ASCENDC_TPL_UINT_SEL(TEMPLATE_ID, ASCENDC_TPL_UI_LIST, 1, 2),
                         ASCENDC_TPL_UINT_SEL(ROPE_DTYPE, ASCENDC_TPL_UI_LIST, 1),
-                        ASCENDC_TPL_TILING_STRUCT_SEL(optiling::CompressorTilingData)),
+                        ASCENDC_TPL_TILING_STRUCT_SEL(optiling::CompressorEpilogueTilingData)),
 );
 
-#endif // COMPRESSOR_TEMPLATE_TILING_KEY_H
+#endif // COMPRESSOR_EPILOGUE_TEMPLATE_TILING_KEY_H
