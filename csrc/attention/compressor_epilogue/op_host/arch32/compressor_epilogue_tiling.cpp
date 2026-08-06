@@ -152,7 +152,6 @@ ge::graphStatus CompressorEpilogueTiling::SetBaseInfo()
         (baseParams_->seqSize + baseParams_->cmpRatio - 1) / baseParams_->cmpRatio; // number of token after compress
     baseParams_->stateCacheStrideDim0 = static_cast<uint64_t>(*context_->stateCacheStrideDim0);
     coff = static_cast<uint8_t>(*context_->coff);
-    baseParams_->nSize = 2; // 2:每个核处理两个基本块后做全核同步
 
     OP_LOGI(context_->opName, "[TILING] bSize:%u  tSize:%u cmpRatio:%u coff:%u", baseParams_->batchSize, baseParams_->tokenSize, baseParams_->cmpRatio, coff);
 
@@ -173,12 +172,12 @@ ge::graphStatus CompressorEpilogueTiling::SetPageAttentionInfo()
 
 ge::graphStatus CompressorEpilogueTiling::SetWorkSpaceInfo()
 {
-    // mm 结果由外部 MatMulV3 产出，workspace 只需 tail cache（跨 call 尾部行）+ vec1Res（vec1→vec2 中转）
-    workspaceParams_->dbWorkspaceRatio = 2;
+    // mm 结果由外部 MatMulV3 产出；完全串行化后无 vec1Res workspace / SyncAll，workspace 全部置 0
+    workspaceParams_->dbWorkspaceRatio = 1;
     workspaceParams_->mm1KvResSize = 0;
     workspaceParams_->mm1ScoreResSize = 0;
-    workspaceParams_->vec1TailCacheSize = 0;  // tail 机制已删：前驱行直接读用户 mm GM
-    workspaceParams_->vec1ResSize = innerSplitParams_->mBaseSize * baseParams_->headDim * baseParams_->nSize;
+    workspaceParams_->vec1TailCacheSize = 0;
+    workspaceParams_->vec1ResSize = 0;
 
     return ge::GRAPH_SUCCESS;
 }
@@ -222,11 +221,8 @@ ge::graphStatus CompressorEpilogueTiling::SetInnerSplitInfo()
 
 ge::graphStatus CompressorEpilogueTiling::CalcWorkSpace()
 {
-    constexpr uint32_t V1_RES_ELEM_SIZE = 4;       // 4: fp32
-    constexpr uint32_t MM1_RES_ELEM_SIZE = 4;      // 4: fp32
-    uint32_t maxGroupNum = aicNum_ / (baseParams_->headDim / innerSplitParams_->dBaseSize);
+    // 完全串行化后 kernel 不需要 workspace（无 vec1Res 中转），仅保留 libapi 基础大小
     workspaceSize_ = libapiSize_;
-    workspaceSize_ += workspaceParams_->vec1ResSize * maxGroupNum * V1_RES_ELEM_SIZE * workspaceParams_->dbWorkspaceRatio;
 
     if (context_->workSpaces) {
         context_->workSpaces[0] = workspaceSize_;

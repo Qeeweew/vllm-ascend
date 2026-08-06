@@ -144,6 +144,26 @@ ASCEND_RT_VISIBLE_DEVICES=7 python dbg6_compressor_window_probe.py  # 窗口内�
 - **decode**：epilogue 22.6us vs fused 47.6us（2.1×，另有微小 GEMM）
 - 余量：epilogue 473us 高于 100-200us 预估——`PipeBarrier<PIPE_ALL>` 按正确性优先加粗，后续可按 pipe 对窄化（MTE2_V / V_MTE2 flag）收性能；GEMM 87.5% SOL（N=1024 偏小），可考虑 wkv|wgate 合并单 GEMM [M,7168]×[7168,2048]
 
+### 性能验证 v2（已完成，2026-08-06，完全串行化重构）
+
+epilogue 从**两阶段（vec1+SyncAll+vec2）重构为单阶段完全串行**：每核独占完整 headDim（行并行），rms_norm/rope 移入核内，删掉全部 SyncAll / vec1Res workspace / vec2 阶段 / 双缓冲簿记（详见 `csrc/attention/compressor_epilogue/README.md`）：
+
+| 版本 | prefill M=8192 epilogue | prefill 总 | wait_id14（事件等待） |
+|---|---|---|---|
+| fused 单算子 | — | 1983.3us | — |
+| v1（16×SyncAll） | 454.98us | 1568.7us | 103.4us |
+| **v2（完全串行）** | **248.74us** | **1380.1us** | **5.7us（-94%）** |
+
+- fused → v2 = **1.437×**；v1 → v2 = 1.137×；vec 占用 21.5% → 38.3%（计算量不变，等待消失）
+- 剩余瓶颈：GEMM 2×564.6us（86.7% SOL，主导）+ epilogue 248.7us（内存下限 ~66us，余 ~58us 为 2 处 PIPE_ALL + flag 指令等待 + icache 4.1%）
+- 数值回归：`test_compressor_split.py` 全绿（prefill rel>1% ≈ 11.6% = bf16 mm 固有精度差，decode ≈ 0.6-0.9%，state 全对齐，2step 6/6）
+
+```bash
+cd benchmarks/ops_profiling
+VLLM_ASCEND_DSA_COMPRESSOR_SPLIT=1 ASCEND_RT_VISIBLE_DEVICES=1 timeout 900 msprof op --kernel-name="CompressorEpilogue*" --application="python bench_deepseek_v4.py --case dsa_compressor --iters 1 --warmup 0 --M-prefill 8192" --output=msprof_out/serial_op
+# PipeUtilization：aiv_vec_time ≈ 91us（38.3%），aiv_mte2 ≈ 45us，aiv_mte3 ≈ 43us，scalar_wait_ib ≈ 89us，wait_id14 ≈ 5.7us
+```
+
 
 ```bash
 cd benchmarks/ops_profiling

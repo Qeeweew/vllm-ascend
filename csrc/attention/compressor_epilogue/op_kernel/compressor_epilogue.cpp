@@ -30,7 +30,7 @@ using namespace CompressorEpilogue;
     do {                                                                                                         \
         templateClass<COMPType<__VA_ARGS__>> op(&pipe, tilingData);                                              \
         op.Init(mmKv, mmScore, stateCache, ape, normWeight, ropeSin, ropeCos, stateBlockTable,                   \
-                cuSeqlens, seqUsed, startPos, cmpKvOut, workspace);                                              \
+                cuSeqlens, seqUsed, startPos, cmpKvOut);                                                        \
         op.Process();                                                                                            \
     } while (0)
 

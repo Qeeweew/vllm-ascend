@@ -25,18 +25,32 @@
 - 对 8 行**逐通道**做 softmax（ColumnSoftMax），`cmp[c] = Σ₈ p·kv`（ColumnSum）
 - 压缩结果行做 rms_norm（整行 512 维）+ rope（后 64 维）→ `cmp_kv`
 
-## 2. 为什么分 vec1 / vec2（两阶段的根本原因）
+## 2. 架构：单阶段完全串行（无跨核同步）
 
-epilogue 的计算天然分两段，**并行切分维度冲突**：
+历史上有两个架构，均已被替换：
 
-| 阶段 | 计算 | 并行粒度 | 为什么这样切 |
+- **v1（两阶段 + SyncAll）**：vec1（按 D 维并行，部分行写 GM workspace `vec1Res`）+ 每 nSize=2 基本块一次
+  `SyncAll` 全核屏障 + vec2（按行并行读 `vec1Res` 做 rms_norm/rope）。rms_norm 需要整行 512 维，而 vec1
+  按 D 切分时每核只有部分行，因此必须经 GM + 全局屏障交换数据。
+- **v2（当前，完全串行）**：**每核独占完整 `headDim` 维（行并行）**。窗口装配、softmax、加权和、rms_norm、
+  rope、写 `cmp_kv` 全部在核内完成，**无任何跨核数据依赖** → 删掉 `SyncAll`、`vec1Res` workspace、vec2 阶段、
+  双缓冲簿记。kernel 退化为纯流水，只有队列自动同步 + 定向 flag。
+
+行并行成立的依据（`CalcGroupInfo`）：
+
+- 40 个 AIV 按 token（tc）均分，每核处理若干**完整行**；
+- 每核读写 state_cache 都只落在自己负责的行/列上（窗口 ReadState 与 SaveState 的列段一致）；
+- 输出行号 = 本核 `compressedCnt_`（全局压缩行号，tc 按序分核故连续）。
+
+性能实测（M=8192 prefill，msprof）：
+
+| 版本 | epilogue | prefill 总 | 说明 |
 |---|---|---|---|
-| **vec1** | 窗口装配 + ape + 逐通道 softmax + 加权和 | **按 D（headDim 通道）切** | 每个输出通道独立归约，40 核各算 512/groupSize 维，互不依赖 |
-| **vec2** | rms_norm + rope | **按行（压缩 token）切** | rms_norm 需要整行 512 维的均方，只拥有部分维度的核算不了 |
+| fused 单算子 | 1983.3us（含 GEMM） | 1983.3us | GEMM L1 复用瓶颈 50.8% SOL |
+| v1（16×SyncAll） | 454.98us | 1568.7us | wait_id14（事件等待）= 103.4us |
+| **v2（完全串行）** | **248.74us** | **1380.1us** | **wait_id14 → 5.7us（-94%）** |
 
-vec1 的产出是"部分行"（每核只写了每行的 1/groupSize），因此必须经 GM（`vec1Res` workspace）中转，
-`SyncAll` 全核屏障后再进入 vec2。**UB 是每核私有的，跨核数据交换只能走 GM + 屏障**——这是本算子
-`SyncAll` 存在的唯一原因（每 nSize=2 个基本块一次）。
+v2 的 `aiv_vec` 占用 38.3%（91us），`mte2/mte3` 各 ~19%，剩余主要是 2 处 PIPE_ALL + flag 的指令等待。
 
 ## 3. 数据流总览
 
@@ -45,26 +59,22 @@ vec1 的产出是"部分行"（每核只写了每行的 1/groupSize），因此�
                      │   mm_kv = x@wkv        mm_score = x@wgate   （bf16, [T,1024]）│
                      └─────────────────────────────┬─────────────────────────────────┘
                                                   ▼
-        （40 个 AIV 并行，每个负责基本块的一部分 token × 一部分 D 维）
-   ┌─────────────────────────── vec1（D 维并行）───────────────────────────┐
-   │ for 每个基本块 (mBase=256 tokens):                                     │
-   │   CopyInApe:   ape ─MTE2→ UB                                          │
-   │   scoreUb = load mm_score 行段（bf16→fp32 Cast，进队列 buffer）        │
-   │   kvUb    = load mm_kv    行段（同上）                                 │
-   │   for 每个 slice（一组 4 token 及对齐边角）:                           │
-   │     AddApeToScore:  scoreUb += ape（按组内位置）                       │
-   │     SaveState:      scoreUb/kvUb → state_cache（分页，MTE3）           │
-   │     ReadState:      state_cache 历史行 → 窗口左/右半（MTE2）           │
-   │     PadAlign:       当前行段按窗口 8 行排布（UB→UB）                   │
-   │     LoadFromWorkSpace: 窗口前驱行（跨基本块）← mm GM（bf16→fp32 Cast） │
-   │     SoftmaxDN + KvMulReduceScore:  逐通道 softmax + 加权和             │
-   │     CopyOutVec1Res: 部分结果 → vec1Res GM（MTE3）                      │
-   │   SyncAll（每 2 个基本块）                                            │
-   └────────────────────────────────┬───────────────────────────────────────┘
-                                    ▼
-   ┌────────────────────────── vec2（行并行）───────────────────────────────┐
-   │   行段 ─MTE2→ UB → rms_norm（整行 512）→ rope（后 64）→ cmp_kv（MTE3） │
-   └────────────────────────────────────────────────────────────────────────┘
+        （40 个 AIV 行并行：每核处理若干 tc 的完整 512 维行，全程无跨核通信）
+   ┌─────────────────────────────── 单阶段流水 ───────────────────────────────┐
+   │ for 每个基本块 (mBase=256 tokens，每核 1~2 tc):                           │
+   │   CopyInApe:   ape ─MTE2→ UB                                            │
+   │   scoreUb = load mm_score 行段（bf16→fp32 Cast）                         │
+   │   kvUb    = load mm_kv    行段                                          │
+   │   for 每个 slice（一组 4 token 及对齐边角）:                             │
+   │     AddApeToScore:  scoreUb += ape（按组内位置）                         │
+   │     SaveState:      scoreUb/kvUb → state_cache（分页，MTE3）             │
+   │     ReadState:      state_cache 历史行 → 窗口左右半（MTE2）               │
+   │     PadAlign:       当前行段按窗口 8 行排布（UB→UB）                      │
+   │     LoadFromWorkSpace: 窗口前驱行（跨基本块）← mm GM（bf16→fp32 Cast）    │
+   │     SoftmaxDN + KvMulReduceScore:  逐通道 softmax + 加权和 → 压缩行（核内）│
+   │     FinishCompressedRows:  rms_norm（整行 512）→ rope（后 64）→ cast      │
+   │                           → 直接写 cmp_kv（TH 紧凑 / BSH 逐 batch）       │
+   └──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## 4. 逐函数计算流程
@@ -73,37 +83,33 @@ vec1 的产出是"部分行"（每核只写了每行的 1/groupSize），因此�
 
 ```cpp
 for (i = 0; i < loopTimes; ++i) {          // loopTimes = 本 call 的基本块数
-    CalcVec1Params(...);                   // 用迭代器算出本基本块该处理哪些 token（跨 batch、跳过无效）
-    ComputeVec1(vec1Info);                 // 本核在本基本块的任务
-    UpdateVec2Info(...);                   // 累加压缩行数，供 vec2 使用
-    if (IsNeedSyncAll(i)) {                // 每 nSize=2 块 + 最后一块
-        SyncAll();                          // 全核屏障：vec1Res 全局可见
-        if (vec2Info.dealScSize > 0) ComputeVec2(vec2Info);  // 处理累积的压缩行
-    }
+    CalcVec1Params(vec1Info, batchInfo, i); // 用迭代器算出本基本块该处理哪些 token（跨 batch、跳过无效）
+    ComputeVec1(vec1Info);                  // 本核在本基本块的任务（含 rms_norm/rope/输出）
 }
 ```
 
 - `SkipOneLoop`（tools.h 的迭代器）：把 M 个 token 切成基本块（mBase=256），跨 batch 边界时按
   `start_pos` 对齐到 cmpRatio 组边界，跳过 seqUsed 外的 gap 行。
-- 每块 64 个压缩单元（256/4），40 核均分 → 每核每块 1~2 个 tc，**工作粒度很小**。
 
-### 4.1 vec1：核间切分（`ComputeVec1` → `SplitCoreV1`）
+### 4.1 核间切分（`ComputeVec1` → `SplitCoreV1`）
 
 四步决策：
 
-1. **`CalcGroupInfo`**：按 `dealTcNum` 与 40 核数选 D 切分粒度
-   `dBaseSize = headDim / min(FloorPow2(40), CeilPow2(CeilDiv(40, dealTcNum)))` ∈ {16..512}；
-   `groupSize = headDim/dBaseSize`（D 维每组的核数），`groupNum = min(40/groupSize, dealTcNum)`（组数 = 行方向并行的基本单元数）。
+1. **`CalcGroupInfo`**：**强制 `dBaseSize = headDim`**（每核全维），`groupSize=1`，`groupNum = min(40, dealTcNum)`。
 2. **`CalcTaskDistribution`**：按 `blockIdx` 负载均衡分配 tc：`dealTcSize`（本核处理的 tc 数）与
    `preDealTcSize`（本核起点之前的 tc 数，用于定位 token 起点）。
 3. **`UpdateIteratorState`**：用 slice 迭代器把"前序 tc"推进一遍，得到本核的 `(curBStart, curSStart, dealSeqStartIdx)`
    起点与 `curCompressedCnt`（前序已产出的压缩行数）。
 4. **`CalcTilingStrategy`**：`maxDealColNum = 32K/(cmpRatio*coff*4)`，决定 `tcSplitSize`（一个基本块装几个 tc）
-   与 `dSplitSize`（D 维一次算多少）。
+   与 `dSplitSize`（D 维一次算多少，= 512 全维）。
 
-主循环：`dLoop`（D 分块）→ `tcLoop`（tc 分块，每块调 `DealVec1BaseBlock`）。
+主循环：`dLoop`（D 分块，恒 1 次）→ `tcLoop`（tc 分块，每块调 `DealVec1BaseBlock`）。
 
-### 4.2 vec1：单个基本块（`DealVec1BaseBlock`）
+> 输出游标（仅 BSH 布局输出映射使用）：`ComputeVec1` 首次进入时按核起点 slice 初始化
+> `(OutputBStartIdx, OutputSStartIdx)`，之后每次产出由 `UpdateOutputIdx` 推进。TH 布局直接用
+> `compressedCnt_`（全局压缩行号）作为输出偏移，不需要游标。
+
+### 4.2 单个基本块（`DealVec1BaseBlock`）
 
 ```
 originSliceInfo = 本块起始 slice（含 sIdx/dealedSeqCnt 等）
@@ -112,8 +118,8 @@ statisticInfo   = 迭代 needDealTcSize 个 tc 的统计（dealSeqCnt=要加载�
 scoreLocal = tmpBuff1, kvLocal = tmpBuff2   （窗口缓冲，32K/64K）
 OverLapScoreKv(...)                          // 装配 8 行窗口（见 4.3）
 SoftmaxDN(scoreLocal)                        // 逐通道 softmax（8 行一组）
-KvMulReduceScore → comperssoredUb            // p·kv 逐通道求和 → 部分压缩行
-CopyOutVec1Res → vec1Res GM                  // 写到 (v1v2DbIdx*dbSize + compressedCnt_*headDim + dStartIdx)
+KvMulReduceScore → compressedUb(tmpBuff1)    // p·kv 逐通道求和 → 核内完整压缩行
+FinishCompressedRows(compressedUb)           // rms_norm + rope + cast + 直接写 cmp_kv
 compressedCnt_ += compressScCnt
 ```
 
@@ -131,7 +137,6 @@ for 每个 overlap slice:
                                                   //   左半: 前一组 4 行（coff0），首组用 DuplicateFirstBlock 复制
     PadAlign(dstLocal, srcLocal)                  // 把 srcLocal 的连续行重排成窗口 8 行 × [coff0|coff1]
     LoadFromWorkSpace(dstLocal)                   // 窗口左半的前驱 4 行：跨基本块时从 mm GM 读（bf16→Cast）
-    （尾部 MTE2_V flag：窗口装配完成 → 可被 V 计算消费）
 ```
 
 关键点：
@@ -144,71 +149,72 @@ for 每个 overlap slice:
 - **`FromWokrSpaceToUb` 的 mm GM 寻址**：行段起点 = `(cuSeqlens[bIdx] + sIdx) * coff*headDim + dStartIdx`，
   行 stride = `headDim`（coff0/coff1 交错），一次读 `dealSeqCnt*coff_` 行 × `dDealSize` 列。
 - **`LoadFromWorkSpace` 的 mm GM 寻址**：前驱 token 行 stride = `coff*headDim`（每 token 一行），只取 coff0
-  半边（D_L），行数 = `min(sIdx, cmpRatio)`。原算子这里读 cacheTc（已含 ape 的缓存），split 直接读裸 mm GM，
-  因此需要额外的 `AddSingleApeToScore` 给左半补 ape。
+  半边（D_L），行数 = `min(sIdx, cmpRatio)`。由于 split 直接读裸 mm GM（不含 ape），左半行还需要
+  `AddSingleApeToScore` 补 ape。
 - **SaveState 的分页写**：`stateOffset = blockTable[blockId]*stride0 + remainRow*2*coff*headDim
   + stateIdx*coff*headDim + dStartIdx`，blockId/remainRow 由绝对 seq（含 start_pos）算出；stateIdx 0=kv、1=score。
 
-### 4.4 vec2（`ComputeVec2` → `DealVec2BaseBlock`）
+### 4.4 压缩行收尾（`FinishCompressedRows`，v2 新增）
 
 ```
-SplitCoreV2          // 把累积的压缩行按核均分（行并行）
-for 每个行块:
-    vec1ResUb = vec2InputGm[行段] (MTE2)          // 读 vec1 的部分和
-    MultRowRmsNorm：rms = sqrt(mean(x²)+eps); x/rms*norm_weight
-    CalRope：后 ropeHeadDim 维（用 rope_sin/cos 按行索引）
-    CopyFinalResultOut → cmp_kv GM（TH 布局按 batch 紧凑）
+RmsNorm(compressedUb, ..., normWeightUb, tmpUb, {reciprocalD, normEps, scCnt, headDim})   // 整行归范
+SingleCalRope(..., compressedCnt_)    // 只对后 ropeHeadDim 维做 rope，sin/cos 按全局压缩行号取
+Cast(outputUb, compressedUb, CAST_RINT, scCnt*headDim)   // fp32 → X_T（bf16/fp16）
+CopyFinalResultOut(outputUb, scCnt)   // TH: cmpKvOutGm_[compressedCnt_*headDim]；BSH: 游标逐 batch
 ```
 
-## 5. 同步模型（与原始 Compressor 保持一致 + 两处新增）
+buffer 生命周期（均复用，无新增 UB）：
 
-原 `Compressor` 的同步纪律（逐字节沿用）：
+- 压缩行写入 `tmpBuff1`（scoreLocal 窗口在 KvMulReduceScore 的 Mul 之后即废弃）；
+- rms_norm temp 用 `tmpUb`（tmpBuff2 后半 32K）；
+- rope 的 sin/cos 经 `inputQue1`（mm load 已结束）读入，fp32 转换用 `tmpBuff2`（kvLocal 已废弃）；
+- 输出经 `outputQue1`（X_T，16K）。
+
+## 5. 同步模型
+
+完全串行化后，**无 SyncAll、无 workspace、无 vec2 阶段**。剩余同步：
 
 - **队列自动同步**：`inputQue1`（VECIN：EnQue=MTE2→V，Free/Alloc=V→MTE2）、`outputQue1`
   （VECOUT：V→MTE3）覆盖常规的"搬运→计算→搬出"与 buffer 复用；
-- **3 对定向 flag**（`OverLap` 内）：`V_MTE2`（SaveState 后，V 计算 → ReadState 的 MTE2 写）、
-  `MTE3_MTE2`（SaveToWorkSpace 的 MTE3 写 → LoadFromWorkSpace 的 MTE2 读，split 中保留）、
-  `MTE2_V`（OverLap 尾部，窗口装配完成 → 后续 V 计算）。
+- **3 对定向 flag**（`OverLap` 内，沿用原 Compressor）：`V_MTE2`（SaveState 后，V 计算 → ReadState 的 MTE2 写）、
+  `MTE3_MTE2`（SaveToWorkSpace 的 MTE3 写 → LoadFromWorkSpace 的 MTE2 读）、
+  `MTE2_V`（OverLap 尾部，窗口装配完成 → 后续 V 计算）；
+- **2 对新增 `MTE2_V` flag**（裸 DataCopy 与向量混用）：`FromWokrSpaceToUb` 的 stage copy→Cast、
+  `LoadFromWorkSpace` 的 GM copy→原地 Cast；
+- **2 处 `PipeBarrier<PIPE_ALL>`**（逐一二分实证必需，去掉必坏）：
+  - `FromWokrSpaceToUb` Cast 之后：Cast 整块读写队列 buffer，队列 free 事件只保证 V 写完成、不保证 Cast
+    读排空；
+  - `OverLap` SaveState 之前：排空 V（Cast/AddApe）后再让 SaveState 的中转 copy 读 srcLocal。
 
-split 新增（**仅此 4 处**，`csrc/attention/compressor_epilogue/op_kernel/arch32/compressor_epilogue_block_vec_perf.h`）：
+> 曾存在、经二分证伪删除的屏障：scoreUb→kvUb 复用点、LoadFromWorkSpace 尾部 V_MTE2（队列 free 事件已覆盖）、
+> 以及 v1 的全部 16 次 SyncAll（行并行后无跨核数据依赖，整段删除）。
 
-| 位置 | 同步 | 原因 |
-|---|---|---|
-| `FromWokrSpaceToUb`：stage copy(MTE2) → Cast(V) 之间 | 一对 `MTE2_V` flag | 裸 DataCopy 与向量混用的标准同步（与原算子纪律一致） |
-| `FromWokrSpaceToUb`：Cast 之后 | **`PipeBarrier<PIPE_ALL>`** | Cast 整块读写队列 buffer（读后半段 stage、写全 buffer）；队列 free 事件只保证 V 写完成，不保证 Cast 的读排空。实测仅靠 flag 会随机行损坏 |
-| `LoadFromWorkSpace`：GM copy → 原地 Cast 之间 | 一对 `MTE2_V` flag | 同上，裸 copy/向量混用 |
-| `OverLap`：SaveState 之前 | **`PipeBarrier<PIPE_ALL>`** | 排空 V（Cast/AddApe）后再让 SaveState 的中转 copy 读 srcLocal 及后续 ReadState/PadAlign 写窗口。实测去掉后最后一个 slice 的窗口确定性损坏 |
+## 6. 复杂度来源（现状评估）
 
-> 曾被怀疑、经二分证伪后**不需要**的屏障：scoreUb→kvUb 复用点、LoadFromWorkSpace 尾部 V_MTE2。
-> 均由队列 free 事件覆盖。
+1. **行并行后无全局同步**：复杂度大头（两阶段 + SyncAll + 双缓冲）已消除，driver 是平凡循环。
+2. **窗口装配的边角处理**：slice 的 headHolder/tailHolder 对齐、跨基本块前驱行的 LoadFromWorkSpace、
+   score 左半缺 ape 的补加（AddSingleApeToScore）、首组 DuplicateFirstBlock、分页 state 的 blockId/remainRow
+   计算——这些是 DSA 语义（overlap 窗口、分页 state、start_pos 对齐）的必然产物，fused 原算子同样有。
+3. **UB 预算约束**：inputQue1 只有 32K（单 buffer），限制了一次能装的 token 行数；apeBuf 32K、tmpBuff1/2
+   32K/64K 都是各阶段的专用缓冲。当前 181K/192K 已配平，压缩行收尾全部复用既有 buffer。
 
-## 6. 为什么"过于复杂"（复杂度来源）
+## 7. 性能现状与剩余优化方向
 
-1. **vec1/vec2 两段式 + 16 次 `SyncAll`**：rms_norm 的全行归约迫使行并行阶段必须等 D 并行阶段把部分和
-   写进 GM。这是功能性的，但每 2 个基本块一次全核屏障让固定开销很大。
-2. **每基本块的工作粒度太小**：mBase=256 → 每块 64 tc / 40 核 = 每核 1~2 tc。而每个 tc 要摊付
-   score+kv 两次 load（各含 stage copy + flag + Cast + PIPE_ALL）、每 slice 的 SaveState/ReadState/
-   PadAlign 队列往返 + flag、以及 vec1Res 写出。**固定同步开销 / 工作量 的比例非常高**（msprof：
-   vec 实际只占 21.5%，scalar 等待占 ~60%）。
-3. **窗口装配的边角处理**：slice 的 headHolder/tailHolder 对齐、跨基本块前驱行的 LoadFromWorkSpace、
-   score 左半缺 ape 的补加（AddSingleApeToScore）、首组 DuplicateFirstBlock……这些是 DSA 语义
-   （overlap 窗口、分页 state、start_pos 对齐）的必然产物，原 fused 算子同样有，不是 split 引入的。
-4. **寄存器/UB 预算约束**：inputQue1 只有 32K（单 buffer），限制了一次能装的 token 行数；apeBuf 32K、
-   tmpBuff1/2 32K/64K 都是各自阶段的专用缓冲——buffer 复用几乎不可行，导致每阶段都要完整搬入搬出。
-
-## 7. 可优化方向（按性价比排序）
+M=8192 prefill 实测：epilogue **248.74us**（aiv_vec 38.3%），prefill 总 **1380.1us**（GEMM 2×564.6us 已是
+主导，86.7% SOL）。epilogue 相对内存下限（~66us）还有 ~3.8× 差距，剩余可优化：
 
 | 方向 | 预期收益 | 说明 |
 |---|---|---|
-| 加大每核每块工作量（mBase 256→1024+，配套加大 inputQue1/合并 dLoop） | 减少基本块数 ×4，同步开销线性下降 | 受 UB 预算约束，需重新配平各 buffer |
-| 合并 score/kv 的加载（同一次行段一次读完两个 mm GM，共享 stage/Cast/barrier） | 每块省一半 load 开销（2 次→1 次） | mm_kv/mm_score 是同一批 token，行寻址一致 |
-| 加大 nSize（2→4/8），减少 SyncAll 次数 | 全局屏障 16 次 → 4~8 次 | vec1Res workspace 相应翻倍（内存充足） |
-| 独立 stage buffer 替代"队列 buffer 后半段" | 去掉 post-Cast `PIPE_ALL`（用定向 flag 替代） | 需验证 flag 是否足够（当前实测不足，需重试） |
-| vec2 直接消费 vec1 的 UB 结果（跨核 reduce 替代 GM 中转） | 省 vec1Res 流量与一次 SyncAll 语义 | 910B 无跨核 UB，需改用 GM 原子/片上转发，工程量大 |
+| 降低 2 处 PIPE_ALL + flag 的指令等待（~58us） | 中等 | 尝试独立 stage buffer 替代"队列 buffer 后半段"，用定向 flag 替换 PIPE_ALL（需重验） |
+| 加大 inputQue1（32K→64K），减少行段 load 次数 | 中等 | 需从 apeBuf/tmpBuff1 挪 UB 预算，重新配平 |
+| 合并 score/kv 的加载（同一行段一次读完两个 mm GM） | 中低 | 共享 stage/Cast/flag，每块省一半 load 开销 |
+| icache（miss 4.1%） | 低 | kernel 已变小，可再验证 code layout |
 
 ## 8. 关键文件
 
-- `op_kernel/arch32/compressor_epilogue_kernel_perf.h`：驱动循环（Process/CalcVec1Params/SkipOneLoop/UpdateVec2Info/SyncAll 节奏）
-- `op_kernel/arch32/compressor_epilogue_block_vec_perf.h`：vec1/vec2 全部计算（ComputeVec1/SplitCoreV1/DealVec1BaseBlock/OverLapScoreKv/OverLap/SaveState/ReadState/PadAlign/LoadFromWorkSpace/SoftmaxDN/KvMulReduceScore/CopyOutVec1Res/ComputeVec2/CalRope/CopyFinalResultOut）
+- `op_kernel/arch32/compressor_epilogue_kernel_perf.h`：驱动循环（Process/CalcVec1Params/SkipOneLoop）
+- `op_kernel/arch32/compressor_epilogue_block_vec_perf.h`：全部计算（ComputeVec1/SplitCoreV1/DealVec1BaseBlock/
+  OverLapScoreKv/OverLap/SaveState/ReadState/PadAlign/LoadFromWorkSpace/SoftmaxDN/KvMulReduceScore/
+  FinishCompressedRows/CopyFinalResultOut）
 - `op_kernel/arch32/compressor_epilogue_tools.h`：slice 迭代器（基本块/tc/slice 划分、对齐与 gap 处理）
-- `op_host/arch32/compressor_epilogue_tiling.cpp`：mBase/nSize/dBaseSize/workspace 等 tiling 参数
+- `op_host/arch32/compressor_epilogue_tiling.cpp`：mBaseSize/tcSplitSize/workspace（已无 vec1Res）等 tiling 参数

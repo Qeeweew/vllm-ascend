@@ -201,31 +201,10 @@ struct RunInfo {
 };
 
 struct Vec1RunInfo {
-    // vec相关信息，一次syncAll需处理数据的起始索引
-    bool resetResFlag = false;          // v1积攒N轮 是否是N轮的起始轮
-    uint32_t c1v1DbIdx = 0;               // vec1 doubleBuffer索引
-    uint32_t v1v2DbIdx = 0;             // v1v2 doubleBuffer索引
+    // 当前基本块要处理的 token 区间（batch 起始 + 起点 sIdx）
     uint32_t bStart = 0;
     uint32_t sStart = 0;
     uint32_t dealTcNum = 0;
-    uint32_t dealScSize = 0;
-};
-
-struct Vec2RunInfo {
-    // uint32_t bStart = 0;
-    uint32_t v2DbIdx = 0;              // v2 doubleBuffer索引
-    uint32_t sStart = 0;
-    uint32_t bEnd = 0;
-    uint32_t sEnd = 0;
-    // v2分核信息 sc是左闭右开
-    uint32_t scStart = 0;
-    uint32_t scEnd = 0;
-    // uint32_t dealScSize = 0;
-
-    // 增加字段
-    uint32_t bStart = 0;
-    uint32_t compressedId = 0;
-    uint32_t bCompressedId = 0;
     uint32_t dealScSize = 0;
 };
 
