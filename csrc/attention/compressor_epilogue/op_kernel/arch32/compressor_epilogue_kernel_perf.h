@@ -27,22 +27,7 @@ using namespace AscendC;
 
 namespace CompressorEpilogue {
 
-struct CmpBlockInfo {
-    __aicore__ inline CmpBlockInfo() {};
-    __aicore__ inline CmpBlockInfo(uint32_t bIdx, uint32_t sIdx, bool needReset = false) : bIdx(bIdx), sIdx(sIdx), needReset(needReset) {};
 
-    uint32_t bIdx = 0U;
-    uint32_t sIdx = 0U;
-    uint32_t bSeqUsed = 0U;
-    uint32_t bStartPos = 0U;
-    bool needReset = false;
-    bool isFirst = true;
-
-    uint32_t headSeqCnt = 0U;
-    uint32_t validSeqCnt = 0U;
-    uint32_t tailSeqCnt = 0U;
-    bool isCompress = 0U;
-};
 
 struct BasicBlockInfo {
     uint32_t bIdx = 0;
@@ -121,8 +106,6 @@ private:
     // ==============================Service Define==============================
     CompressorEpilogueBlockVectorPerf<COMP> blockVec_;
 
-    uint32_t curCompressedTcNum_ = 0;
-    uint32_t accDealSize = 0;
     uint32_t loopTimes = 0;
     bool isFirstUpdateCurGroup = true;
 };
@@ -162,8 +145,6 @@ __aicore__ inline void CompressorEpilogueKernelPerf<COMP>::Init(
         return;
     }
 
-    // 0. 计算最后一个Tc块的起始位置
-    constInfo.bIdxOfLastTc = constInfo.batchSize - 1;
     // 1. 计算head_dim的切分大小, 构建ConstInfo的其他信息
     SetBaseSize(); // 设置基本块大小
     CalcSplitCoreInfo();
@@ -184,15 +165,13 @@ __aicore__ inline void CompressorEpilogueKernelPerf<COMP>::InitTilingData() {
     constInfo.cmpRatio = tilingData_->baseParams.cmpRatio;
     constInfo.batchSize = tilingData_->baseParams.batchSize;
     constInfo.mBaseSize = tilingData_->innerSplitParams.mBaseSize;
-    constInfo.headDim = tilingData_->baseParams.headDim;
-    constInfo.hSize = tilingData_->baseParams.hiddenSize;
     constInfo.sSize = tilingData_->baseParams.seqSize;
+    constInfo.headDim = tilingData_->baseParams.headDim;
     constInfo.ropeHeadDim = tilingData_->baseParams.ropeHeadDim;
     constInfo.normEps = tilingData_->baseParams.normEps;
     constInfo.reciprocalD = tilingData_->baseParams.reciprocalD;
     constInfo.usedCoreNum = tilingData_->baseParams.usedCoreNum;
 
-    constInfo.blockNum = tilingData_->pageAttentionParams.blockNum;
     constInfo.blockSize = tilingData_->pageAttentionParams.blockSize;
     constInfo.maxBlockNumPerBatch = tilingData_->pageAttentionParams.maxBlockNumPerBatch;
     constInfo.stateCacheStrideDim0 = tilingData_->baseParams.stateCacheStrideDim0;
@@ -238,26 +217,17 @@ __aicore__ inline void CompressorEpilogueKernelPerf<COMP>::SetBaseSize()
     }
 
     uint32_t aiCoreNum = constInfo.usedCoreNum;
-    constInfo.dBaseSize = 64;
-    uint32_t dBaseBlockNum = constInfo.headDim / constInfo.dBaseSize;
+    // mBaseSize 负载均衡启发式（沿用原 fused 调好的数值）：小 token 时按参与核数缩小基本块。
+    // dBaseBlockNum 仅用于推导参与核数（行并行下 D 不切分，但保留原数值保证 mBaseSize 调整行为不变）
+    uint32_t dBaseBlockNum = constInfo.headDim / 64;
     if (sameSeqUsed && mSize <= (constInfo.mBaseSize * (aiCoreNum / dBaseBlockNum))) {
-        if constexpr (COMP::coff == COFF::OVERLAP) {
-            if (constInfo.headDim == 128) {
-                dBaseBlockNum = 8;
-            } else if (constInfo.headDim == 512) {
-                dBaseBlockNum = 16;
-            }
-        } else {
-            if (constInfo.headDim == 128) {
-                dBaseBlockNum = 8;
-            } else if (constInfo.headDim == 512) {
-                dBaseBlockNum = 16;
-            }
+        if (constInfo.headDim == 128) {
+            dBaseBlockNum = 8;
+        } else if (constInfo.headDim == 512) {
+            dBaseBlockNum = 16;
         }
         // 核数足够时, 修改才生效
         if (aiCoreNum >= dBaseBlockNum) {
-            constInfo.dBaseSize = constInfo.headDim / dBaseBlockNum;
-            // 开启全核
             uint32_t coreGroupNum = aiCoreNum / dBaseBlockNum;
             uint32_t newMBaseSize = (constInfo.batchSize + coreGroupNum - 1) / coreGroupNum * firstBatchSeqUsed;
             if (newMBaseSize > minMBaseSize && newMBaseSize < constInfo.mBaseSize) {
@@ -402,20 +372,10 @@ __aicore__ inline uint32_t CompressorEpilogueKernelPerf<COMP>::GetLoopTimes()
 template <typename COMP>
 __aicore__ inline void CompressorEpilogueKernelPerf<COMP>::CalcSplitCoreInfo()
 {
-    // 每核独占完整 D 维（行并行），无 D 方向切分：dBasicBlockNum=1，coreGroupNum=usedCoreNum
+    // 每核独占完整 D 维（行并行）：dBasicBlockNum=1，coreGroupNum=usedCoreNum，每核一组
     constInfo.dBasicBlockNum = 1;
     constInfo.coreGroupNum = constInfo.usedCoreNum;
-    constInfo.dIdx = 0;
-    // 当前组id
     constInfo.curGroupIdx = constInfo.aiCoreIdx;
-
-    constInfo.mm1ResSize = constInfo.mBaseSize * constInfo.headDim * constInfo.coreGroupNum;
-
-    uint32_t coff = (uint32_t)COMP::coff;
-    constInfo.mm1KvResSize = constInfo.mBaseSize * constInfo.headDim * coff;
-    constInfo.mm1ScoreResSize = constInfo.mBaseSize * constInfo.headDim * coff;
-    constInfo.vec1ResSize = 0;
-    constInfo.dbSize = 0;
 }
 
 template <typename COMP>

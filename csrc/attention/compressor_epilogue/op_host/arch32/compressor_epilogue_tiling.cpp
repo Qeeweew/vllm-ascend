@@ -199,18 +199,11 @@ ge::graphStatus CompressorEpilogueTiling::SetTemplateId()
 
 ge::graphStatus CompressorEpilogueTiling::SetInnerSplitInfo()
 {
-    innerSplitParams_->mBaseSize = 256; // 256:核间切分，M轴基本块大小
-    innerSplitParams_->dBaseSize = 128 / coff; // 128：核间切分，D轴基本块大小
+    // 行并行：每核独占完整 D 维，kernel 不再读 innerSplitParams.dBaseSize（仅保留 tiling 布局）
     if (context_->templateId == TemplateId::PERF) {
-        if (coff == 2) {
-            innerSplitParams_->mBaseSize = 128;
-        } else {
-            innerSplitParams_->mBaseSize = 256;
-        }
-        innerSplitParams_->dBaseSize = 64;
+        innerSplitParams_->mBaseSize = (coff == 2) ? 128 : 256;
     } else {
         innerSplitParams_->mBaseSize = 256; // 256:核间切分，M轴基本块大小
-        innerSplitParams_->dBaseSize = 128 / coff; // 128：核间切分，D轴基本块大小
     }
     // a5 由于loc更大, mBaseSize x 2
     // if (socVersion_ == platform_ascendc::SocVersion::ASCEND910_95) {

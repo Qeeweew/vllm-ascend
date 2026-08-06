@@ -46,27 +46,7 @@ __aicore__ inline T Trunc(T num, T rnd)
     return ((rnd) == 0) ? 0 : (((num) / (rnd) * (rnd)));
 }
 
-template <typename T>
-__aicore__ inline T FloorPow2(T num)
-{
-    if (num == 0) return 1;
-    for(uint32_t i = 1; i < sizeof(T) * 8; i <<= 1) {
-        num |= (num >> i);
-    }
-    return num - (num >> 1);
-}
 
-template <typename T>
-__aicore__ inline T CeilPow2(T num)
-{
-    if (num <= 1) return 1;
-    num --;
-    for(uint32_t i = 1; i < sizeof(T) * 8; i <<= 1) {
-        num |= (num >> i);
-    }
-    num ++;
-    return num;
-}
 
 enum class X_LAYOUT : std::uint8_t {
     BSH = static_cast<std::uint8_t>(0),
@@ -114,92 +94,29 @@ struct COMPType {
 };
 
 struct ConstInfo {
-    // 整个AICORE的任务信息, 左闭右开区间[ (bStart, s2Start), (bEnd, s2End) )
-    uint32_t bStart = 0U;
-    uint32_t sStart = 0U;
-    uint32_t bEnd = 0U;
-    uint32_t sEnd = 0U;
-
-    // 分核相关
+    // 分核相关（行并行：每核独占完整 D 维）
     uint32_t usedCoreNum = 0;
-    uint32_t dBaseSize = 0;
     uint32_t mBaseSize = 0;
-    uint32_t tcSize = 0;
-    uint32_t tcBaseSize = 0;
-    uint32_t tcBasicBlockNum = 0;
-    uint32_t dBasicBlockNum = 0;
+    uint32_t dBasicBlockNum = 1;
     uint32_t coreGroupNum = 0;
-    uint32_t singleCoreDealTcBasicNum = 0;
-    uint32_t dIdx = 0;
-    uint32_t bIdxOfLastTc = 0;
-    uint32_t sIdxOfLastTc = 0;
+    uint32_t curGroupIdx = 0;
+    uint32_t aiCoreIdx = 0;
 
     // shape及参数
     uint32_t batchSize = 0;
-    uint32_t hSize = 0;
-    uint32_t sSize = 0;
+    uint32_t sSize = 0;   // BSH 布局下 batch 内序列长度（GetSeqLength/GetScSize 使用）
     uint32_t headDim = 0;
     uint32_t ropeHeadDim = 0;
     uint32_t cmpRatio = 0;
     float normEps = 1e-6;
     float reciprocalD = 0;
 
-    uint32_t curGroupIdx = 0;
-    uint32_t tailGroupIdx = 0;
-    uint32_t tailBasicBlockNum = 0;
-    uint32_t realDealBasicBlockNum = 0;
-
     // pageAttention
     uint32_t blockNum = 0;
     uint32_t blockSize = 0;
     uint32_t maxBlockNumPerBatch = 0;
     uint64_t stateCacheStrideDim0 = 0;
-
-    // workSpace
-    uint32_t dbWorkspaceRatio = 1;
-    uint32_t mm1KvResSize = 0;
-    uint32_t mm1ScoreResSize = 0;
-    uint32_t vec1TailCacheSize = 0;
-    uint32_t vec1ResSize = 0;
-    uint32_t mm1ResSize = 0;    // 所有cube输出kv/score结果的总大小
-
-    uint32_t aiCoreIdx = 0;
-    uint32_t nSize = 0;
-
-    uint32_t dbSize = 0;
 };
-
-struct RunInfo {
-    bool isValid = false;
-    uint32_t cubeDbIdx = 0;         // kernel主循环索引
-
-    // 增加字段
-    uint32_t dealTcNum = 0;
-    // 右边相关信息
-    uint32_t bStart = 0;
-    uint32_t sStart = 0;
-    uint32_t dealSeqCnt = 0;
-    // 左边相关信息
-    uint32_t preBStart = 0;
-    uint32_t preSStart = 0;
-    uint32_t preDealSeqCnt  = 0;     // 左边需要处理的s大小
-    uint32_t preFirstSeqCnt = 0;    // 左边首块大小
-
-
-    uint32_t bEnd = 0;
-    uint32_t sEnd = 0;
-    uint32_t bStartSeqIdx = 0;
-    uint32_t bEndSeqIdx = 0;
-
-    // v2分核信息 sc是左闭右开
-    uint32_t scStart = 0;
-    uint32_t scEnd = 0;
-    uint32_t dealScSize = 0;
-
-    // vec1Res offset
-    uint64_t vec1ResOffset = 0;
-};
-
 struct Vec1RunInfo {
     // 当前基本块要处理的 token 区间（batch 起始 + 起点 sIdx）
     uint32_t bStart = 0;
@@ -208,34 +125,7 @@ struct Vec1RunInfo {
     uint32_t dealScSize = 0;
 };
 
-struct MSplitInfo {
-    uint32_t vecStartB = 0U;
-    uint32_t vecStartS = 0U;
-    uint32_t vecEndB = 0U;
-    uint32_t vecEndS = 0U;
-    uint32_t dealTcNum = 0U;
-    // vec1Res offset
-    uint64_t vec1StartOffset = 0;
-    uint64_t vec1ResOffset = 0;
-};
 
-struct BlockInfo {
-    __aicore__ inline BlockInfo(uint32_t bIdx, uint32_t sIdx, uint32_t dealSeqSize) :
-        bIdx(bIdx), sIdx(sIdx), dealSeqSize(dealSeqSize) {};
-    uint32_t bIdx = 0U;
-    uint32_t sIdx = 0U;
-    uint32_t dealSeqSize = 0;
-
-    uint32_t isFirst = true;
-    uint32_t bSeqUsed = 0U;
-    uint32_t bStartPos = 0U;
-    uint32_t headHolderSeqCnt = 0U;
-    uint32_t validSeqCnt = 0U;
-    uint32_t tailHolderSeqCnt = 0U;
-    uint32_t dealTcSize = 0U;
-    uint32_t tailValidSeqCnt = 0U;
-    uint32_t compressTcSize = 0U;
-};
 
 // BUFFER的字节数
 inline constexpr uint32_t BUFFER_SIZE_BYTE_32B = 32;

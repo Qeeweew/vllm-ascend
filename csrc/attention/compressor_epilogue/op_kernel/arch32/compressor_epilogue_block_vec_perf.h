@@ -91,7 +91,6 @@ private:
     __aicore__ inline uint32_t GetSeqUsed(uint32_t bIdx);
     __aicore__ inline uint32_t GetStartPos(uint32_t bIdx);
     __aicore__ inline uint32_t GetSeqLength(uint32_t bIdx);
-    __aicore__ inline uint32_t GetBsLength(uint32_t index);
     __aicore__ inline void CalcGlobalScStart(uint32_t bStart, uint32_t scStart, uint32_t bEnd, uint32_t scEnd,
                                              uint64_t &globalScStart);
     __aicore__ inline void UpdateOutputIdx(uint32_t &outputBStart, uint32_t &outputSStart, uint32_t &dealScSize,
@@ -172,16 +171,10 @@ private:
     __aicore__ inline void ReadState(const LocalTensor<T> &srcLocal, const GlobalTensor<T> &stateGm,
                                      const GlobalTensor<int32_t> &blockTableGm, const Vec1SliceInfo &sliceInfo,
                                      uint32_t dStartIdx, uint32_t dDealSize, uint32_t stateIdx);
-    uint32_t cmpRatio_ = 0U;
     uint32_t coff_ = 0U;
     uint32_t curStartPos_ = 0;
     uint32_t curActSeqLength_ = 0;
     uint32_t compressedCnt_ = 0;
-    uint32_t v1SplitSize_ = 0;
-    uint32_t v1ScLoopTimes_ = 0;
-    uint32_t v1DLoopTimes_ = 0;
-    uint32_t dealTcNum_ = 0;
-    bool apeIsLoad_ = false;
     bool isExistSeqUsed = false;
     bool isExistStartPos = false;
     // vec2
@@ -190,7 +183,6 @@ private:
     bool v2OutInited = false;  // 输出游标（BSH 布局）是否已按核起点初始化
     CompressorEpilogueTools<COMP> tools_;
     ConstInfo constInfo_ = {};
-    MSplitInfo mSplitInfo = {};
     GlobalTensor<int32_t> startPosGm_;
     GlobalTensor<int32_t> cuSeqlensGm_;
     GlobalTensor<int32_t> sequsedGm_;
@@ -203,10 +195,6 @@ private:
     GlobalTensor<X_T> cmpKvOutGm_;
 
     // ================================Local Buffer区====================================
-    // TBuf<TPosition::VECIN> mm1ResUb;
-    LocalTensor<T> mm1ResTensor;
-    LocalTensor<T> leftStateTensor;
-    LocalTensor<T> rightStateTensor;
     LocalTensor<T> normWeightUb;
     LocalTensor<T> apeUb;
     LocalTensor<uint32_t> gatherOffsetCastUb;
@@ -335,15 +323,6 @@ __aicore__ inline uint32_t CompressorEpilogueBlockVectorPerf<COMP>::GetSeqLength
     }
 }
 
-template <typename COMP>
-__aicore__ inline uint32_t CompressorEpilogueBlockVectorPerf<COMP>::GetBsLength(uint32_t index)
-{
-    if (COMP::xLayout == X_LAYOUT::TH) {
-        return cuSeqlensGm_.GetValue(index);
-    } else {
-        return index * constInfo_.sSize;
-    }
-}
 
 template <typename COMP>
 __aicore__ inline uint32_t CompressorEpilogueBlockVectorPerf<COMP>::GetScSize()
