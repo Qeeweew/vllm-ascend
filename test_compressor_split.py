@@ -70,13 +70,19 @@ def compare(tag, ref_out, ref_state, new_out, new_state, written_rows=None):
     # 输出行数 = min(T, T/r+B)，比实际写入行数多（未写行是未初始化内存，不可比）；只比写入行
     if written_rows is None:
         written_rows = ref_out.shape[0]
-    a, b = ref_out[:written_rows].float(), new_out[:written_rows].float()
-    diff = (a - b).abs()
-    rel = (diff / (a.abs() + 1e-3))
     # state: only compare written (non-zero) rows
     smask = ref_state.abs().sum(-1) > 0
     nmask = new_state.abs().sum(-1) > 0
     sdiff = (ref_state - new_state).abs()
+    if written_rows == 0:
+        # 该用例设计上不产生压缩行（如 decode 组未完成），仅比较 state 连续性
+        print(f"[{tag}] cmp_kv skipped (0 written rows by design) | "
+              f"state rows ref={smask.sum().item()} new={nmask.sum().item()} "
+              f"state_max_abs={sdiff.max().item():.4e}")
+        return
+    a, b = ref_out[:written_rows].float(), new_out[:written_rows].float()
+    diff = (a - b).abs()
+    rel = (diff / (a.abs() + 1e-3))
     print(f"[{tag}] cmp_kv written_rows={written_rows}/{ref_out.shape[0]} max_abs={diff.max().item():.4e} "
           f"mean_abs={diff.mean().item():.4e} rel>1%: {(rel > 0.01).float().mean().item():.4%} | "
           f"state rows ref={smask.sum().item()} new={nmask.sum().item()} "
