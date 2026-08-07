@@ -115,10 +115,6 @@ private:
     __aicore__ inline void DataCopyAlignUbToGm(const GlobalTensor<O> dstGm, const LocalTensor<O> srcLocal,
                                                uint32_t copyRowCount, uint32_t copyColCount, uint32_t srcSingleRowCount,
                                                uint32_t dstSingleRowCount);
-    template <typename O>
-    __aicore__ inline void DataCopyWithOutputQue(const GlobalTensor<O> dstGm, const LocalTensor<O> srcLocal,
-                                                 uint32_t copyRowCount, uint32_t copyColCount,
-                                                 uint32_t srcSingleRowCount, uint32_t dstSingleRowCount);
     __aicore__ inline void PadAlign(const LocalTensor<T> dstLocal, const LocalTensor<T> srcLocal,
                                     const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx, uint32_t dDealSize);
     template <bool IS_SCORE>
@@ -127,9 +123,13 @@ private:
                                    const GlobalTensor<int32_t> &blockTableGm,
                                    const Vec1RunInfo &info, const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx,
                                    uint32_t globalSeqIdx, uint32_t dDealSize);
-    __aicore__ inline void FromWokrSpaceToUb(const LocalTensor<T> &dstLocal, const GlobalTensor<X_T> &srcGm,
-                                             const Vec1SliceInfo &sliceInfo, const StatisticInfo &statisticInfo,
-                                             uint32_t dStartIdx, uint32_t dDealSize);
+    // 输入双缓冲：CopyInMm 只发射 GM->UB（MTE2），同步由 queue EnQue/DeQue 承担；
+    // CastMm 在 DeQue 之后执行纯 V 侧 Cast
+    __aicore__ inline void CopyInMm(const LocalTensor<T> &dstLocal, const GlobalTensor<X_T> &srcGm,
+                                    const Vec1SliceInfo &sliceInfo, const StatisticInfo &statisticInfo,
+                                    uint32_t dStartIdx, uint32_t dDealSize);
+    __aicore__ inline void CastMm(const LocalTensor<T> &dstLocal, const StatisticInfo &statisticInfo,
+                                  uint32_t dDealSize);
     __aicore__ inline void WriteToCacheState(const GlobalTensor<T> &state, const GlobalTensor<int32_t> &blockTableGm,
                                              const LocalTensor<T> &input, uint32_t batchIdx, uint32_t startSeqIdx,
                                              uint32_t endSeqIdx, uint32_t dStartIdx, uint32_t dDealSize, uint32_t stateIdx);
@@ -203,11 +203,10 @@ private:
     TBuf<TPosition::VECCALC> tmpBuff2;
     TBuf<TPosition::VECCALC> gatherOffsetBuf;
     TBuf<TPosition::VECCALC> apeBuf;
-    // in queue
-    TQue<QuePosition::VECIN, 1> inputQue1;
+    // in queue：score/kv 独立队列实现输入双缓冲（kv GM copy 与 score Cast/OverLap 重叠）
+    TQue<QuePosition::VECIN, 1> inputQueScore;
+    TQue<QuePosition::VECIN, 1> inputQueKv;
     TBuf<TPosition::VECIN> normWeightBuf;
-    // out queue
-    TQue<QuePosition::VECOUT, 1> outputQue1;
 };
 
 
@@ -257,22 +256,23 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::Init(
 template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::InitBuffers(TPipe *pipe)
 {
-    pipe->InitBuffer(inputQue1, 1, BUFFER_SIZE_BYTE_32K);
+    pipe->InitBuffer(inputQueScore, 1, BUFFER_SIZE_BYTE_32K);
+    pipe->InitBuffer(inputQueKv, 1, BUFFER_SIZE_BYTE_32K);
     pipe->InitBuffer(tmpBuff1, BUFFER_SIZE_BYTE_32K);
     pipe->InitBuffer(tmpBuff2, BUFFER_SIZE_BYTE_64K);
-    pipe->InitBuffer(outputQue1, 1, BUFFER_SIZE_BYTE_16K);
     pipe->InitBuffer(normWeightBuf, BUFFER_SIZE_BYTE_4K);
     pipe->InitBuffer(gatherOffsetBuf, BUFFER_SIZE_BYTE_1K);
-    pipe->InitBuffer(apeBuf, BUFFER_SIZE_BYTE_32K);
+    // ape 实际用量 coff*cmpRatio*dDealSize fp32 = 16KB（buf 按 UB 预算收缩）
+    pipe->InitBuffer(apeBuf, BUFFER_SIZE_BYTE_16K);
     normWeightUb = normWeightBuf.Get<T>();
     apeUb = apeBuf.Get<T>();
-    LocalTensor<X_T> normweightInUb = inputQue1.AllocTensor<X_T>();
+    LocalTensor<X_T> normweightInUb = inputQueScore.AllocTensor<X_T>();
     LocalTensor<int32_t> gatherOffsetUb = gatherOffsetBuf.Get<int32_t>();
     DataCopy(normweightInUb, normWeightGm_, constInfo_.headDim); // 获取normWeight，常驻
-    inputQue1.EnQue(normweightInUb);
-    inputQue1.DeQue<X_T>();
+    inputQueScore.EnQue(normweightInUb);
+    inputQueScore.DeQue<X_T>();
     Cast(normWeightUb, normweightInUb, RoundMode::CAST_NONE, constInfo_.headDim);
-    inputQue1.FreeTensor(normweightInUb);
+    inputQueScore.FreeTensor(normweightInUb);
     if constexpr (COMP::rotaryMode == CompressorEpilogue::ROTARY_MODE::INTERLEAVE) {
         SetGatherSrcOffset<float>(gatherOffsetUb, constInfo_.ropeHeadDim);
     }
@@ -335,7 +335,7 @@ template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInApe(const LocalTensor<T> &apeUb, uint32_t dStartIdx,
                                                                   uint32_t dDealSize)
 {
-    LocalTensor<T> apeUbTmp = inputQue1.AllocTensor<T>();
+    LocalTensor<T> apeUbTmp = inputQueScore.AllocTensor<T>();
 
     uint32_t copyRowCount = coff_ * constInfo_.cmpRatio;
     uint32_t copyColCount = dDealSize;
@@ -344,10 +344,10 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInApe(const 
 
     uint64_t gmOffset = dStartIdx;
     DataCopyAlignGmToUb(apeUbTmp, apeGm_[gmOffset], copyRowCount, copyColCount, srcSingleRowCount, dstSingleRowCount);
-    inputQue1.EnQue(apeUbTmp);
-    inputQue1.DeQue<T>();
+    inputQueScore.EnQue(apeUbTmp);
+    inputQueScore.DeQue<T>();
     DataCopy(apeUb, apeUbTmp, coff_ * dDealSize * constInfo_.cmpRatio);
-    inputQue1.FreeTensor(apeUbTmp);
+    inputQueScore.FreeTensor(apeUbTmp);
 }
 
 template <typename COMP>
@@ -465,36 +465,6 @@ CompressorEpilogueBlockVectorPerf<COMP>::DataCopyAlignUbToGm(const GlobalTensor<
     DataCopy(dstGm, srcLocal, intriParams);
 }
 
-template <typename COMP>
-template <typename O>
-__aicore__ inline void
-CompressorEpilogueBlockVectorPerf<COMP>::DataCopyWithOutputQue(const GlobalTensor<O> dstGm, const LocalTensor<O> srcLocal,
-                                                       uint32_t copyRowCount, uint32_t copyColCount,
-                                                       uint32_t srcSingleRowCount, uint32_t dstSingleRowCount)
-{
-    if (copyRowCount == 0) {
-        return;
-    }
-    uint32_t singleCopyRowCount = BUFFER_SIZE_BYTE_16K / (copyColCount * sizeof(O));
-    for (uint32_t rowCount = 0; rowCount < copyRowCount; rowCount += singleCopyRowCount) {
-        uint64_t srcOffset = rowCount * srcSingleRowCount;
-        uint64_t dstOffset = rowCount * dstSingleRowCount;
-        uint32_t curCopyRowCount = min(singleCopyRowCount, copyRowCount - rowCount);
-
-        LocalTensor<O> outputUb = outputQue1.AllocTensor<O>();
-
-        DataCopyAlignUbToUb(outputUb, srcLocal[srcOffset], curCopyRowCount, copyColCount, srcSingleRowCount,
-                            copyColCount);
-        PipeBarrier<PIPE_V>();
-
-        outputQue1.EnQue(outputUb);
-        outputQue1.DeQue<O>();
-
-        DataCopyAlignUbToGm(dstGm[dstOffset], outputUb, curCopyRowCount, copyColCount, copyColCount, dstSingleRowCount);
-
-        outputQue1.FreeTensor(outputUb);
-    }
-}
 
 template <typename COMP>
 __aicore__ inline void
@@ -586,9 +556,10 @@ CompressorEpilogueBlockVectorPerf<COMP>::OverLap(const LocalTensor<T> dstLocal, 
     WaitFlag<HardEvent::MTE2_V>(eventId_MTE2_V);
 }
 
+// CopyInMm：GM->UB 发射即返回（MTE2），数据就绪由 queue EnQue/DeQue 事件保证
 template <typename COMP>
-__aicore__ inline void
-CompressorEpilogueBlockVectorPerf<COMP>::FromWokrSpaceToUb(const LocalTensor<T> &dstLocal, const GlobalTensor<X_T> &srcGm,
+__aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInMm(const LocalTensor<T> &dstLocal,
+                                                   const GlobalTensor<X_T> &srcGm,
                                                    const Vec1SliceInfo &sliceInfo, const StatisticInfo &statisticInfo,
                                                    uint32_t dStartIdx, uint32_t dDealSize)
 {
@@ -602,15 +573,18 @@ CompressorEpilogueBlockVectorPerf<COMP>::FromWokrSpaceToUb(const LocalTensor<T> 
     // X_T 源数据暂存到 fp32 目标 buffer 的后半段（字节偏移 2N 起）：Cast 时写字节 4i 始终小于读字节 2N+2i（i < N），无重叠
     LocalTensor<X_T> stageUb = dstLocal[totalCnt / 2].template ReinterpretCast<X_T>();
     DataCopyAlignGmToUb(stageUb, srcGm[srcGmOffset], copyRowCount, copyColCount, constInfo_.headDim, copyColCount);
-    // 裸 DataCopy(MTE2) 与 Cast(V) 混用，显式同步
-    event_t eventIdMte2V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE2_V));
-    SetFlag<HardEvent::MTE2_V>(eventIdMte2V);
-    WaitFlag<HardEvent::MTE2_V>(eventIdMte2V);
+}
+
+// CastMm：GM->UB 数据已由 queue DeQue 保证就绪，纯 V 侧 Cast。末尾 PipeBarrier<PIPE_V> 排空 Cast；
+// buffer 复用（下块 stage copy 的 MTE2 写）由 queue Free 事件（V->MTE2）接管
+template <typename COMP>
+__aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CastMm(const LocalTensor<T> &dstLocal,
+                                                   const StatisticInfo &statisticInfo, uint32_t dDealSize)
+{
+    uint32_t totalCnt = statisticInfo.dealSeqCnt * coff_ * dDealSize;
+    LocalTensor<X_T> stageUb = dstLocal[totalCnt / 2].template ReinterpretCast<X_T>();
     Cast(dstLocal, stageUb, RoundMode::CAST_NONE, totalCnt);
-    // Cast(V) 读写的是整块队列 buffer（读后半段 stage、写全 buffer），而 buffer 复用方（下一块/kv 的
-    // stage copy，MTE2）经队列 Alloc 的 free 事件只保证 V 写完成，不保证 Cast 的读也排空。实测仅靠
-    // MTE2_V flag 仍偶发损坏（随机行），此处需真正排空再让 buffer 被复用
-    AscendC::PipeBarrier<PIPE_ALL>();
+    PipeBarrier<PIPE_V>();
 }
 
 
@@ -849,10 +823,17 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::OverLapScoreKv(
     Vec1SliceInfo &overLapSliceInfo = overLapSliceIterator.GetSlice();
 
     GlobalTensor<X_T> scoreMmGm = mmScoreGm_;
-    LocalTensor<T> scoreUb = inputQue1.AllocTensor<T>();
-    FromWokrSpaceToUb(scoreUb, scoreMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
-    inputQue1.EnQue(scoreUb);
-    inputQue1.DeQue<T>();
+    LocalTensor<T> scoreUb = inputQueScore.AllocTensor<T>();
+    CopyInMm(scoreUb, scoreMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
+    inputQueScore.EnQue(scoreUb);
+    // kv 的 GM copy 与 score 的 Cast/OverLap 重叠（输入双缓冲）：两个独立 queue，
+    // EnQue(score) 的 MTE2->V 事件在 score copy 之后、kv copy 之前，DeQue(score) 不等 kv copy
+    GlobalTensor<X_T> kvMmGm = mmKvGm_;
+    LocalTensor<T> kvUb = inputQueKv.AllocTensor<T>();
+    CopyInMm(kvUb, kvMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
+    inputQueKv.EnQue(kvUb);
+    inputQueScore.DeQue<T>();
+    CastMm(scoreUb, statisticInfo, dDealSize);
     overLapSliceIterator.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
     overLapSliceIterator.SetNeedDealTcSize(needDealTcSize);
     while (!overLapSliceIterator.IsEnd()) {
@@ -861,7 +842,7 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::OverLapScoreKv(
                       info, overLapSliceInfo, dStartIdx, originSliceInfo.dealedSeqCnt, dDealSize);
         overLapSliceIterator.IteratorSlice();
     }
-    inputQue1.FreeTensor(scoreUb);
+    inputQueScore.FreeTensor(scoreUb);
 
     if constexpr (COMP::coff == COFF::OVERLAP) {
         // 原算子此处门控 (!isCoreRowFirst || !isCoreLoopFirst)：该情形下左半行来自 cacheTc（已含 ape）。
@@ -871,12 +852,8 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::OverLapScoreKv(
         }
     }
 
-    GlobalTensor<X_T> kvMmGm = mmKvGm_;
-    LocalTensor<T> kvUb = inputQue1.AllocTensor<T>();
-    FromWokrSpaceToUb(kvUb, kvMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
-
-    inputQue1.EnQue(kvUb);
-    inputQue1.DeQue<T>();
+    inputQueKv.DeQue<T>();
+    CastMm(kvUb, statisticInfo, dDealSize);
     overLapSliceIterator.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
     overLapSliceIterator.SetNeedDealTcSize(needDealTcSize);
     while (!overLapSliceIterator.IsEnd()) {
@@ -885,7 +862,7 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::OverLapScoreKv(
                        dStartIdx, originSliceInfo.dealedSeqCnt, dDealSize);
         overLapSliceIterator.IteratorSlice();
     }
-    inputQue1.FreeTensor(kvUb);
+    inputQueKv.FreeTensor(kvUb);
     PipeBarrier<PIPE_V>();
 }
 
@@ -1076,12 +1053,12 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::SingleCalRope(co
     uint32_t computeSize = curDealScSize * constInfo_.ropeHeadDim;
     uint64_t SinCosOffset = globalScStart * constInfo_.ropeHeadDim;
     // sin/cos each reserves 16KB so fp32 rope can use the same compute tile.
-    LocalTensor<ROPE_T> cosUb = inputQue1.AllocTensor<ROPE_T>();
+    LocalTensor<ROPE_T> cosUb = inputQueScore.AllocTensor<ROPE_T>();
     LocalTensor<ROPE_T> sinUb = cosUb[BUFFER_SIZE_BYTE_16K / sizeof(ROPE_T)];
     DataCopy(cosUb, ropeCosGm_[SinCosOffset], computeSize);
     DataCopy(sinUb, ropeSinGm_[SinCosOffset], computeSize);
-    inputQue1.EnQue(sinUb);
-    inputQue1.DeQue<ROPE_T>();
+    inputQueScore.EnQue(sinUb);
+    inputQueScore.DeQue<ROPE_T>();
 
     LocalTensor<T> ropeCosFp32Local = tmpBuff2.Get<T>();
     LocalTensor<T> ropeSinFp32Local = ropeCosFp32Local[BUFFER_SIZE_BYTE_16K / sizeof(T)].template ReinterpretCast<T>();
@@ -1095,7 +1072,7 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::SingleCalRope(co
         Cast(ropeSinFp32Local, sinUb, RoundMode::CAST_NONE, computeSize);
     }
     PipeBarrier<PIPE_V>();
-    inputQue1.FreeTensor(sinUb);
+    inputQueScore.FreeTensor(sinUb);
     RotaryPosEmb<COMP::rotaryMode>(normResUb[rowCnt * constInfo_.headDim], normResUb[rowCnt * constInfo_.headDim],
                                    ropeCosFp32Local, ropeSinFp32Local, tempLocal, gatherOffsetCastUb, curDealScSize,
                                    constInfo_.ropeHeadDim, constInfo_.headDim,
@@ -1154,15 +1131,20 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::FinishCompressed
     rmsNormParams.col = constInfo_.headDim;
     RmsNorm(compressedUb, compressedUb, normWeightUb, tmpUb, rmsNormParams);
     PipeBarrier<PIPE_V>();
-    LocalTensor<X_T> outputUb = outputQue1.AllocTensor<X_T>();
+    // 输出 X_T 中转借用 tmpBuff2 前 16K（rope 临时区在 SingleCalRope 后已用完），省掉独立 output queue
+    LocalTensor<X_T> outputUb = tmpBuff2.Get<X_T>();
     // rope：sin/cos 按全局压缩行号取（与输出布局无关）
     SingleCalRope(outputUb, compressedUb, 0, scCnt, compressedCnt_);
     Cast(outputUb, compressedUb, RoundMode::CAST_RINT, scCnt * constInfo_.headDim);
     PipeBarrier<PIPE_V>();
-    outputQue1.EnQue(outputUb);
-    outputQue1.DeQue<X_T>();
+    // 裸 buffer：V->MTE3 / MTE3->V 显式同步（替代原 outputQue1 的 EnQue/DeQue/Free）
+    event_t eventIdVMte3 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE3));
+    SetFlag<HardEvent::V_MTE3>(eventIdVMte3);
+    WaitFlag<HardEvent::V_MTE3>(eventIdVMte3);
     CopyFinalResultOut(outputUb, scCnt);
-    outputQue1.FreeTensor(outputUb);
+    event_t eventIdMte3V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_V));
+    SetFlag<HardEvent::MTE3_V>(eventIdMte3V);
+    WaitFlag<HardEvent::MTE3_V>(eventIdMte3V);
 }
 
 template <typename COMP>
