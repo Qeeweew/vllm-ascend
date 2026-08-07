@@ -117,12 +117,24 @@ private:
                                                uint32_t dstSingleRowCount);
     __aicore__ inline void PadAlign(const LocalTensor<T> dstLocal, const LocalTensor<T> srcLocal,
                                     const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx, uint32_t dDealSize);
+    // copy / 计算严格分离的 helper（同步 flag 一律在主流程）：
     template <bool IS_SCORE>
-    __aicore__ inline void OverLap(const LocalTensor<T> dstLocal, const LocalTensor<T> srcLocal,
-                                   const GlobalTensor<X_T> &srcGm, const GlobalTensor<T> &stateGm,
-                                   const GlobalTensor<int32_t> &blockTableGm,
-                                   const Vec1RunInfo &info, const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx,
-                                   uint32_t globalSeqIdx, uint32_t dDealSize);
+    __aicore__ inline void CopyInState(const LocalTensor<T> &dstLocal, const GlobalTensor<T> &stateGm,
+                                       const GlobalTensor<int32_t> &blockTableGm, const Vec1SliceInfo &sliceInfo,
+                                       uint32_t dStartIdx, uint32_t dDealSize, uint32_t stateIdx);
+    template <bool IS_SCORE>
+    __aicore__ inline void FillFirstBlock(const LocalTensor<T> &dstLocal, const Vec1SliceInfo &sliceInfo,
+                                          uint32_t dDealSize);
+    __aicore__ inline void CopyInHistoryGm(const LocalTensor<T> dstLocal, const GlobalTensor<X_T> &srcGm,
+                                           const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx, uint32_t dDealSize);
+    template <bool IS_SCORE>
+    __aicore__ inline void CastHistoryGm(const LocalTensor<T> dstLocal, const Vec1SliceInfo &sliceInfo,
+                                         uint32_t dDealSize);
+    template <bool IS_SCORE>
+    __aicore__ inline void CopyHistoryUb(const LocalTensor<T> dstLocal, const LocalTensor<T> srcLocal,
+                                         const Vec1SliceInfo &sliceInfo, uint32_t dDealSize);
+    __aicore__ inline void CopyInRopeCosSin(uint32_t globalScStart, uint32_t curDealScSize);
+    __aicore__ inline void CalRope(const LocalTensor<T> &normResUb, uint32_t rowCnt, uint32_t curDealScSize);
     // 输入双缓冲：CopyInMm 只发射 GM->UB（MTE2），同步由 queue EnQue/DeQue 承担；
     // CastMm 在 DeQue 之后执行纯 V 侧 Cast
     __aicore__ inline void CopyInMm(const LocalTensor<T> &dstLocal, const GlobalTensor<X_T> &srcGm,
@@ -137,10 +149,6 @@ private:
                                               const GlobalTensor<int32_t> &blockTableGm, uint32_t batchIdx,
                                               uint32_t startSeqIdx, uint32_t endSeqIdx, uint32_t dStartIdx,
                                               uint32_t dDealSize, uint32_t stateIdx);
-    __aicore__ inline void LoadFromWorkSpace(const LocalTensor<T> dstLocal,
-                                             const GlobalTensor<X_T> &srcGm, const LocalTensor<T> srcLocal,
-                                             const Vec1SliceInfo &sliceInfo,
-                                             uint32_t dStartIdx, uint32_t dDealSize);
     __aicore__ inline void SoftmaxDN(const LocalTensor<T> &scoreLocal, const LocalTensor<T> &tmpUb, uint32_t tcDealSize,
                                      uint32_t dDealSize);
     __aicore__ inline void KvMulReduceScore(const LocalTensor<T> &kvLocal, const LocalTensor<T> &scoreLocal,
@@ -151,26 +159,18 @@ private:
                                           const StatisticInfo &statisticInfo,
                                           const Vec1SliceInfo &originSliceInfo, uint32_t dStartIdx, uint32_t dDealSize,
                                           uint32_t dBaseSize, uint32_t needDealTcSize);
-    __aicore__ inline void FinishCompressedRows(const LocalTensor<T> &compressedUb, uint32_t scCnt,
-                                                const LocalTensor<T> &tmpUb);
     __aicore__ inline void CalcGroupInfo(const Vec1RunInfo &info, Vec1SplitInfo &splitInfo);
     __aicore__ inline void CalcTaskDistribution(const Vec1RunInfo &info, Vec1SplitInfo &splitInfo);
     __aicore__ inline void UpdateIteratorState(const Vec1RunInfo &info, Vec1SplitInfo &splitInfo);
     __aicore__ inline void CalcTilingStrategy(Vec1SplitInfo &splitInfo);
     __aicore__ inline Vec1SplitInfo SplitCoreV1(const Vec1RunInfo &info);
     __aicore__ inline void CopyFinalResultOut(const LocalTensor<X_T> &cmpKvOutUb, uint32_t dealRowCount);
-    __aicore__ inline void SingleCalRope(const LocalTensor<X_T> &outputUb, const LocalTensor<T> &normResUb,
-                                         uint32_t rowCnt, uint32_t curDealScSize, uint32_t globalScStart);
     __aicore__ inline void SaveState(const LocalTensor<T> &srcLocal, const GlobalTensor<T> &stateGm,
                                      const GlobalTensor<int32_t> &blockTableGm, const Vec1SliceInfo &sliceInfo,
                                      uint32_t dStartIdx, uint32_t dDealSize, uint32_t stateIdx);
     template <bool IS_SCORE>
     __aicore__ inline void DuplicateFirstBlock(const LocalTensor<T> &dstLocal, uint32_t duplicateRowCount,
                                                uint32_t duplicateColCount, uint32_t singleRowCount);
-    template <bool IS_SCORE>
-    __aicore__ inline void ReadState(const LocalTensor<T> &srcLocal, const GlobalTensor<T> &stateGm,
-                                     const GlobalTensor<int32_t> &blockTableGm, const Vec1SliceInfo &sliceInfo,
-                                     uint32_t dStartIdx, uint32_t dDealSize, uint32_t stateIdx);
     uint32_t coff_ = 0U;
     uint32_t curStartPos_ = 0;
     uint32_t curActSeqLength_ = 0;
@@ -203,9 +203,17 @@ private:
     TBuf<TPosition::VECCALC> tmpBuff2;
     TBuf<TPosition::VECCALC> gatherOffsetBuf;
     TBuf<TPosition::VECCALC> apeBuf;
-    // in queue：score/kv 独立队列实现输入双缓冲（kv GM copy 与 score Cast/OverLap 重叠）
-    TQue<QuePosition::VECIN, 1> inputQueScore;
-    TQue<QuePosition::VECIN, 1> inputQueKv;
+    TBuf<TPosition::VECCALC> ropeBuf; // rope cos/sin 中转（copy in 阶段就绪，计算阶段使用）
+    // in buffer：score/kv 独立 buffer 实现输入双缓冲（kv GM copy 与 score Cast/OverLap 重叠）。
+    // 同步用常驻 event id（InitBuffers 一次性 Fetch）：MTE2_V = GM copy 就绪；V_MTE2 = buffer 复用保护
+    TBuf<TPosition::VECIN> inBufScore;
+    TBuf<TPosition::VECIN> inBufKv;
+    // 常驻同步事件 id：InitBuffers 一次性 Fetch，热路径只允许 SetFlag/WaitFlag。
+    // 每类 pipe 方向一个 id，Set 在 producer 后 / Wait 在 consumer 前严格交替（allocate 时预 Set，结束 Wait 释放）
+    event_t evMte2V_;   // MTE2 copy 完成 -> V 可读（本轮所有 copy in 统一发射、统一等待）
+    event_t evVMte2_;   // V 用完 buffer -> 允许 MTE2 覆盖写（轮末 Set，下轮 copy in 前 Wait）
+    event_t evMte3V_;   // MTE3（SaveState/输出）读 buffer 完成 -> V 可覆盖写（轮末 Set/Wait 紧贴）
+    event_t evVMte3_;   // V（cast/add ape/输出 cast）完成 -> MTE3 可读/写（块内 Set/Wait）
     TBuf<TPosition::VECIN> normWeightBuf;
 };
 
@@ -256,23 +264,28 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::Init(
 template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::InitBuffers(TPipe *pipe)
 {
-    pipe->InitBuffer(inputQueScore, 1, BUFFER_SIZE_BYTE_32K);
-    pipe->InitBuffer(inputQueKv, 1, BUFFER_SIZE_BYTE_32K);
+    pipe->InitBuffer(inBufScore, BUFFER_SIZE_BYTE_32K);
+    pipe->InitBuffer(inBufKv, BUFFER_SIZE_BYTE_32K);
     pipe->InitBuffer(tmpBuff1, BUFFER_SIZE_BYTE_32K);
     pipe->InitBuffer(tmpBuff2, BUFFER_SIZE_BYTE_64K);
     pipe->InitBuffer(normWeightBuf, BUFFER_SIZE_BYTE_4K);
     pipe->InitBuffer(gatherOffsetBuf, BUFFER_SIZE_BYTE_1K);
     // ape 实际用量 coff*cmpRatio*dDealSize fp32 = 16KB（buf 按 UB 预算收缩）
     pipe->InitBuffer(apeBuf, BUFFER_SIZE_BYTE_16K);
+    pipe->InitBuffer(ropeBuf, BUFFER_SIZE_BYTE_4K);
     normWeightUb = normWeightBuf.Get<T>();
     apeUb = apeBuf.Get<T>();
-    LocalTensor<X_T> normweightInUb = inputQueScore.AllocTensor<X_T>();
+    evMte2V_ = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE2_V));
+    evVMte2_ = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE2));
+    evMte3V_ = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_V));
+    evVMte3_ = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE3));
+    LocalTensor<X_T> normweightInUb = inBufScore.Get<X_T>();
     LocalTensor<int32_t> gatherOffsetUb = gatherOffsetBuf.Get<int32_t>();
     DataCopy(normweightInUb, normWeightGm_, constInfo_.headDim); // 获取normWeight，常驻
-    inputQueScore.EnQue(normweightInUb);
-    inputQueScore.DeQue<X_T>();
+    SetFlag<HardEvent::MTE2_V>(evMte2V_);
+    WaitFlag<HardEvent::MTE2_V>(evMte2V_);
     Cast(normWeightUb, normweightInUb, RoundMode::CAST_NONE, constInfo_.headDim);
-    inputQueScore.FreeTensor(normweightInUb);
+
     if constexpr (COMP::rotaryMode == CompressorEpilogue::ROTARY_MODE::INTERLEAVE) {
         SetGatherSrcOffset<float>(gatherOffsetUb, constInfo_.ropeHeadDim);
     }
@@ -335,19 +348,15 @@ template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInApe(const LocalTensor<T> &apeUb, uint32_t dStartIdx,
                                                                   uint32_t dDealSize)
 {
-    LocalTensor<T> apeUbTmp = inputQueScore.AllocTensor<T>();
-
     uint32_t copyRowCount = coff_ * constInfo_.cmpRatio;
     uint32_t copyColCount = dDealSize;
     uint32_t dstSingleRowCount = dDealSize;
     uint32_t srcSingleRowCount = constInfo_.headDim;
 
     uint64_t gmOffset = dStartIdx;
-    DataCopyAlignGmToUb(apeUbTmp, apeGm_[gmOffset], copyRowCount, copyColCount, srcSingleRowCount, dstSingleRowCount);
-    inputQueScore.EnQue(apeUbTmp);
-    inputQueScore.DeQue<T>();
-    DataCopy(apeUb, apeUbTmp, coff_ * dDealSize * constInfo_.cmpRatio);
-    inputQueScore.FreeTensor(apeUbTmp);
+    // 直通：GM->apeUb 直接 strided 落入（8 行×512 fp32 连续，dstGap=0），省掉中转与 16K UbToUb。
+    // 纯 copy：复用保护与就绪同步 flag 均在调用处（主流程）
+    DataCopyAlignGmToUb(apeUb, apeGm_[gmOffset], copyRowCount, copyColCount, srcSingleRowCount, dstSingleRowCount);
 }
 
 template <typename COMP>
@@ -505,57 +514,6 @@ CompressorEpilogueBlockVectorPerf<COMP>::PadAlign(const LocalTensor<T> dstLocal,
 }
 
 
-template <typename COMP>
-template <bool IS_SCORE>
-__aicore__ inline void
-CompressorEpilogueBlockVectorPerf<COMP>::OverLap(const LocalTensor<T> dstLocal, const LocalTensor<T> srcLocal,
-                                         const GlobalTensor<X_T> &srcGm, const GlobalTensor<T> &stateGm,
-                                         const GlobalTensor<int32_t> &blockTableGm,
-                                         const Vec1RunInfo &info, const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx,
-                                         uint32_t globalSeqIdx, uint32_t dDealSize)
-{
-    if (sliceInfo.dealTcSize == 0) {
-        return;
-    }
-
-    if constexpr (IS_SCORE) {
-        AddApeToScore(srcLocal, apeUb, sliceInfo, dDealSize);
-        PipeBarrier<PIPE_V>();
-    }
-    // srcLocal 的最终生产者是 V pipe（Cast/AddApe），SaveState 的中转 copy（UB->UB/UB->GM）与后续
-    // ReadState/PadAlign（MTE2 写 dstLocal）都会读/写相关 UB。实测去掉此屏障最后一个 slice 的窗口
-    // 确定性损坏（state 正常但输出错），必须在此排空 V 后再进入窗口装配（保留原算子的 V_MTE2 对亦不足）
-    AscendC::PipeBarrier<PIPE_ALL>();
-    SaveState(srcLocal, stateGm, blockTableGm, sliceInfo, dStartIdx, dDealSize, static_cast<uint32_t>(IS_SCORE));
-    // SaveState 直通 UbToGm：MTE3 读 srcLocal 本段区，与后续 PadAlign（V 写窗口区，score 分支与 srcLocal
-    // 同 buffer 重叠）及 LoadFromWorkSpace/下个基本块 stage copy（MTE2 写）存在竞争，此处排空 MTE3。
-    // 注意：两个 WaitFlag 必须与 SetFlag 在同一位置成对出现（延后 Wait 曾因 flag 配对错乱死锁）
-    event_t eventIdMte3V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_V));
-    SetFlag<HardEvent::MTE3_V>(eventIdMte3V);
-    WaitFlag<HardEvent::MTE3_V>(eventIdMte3V);
-    event_t eventIdMte3Mte2 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_MTE2));
-    SetFlag<HardEvent::MTE3_MTE2>(eventIdMte3Mte2);
-    WaitFlag<HardEvent::MTE3_MTE2>(eventIdMte3Mte2);
-
-    event_t eventId_V_MTE2 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE2));
-    SetFlag<HardEvent::V_MTE2>(eventId_V_MTE2);
-    WaitFlag<HardEvent::V_MTE2>(eventId_V_MTE2);
-    ReadState<IS_SCORE>(dstLocal, stateGm, blockTableGm, sliceInfo, dStartIdx, dDealSize, static_cast<uint32_t>(IS_SCORE));
-
-    if (sliceInfo.compressTcSize > 0) {
-        PadAlign(dstLocal, srcLocal, sliceInfo, dStartIdx, dDealSize);
-        if constexpr (COMP::coff == COFF::OVERLAP) {
-            event_t eventId_MTE3_MTE2 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_MTE2));
-            SetFlag<HardEvent::MTE3_MTE2>(eventId_MTE3_MTE2);
-            WaitFlag<HardEvent::MTE3_MTE2>(eventId_MTE3_MTE2);
-            LoadFromWorkSpace(dstLocal, srcGm, srcLocal, sliceInfo, dStartIdx, dDealSize);
-        }
-    }
-    event_t eventId_MTE2_V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE2_V));
-    SetFlag<HardEvent::MTE2_V>(eventId_MTE2_V);
-    WaitFlag<HardEvent::MTE2_V>(eventId_MTE2_V);
-}
-
 // CopyInMm：GM->UB 发射即返回（MTE2），数据就绪由 queue EnQue/DeQue 事件保证
 template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInMm(const LocalTensor<T> &dstLocal,
@@ -588,46 +546,71 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CastMm(const Loc
 }
 
 
+// CopyInHistoryGm：窗口左半（本 call 前驱行）从用户 mm GM 直接拷到窗口行后半（纯 copy，同步在主流程）
 template <typename COMP>
 __aicore__ inline void
-CompressorEpilogueBlockVectorPerf<COMP>::LoadFromWorkSpace(const LocalTensor<T> dstLocal,
-                                                   const GlobalTensor<X_T> &srcGm, const LocalTensor<T> srcLocal,
-                                                   const Vec1SliceInfo &sliceInfo,
-                                                   uint32_t dStartIdx, uint32_t dDealSize)
+CompressorEpilogueBlockVectorPerf<COMP>::CopyInHistoryGm(const LocalTensor<T> dstLocal, const GlobalTensor<X_T> &srcGm,
+                                                         const Vec1SliceInfo &sliceInfo, uint32_t dStartIdx,
+                                                         uint32_t dDealSize)
 {
-    if (sliceInfo.sIdx == 0) {
+    if (sliceInfo.sIdx == 0 || !sliceInfo.isFirst) {
         return;
     }
     uint32_t dstSingleRowElemNum = dDealSize * coff_;
     uint32_t copyRowCount = min(sliceInfo.sIdx, constInfo_.cmpRatio);
     uint64_t dstLocalOffset =
         (sliceInfo.compressor_epilogueedScCnt * constInfo_.cmpRatio + constInfo_.cmpRatio - copyRowCount) * dstSingleRowElemNum;
-    if (sliceInfo.isFirst) { // 从用户 mm GM 中获取（本 call 前驱行，跨基本块/跨 tc 块同样适用）
-        uint64_t srcRowBase = (uint64_t)tools_.GetTIdxByBatch(sliceInfo.bIdx) + sliceInfo.sIdx - copyRowCount;
-        uint64_t srcGmOffset = srcRowBase * coff_ * constInfo_.headDim + dStartIdx;
-        // 目标行本身即 fp32 区域（每行 4*dDealSize 字节）：X_T 数据直接拷到每行后半段（2*dDealSize 字节起），
-        // 再逐行原地前向 Cast：写字节 4i < 读字节 2*dDealSize+2i（i < dDealSize），互不覆盖，
-        // 无需中转 buffer，对任意 dDealSize（16~512）安全
-        constexpr uint32_t X_T_PER_T = sizeof(T) / sizeof(X_T); // 一个 fp32 位宽容纳的 X_T 个数
-        LocalTensor<X_T> dstX = dstLocal.template ReinterpretCast<X_T>();
-        // 注意 GM 行 stride 是 coff_*headDim（每 token 一行，只取 coff0 半边作为窗口 D_L），
-        // 与 FromWokrSpaceToUb 的 coff 交错读（stride=headDim）不同
-        DataCopyAlignGmToUb(dstX[X_T_PER_T * dstLocalOffset + dDealSize], srcGm[srcGmOffset], copyRowCount,
-                            dDealSize, coff_ * constInfo_.headDim, X_T_PER_T * coff_ * dDealSize);
-        // 裸 GM copy(MTE2) 与 Cast(V) 混用，显式同步
-        event_t eventIdMte2V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE2_V));
-        SetFlag<HardEvent::MTE2_V>(eventIdMte2V);
-        WaitFlag<HardEvent::MTE2_V>(eventIdMte2V);
-        for (uint32_t r = 0; r < copyRowCount; r++) {
-            uint32_t rowOffset = dstLocalOffset + r * coff_ * dDealSize;
-            Cast(dstLocal[rowOffset], dstX[X_T_PER_T * rowOffset + dDealSize], RoundMode::CAST_NONE, dDealSize);
-        }
-    } else { // 从UB中获取
-        uint32_t srcSingleRowElemNum = dDealSize * coff_;
-        uint64_t srcLocalOffset = (sliceInfo.dealedSeqCnt - copyRowCount) * srcSingleRowElemNum;
-        DataCopyAlignUbToUb(dstLocal[dstLocalOffset], srcLocal[srcLocalOffset], copyRowCount, dDealSize,
-                            coff_ * dDealSize, coff_ * dDealSize);
+    uint64_t srcRowBase = (uint64_t)tools_.GetTIdxByBatch(sliceInfo.bIdx) + sliceInfo.sIdx - copyRowCount;
+    uint64_t srcGmOffset = srcRowBase * coff_ * constInfo_.headDim + dStartIdx;
+    // X_T 数据直接拷到每行后半段（2*dDealSize 字节起），计算阶段逐行原地前向 Cast：
+    // 写字节 4i < 读字节 2*dDealSize+2i（i < dDealSize），互不覆盖，无需中转 buffer
+    constexpr uint32_t X_T_PER_T = sizeof(T) / sizeof(X_T); // 一个 fp32 位宽容纳的 X_T 个数
+    LocalTensor<X_T> dstX = dstLocal.template ReinterpretCast<X_T>();
+    // 注意 GM 行 stride 是 coff_*headDim（每 token 一行，只取 coff0 半边作为窗口 D_L），与 CopyInMm 的交错读不同
+    DataCopyAlignGmToUb(dstX[X_T_PER_T * dstLocalOffset + dDealSize], srcGm[srcGmOffset], copyRowCount,
+                        dDealSize, coff_ * constInfo_.headDim, X_T_PER_T * coff_ * dDealSize);
+}
+
+// CastHistoryGm：CopyInHistoryGm 的就绪数据逐行原地 Cast（纯计算）
+template <typename COMP>
+template <bool IS_SCORE>
+__aicore__ inline void
+CompressorEpilogueBlockVectorPerf<COMP>::CastHistoryGm(const LocalTensor<T> dstLocal, const Vec1SliceInfo &sliceInfo,
+                                                       uint32_t dDealSize)
+{
+    if (sliceInfo.sIdx == 0 || !sliceInfo.isFirst) {
+        return;
     }
+    uint32_t dstSingleRowElemNum = dDealSize * coff_;
+    uint32_t copyRowCount = min(sliceInfo.sIdx, constInfo_.cmpRatio);
+    uint64_t dstLocalOffset =
+        (sliceInfo.compressor_epilogueedScCnt * constInfo_.cmpRatio + constInfo_.cmpRatio - copyRowCount) * dstSingleRowElemNum;
+    constexpr uint32_t X_T_PER_T = sizeof(T) / sizeof(X_T);
+    LocalTensor<X_T> dstX = dstLocal.template ReinterpretCast<X_T>();
+    for (uint32_t r = 0; r < copyRowCount; r++) {
+        uint32_t rowOffset = dstLocalOffset + r * coff_ * dDealSize;
+        Cast(dstLocal[rowOffset], dstX[X_T_PER_T * rowOffset + dDealSize], RoundMode::CAST_NONE, dDealSize);
+    }
+}
+
+// CopyHistoryUb：窗口左半从本段 UB（前驱行已 cast）装配（纯计算）
+template <typename COMP>
+template <bool IS_SCORE>
+__aicore__ inline void
+CompressorEpilogueBlockVectorPerf<COMP>::CopyHistoryUb(const LocalTensor<T> dstLocal, const LocalTensor<T> srcLocal,
+                                                       const Vec1SliceInfo &sliceInfo, uint32_t dDealSize)
+{
+    if (sliceInfo.sIdx == 0 || sliceInfo.isFirst) {
+        return;
+    }
+    uint32_t dstSingleRowElemNum = dDealSize * coff_;
+    uint32_t copyRowCount = min(sliceInfo.sIdx, constInfo_.cmpRatio);
+    uint64_t dstLocalOffset =
+        (sliceInfo.compressor_epilogueedScCnt * constInfo_.cmpRatio + constInfo_.cmpRatio - copyRowCount) * dstSingleRowElemNum;
+    uint32_t srcSingleRowElemNum = dDealSize * coff_;
+    uint64_t srcLocalOffset = (sliceInfo.dealedSeqCnt - copyRowCount) * srcSingleRowElemNum;
+    DataCopyAlignUbToUb(dstLocal[dstLocalOffset], srcLocal[srcLocalOffset], copyRowCount, dDealSize,
+                        coff_ * dDealSize, coff_ * dDealSize);
 }
 
 template <typename COMP>
@@ -680,8 +663,7 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::WriteToCacheStat
                                     remainRowCnt * 2 * coff_ * constInfo_.headDim +
                                     stateIdx * coff_ * constInfo_.headDim + dStartIdx;
             // 直通 UbToGm（srcGap 支持行 stride）：源行 stride = coff*dDealSize，跳过中转 UbToUb 与 queue 同步。
-            // V->MTE3 由调用侧（OverLap）SaveState 前的 PipeBarrier<PIPE_ALL> 保证；
-            // MTE3->后续 V/MTE2 由 OverLap 里 SaveState 后的 MTE3_V/MTE3_MTE2 flag 保证。
+            // V->MTE3 由主流程 SaveState 前的 V_MTE3 flag 保证；MTE3->V 由 SaveState 后的 MTE3_V flag 保证。
             DataCopyAlignUbToGm(state[stateOffset], input[copyFinishRowCnt * coff_ * dDealSize], copyRowCount,
                                 dDealSize, coff_ * dDealSize, coff_ * constInfo_.headDim * 2);
         }
@@ -731,10 +713,11 @@ CompressorEpilogueBlockVectorPerf<COMP>::DuplicateFirstBlock(const LocalTensor<T
 }
 
 
+// CopyInState：历史 state GM->UB（纯 copy，同步在主流程）；batch 首块的初值填充在计算阶段 FillFirstBlock
 template <typename COMP>
 template <bool IS_SCORE>
 __aicore__ inline void
-CompressorEpilogueBlockVectorPerf<COMP>::ReadState(const LocalTensor<T> &dstLocal, const GlobalTensor<T> &stateGm,
+CompressorEpilogueBlockVectorPerf<COMP>::CopyInState(const LocalTensor<T> &dstLocal, const GlobalTensor<T> &stateGm,
                                            const GlobalTensor<int32_t> &blockTableGm, const Vec1SliceInfo &sliceInfo,
                                            uint32_t dStartIdx, uint32_t dDealSize, uint32_t stateIdx)
 {
@@ -758,12 +741,6 @@ CompressorEpilogueBlockVectorPerf<COMP>::ReadState(const LocalTensor<T> &dstLoca
     // 填充左边
     if constexpr (COMP::coff == CompressorEpilogue::COFF::OVERLAP) {
         bool isFirst = sliceInfo.bStartPos + sliceInfo.sIdx < constInfo_.cmpRatio;
-        if (isFirst) {
-            // 无历史数据
-            // dDealSize必须为64
-            uint64_t dstBaseOffset = sliceInfo.compressor_epilogueedScCnt * constInfo_.cmpRatio * coff_ * dDealSize;
-            DuplicateFirstBlock<IS_SCORE>(dstLocal[dstBaseOffset], constInfo_.cmpRatio, dDealSize, coff_ * dDealSize);
-        }
         if (sliceInfo.sIdx < constInfo_.cmpRatio && (!isFirst || sliceInfo.compressTcSize > 1)) {
             uint32_t startSeqIdx =
                 sliceInfo.bStartPos < constInfo_.cmpRatio ?
@@ -779,6 +756,22 @@ CompressorEpilogueBlockVectorPerf<COMP>::ReadState(const LocalTensor<T> &dstLoca
             }
             ReadFromCacheState(dstLocal[dstBaseOffset], stateGm, blockTableGm, sliceInfo.bIdx, startSeqIdx, endSeqIdx,
                                dStartIdx, dDealSize, stateIdx);
+        }
+    }
+}
+
+// FillFirstBlock：batch 首块无历史，V 侧填充初值（score 填 SOFTMAX_MIN，kv 填 0）。纯计算
+template <typename COMP>
+template <bool IS_SCORE>
+__aicore__ inline void
+CompressorEpilogueBlockVectorPerf<COMP>::FillFirstBlock(const LocalTensor<T> &dstLocal, const Vec1SliceInfo &sliceInfo,
+                                                        uint32_t dDealSize)
+{
+    if constexpr (COMP::coff == CompressorEpilogue::COFF::OVERLAP) {
+        bool isFirst = sliceInfo.bStartPos + sliceInfo.sIdx < constInfo_.cmpRatio;
+        if (isFirst) {
+            uint64_t dstBaseOffset = sliceInfo.compressor_epilogueedScCnt * constInfo_.cmpRatio * coff_ * dDealSize;
+            DuplicateFirstBlock<IS_SCORE>(dstLocal[dstBaseOffset], constInfo_.cmpRatio, dDealSize, coff_ * dDealSize);
         }
     }
 }
@@ -811,6 +804,8 @@ CompressorEpilogueBlockVectorPerf<COMP>::KvMulReduceScore(const LocalTensor<T> &
     }
 }
 
+// OverLapScoreKv 主流程：copy in 统一发射 -> 统一等待 -> 计算（cast/add ape/save state/窗口装配）
+// 同步 flag 全部在此（helper 内零 flag）：轮末 MTE3_V + V_MTE2 紧贴自同步（Wait 挂在 MTE2/V 队列尾部）
 template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::OverLapScoreKv(
     const LocalTensor<T> &scoreLocal, const LocalTensor<T> &kvLocal, const Vec1RunInfo &info,
@@ -818,52 +813,124 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::OverLapScoreKv(
     const Vec1SliceInfo &originSliceInfo, uint32_t dStartIdx, uint32_t dDealSize, uint32_t dBaseSize,
     uint32_t needDealTcSize)
 {
-    CompressorEpilogueVec1SliceIterator overLapSliceIterator(tools_);
-    overLapSliceIterator.SetMaxBatchSize(constInfo_.batchSize);
-    Vec1SliceInfo &overLapSliceInfo = overLapSliceIterator.GetSlice();
+    CompressorEpilogueVec1SliceIterator iter(tools_);
+    iter.SetMaxBatchSize(constInfo_.batchSize);
+    Vec1SliceInfo &slice = iter.GetSlice();
 
     GlobalTensor<X_T> scoreMmGm = mmScoreGm_;
-    LocalTensor<T> scoreUb = inputQueScore.AllocTensor<T>();
-    CopyInMm(scoreUb, scoreMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
-    inputQueScore.EnQue(scoreUb);
-    // kv 的 GM copy 与 score 的 Cast/OverLap 重叠（输入双缓冲）：两个独立 queue，
-    // EnQue(score) 的 MTE2->V 事件在 score copy 之后、kv copy 之前，DeQue(score) 不等 kv copy
     GlobalTensor<X_T> kvMmGm = mmKvGm_;
-    LocalTensor<T> kvUb = inputQueKv.AllocTensor<T>();
-    CopyInMm(kvUb, kvMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
-    inputQueKv.EnQue(kvUb);
-    inputQueScore.DeQue<T>();
-    CastMm(scoreUb, statisticInfo, dDealSize);
-    overLapSliceIterator.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
-    overLapSliceIterator.SetNeedDealTcSize(needDealTcSize);
-    while (!overLapSliceIterator.IsEnd()) {
-        overLapSliceIterator.GetSlice();
-        OverLap<true>(scoreLocal, scoreUb, scoreMmGm, stateCacheGm_, stateBlockTableGm_,
-                      info, overLapSliceInfo, dStartIdx, originSliceInfo.dealedSeqCnt, dDealSize);
-        overLapSliceIterator.IteratorSlice();
-    }
-    inputQueScore.FreeTensor(scoreUb);
+    LocalTensor<T> scoreUb = inBufScore.Get<T>();
+    LocalTensor<T> kvUb = inBufKv.Get<T>();
 
+    // ==================== copy in：本轮所有 copy 一次发射 ====================
+    // buffer 复用保护由上一轮末尾的紧贴 MTE3_V->V_MTE2 传递链承担（下轮 copy 排在 MTE2 队列的 Wait 后）
+    CopyInMm(scoreUb, scoreMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
+    CopyInMm(kvUb, kvMmGm, originSliceInfo, statisticInfo, dStartIdx, dDealSize);
+    // 历史 state + 历史 mm 左半（逐 slice 发射，helper 内部按 slice 条件自行跳过）
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        CopyInState<true>(scoreLocal, stateCacheGm_, stateBlockTableGm_, slice, dStartIdx, dDealSize, 1U);
+        if constexpr (COMP::coff == COFF::OVERLAP) {
+            CopyInHistoryGm(scoreLocal, scoreMmGm, slice, dStartIdx, dDealSize);
+        }
+        iter.IteratorSlice();
+    }
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        CopyInState<false>(kvLocal, stateCacheGm_, stateBlockTableGm_, slice, dStartIdx, dDealSize, 0U);
+        if constexpr (COMP::coff == COFF::OVERLAP) {
+            CopyInHistoryGm(kvLocal, kvMmGm, slice, dStartIdx, dDealSize);
+        }
+        iter.IteratorSlice();
+    }
+    // 本基本块 sc 行的 rope cos/sin
+    if (statisticInfo.compressor_epilogueScCnt > 0) {
+        CopyInRopeCosSin(compressedCnt_, statisticInfo.compressor_epilogueScCnt);
+    }
+    // ==================== 统一等待 ====================
+    SetFlag<HardEvent::MTE2_V>(evMte2V_);
+    WaitFlag<HardEvent::MTE2_V>(evMte2V_);
+
+    // ==================== 计算 ====================
+    // --- score：cast -> add ape -> (PIPE_V) -> save state(MTE3) + 窗口装配 ---
+    CastMm(scoreUb, statisticInfo, dDealSize);
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        if (slice.dealTcSize > 0) {
+            AddApeToScore(scoreUb, apeUb, slice, dDealSize);
+        }
+        iter.IteratorSlice();
+    }
+    // SaveState（MTE3 读 scoreUb）的源是 V（Cast/AddApe）写的：V->MTE3 pipe 间同步
+    SetFlag<HardEvent::V_MTE3>(evVMte3_);
+    WaitFlag<HardEvent::V_MTE3>(evVMte3_);
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        if (slice.dealTcSize > 0) {
+            SaveState(scoreUb, stateCacheGm_, stateBlockTableGm_, slice, dStartIdx, dDealSize, 1U);
+        }
+        iter.IteratorSlice();
+    }
+    // SaveState（MTE3 读 scoreUb）排空后再继续 V（保守，先求对再优化）
+    SetFlag<HardEvent::MTE3_V>(evMte3V_);
+    WaitFlag<HardEvent::MTE3_V>(evMte3V_);
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        if (slice.dealTcSize > 0 && slice.compressTcSize > 0) {
+            FillFirstBlock<true>(scoreLocal, slice, dDealSize);
+            if constexpr (COMP::coff == COFF::OVERLAP) {
+                CastHistoryGm<true>(scoreLocal, slice, dDealSize);
+                CopyHistoryUb<true>(scoreLocal, scoreUb, slice, dDealSize);
+            }
+            PadAlign(scoreLocal, scoreUb, slice, dStartIdx, dDealSize);
+        }
+        iter.IteratorSlice();
+    }
     if constexpr (COMP::coff == COFF::OVERLAP) {
-        // 原算子此处门控 (!isCoreRowFirst || !isCoreLoopFirst)：该情形下左半行来自 cacheTc（已含 ape）。
-        // 本算子左半行一律读裸 mm GM（不含 ape），只要 LoadFromWorkSpace 可能填了左半就必须补 ape
+        // 左半行来自裸 mm GM（不含 ape），CopyInHistoryGm 填过左半就必须补 ape
         if (originSliceInfo.sIdx != 0 && originSliceInfo.compressTcSize > 0) {
             AddSingleApeToScore(scoreLocal, apeUb, originSliceInfo, dDealSize);
         }
     }
-
-    inputQueKv.DeQue<T>();
-    CastMm(kvUb, statisticInfo, dDealSize);
-    overLapSliceIterator.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
-    overLapSliceIterator.SetNeedDealTcSize(needDealTcSize);
-    while (!overLapSliceIterator.IsEnd()) {
-        overLapSliceIterator.GetSlice();
-        OverLap<false>(kvLocal, kvUb, kvMmGm, stateCacheGm_, stateBlockTableGm_, info, overLapSliceInfo,
-                       dStartIdx, originSliceInfo.dealedSeqCnt, dDealSize);
-        overLapSliceIterator.IteratorSlice();
+    // --- kv：cast -> save state + 窗口装配 ---
+    CastMm(kvUb, statisticInfo, dDealSize); // 末尾自带 PIPE_V
+    SetFlag<HardEvent::V_MTE3>(evVMte3_);
+    WaitFlag<HardEvent::V_MTE3>(evVMte3_);
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        if (slice.dealTcSize > 0) {
+            SaveState(kvUb, stateCacheGm_, stateBlockTableGm_, slice, dStartIdx, dDealSize, 0U);
+        }
+        iter.IteratorSlice();
     }
-    inputQueKv.FreeTensor(kvUb);
-    PipeBarrier<PIPE_V>();
+    SetFlag<HardEvent::MTE3_V>(evMte3V_);
+    WaitFlag<HardEvent::MTE3_V>(evMte3V_);
+    iter.Reset(originSliceInfo.bIdx, originSliceInfo.sIdx, 0U, 0U);
+    iter.SetNeedDealTcSize(needDealTcSize);
+    while (!iter.IsEnd()) {
+        iter.GetSlice();
+        if (slice.dealTcSize > 0 && slice.compressTcSize > 0) {
+            FillFirstBlock<false>(kvLocal, slice, dDealSize);
+            if constexpr (COMP::coff == COFF::OVERLAP) {
+                CastHistoryGm<false>(kvLocal, slice, dDealSize);
+                CopyHistoryUb<false>(kvLocal, kvUb, slice, dDealSize);
+            }
+            PadAlign(kvLocal, kvUb, slice, dStartIdx, dDealSize);
+        }
+        iter.IteratorSlice();
+    }
 }
 
 template <typename COMP>
@@ -884,15 +951,38 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::DealVec1BaseBloc
                    dDealSize, dBaseSize, needDealTcSize);
 
     if (statisticInfo.compressor_epilogueScCnt > 0) {
+        uint32_t scCnt = statisticInfo.compressor_epilogueScCnt;
         LocalTensor<T> tmpUb = kvLocal[BUFFER_SIZE_BYTE_32K / sizeof(T)];
-        SoftmaxDN(scoreLocal, tmpUb, statisticInfo.compressor_epilogueScCnt, dDealSize);
+        SoftmaxDN(scoreLocal, tmpUb, scCnt, dDealSize);
         // 压缩行直接落到 tmpBuff1 区域：scoreLocal 窗口在 KvMulReduceScore 的 Mul 之后即废弃
         LocalTensor<T> compressedUb = tmpBuff1.Get<T>();
         PipeBarrier<PIPE_V>();
-        KvMulReduceScore(kvLocal, scoreLocal, compressedUb, tmpUb, statisticInfo.compressor_epilogueScCnt, dDealSize);
+        KvMulReduceScore(kvLocal, scoreLocal, compressedUb, tmpUb, scCnt, dDealSize);
         PipeBarrier<PIPE_V>();
-        FinishCompressedRows(compressedUb, statisticInfo.compressor_epilogueScCnt, tmpUb);
+        // 完全串行化：本核独占完整 headDim，压缩行即完整行，核内完成 rms_norm + rope + cast，
+        // 无 vec1Res workspace 中转、无 SyncAll 全局同步。rope cos/sin 已在 copy in 阶段就绪
+        RmsNormParam rmsNormParams;
+        rmsNormParams.reciprocal = constInfo_.reciprocalD;
+        rmsNormParams.epsilon = constInfo_.normEps;
+        rmsNormParams.row = scCnt;
+        rmsNormParams.col = constInfo_.headDim;
+        RmsNorm(compressedUb, compressedUb, normWeightUb, tmpUb, rmsNormParams);
+        PipeBarrier<PIPE_V>();
+        CalRope(compressedUb, 0, scCnt);
+        // 输出 X_T 中转借用 tmpBuff2 前 16K（rope 临时区已用完）
+        LocalTensor<X_T> outputUb = tmpBuff2.Get<X_T>();
+        Cast(outputUb, compressedUb, RoundMode::CAST_RINT, scCnt * constInfo_.headDim);
+        PipeBarrier<PIPE_V>();
+        SetFlag<HardEvent::V_MTE3>(evVMte3_);
+        WaitFlag<HardEvent::V_MTE3>(evVMte3_);
+        CopyFinalResultOut(outputUb, scCnt);
     }
+    // 收尾同步（紧贴）：先 V 等 MTE3（SaveState/输出读完 buffer），再 MTE2 等 V——
+    // 形成 MTE3->V->MTE2 传递链，下轮 copy（MTE2）间接等齐 MTE3 与 V
+    SetFlag<HardEvent::MTE3_V>(evMte3V_);
+    WaitFlag<HardEvent::MTE3_V>(evMte3V_);
+    SetFlag<HardEvent::V_MTE2>(evVMte2_);
+    WaitFlag<HardEvent::V_MTE2>(evVMte2_);
     compressedCnt_ += statisticInfo.compressor_epilogueScCnt;
 }
 
@@ -1028,7 +1118,10 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::ComputeVec1(cons
     for (uint32_t dLoopIdx = 0; dLoopIdx < splitInfo.dLoopCount; dLoopIdx++) {
         uint64_t dBaseOffset = baseOffset + dLoopIdx * splitInfo.dSplitSize;
 
+        // ape copy（纯 copy）：复用保护由上一轮末尾的紧贴 V_MTE2 承担；就绪同步紧贴
         CopyInApe(apeUb, dBaseOffset, splitInfo.dSplitSize);
+        SetFlag<HardEvent::MTE2_V>(evMte2V_);
+        WaitFlag<HardEvent::MTE2_V>(evMte2V_);
 
         sliceIterator.Reset(splitInfo.curBStart, splitInfo.curSStart, splitInfo.dealSeqStartIdx, 0U);
         compressedCnt_ = preCompressedCnt + splitInfo.curCompressedCnt;
@@ -1045,21 +1138,27 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::ComputeVec1(cons
 }
 
 
+// CopyInRopeCosSin：本基本块 sc 行的 rope cos/sin 拷入 ropeBuf（纯 copy，同步在主流程）
 template <typename COMP>
-__aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::SingleCalRope(const LocalTensor<X_T> &outputUb,
-                                                                      const LocalTensor<T> &normResUb, uint32_t rowCnt,
-                                                                      uint32_t curDealScSize, uint32_t globalScStart)
+__aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInRopeCosSin(uint32_t globalScStart,
+                                                                                 uint32_t curDealScSize)
 {
     uint32_t computeSize = curDealScSize * constInfo_.ropeHeadDim;
-    uint64_t SinCosOffset = globalScStart * constInfo_.ropeHeadDim;
-    // sin/cos each reserves 16KB so fp32 rope can use the same compute tile.
-    LocalTensor<ROPE_T> cosUb = inputQueScore.AllocTensor<ROPE_T>();
-    LocalTensor<ROPE_T> sinUb = cosUb[BUFFER_SIZE_BYTE_16K / sizeof(ROPE_T)];
-    DataCopy(cosUb, ropeCosGm_[SinCosOffset], computeSize);
-    DataCopy(sinUb, ropeSinGm_[SinCosOffset], computeSize);
-    inputQueScore.EnQue(sinUb);
-    inputQueScore.DeQue<ROPE_T>();
+    uint64_t sinCosOffset = (uint64_t)globalScStart * constInfo_.ropeHeadDim;
+    LocalTensor<ROPE_T> cosUb = ropeBuf.Get<ROPE_T>();
+    LocalTensor<ROPE_T> sinUb = cosUb[computeSize];
+    DataCopy(cosUb, ropeCosGm_[sinCosOffset], computeSize);
+    DataCopy(sinUb, ropeSinGm_[sinCosOffset], computeSize);
+}
 
+// CalRope：rope 计算（纯 V）：cos/sin fp32 展开 + RotaryPosEmb；数据须已由 copy in 阶段就绪
+template <typename COMP>
+__aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CalRope(const LocalTensor<T> &normResUb,
+                                                                      uint32_t rowCnt, uint32_t curDealScSize)
+{
+    uint32_t computeSize = curDealScSize * constInfo_.ropeHeadDim;
+    LocalTensor<ROPE_T> cosUb = ropeBuf.Get<ROPE_T>();
+    LocalTensor<ROPE_T> sinUb = cosUb[computeSize];
     LocalTensor<T> ropeCosFp32Local = tmpBuff2.Get<T>();
     LocalTensor<T> ropeSinFp32Local = ropeCosFp32Local[BUFFER_SIZE_BYTE_16K / sizeof(T)].template ReinterpretCast<T>();
     LocalTensor<T> tempLocal = ropeSinFp32Local[BUFFER_SIZE_BYTE_16K / sizeof(T)].template ReinterpretCast<T>();
@@ -1069,17 +1168,15 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::SingleCalRope(co
         DataCopy(ropeSinFp32Local, sinUb, computeSize);
     } else {
         Cast(ropeCosFp32Local, cosUb, RoundMode::CAST_NONE, computeSize);
-        Cast(ropeSinFp32Local, sinUb, RoundMode::CAST_NONE, computeSize);
+        Cast(ropeSinFp32Local, sinUb, computeSize);
     }
     PipeBarrier<PIPE_V>();
-    inputQueScore.FreeTensor(sinUb);
     RotaryPosEmb<COMP::rotaryMode>(normResUb[rowCnt * constInfo_.headDim], normResUb[rowCnt * constInfo_.headDim],
                                    ropeCosFp32Local, ropeSinFp32Local, tempLocal, gatherOffsetCastUb, curDealScSize,
                                    constInfo_.ropeHeadDim, constInfo_.headDim,
                                    constInfo_.headDim - constInfo_.ropeHeadDim);
     PipeBarrier<PIPE_V>();
 }
-
 
 template <typename COMP>
 __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CalcGlobalScStart(uint32_t bStart, uint32_t scStart,
@@ -1116,35 +1213,6 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::UpdateOutputIdx(
         outputBStart++;
         outputSStart = 0;
     }
-}
-
-template <typename COMP>
-__aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::FinishCompressedRows(const LocalTensor<T> &compressedUb,
-                                                                             uint32_t scCnt, const LocalTensor<T> &tmpUb)
-{
-    // 完全串行化：本核独占完整 headDim，压缩行即完整行，核内直接完成 rms_norm + rope + cast + 写 cmp_kv，
-    // 无 vec1Res workspace 中转、无 SyncAll 全局同步
-    RmsNormParam rmsNormParams;
-    rmsNormParams.reciprocal = constInfo_.reciprocalD;
-    rmsNormParams.epsilon = constInfo_.normEps;
-    rmsNormParams.row = scCnt;
-    rmsNormParams.col = constInfo_.headDim;
-    RmsNorm(compressedUb, compressedUb, normWeightUb, tmpUb, rmsNormParams);
-    PipeBarrier<PIPE_V>();
-    // 输出 X_T 中转借用 tmpBuff2 前 16K（rope 临时区在 SingleCalRope 后已用完），省掉独立 output queue
-    LocalTensor<X_T> outputUb = tmpBuff2.Get<X_T>();
-    // rope：sin/cos 按全局压缩行号取（与输出布局无关）
-    SingleCalRope(outputUb, compressedUb, 0, scCnt, compressedCnt_);
-    Cast(outputUb, compressedUb, RoundMode::CAST_RINT, scCnt * constInfo_.headDim);
-    PipeBarrier<PIPE_V>();
-    // 裸 buffer：V->MTE3 / MTE3->V 显式同步（替代原 outputQue1 的 EnQue/DeQue/Free）
-    event_t eventIdVMte3 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE3));
-    SetFlag<HardEvent::V_MTE3>(eventIdVMte3);
-    WaitFlag<HardEvent::V_MTE3>(eventIdVMte3);
-    CopyFinalResultOut(outputUb, scCnt);
-    event_t eventIdMte3V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_V));
-    SetFlag<HardEvent::MTE3_V>(eventIdMte3V);
-    WaitFlag<HardEvent::MTE3_V>(eventIdMte3V);
 }
 
 template <typename COMP>
