@@ -557,6 +557,15 @@ CompressorEpilogueBlockVectorPerf<COMP>::OverLap(const LocalTensor<T> dstLocal, 
     // 确定性损坏（state 正常但输出错），必须在此排空 V 后再进入窗口装配（保留原算子的 V_MTE2 对亦不足）
     AscendC::PipeBarrier<PIPE_ALL>();
     SaveState(srcLocal, stateGm, blockTableGm, sliceInfo, dStartIdx, dDealSize, static_cast<uint32_t>(IS_SCORE));
+    // SaveState 直通 UbToGm：MTE3 读 srcLocal 本段区，与后续 PadAlign（V 写窗口区，score 分支与 srcLocal
+    // 同 buffer 重叠）及 LoadFromWorkSpace/下个基本块 stage copy（MTE2 写）存在竞争，此处排空 MTE3。
+    // 注意：两个 WaitFlag 必须与 SetFlag 在同一位置成对出现（延后 Wait 曾因 flag 配对错乱死锁）
+    event_t eventIdMte3V = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_V));
+    SetFlag<HardEvent::MTE3_V>(eventIdMte3V);
+    WaitFlag<HardEvent::MTE3_V>(eventIdMte3V);
+    event_t eventIdMte3Mte2 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::MTE3_MTE2));
+    SetFlag<HardEvent::MTE3_MTE2>(eventIdMte3Mte2);
+    WaitFlag<HardEvent::MTE3_MTE2>(eventIdMte3Mte2);
 
     event_t eventId_V_MTE2 = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE2));
     SetFlag<HardEvent::V_MTE2>(eventId_V_MTE2);
@@ -696,8 +705,11 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::WriteToCacheStat
             uint64_t stateOffset = idInBlockTable * constInfo_.stateCacheStrideDim0 +
                                     remainRowCnt * 2 * coff_ * constInfo_.headDim +
                                     stateIdx * coff_ * constInfo_.headDim + dStartIdx;
-            DataCopyWithOutputQue(state[stateOffset], input[copyFinishRowCnt * coff_ * dDealSize], copyRowCount,
-                                    dDealSize, coff_ * dDealSize, coff_ * constInfo_.headDim * 2);
+            // 直通 UbToGm（srcGap 支持行 stride）：源行 stride = coff*dDealSize，跳过中转 UbToUb 与 queue 同步。
+            // V->MTE3 由调用侧（OverLap）SaveState 前的 PipeBarrier<PIPE_ALL> 保证；
+            // MTE3->后续 V/MTE2 由 OverLap 里 SaveState 后的 MTE3_V/MTE3_MTE2 flag 保证。
+            DataCopyAlignUbToGm(state[stateOffset], input[copyFinishRowCnt * coff_ * dDealSize], copyRowCount,
+                                dDealSize, coff_ * dDealSize, coff_ * constInfo_.headDim * 2);
         }
 
         copyFinishRowCnt += copyRowCount;
