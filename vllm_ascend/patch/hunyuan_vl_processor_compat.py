@@ -7,8 +7,6 @@ from typing import Any
 
 from transformers import HunYuanVLProcessor
 
-from vllm_ascend.utils import vllm_version_is
-
 _STALE_PROCESSOR_MODULES = {
     "HunYuanVLProcessor": "vllm.transformers_utils.processors.hunyuan_vl",
     "HunYuanVLImageProcessor": "vllm.transformers_utils.processors.hunyuan_vl_image",
@@ -112,48 +110,9 @@ def _patch_hunyuan_processor_loader(hunyuan_vision: Any) -> None:
     hunyuan_vision.HunYuanVLProcessingInfo.get_hf_processor = get_hf_processor
 
 
-def _patch_image_token_wrapping(hunyuan_vision: Any) -> None:
-    """Wrap bare image tokens with start/end tokens for HunYuanVLProcessor.
-
-    Transformers' ``HunYuanVLProcessor.validate_inputs`` requires every image
-    placeholder to be surrounded by the image start/end tokens, i.e.
-    ``<no_100><no_102><no_101>``. vLLM main folds this wrapping into
-    ``hunyuan_vision._call_hf_processor`` natively, but vLLM v0.26.0 does not,
-    so prompts built with a bare image token (e.g. the dummy mm batch during
-    ``profile_run``) are rejected by ``validate_inputs``. Backport the wrapping
-    on v0.26.0 only; the ``wrapped not in prompt`` guard keeps it idempotent.
-    """
-
-    def call_hf_processor(
-        self: Any,
-        prompt: str,
-        mm_data: Mapping[str, object],
-        mm_kwargs: Mapping[str, object],
-        tok_kwargs: Mapping[str, object],
-    ) -> Any:
-        hf_processor = self.info.get_hf_processor(**mm_kwargs)
-        if mm_data.get("images") is not None and prompt:
-            image_token = hf_processor.image_token
-            wrapped_token = f"{hf_processor.image_start_token}{image_token}{hf_processor.image_end_token}"
-            if image_token in prompt and wrapped_token not in prompt:
-                prompt = prompt.replace(image_token, wrapped_token)
-        return self.info.ctx.call_hf_processor(
-            hf_processor,
-            dict(text=prompt, **mm_data),
-            dict(**mm_kwargs, **tok_kwargs),
-        )
-
-    hunyuan_vision.HunYuanVLMultiModalProcessor._call_hf_processor = call_hf_processor
-
-
 def install_hunyuan_vl_processor_compat() -> None:
     """Align both supported vLLM refs with Transformers 5.13 Hunyuan APIs."""
     _remove_stale_registry_entries()
     from vllm.model_executor.models import hunyuan_vision as main_hunyuan_vision
 
     _patch_hunyuan_processor_loader(main_hunyuan_vision)
-    # vLLM v0.26.0 does not wrap bare image tokens with start/end tokens inside
-    # ``_call_hf_processor`` (that landed on main only), so backport it here.
-    # Main already does this natively, so the patch is v0.26.0-only.
-    if vllm_version_is("0.26.0"):
-        _patch_image_token_wrapping(main_hunyuan_vision)
