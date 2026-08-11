@@ -8,95 +8,6 @@ import pytest
 import vllm_ascend.patch.hunyuan_vl_processor_compat as compat
 
 
-def test_installer_runs_release_backports_in_order(monkeypatch):
-    import vllm.model_executor.models as vllm_models
-
-    hunyuan_vision = SimpleNamespace(
-        HunYuanVLProcessingInfo=SimpleNamespace(),
-    )
-    calls: list[Any] = []
-
-    def clean_registry() -> bool:
-        calls.append("registry")
-        return True
-
-    def patch_loader(module: Any) -> None:
-        calls.append(("loader", module))
-
-    def patch_wrapping(module: Any) -> None:
-        calls.append(("wrapping", module))
-
-    monkeypatch.setattr(
-        compat,
-        "_remove_stale_registry_entries",
-        clean_registry,
-    )
-    monkeypatch.setattr(vllm_models, "hunyuan_vision", hunyuan_vision, raising=False)
-    monkeypatch.setattr(
-        compat,
-        "_patch_hunyuan_processor_loader",
-        patch_loader,
-    )
-    monkeypatch.setattr(
-        compat,
-        "_patch_image_token_wrapping",
-        patch_wrapping,
-    )
-    # On v0.26.0 the image-token wrapping backport runs after the loader patch.
-    monkeypatch.setattr(compat, "vllm_version_is", lambda version: version == "0.26.0")
-    compat.install_hunyuan_vl_processor_compat()
-
-    assert calls == [
-        "registry",
-        ("loader", hunyuan_vision),
-        ("wrapping", hunyuan_vision),
-    ]
-
-
-def test_installer_skips_wrapping_backport_on_main(monkeypatch):
-    import vllm.model_executor.models as vllm_models
-
-    hunyuan_vision = SimpleNamespace(
-        HunYuanVLProcessingInfo=SimpleNamespace(),
-    )
-    calls: list[Any] = []
-
-    def clean_registry() -> bool:
-        calls.append("registry")
-        return True
-
-    def patch_loader(module: Any) -> None:
-        calls.append(("loader", module))
-
-    def patch_wrapping(module: Any) -> None:
-        calls.append(("wrapping", module))
-
-    monkeypatch.setattr(
-        compat,
-        "_remove_stale_registry_entries",
-        clean_registry,
-    )
-    monkeypatch.setattr(vllm_models, "hunyuan_vision", hunyuan_vision, raising=False)
-    monkeypatch.setattr(
-        compat,
-        "_patch_hunyuan_processor_loader",
-        patch_loader,
-    )
-    monkeypatch.setattr(
-        compat,
-        "_patch_image_token_wrapping",
-        patch_wrapping,
-    )
-    # On vllm main the wrapping is native, so the backport must not run.
-    monkeypatch.setattr(compat, "vllm_version_is", lambda version: False)
-    compat.install_hunyuan_vl_processor_compat()
-
-    assert calls == [
-        "registry",
-        ("loader", hunyuan_vision),
-    ]
-
-
 def test_installer_cleans_main_registry_before_model_patch(monkeypatch):
     import vllm.model_executor.models as vllm_models
 
@@ -129,8 +40,6 @@ def test_installer_cleans_main_registry_before_model_patch(monkeypatch):
         "_patch_hunyuan_processor_loader",
         patch_loader,
     )
-    monkeypatch.setattr(compat, "_patch_image_token_wrapping", lambda _module: None)
-    monkeypatch.setattr(compat, "vllm_version_is", lambda version: False)
     compat.install_hunyuan_vl_processor_compat()
 
     assert calls == [
@@ -251,7 +160,6 @@ def test_installer_preserves_native_prompt_update_protocol(monkeypatch):
 
     monkeypatch.setattr(compat, "_remove_stale_registry_entries", lambda: True)
     monkeypatch.setattr(compat, "_patch_hunyuan_processor_loader", lambda _module: None)
-    monkeypatch.setattr(compat, "_patch_image_token_wrapping", lambda _module: None)
 
     compat.install_hunyuan_vl_processor_compat()
 
