@@ -350,13 +350,12 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CopyInApe(const 
 {
     uint32_t copyRowCount = coff_ * constInfo_.cmpRatio;
     uint32_t copyColCount = dDealSize;
-    uint32_t dstSingleRowCount = dDealSize;
-    uint32_t srcSingleRowCount = constInfo_.headDim;
 
     uint64_t gmOffset = dStartIdx;
-    // 直通：GM->apeUb 直接 strided 落入（8 行×512 fp32 连续，dstGap=0），省掉中转与 16K UbToUb。
-    // 纯 copy：复用保护与就绪同步 flag 均在调用处（主流程）
-    DataCopyAlignGmToUb(apeUb, apeGm_[gmOffset], copyRowCount, copyColCount, srcSingleRowCount, dstSingleRowCount);
+    // ape 布局 [cmpRatio, coff*headDim]（行内连续、行间 stride = coff*headDim）。
+    // 连续拷贝仅当 dDealSize == headDim（c4 全宽）时等价；c128 切 d 后 dDealSize < headDim
+    // 必须按行 stride 取列，否则跨行错位。与 fused CopyInApe 的 DataCopyAlignGmToUb 同语义。
+    DataCopyAlignGmToUb(apeUb, apeGm_[gmOffset], copyRowCount, copyColCount, constInfo_.headDim, copyColCount);
 }
 
 template <typename COMP>
@@ -1056,6 +1055,16 @@ __aicore__ inline void CompressorEpilogueBlockVectorPerf<COMP>::CalcTilingStrate
 
     // 切块逻辑
     if (maxDealColNum < splitInfo.dBaseSize) {
+        // d 切分路径：ape 也是窗口级整片拷入 apeBuf（16K 固定预算，见 InitBuffers），
+        // 必须满足 coff*cmpRatio*dDealSize*sizeof(T) <= 16K。c128（cmpRatio=128, coff=1）
+        // 若不加约束 dDealSize=64 -> ape 128*64*4B=32K 溢出 apeBuf，实测崩溃：
+        //   VEC instruction error: the ub address out of bounds（blk:10, fixp 0x6000022）。
+        // 约束后 c128 dSplitSize=32（ape=16KB 恰好）。
+        // 注意（已知遗留）：d 分块使压缩结果只有 dSplitSize 列，而本算子 rms_norm 在 vec1 内
+        // 对完整 headDim 行做（col=headDim），d 分块下数值错误——c128 精度待后续修复
+        // （详见 reports/compressor_epilogue_c128_analysis.md）。c4 走 else 分支不受影响。
+        uint32_t apeMaxDealColNum = BUFFER_SIZE_BYTE_16K / (constInfo_.cmpRatio * coff_ * sizeof(T));
+        maxDealColNum = maxDealColNum < apeMaxDealColNum ? maxDealColNum : apeMaxDealColNum;
         splitInfo.tcSplitSize = 1;
         splitInfo.dLoopCount = CeilDivT(splitInfo.dBaseSize, maxDealColNum);
         splitInfo.dSplitSize = splitInfo.dBaseSize / splitInfo.dLoopCount;

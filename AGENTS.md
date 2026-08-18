@@ -38,43 +38,68 @@ vllm-ascend 是 vLLM 的昇腾 NPU 硬件插件。不直接加模型文件；模
 
 ## 编译与安装（自定义算子）
 
-**唯一推荐入口**（setup.py 一站式驱动，不要手工拼各步）：
+两条独立产物，必须分开构建：
+
+1. **vendor 算子包**（AscendC 自定义算子 + aclnn + tiling）→ 装到 `vllm_ascend/_cann_ops_custom/`（**不在 git**，被覆盖只能重编恢复）。
+2. **主扩展**（`vllm_ascend_C*.so` / `libvllm_ascend_kernels.so`，torch_binding 改动）→ 装到 `vllm_ascend/`。
+
+**铁律**：SOC 名必须传 **`ascend910b`**，不是 `910b`——`csrc/build_aclnn.sh` 用正则 `^ascend910b` 匹配，传 `910b` 会静默跳过 vendor 构建（日志：`no custom ACLNN ops configured ...; skip build_aclnn`）。
+
+### 首次编译（全新环境 / csrc/build 不存在 / 冷启动）
 
 ```bash
 source /usr/local/Ascend/ascend-toolkit/set_env.sh
-SOC_VERSION=910b MAX_JOBS=256 pip install -e . --no-build-isolation --no-deps
+# 1) vendor 算子包：全量编译 + 打包 + 安装（冷启动 30–60 min，热树几分钟）
+bash csrc/build_aclnn.sh /home/x50061890/vllm-ascend ascend910b   # ROOT_DIR 必须绝对路径
+# 2) 主扩展（editable 模式不会构建 vendor，只编主扩展）
+pip install -e . --no-build-isolation --no-deps   # --no-deps 必须：离线环境卡网络重试
 ```
 
-- `--no-deps` 必须：离线环境 pip 会卡在依赖解析的网络重试上。
-- 流程：setup.py → `csrc/build_aclnn.sh`（编 vendor 算子包并装到 `vllm_ascend/_cann_ops_custom`）→ cmake 编 `vllm_ascend_C*.so` / `libvllm_ascend_kernels.so` → 部署到源码树 `vllm_ascend/`。
-- csrc/build 树是热的时算子包为增量编译（几分钟）；冷启动全量 30–60 min。
+### 修改后编译（vendor 已构建过，改单个/多个算子的 kernel 或 tiling）
 
-### 新增/修改算子
+```bash
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cd csrc
+# 1) 删 kernel 源码拷贝（否则 opc 编旧拷贝）：op_kernel 源码被复制到
+#    csrc/build/binary/ascend910b/src/<op>/ 并打 .done 标记
+rm -rf build/binary/ascend910b/src/<op>
+# 2) 增量编 kernel（--pkg 不触发编译，必须 --opkernel）
+bash build.sh --opkernel --ops="<op>" --soc="ascend910b" -j256
+# 3) 打全量包 + 安装。--ops 必须用 build_aclnn.sh 对应 SOC 分支 CUSTOM_OPS_ARRAY 的完整列表：
+#    只传单个算子会让 .run 只含该算子，安装覆盖 vllm_ascend/_cann_ops_custom 导致其它算子丢失
+bash build.sh --pkg --ops="<CUSTOM_OPS_ARRAY 全量，; 分隔>" --soc="ascend910b" -j256
+./build/cann-ops-transformer-custom_linux-aarch64.run --install-path=$PWD/../vllm_ascend/_cann_ops_custom
+```
+
+**偷懒等价写法**（推荐，自动用全量 ops + 安装，最不易错）：直接重跑 `bash csrc/build_aclnn.sh /home/x50061890/vllm-ascend ascend910b`，它会自动完成上面的 3 步（增量部分由 build 树时间戳决定）。
+
+### 修改 torch_binding（只动主扩展，不动 vendor）
+
+```bash
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+pip install -e . --no-build-isolation --no-deps
+# 或增量：
+# cmake --build build/temp.linux-aarch64-cpython-311 -j256
+# cp build/temp.linux-aarch64-cpython-311/vllm_ascend_C*.so build/temp.linux-aarch64-cpython-311/lib/libvllm_ascend_kernels.so vllm_ascend/
+```
+
+### 新增/修改算子（结构要求）
 
 1. `csrc/<group>/<op>/` 下建 `op_kernel/` + `op_host/` + `CMakeLists.txt`（复制同类算子改）；算子名加入 `csrc/build_aclnn.sh` 对应 SOC 分支的 `CUSTOM_OPS_ARRAY`。
 2. torch 注册三处：`csrc/torch_binding.cpp`（函数 + schema + impl）、`csrc/torch_binding_meta.cpp`（meta + impl）。
 3. **host 侧 ODR 坑**：所有算子的 tiling .cpp 链接进同一个 `libcust_opmaster_rt2.0.so`，非 static 自由函数（如 `LayoutTypeToStr`）跨算子重名 → multiple definition。复制算子代码时必须连自由函数一起改名。
 4. **kernel 源码拷贝坑**：op_kernel 源码被复制到 `csrc/build/binary/ascend910b/src/<op>/` 并打 `.done` 标记；改了 kernel 源码必须删该目录（或 `.done`），否则编译的还是旧拷贝。
-5. **stale 缓存坑**：删算子/删源文件后必须清构建树——`AICPU_CUST_OBJ_TARGETS` 是 CMake `CACHE INTERNAL`，会累积已删除算子导致 generate 失败；`build/temp.*` 里的 `auto_gen/`、`vllm_ascend_kernels_merge_obj_dir/`、`*-prefix/` 同理。清不干净就整个删 `csrc/build` 和 `build/`。
+5. **stale 缓存坑**：删算子/删源文件后 CMake 生成报 `Error evaluating generator expression`（`AICPU_CUST_OBJ_TARGETS` 等 `CACHE INTERNAL` 累积）——先只清 `csrc/build` 下的 `CMakeCache.txt CMakeFiles build.ninja rules.ninja .ninja_deps .ninja_log`（保留 `binary/` 已编产物，避免全量重编）；仍失败才整个删 `csrc/build` 和 `build/`。
 6. **杀构建进程**：`pkill -f "build.sh"` 会匹配到自己 shell 的命令行（自杀），用字符类写法 `pkill -f "build[.]sh"`；杀完删 `csrc/build` 下的 `kernel_meta.lock` 残留，否则 opc 报 `Another process is using this dir`。
 7. `.run` 安装器的 `--install-path` 必须是绝对路径。
-
-### 单独重编（不跑 pip）
-
-```bash
-# vendor 算子包（ops 列表从 build_aclnn.sh 对应分支抄）
-cd csrc && bash build.sh --pkg --ops="op1;op2;..." --soc="ascend910b" -j256
-./build/cann-ops-transformer-custom_linux-aarch64.run --install-path=$PWD/../vllm_ascend/_cann_ops_custom  # 绝对路径
-# 主扩展（torch_binding 改动）
-cmake --build build/temp.linux-aarch64-cpython-311 -j256
-cp build/temp.linux-aarch64-cpython-311/vllm_ascend_C*.so build/temp.linux-aarch64-cpython-311/lib/libvllm_ascend_kernels.so vllm_ascend/
-```
 
 ### 验证
 
 ```bash
 python -c "from vllm_ascend.utils import enable_custom_op; enable_custom_op(); import torch; print(hasattr(torch.ops._C_ascend, '<op_name>'))"
 ```
+
+验证失败先查部署目录是否被部分安装覆盖：`ls vllm_ascend/_cann_ops_custom/vendors/custom_transformer/op_impl/ai_core/tbe/kernel/ascend910b/` 应包含所有 `CUSTOM_OPS_ARRAY` 里每个算子的目录；缺了就用 `build_aclnn.sh` 全量重装。
 
 ## NPU 性能硬规则
 
