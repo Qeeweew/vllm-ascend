@@ -1,69 +1,48 @@
 /**
- * Copyright (c) 2026 Huawei Technologies Co., Ltd.
- * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
- * CANN Open Software License Agreement Version 2.0 (the "License").
- * Please refer to the License for details. You may not use this file except in compliance with the License.
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
- * See LICENSE in the root of the software repository for the full text of the License.
- */
+ * Copyright (c) 2026 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
 
 /*!
- * \file COMPRESSOR_EPILOGUE_tiling_datay.h
- * \brief
+ * \file compressor_epilogue_tiling_data.h
+ * \brief CompressorEpilogue tiling data（arch22 两阶段重构版，扁平结构，kernel/host 共用）
+ *
+ * 字段对齐 ref（attention/compressor_epilogue，G_W_E/ops-transformer compressor-epilogue 分支）：
+ * C4（coff=2）按"组"均分任务；C128（coff=1）按"组×dChunk"均分任务 + workspace 中转两阶段。
  */
 
 #ifndef COMPRESSOR_EPILOGUE_TILING_DATA_H
 #define COMPRESSOR_EPILOGUE_TILING_DATA_H
 #include <cstdint>
-#include "kernel_tiling/kernel_tiling.h"
-
-const uint32_t CMP_MAX_AIC_CORE_NUM = 26; // 25 + 1 保证数组8字节对齐
 
 namespace optiling {
-    // 1. 基础参数结构体
-    struct CompressorEpilogueBaseParams {
-        uint32_t batchSize = 0;             // bastch size（批大小）
-        uint32_t seqSize = 0;               // sequence size（kvs大小）
-        uint32_t hiddenSize = 0;            // hidden size（隐藏层大小）
-        uint32_t tokenSize = 0;             // token size = batchSize * seqSize(token总数：批大小x序列1长度)
-        uint32_t headDim = 0;               // head size of kv
-        uint32_t ropeHeadDim = 64;          // dim size per rope head 64（单个带RoPE头的维度）
-        uint32_t csSize = 0;                // Compress sequence len
-        uint32_t cmpRatio = 4;              // Compress ratio
-        uint32_t cgSize = 0;                // Compress group size
-        float normEps = 1e-6;               // RMSNorm eps
-        float reciprocalD = 0;              // 1分之D
-        uint32_t usedCoreNum = 0;           // 使用核数
-        uint32_t nSize = 0;                 // 控制v2积攒的轮数
-        uint64_t stateCacheStrideDim0 = 0;  // stateCache第0维的stride
-    };
 
-    struct CompressorEpiloguePageAttentionParams {
-        uint32_t blockNum = 0;
-        uint32_t blockSize = 1;
-        uint32_t maxBlockNumPerBatch = 1;
-    };
+struct CompressorEpilogueTilingData {
+    uint32_t batchSize = 0;             // B = cu_seqlens.dim(0) - 1
+    uint32_t tokenSize = 0;             // T = mm_kv.dim(0)
+    uint32_t headDim = 0;               // D = mm_kv.dim(1) / coff
+    uint32_t cmpRatio = 0;              // r: 4 (coff=2) | 128 (coff=1)
+    uint32_t usedCoreNum = 0;           // blockDim = aivNum
+    uint32_t blockSize = 0;             // state_cache 分页块行数（c4=8, c128=32）
+    uint32_t maxBlockNumPerBatch = 0;   // state_block_table.dim(1)
+    uint32_t stateCacheStrideDim0 = 0;  // state_cache 第 0 维 stride（元素数）；与 ref 一致用 uint32 避免 uint64 跨编译器对齐不一致
+    uint32_t dChunkSize = 0;            // c128 的 d 分块列数（64）；c4 = headDim
+    uint32_t dChunkNum = 0;             // headDim / dChunkSize（c4 = 1）
+    uint32_t maxGroupTaskNum = 0;       // 组数上界 = T/r + 2B（start_pos 未对齐跨组）
+    uint32_t maxTaskNum = 0;            // maxGroupTaskNum * dChunkNum
+    uint32_t taskPerCore = 0;           // maxTaskNum / usedCoreNum
+    uint32_t taskRem = 0;               // maxTaskNum % usedCoreNum
+    uint32_t ropeHeadDim = 0;           // rope 维度（生产=64），作用于行尾 [headDim-ropeHeadDim, headDim)
+    uint32_t rotaryMode = 0;            // 1=HALF | 2=INTERLEAVE（生产=2）
+    float normEps = 1e-6f;              // rms_norm eps
+    uint32_t maxScNum = 0;              // 压缩行数上界 = min(T, T/r + B)（c128 workspace 行数/二阶段分行）
+};
 
-    struct CompressorEpilogueInnerSplitParams {
-        uint32_t mBaseSize;
-        uint32_t dBaseSize;
-    };
+} // namespace optiling
 
-    struct CompressorEpilogueWorkspaceParams {
-        uint32_t mm1KvResSize;
-        uint32_t mm1ScoreResSize;
-        uint32_t vec1ResSize;
-        uint32_t vec1TailCacheSize;
-        uint32_t dbWorkspaceRatio = 1;
-    };
-
-    struct CompressorEpilogueTilingData {
-        CompressorEpilogueBaseParams baseParams;
-        CompressorEpiloguePageAttentionParams pageAttentionParams;
-        CompressorEpilogueInnerSplitParams innerSplitParams;
-        CompressorEpilogueWorkspaceParams workspaceParams;
-    };
-} // optiling
-
-#endif  // COMPRESSOR_EPILOGUE_TILING_DATA_H
+#endif // COMPRESSOR_EPILOGUE_TILING_DATA_H
