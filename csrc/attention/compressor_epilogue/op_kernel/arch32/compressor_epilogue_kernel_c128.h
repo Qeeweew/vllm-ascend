@@ -78,19 +78,34 @@ public:
 
         iter_.Init(cuSeqlens, seqUsed, startPos, batchSize_, cmpRatio_);
 
-        pipe_->InitBuffer(apeChunkBuf_, cmpRatio_ * dChunkSize_ * sizeof(float));
-        pipe_->InitBuffer(kvStageBuf0_, cmpRatio_ * dChunkSize_ * sizeof(T));
-        pipe_->InitBuffer(kvStageBuf1_, cmpRatio_ * dChunkSize_ * sizeof(T));
-        pipe_->InitBuffer(scoreStageBuf0_, cmpRatio_ * dChunkSize_ * sizeof(T));
-        pipe_->InitBuffer(scoreStageBuf1_, cmpRatio_ * dChunkSize_ * sizeof(T));
-        pipe_->InitBuffer(kvRowsBuf_, cmpRatio_ * dChunkSize_ * sizeof(float));
-        pipe_->InitBuffer(scoreRowsBuf_, cmpRatio_ * dChunkSize_ * sizeof(float));
-        pipe_->InitBuffer(tmpBuf_, (cmpRatio_ / 2) * dChunkSize_ * sizeof(float));
-        pipe_->InitBuffer(cmpBuf_, dChunkSize_ * sizeof(float));
-        pipe_->InitBuffer(gammaBuf_, headDim_ * sizeof(float));
-        pipe_->InitBuffer(ropeStageBuf_, 3 * ropeHeadDim_ * sizeof(float));
-        pipe_->InitBuffer(gatherOffsetBuf_, ropeHeadDim_ * sizeof(int32_t));
-        pipe_->InitBuffer(outRowBuf_, headDim_ * sizeof(T));
+        // ── 统一 UB 池：单 TBuf 按阶段复用（GetWithOffset 切子视图）──
+        // 阶段一布局（字节）：[0,32K)apeChunk [32K,48K)kvStage0 [48K,64K)kvStage1
+        //   [64K,80K)scoreStage0 [80K,96K)scoreStage1 [96K,128K)kvRows
+        //   [128K,160K)scoreRows [160K,176K)tmp [176K,176.25K)cmp
+        //   [176.25K,178.25K)gamma [178.25K,178.5K)gatherOffset
+        // 阶段二复用（阶段一完成后）：[96K,104K)wsRow(NORM_BATCH 行)
+        //   [128K,144K)normTmp(RmsNorm 2×cnt) [160K,167K)cos/sin/raw/out
+        // 总量 178.5KB < 192KB
+        constexpr uint32_t KB = 1024;
+        pipe_->InitBuffer(ubBuf_, 179 * KB);
+        apeChunkUb_ = ubBuf_.GetWithOffset<float>(cmpRatio_ * dChunkSize_, 0);
+        kvStageUb_[0] = ubBuf_.GetWithOffset<T>(cmpRatio_ * dChunkSize_, 32 * KB);
+        kvStageUb_[1] = ubBuf_.GetWithOffset<T>(cmpRatio_ * dChunkSize_, 48 * KB);
+        scoreStageUb_[0] = ubBuf_.GetWithOffset<T>(cmpRatio_ * dChunkSize_, 64 * KB);
+        scoreStageUb_[1] = ubBuf_.GetWithOffset<T>(cmpRatio_ * dChunkSize_, 80 * KB);
+        kvRowsUb_ = ubBuf_.GetWithOffset<float>(cmpRatio_ * dChunkSize_, 96 * KB);
+        scoreRowsUb_ = ubBuf_.GetWithOffset<float>(cmpRatio_ * dChunkSize_, 128 * KB);
+        tmpUb_ = ubBuf_.GetWithOffset<float>((cmpRatio_ / 2) * dChunkSize_, 160 * KB);
+        cmpUb_ = ubBuf_.GetWithOffset<float>(dChunkSize_, 176 * KB);
+        gammaUb_ = ubBuf_.GetWithOffset<float>(headDim_, 176 * KB + 256);
+        gatherOffsetUb_ = ubBuf_.GetWithOffset<int32_t>(ropeHeadDim_, 178 * KB + 256);
+        // 阶段二子视图（同一 UB 池复用）
+        wsRowUb_ = kvRowsUb_;
+        normTmpUb_ = scoreRowsUb_;
+        cosUb_ = ubBuf_.GetWithOffset<float>(NORM_BATCH * ropeHeadDim_, 160 * KB);
+        sinUb_ = ubBuf_.GetWithOffset<float>(NORM_BATCH * ropeHeadDim_, 161 * KB);
+        ropeRawUb_ = ubBuf_.GetWithOffset<T_ROPE>(2 * NORM_BATCH * ropeHeadDim_, 162 * KB);
+        outRowUb_ = ubBuf_.GetWithOffset<T>(NORM_BATCH * headDim_, 163 * KB);
 
         // 事件 ID：EVENT_ID0 load→cast 自配对；EVENT_ID1 V→save/out 自配对；
         // EVENT_ID2 rows 复用自配对；EVENT_ID3 ape 加载自配对；EVENT_ID4/5 stage ping-pong
@@ -107,7 +122,7 @@ public:
     // gamma 常驻 + INTERLEAVE 偏移表（启动一次性；复用 eventMTE2V_ 顺序自配对）
     __aicore__ inline void InitNormRope()
     {
-        LocalTensor<float> gammaUb = gammaBuf_.Get<float>();
+        LocalTensor<float> gammaUb = gammaUb_;
         if constexpr (std::is_same_v<T_NORM, float>) {
             DataCopy(gammaUb, normWeightGm_, headDim_);
             SetFlag<HardEvent::MTE2_V>(eventMTE2V_);
@@ -115,14 +130,14 @@ public:
         } else {
             // bf16/fp16 输入：原始数据 copy 到 gamma fp32 buffer 后半段（T_NORM view 偏移
             // headDim_，字节 1024 起 = 后半段），一次 Cast 到前半段 fp32（源/目标不重叠）
-            LocalTensor<T_NORM> gammaRawUb = gammaBuf_.Get<T_NORM>();
+            LocalTensor<T_NORM> gammaRawUb = gammaUb_.ReinterpretCast<T_NORM>();
             DataCopy(gammaRawUb[headDim_], normWeightGm_, headDim_);
             SetFlag<HardEvent::MTE2_V>(eventMTE2V_);
             WaitFlag<HardEvent::MTE2_V>(eventMTE2V_);
             Cast(gammaUb, gammaRawUb[headDim_], RoundMode::CAST_NONE, headDim_);
         }
         if (rotaryMode_ == (uint32_t)ROTARY_MODE::INTERLEAVE) {
-            LocalTensor<int32_t> gatherOffsetUb = gatherOffsetBuf_.Get<int32_t>();
+            LocalTensor<int32_t> gatherOffsetUb = gatherOffsetUb_;
             SetGatherSrcOffset<float>(gatherOffsetUb, ropeHeadDim_, evtSToV_);
         }
     }
@@ -152,9 +167,9 @@ private:
         // prime：stage ping-pong id 各 Set 一次（与前两次迭代的 wait 配对，配平末尾 drain）
         SetFlag<HardEvent::V_MTE2>(idVToMTE2_[0]);
         SetFlag<HardEvent::V_MTE2>(idVToMTE2_[1]);
-        LocalTensor<float> apeChunk = apeChunkBuf_.Get<float>();
-        LocalTensor<T> kvStage[2] = {kvStageBuf0_.Get<T>(), kvStageBuf1_.Get<T>()};
-        LocalTensor<T> scoreStage[2] = {scoreStageBuf0_.Get<T>(), scoreStageBuf1_.Get<T>()};
+        LocalTensor<float> apeChunk = apeChunkUb_;
+        LocalTensor<T> kvStage[2] = {kvStageUb_[0], kvStageUb_[1]};
+        LocalTensor<T> scoreStage[2] = {scoreStageUb_[0], scoreStageUb_[1]};
         uint32_t curDc = 0xFFFFFFFF;
         uint32_t curHh = 0;
         uint32_t curNTok = 0;
@@ -200,74 +215,76 @@ private:
         WaitFlag<HardEvent::V_MTE2>(idVToMTE2_[1]);
     }
 
-    // 阶段二：压缩行按核均分，逐行 workspace→RmsNorm→RoPE→CAST_RINT→cmp_kv
-    // 行数 ≤ maxScNum（128:1 压缩后很小），用相邻自配对串行即可，无需流水
+    // 阶段二：压缩行按核均分，NORM_BATCH 行批量 RmsNorm→RoPE→CAST→cmp_kv
+    // （行数 ≤ maxScNum；批量摊销 barrier，与 C4 的 FlushNormRope 同模式）
     __aicore__ inline void Phase2NormRope(uint32_t totalSc)
     {
         uint32_t coreIdx = GetBlockIdx();
         uint32_t rowStart = coreIdx * (totalSc / usedCoreNum_) +
                             (coreIdx < totalSc % usedCoreNum_ ? coreIdx : totalSc % usedCoreNum_);
         uint32_t rowEnd = rowStart + totalSc / usedCoreNum_ + (coreIdx < totalSc % usedCoreNum_ ? 1 : 0);
-        LocalTensor<float> wsRowUb = kvRowsBuf_.Get<float>();      // 复用阶段一窗口 buffer（32KB ≥ 2KB）
-        LocalTensor<float> tmpUb = scoreRowsBuf_.Get<float>();     // RmsNorm 需 (512+1)*4B
-        LocalTensor<float> gammaUb = gammaBuf_.Get<float>();
-        LocalTensor<float> cosUb = ropeStageBuf_.Get<float>();
-        LocalTensor<float> sinUb = cosUb[ropeHeadDim_];
-        LocalTensor<uint32_t> gatherOff = gatherOffsetBuf_.Get<uint32_t>();
-        LocalTensor<T> outRow = outRowBuf_.Get<T>();
-        RmsNormParam normParams{1.0f / (float)(int32_t)headDim_, normEps_, 1, headDim_};
+        LocalTensor<float> wsRowUb = wsRowUb_;
+        LocalTensor<float> tmpUb = normTmpUb_;
+        LocalTensor<float> gammaUb = gammaUb_;
+        LocalTensor<float> cosUb = cosUb_;
+        LocalTensor<float> sinUb = sinUb_;
+        LocalTensor<uint32_t> gatherOff = gatherOffsetUb_.ReinterpretCast<uint32_t>();
+        LocalTensor<T> outRow = outRowUb_;
+        RmsNormParam normParams{1.0f / (float)(int32_t)headDim_, normEps_, NORM_BATCH, headDim_};
         uint64_t baseAddr = headDim_ - ropeHeadDim_;
-        for (uint32_t row = rowStart; row < rowEnd; row++) {
-            // 等上一轮 V 完成（wsRowUb/ropeStage 可被 MTE2 重写）
+        uint32_t row = rowStart;
+        while (row < rowEnd) {
+            uint32_t cnt = (rowEnd - row) < NORM_BATCH ? (rowEnd - row) : NORM_BATCH;
+            // 等上一轮 V 完成（wsRow/rope 区可被 MTE2 重写）
             SetFlag<HardEvent::V_MTE2>(eventVMTE2_);
             WaitFlag<HardEvent::V_MTE2>(eventVMTE2_);
-            DataCopy(wsRowUb, wsGm_[(uint64_t)row * headDim_], headDim_);
+            DataCopy(wsRowUb, wsGm_[(uint64_t)row * headDim_], cnt * headDim_);
             uint64_t ropeOff = (uint64_t)row * ropeHeadDim_;
+            uint32_t cntRope = cnt * ropeHeadDim_;
             if constexpr (std::is_same_v<T_ROPE, float>) {
-                DataCopy(cosUb, ropeCosGm_[ropeOff], ropeHeadDim_);
-                DataCopy(sinUb, ropeSinGm_[ropeOff], ropeHeadDim_);
+                DataCopy(cosUb, ropeCosGm_[ropeOff], cntRope);
+                DataCopy(sinUb, ropeSinGm_[ropeOff], cntRope);
             } else {
-                // bf16/fp16 输入：cos/sin 原始数据 copy 到 buffer 后两块（T_ROPE view 偏移
-                // 4/5 * ropeHeadDim_），各一次 Cast 到前两块 fp32（源/目标不重叠）
-                LocalTensor<T_ROPE> ropeRawUb = ropeStageBuf_.Get<T_ROPE>();
-                DataCopy(ropeRawUb[4 * ropeHeadDim_], ropeCosGm_[ropeOff], ropeHeadDim_);
-                DataCopy(ropeRawUb[5 * ropeHeadDim_], ropeSinGm_[ropeOff], ropeHeadDim_);
+                // bf16/fp16 输入：cos/sin 原始数据 copy 到 raw 区（T_ROPE view），各一次 Cast 到 fp32
+                DataCopy(ropeRawUb_, ropeCosGm_[ropeOff], cntRope);
+                DataCopy(ropeRawUb_[NORM_BATCH * ropeHeadDim_], ropeSinGm_[ropeOff], cntRope);
             }
             SetFlag<HardEvent::MTE2_V>(eventMTE2V_);
             WaitFlag<HardEvent::MTE2_V>(eventMTE2V_);
             if constexpr (!std::is_same_v<T_ROPE, float>) {
-                LocalTensor<T_ROPE> ropeRawUb = ropeStageBuf_.Get<T_ROPE>();
-                Cast(cosUb, ropeRawUb[4 * ropeHeadDim_], RoundMode::CAST_NONE, ropeHeadDim_);
-                Cast(sinUb, ropeRawUb[5 * ropeHeadDim_], RoundMode::CAST_NONE, ropeHeadDim_);
+                Cast(cosUb, ropeRawUb_, RoundMode::CAST_NONE, cntRope);
+                Cast(sinUb, ropeRawUb_[NORM_BATCH * ropeHeadDim_], RoundMode::CAST_NONE, cntRope);
             }
+            normParams.row = cnt;
             RmsNorm(wsRowUb, wsRowUb, gammaUb, tmpUb, normParams);
             PipeBarrier<PIPE_V>();
             if (rotaryMode_ == (uint32_t)ROTARY_MODE::INTERLEAVE) {
-                RotaryPosEmb<ROTARY_MODE::INTERLEAVE>(wsRowUb, wsRowUb, cosUb, sinUb, tmpUb, gatherOff, 1,
+                RotaryPosEmb<ROTARY_MODE::INTERLEAVE>(wsRowUb, wsRowUb, cosUb, sinUb, tmpUb, gatherOff, cnt,
                                                       ropeHeadDim_, headDim_, baseAddr);
             } else {
-                RotaryPosEmb<ROTARY_MODE::HALF>(wsRowUb, wsRowUb, cosUb, sinUb, tmpUb, gatherOff, 1,
+                RotaryPosEmb<ROTARY_MODE::HALF>(wsRowUb, wsRowUb, cosUb, sinUb, tmpUb, gatherOff, cnt,
                                                 ropeHeadDim_, headDim_, baseAddr);
             }
             PipeBarrier<PIPE_V>();
             // 等上一轮输出写（MTE3 读 outRow）完成再 cast 重写
             SetFlag<HardEvent::MTE3_V>(eventMTE3V_);
             WaitFlag<HardEvent::MTE3_V>(eventMTE3V_);
-            Cast(outRow, wsRowUb, RoundMode::CAST_RINT, headDim_);
+            Cast(outRow, wsRowUb, RoundMode::CAST_RINT, cnt * headDim_);
             SetFlag<HardEvent::V_MTE3>(eventVMTE3_);
             WaitFlag<HardEvent::V_MTE3>(eventVMTE3_);
-            DataCopy(cmpKvOutGm_[(uint64_t)row * headDim_], outRow, headDim_);
+            DataCopy(cmpKvOutGm_[(uint64_t)row * headDim_], outRow, cnt * headDim_);
+            row += cnt;
         }
     }
 
-    static constexpr uint32_t NORM_BATCH = 8; // 阶段二批量行数（摊销 barrier；受 tmp/outRow buffer 限）
+    static constexpr uint32_t NORM_BATCH = 4; // 阶段二批量行数（摊销 barrier；UB 受 tmp/out/rope 区限制）
 
     __aicore__ inline void ProcessTask(const GroupInfo &g, uint32_t dc, uint32_t compressedCnt,
                                        const LocalTensor<float> &apeChunk, const LocalTensor<T> &kvStage,
                                        const LocalTensor<T> &scoreStage)
     {
-        LocalTensor<float> kvRows = kvRowsBuf_.Get<float>();
-        LocalTensor<float> scoreRows = scoreRowsBuf_.Get<float>();
+        LocalTensor<float> kvRows = kvRowsUb_;
+        LocalTensor<float> scoreRows = scoreRowsUb_;
         uint32_t dStart = dc * dChunkSize_;
         uint32_t nTok = g.nTok;
         uint32_t hh = g.headHolder;
@@ -311,8 +328,8 @@ private:
             }
             SetFlag<HardEvent::MTE2_V>(eventMTE2V_);
             WaitFlag<HardEvent::MTE2_V>(eventMTE2V_);
-            LocalTensor<float> tmpUb = tmpBuf_.Get<float>();
-            LocalTensor<float> cmpRow = cmpBuf_.Get<float>();
+            LocalTensor<float> tmpUb = tmpUb_;
+            LocalTensor<float> cmpRow = cmpUb_;
             ColumnSoftMax(scoreRows, scoreRows, tmpUb, cmpRatio_, dChunkSize_);
             PipeBarrier<PIPE_V>();
             Mul(kvRows, kvRows, scoreRows, cmpRatio_ * dChunkSize_);
@@ -388,19 +405,24 @@ private:
     GlobalTensor<T> cmpKvOutGm_;
     GlobalTensor<float> wsGm_;
 
-    TBuf<TPosition::VECCALC> apeChunkBuf_;
-    TBuf<TPosition::VECCALC> kvStageBuf0_;
-    TBuf<TPosition::VECCALC> kvStageBuf1_;
-    TBuf<TPosition::VECCALC> scoreStageBuf0_;
-    TBuf<TPosition::VECCALC> scoreStageBuf1_;
-    TBuf<TPosition::VECCALC> kvRowsBuf_;
-    TBuf<TPosition::VECCALC> scoreRowsBuf_;
-    TBuf<TPosition::VECCALC> tmpBuf_;
-    TBuf<TPosition::VECCALC> cmpBuf_;
-    TBuf<TPosition::VECCALC> gammaBuf_;
-    TBuf<TPosition::VECCALC> ropeStageBuf_;
-    TBuf<TPosition::VECCALC> gatherOffsetBuf_;
-    TBuf<TPosition::VECCALC> outRowBuf_;
+    // 统一 UB 池（GetWithOffset 切子视图，阶段一/二按生命周期复用）
+    TBuf<TPosition::VECCALC> ubBuf_;
+    LocalTensor<float> apeChunkUb_;
+    LocalTensor<T> kvStageUb_[2];
+    LocalTensor<T> scoreStageUb_[2];
+    LocalTensor<float> kvRowsUb_;
+    LocalTensor<float> scoreRowsUb_;
+    LocalTensor<float> tmpUb_;
+    LocalTensor<float> cmpUb_;
+    LocalTensor<float> gammaUb_;
+    LocalTensor<int32_t> gatherOffsetUb_;
+    // 阶段二复用子视图（阶段一完成后）
+    LocalTensor<float> wsRowUb_;
+    LocalTensor<float> normTmpUb_;
+    LocalTensor<float> cosUb_;
+    LocalTensor<float> sinUb_;
+    LocalTensor<T_ROPE> ropeRawUb_;
+    LocalTensor<T> outRowUb_;
 
     event_t eventMTE2V_;
     event_t eventVMTE3_;
