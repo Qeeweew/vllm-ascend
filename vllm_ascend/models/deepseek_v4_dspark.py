@@ -350,6 +350,10 @@ class DSparkDeepseekV4ForCausalLM(nn.Module, DeepseekV2MixtureOfExperts):
     def get_draft_kv_cache_layer_names(self) -> list[str]:
         return self.model.get_draft_kv_cache_layer_names()
 
+    def get_draft_attn_causal(self) -> list[bool]:
+        """Return per-layer attention causality for the DSpark draft model."""
+        return [False] * len(self.get_draft_kv_cache_layer_names())
+
     def combine_hidden_states(self, aux_hidden_states: torch.Tensor) -> torch.Tensor:
         return self.model.combine_hidden_states(aux_hidden_states)
 
