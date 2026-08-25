@@ -1338,11 +1338,9 @@ def enable_dsa_cp() -> bool:
     if additional_config is not None and "enable_dsa_cp" in additional_config:
         dsa_cp_enable = bool(additional_config["enable_dsa_cp"])
 
-    if dsa_cp_enable and not enable_sp():
-        raise ValueError(
-            "DSA CP requires SP to be enabled. Please enable SP(set VLLM_ASCEND_ENABLE_FLASHCOMM1=1) to use DSA CP."
-        )
-    return dsa_cp_enable and enable_sp()
+    # DSA-CP owns its TP token-sharding collectives. It must not require the
+    # MoE sequence-parallel/FlashComm layout, which in turn requires EP.
+    return dsa_cp_enable
 
 
 @lru_cache(maxsize=1)

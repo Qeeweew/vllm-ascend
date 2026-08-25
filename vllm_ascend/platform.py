@@ -444,7 +444,10 @@ class NPUPlatform(Platform):
             vllm_config.parallel_config.tensor_parallel_size > 1
             and compilation_config.cudagraph_mode != CUDAGraphMode.NONE
             and not vllm_config.model_config.enforce_eager
-            and enable_sp(vllm_config)
+            and (
+                enable_sp(vllm_config)
+                or bool((vllm_config.additional_config or {}).get("enable_dsa_cp", False))
+            )
         ):
             original_sizes = compilation_config.cudagraph_capture_sizes
             sp_aclgraph_sizes = vllm_config.update_sizes_for_sequence_parallelism(original_sizes)

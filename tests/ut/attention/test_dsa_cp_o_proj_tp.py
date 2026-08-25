@@ -11,7 +11,7 @@ import torch
 if "torch_npu._inductor" not in sys.modules:
     sys.modules["torch_npu._inductor"] = MagicMock()
 
-from vllm_ascend.attention.context_parallel.dsa_cp import AscendDSACPImpl
+from vllm_ascend.attention.context_parallel.dsa_cp import AscendDSACPImpl, DSACPMetadata
 from vllm_ascend.quantization.tp_weight_switch import (
     TPWeightGatherSpec,
     TPWeightSwitchMixin,
@@ -59,6 +59,56 @@ class TestAscendDSACPOProjTPParams(unittest.TestCase):
         layer.quant_method = object()
         with self.assertRaisesRegex(RuntimeError, "TP weight-switch capable"):
             AscendDSACPImpl._get_tp_weight_switch_method(layer)
+
+    def test_split_full_hidden_states_for_cp_uses_metadata_range(self):
+        hidden_states = torch.arange(32).reshape(8, 4)
+        cp_metadata = DSACPMetadata(
+            local_query_start_loc=torch.tensor([0, 2]),
+            local_seq_lens=torch.tensor([2]),
+            local_start=4,
+            local_end=6,
+            tokens_per_rank=2,
+            num_tokens_pad=8,
+        )
+
+        local_hidden_states = AscendDSACPImpl._split_full_hidden_states_for_cp(hidden_states, cp_metadata)
+
+        torch.testing.assert_close(local_hidden_states, hidden_states[4:6])
+
+    def test_split_full_hidden_states_for_cp_pads_unaligned_input(self):
+        hidden_states = torch.arange(28).reshape(7, 4)
+        cp_metadata = DSACPMetadata(
+            local_query_start_loc=torch.tensor([0, 2]),
+            local_seq_lens=torch.tensor([2]),
+            local_start=6,
+            local_end=8,
+            tokens_per_rank=2,
+            num_tokens_pad=8,
+        )
+
+        local_hidden_states = AscendDSACPImpl._split_full_hidden_states_for_cp(hidden_states, cp_metadata)
+
+        torch.testing.assert_close(local_hidden_states[0], hidden_states[-1])
+        torch.testing.assert_close(local_hidden_states[1], torch.zeros(4, dtype=hidden_states.dtype))
+
+    def test_gather_cp_output_restores_rank_order_and_removes_padding(self):
+        impl = self._make_impl()
+        local_output = torch.arange(8).reshape(2, 4)
+        gathered_output = torch.arange(16).reshape(4, 4)
+        impl.tp_group = SimpleNamespace(all_gather=MagicMock(return_value=gathered_output))
+        cp_metadata = DSACPMetadata(
+            local_query_start_loc=torch.tensor([0, 2]),
+            local_seq_lens=torch.tensor([2]),
+            local_start=2,
+            local_end=4,
+            tokens_per_rank=2,
+            num_tokens_pad=4,
+        )
+
+        output = impl._gather_cp_output(local_output, cp_metadata, num_output_tokens=3)
+
+        impl.tp_group.all_gather.assert_called_once_with(local_output, dim=0)
+        torch.testing.assert_close(output, gathered_output[:3])
 
     def test_enable_o_proj_switch_initializes_both_layers_once_with_cloned_tp_storage(self):
         impl = self._make_impl()

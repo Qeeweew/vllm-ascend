@@ -1295,6 +1295,64 @@ class AscendDSACPImpl(AttentionImplBase[Any]):
         scale = scale.reshape(scale.shape[0], num_groups, -1, *scale.shape[2:])
         return scale.permute(1, 0, 2, *range(3, scale.ndim))
 
+    @staticmethod
+    def _split_full_hidden_states_for_cp(
+        hidden_states: torch.Tensor,
+        cp_metadata: DSACPMetadata,
+    ) -> torch.Tensor:
+        """Slice this TP rank's query-token shard from normal TP state."""
+        expected_tokens = cp_metadata.num_tokens_pad
+        actual_tokens = hidden_states.shape[0]
+        if actual_tokens > expected_tokens:
+            raise RuntimeError(
+                "DSA-CP input exceeds its TP-aligned metadata, "
+                f"got {actual_tokens} tokens and num_tokens_pad={expected_tokens}."
+            )
+        if actual_tokens < expected_tokens:
+            hidden_states = F.pad(hidden_states, (0, 0, 0, expected_tokens - actual_tokens))
+
+        local_hidden_states = hidden_states[cp_metadata.local_start : cp_metadata.local_end]
+        if local_hidden_states.shape[0] != cp_metadata.tokens_per_rank:
+            raise RuntimeError(
+                "DSA-CP local token slice does not match tokens_per_rank, "
+                f"got {local_hidden_states.shape[0]} and expected {cp_metadata.tokens_per_rank}."
+            )
+        return local_hidden_states
+
+    def _gather_cp_output(
+        self,
+        local_output: torch.Tensor,
+        cp_metadata: DSACPMetadata,
+        num_output_tokens: int | None = None,
+    ) -> torch.Tensor:
+        """Restore the normal TP replicated token layout after DSA-CP."""
+        if local_output.shape[0] == cp_metadata.num_tokens_pad:
+            full_output = local_output
+        elif local_output.shape[0] == cp_metadata.tokens_per_rank:
+            full_output = local_output
+            if self.tp_size > 1:
+                full_output = self.tp_group.all_gather(local_output.contiguous(), dim=0)
+        else:
+            raise RuntimeError(
+                "DSA-CP output does not match its local or full token layout, "
+                f"got {local_output.shape[0]}, local={cp_metadata.tokens_per_rank}, "
+                f"full={cp_metadata.num_tokens_pad}."
+            )
+
+        if full_output.shape[0] != cp_metadata.num_tokens_pad:
+            raise RuntimeError(
+                "DSA-CP gathered output does not match num_tokens_pad, "
+                f"got {full_output.shape[0]} and expected {cp_metadata.num_tokens_pad}."
+            )
+        if num_output_tokens is None:
+            num_output_tokens = cp_metadata.num_tokens_pad
+        if not 0 <= num_output_tokens <= cp_metadata.num_tokens_pad:
+            raise RuntimeError(
+                "DSA-CP output token count must fit the TP-aligned state, "
+                f"got {num_output_tokens} and num_tokens_pad={cp_metadata.num_tokens_pad}."
+            )
+        return full_output[:num_output_tokens]
+
     def forward(  # type: ignore[override]
         self,
         layer_name,
@@ -1361,7 +1419,7 @@ class AscendDSACPImpl(AttentionImplBase[Any]):
                         perm_y=(1, 0, 2),
                     )
                 o = o.reshape(num_tokens, -1)
-                output[...] = self._apply_wo_b(o, full_gather_wo_a_enabled)
+                local_output = self._apply_wo_b(o, full_gather_wo_a_enabled)
             else:
                 o_proj_input = o_proj_input.view(num_tokens, o_proj_groups, -1)
                 if olora_tp_enable():
@@ -1380,7 +1438,15 @@ class AscendDSACPImpl(AttentionImplBase[Any]):
                         batch_split_factor=1,
                     )
                 o_proj_input = o_proj_input.reshape(num_tokens, -1)
-                output[...] = self._apply_wo_b(o_proj_input, full_gather_wo_a_enabled)
+                local_output = self._apply_wo_b(o_proj_input, full_gather_wo_a_enabled)
+
+            req_metadata = attn_metadata[0].req_metadata
+            assert req_metadata is not None
+            output[...] = self._gather_cp_output(
+                local_output,
+                req_metadata.cp_metadata,
+                output.shape[0],
+            )
         finally:
             if full_gather_wo_a_enabled:
                 self._switch_o_proj_to_tp_weight()
@@ -1416,6 +1482,7 @@ class AscendDSACPImpl(AttentionImplBase[Any]):
         assert swa_metadata.req_metadata is not None
         req_metadata = common_attn_metadata.req_metadata
         cp_metadata = req_metadata.cp_metadata
+        hidden_states_local = self._split_full_hidden_states_for_cp(hidden_states, cp_metadata)
         cos = req_metadata.cos[layer_name]
         sin = req_metadata.sin[layer_name]
         local_cos = cp_metadata.local_cos[layer_name]
