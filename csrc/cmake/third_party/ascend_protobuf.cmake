@@ -8,6 +8,11 @@
 # See LICENSE in the root of the software repository for the full text of the License.
 # ----------------------------------------------------------------------------------------------------------
 include(ExternalProject)
+include(ProcessorCount)
+ProcessorCount(EP_BUILD_JOBS)
+if(EP_BUILD_JOBS EQUAL 0)
+    set(EP_BUILD_JOBS 8)
+endif()
 set(PROTOBUF_VERSION_PKG protobuf-25.1.tar.gz)
 set(ASCEND_PROTOBUF_DIR ${CANN_3RD_LIB_PATH}/ascend_protobuf)
 
@@ -67,7 +72,7 @@ else()
                             -DABSL_ROOT_DIR=${ABSL_SOURCE_DIR}
                             <SOURCE_DIR>
                         SOURCE_DIR ${ASCEND_PROTOBUF_SOURCE_DIR}
-                        BUILD_COMMAND ${CMAKE_COMMAND} --build .
+                        BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel ${EP_BUILD_JOBS}
                         INSTALL_COMMAND ""
                         EXCLUDE_FROM_ALL TRUE
     )

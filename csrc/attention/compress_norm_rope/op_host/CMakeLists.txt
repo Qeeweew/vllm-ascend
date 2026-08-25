@@ -11,12 +11,12 @@ add_op_to_compiled_list()
 
 if (BUILD_OPEN_PROJECT)
     target_sources(op_host_aclnn PRIVATE
-        compressor_def.cpp
+        compress_norm_rope_def.cpp
     )
 endif()
 
 add_ops_compile_options(
-        OP_NAME Compressor
+        OP_NAME CompressNormRope
                 OPTIONS -DDAY0_SCOPE
                 --cce-auto-sync=off
                 -Wno-deprecated-declarations
@@ -25,14 +25,14 @@ add_ops_compile_options(
 )
 
 if (NOT BUILD_OPS_RTY_KERNEL)
-    set(SUPPORTED_ARCHS arch32 arch35)
-    add_modules_sources(OPTYPE compressor ACLNNTYPE aclnn)
+    set(SUPPORTED_ARCHS arch32)
+    add_modules_sources(OPTYPE compress_norm_rope ACLNNTYPE aclnn)
     add_tiling_modules()
 
     foreach(ARCH ${ARCH_DIRECTORY})
         if(ARCH IN_LIST SUPPORTED_ARCHS)
             target_sources(${OPHOST_NAME}_tiling_obj PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/${ARCH}/compressor_tiling.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/${ARCH}/compress_norm_rope_tiling.cpp
             )
         endif()
     endforeach()
