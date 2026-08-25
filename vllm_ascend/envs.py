@@ -100,6 +100,11 @@ env_variables: dict[str, Callable[[], Any]] = {
     # Control the aclrtMemcpyBatchAsync compile path for KV cache offloading.
     # "1": force enable, "0": force disable, None: auto-detect from CANN headers.
     "VLLM_ASCEND_ENABLE_BATCH_MEMCPY": lambda: os.getenv("VLLM_ASCEND_ENABLE_BATCH_MEMCPY", None),
+    # Maximum number of locally dispatched MoE rows handled by the fused
+    # W4A16 decode kernel.  Set to 0 to disable the fast path.
+    "VLLM_ASCEND_W4A16_MOE_SMALL_BS_THRESHOLD": lambda: int(
+        os.getenv("VLLM_ASCEND_W4A16_MOE_SMALL_BS_THRESHOLD", "8")
+    ),
 }
 
 # end-env-vars-definition

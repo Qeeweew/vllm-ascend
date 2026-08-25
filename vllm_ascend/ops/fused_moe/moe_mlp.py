@@ -26,6 +26,7 @@ from vllm_ascend.device.device_op import DeviceOperator
 from vllm_ascend.ops.activation import AscendSwigluOAIAndMul, AscendSwigluStepAndMul
 from vllm_ascend.ops.fused_moe.dataclass.moe_mlp import MoEMlpComputeInput
 from vllm_ascend.quantization.quant_type import QuantType
+from vllm_ascend import envs as ascend_envs
 from vllm_ascend.utils import (
     dispose_tensor,
     enable_custom_op,
@@ -635,6 +636,55 @@ def unified_apply_mlp(*, mlp_compute_input: MoEMlpComputeInput) -> torch.Tensor:
     swiglu_limit = mlp_compute_input.swiglu_limit
     swiglu_alpha = mlp_compute_input.swiglu_alpha
     swiglu_beta = mlp_compute_input.swiglu_beta
+
+    # The custom decode kernel consumes one expert id per input row, whereas
+    # the communication layer has already expanded and sorted the routed
+    # tokens by local expert.  Rebuild those local ids from group_list and use
+    # top-k=1 with unit routing weights; the dispatcher/combine stage retains
+    # ownership of the original router weights.  Keeping this below dispatch
+    # is essential for EP: w1/w2 contain only this rank's local experts.
+    w4a16_small_bs_threshold = ascend_envs.VLLM_ASCEND_W4A16_MOE_SMALL_BS_THRESHOLD
+    if (
+        mlp_compute_input.quant.quant_type == QuantType.W4A16
+        and w4a16_small_bs_threshold > 0
+        and hidden_states.shape[0] <= w4a16_small_bs_threshold
+        and mlp_compute_input.group_list_type == 1
+        and isinstance(w1, torch.Tensor)
+        and isinstance(w2, torch.Tensor)
+        and w1_scale is not None
+        and w2_scale is not None
+        and not mlp_compute_input.dynamic_eplb
+    ):
+        # TP-only path: the dispatcher already provides the permutation from
+        # sorted MLP rows back to the original (token, top-k) entries.  Gather
+        # expert ids through that device tensor directly; no EP expert-map or
+        # group-list expansion/conversion is needed, and this is graph-safe.
+        if mlp_compute_input.topk_ids is None or mlp_compute_input.expanded_row_idx is None:
+            raise RuntimeError("W4A16 TP path requires topk_ids and expanded_row_idx")
+        flat_expert_ids = mlp_compute_input.topk_ids.reshape(-1).to(torch.int32)
+        local_expert_ids = flat_expert_ids.index_select(
+            0, mlp_compute_input.expanded_row_idx.to(torch.int64)
+        )
+        if local_expert_ids.numel() != hidden_states.shape[0]:
+            raise RuntimeError(
+                "W4A16 MoE dispatch metadata mismatch: group_list contains "
+                f"{local_expert_ids.numel()} rows, hidden_states has {hidden_states.shape[0]}"
+            )
+        local_expert_ids = local_expert_ids.view(-1, 1).contiguous()
+        unit_weights = torch.ones(
+            (hidden_states.shape[0], 1), device=hidden_states.device, dtype=torch.float32
+        )
+        output = torch.ops._C_ascend.npu_w4a16_moe(
+            hidden_states,
+            w1,
+            w1_scale,
+            w2,
+            w2_scale,
+            local_expert_ids,
+            unit_weights,
+            float(swiglu_limit),
+        )
+        return output, None
 
     if not mlp_compute_input.quant.is_quant:
         return unquant_apply_mlp(

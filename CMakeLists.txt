@@ -56,6 +56,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/csrc/kernels/*.cpp)
 
 set(VLLM_ASCEND_CUSTOM_OP
     ${KERNEL_FILES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/csrc/moe/w4a16_moe/op_kernel/w4a16_moe.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/csrc/mla_preprocess/op_kernel/mla_preprocess_kernel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/csrc/batch_matmul_transpose/op_kernel/batch_matmul_transpose_kernel.cpp
 )
@@ -90,6 +91,8 @@ else()
     ${CMAKE_CURRENT_SOURCE_DIR}/csrc/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/csrc/aclnn_torch_adapter/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/csrc/batch_matmul_transpose/op_host/tiling/tiling_data.cpp)
+    list(APPEND VLLM_ASCEND_SRC
+      ${CMAKE_CURRENT_SOURCE_DIR}/csrc/moe/w4a16_moe/w4a16_moe_torch_adpt.cpp)
 endif()
 
 include_directories(
