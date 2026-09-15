@@ -18,6 +18,17 @@ adaptation complete. Runtime reference: vLLM
    attention and target auxiliary-state infrastructure are included in the
    preceding component/runtime commits. Speculative admission stays disabled.
 6. Archive reproducible harnesses, compact text evidence, plans and reports.
+7. Register the V4.1 draft architecture and test actual proposer weight sharing.
+8. Restore DSpark cache lookback and cover K5 Engram history acceptance cases.
+9. Record Engram preprocessing TP8 controls, including failed repeatability gates.
+10. Verify real target auxiliary outputs in eager execution and graph replay.
+11. Add the real-weight DSpark component harness and independent CPU oracle.
+12. Update this checkpoint and document the unresolved maximum-context issue.
+
+Every development commit carries a `Signed-off-by` trailer. GitHub CLI confirms
+the authenticated account and repository owner are `Qeeweew`, with origin
+`https://github.com/Qeeweew/vllm-ascend.git`. This checkpoint is committed locally;
+it has not been pushed and no pull request has been opened.
 
 These commits form an ordered development series. NPU measurements below
 refer to their recorded build/source manifests; CPU checks cover the final
@@ -41,9 +52,25 @@ combined tree. Intermediate commits were not individually run on NPU.
   clang-format excludes `csrc/`; no other C++ files changed.
 - Current AscendC installation remains the successful r12 editable build;
   no kernel logic changed during commit organization (only spelling-check
-  annotations for the inherited `PrefetchS` identifier).
+  annotations for an inherited prefetch identifier).
 - Prior NPU component, TP8 and HTTP profiling evidence and its limitations:
   [stage report](../../docs/performance/deepseek_v41_910b.md).
+
+Subsequent focused validation:
+
+- Draft registry/loading/sharing and admission: **57 passed**.
+- Cache planner/spec/metadata with the retention fix: **100 passed**;
+  expanded retention suite: **11 passed**. Engram history/runner: **61 passed**.
+- Production Engram preprocessing controls completed on eight ranks. Strict
+  CANN text repetition passed exactly. Native text/image repetition failed
+  the new `1e-4` selected-logprob repeatability gate, while structural and
+  cleanup checks passed. This does not replace the existing kernel numerical
+  accuracy criteria. See [TP8 controls](ENGRAM_PREPROCESS_TP8_REGRESSION.md).
+- Three real target layers exported exactly correct auxiliary HC means on
+  all eight ranks: two eager calls and six graph replays per rank after
+  resetting warmup counters. Repeated outputs matched exactly and cleanup
+  passed. The initial startup failure and forced cleanup are retained in the
+  [auxiliary-state report](TARGET_AUX_GRAPH_PROBE.md).
 
 Raw tensor captures (`*.pt`, `*.pth`, `*.safetensors`) remain local and are
 ignored by Git. JSON/CSV/XML evidence is preserved, including failed and
@@ -53,12 +80,17 @@ directory referenced in the profiling report.
 
 ## Remaining acceptance work
 
-Source shards 47/48 and complete converted-checkpoint publication are still
-pending. The user resumed downloading; the independent recovery process
-stopped after detecting a changed source prefix. The conversion watcher keeps
-waiting for final published files without modifying download temporaries.
+As of 2026-09-15 23:27 UTC, source shards 47 and 48 are both published at their
+expected sizes, 101535150936 and 101537926640 bytes. The conversion watcher
+has started shard 47; the manifest still lists 46 shards and `complete=false`.
+Full converted-checkpoint publication remains pending. The independent recovery
+process remains stopped and download temporaries are untouched.
 
 Real 40-layer inference, real full Engram tables, long-context quality,
 DSpark acceptance/rollback and final whole-model profiling remain unverified.
-The latest pre-embedding Engram staging change has CPU and single-NPU coverage;
-production TP8 text/image regression is still required after that change.
+The latest pre-embedding Engram staging change has CPU, single-NPU and bounded
+TP8 coverage as detailed above; the native repeatability diagnostic remains
+unresolved. The initial DSpark input kernel also needs a maximum-context
+boundary correction and integration tests, documented in the
+[maximum-context audit](DSPARK_MAX_CONTEXT_AUDIT.md). Production speculative
+admission remains disabled.
