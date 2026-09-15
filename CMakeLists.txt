@@ -65,6 +65,11 @@ set(VLLM_ASCEND_CUSTOM_OP_EXCLUDE_ASCEND950
     ${CMAKE_CURRENT_SOURCE_DIR}/csrc/batch_matmul_transpose/op_kernel/batch_matmul_transpose_kernel.cpp
 )
 
+if(SOC_VERSION MATCHES "ascend910b.*")
+    list(APPEND VLLM_ASCEND_CUSTOM_OP
+        ${CMAKE_CURRENT_SOURCE_DIR}/csrc/moe/w4a16_moe/op_kernel/w4a16_moe.cpp)
+endif()
+
 if(SOC_VERSION MATCHES "ascend950")
     message(STATUS "A5 hardware detected: disabling MLAPO operators")
     message(STATUS "A5 hardware detected: excluding batch_matmul_transpose operators")
@@ -93,6 +98,11 @@ else()
 endif()
 
 # Sparse KV cache offloading is currently supported on Atlas A3 only.
+if(SOC_VERSION MATCHES "ascend910b.*")
+    list(APPEND VLLM_ASCEND_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/csrc/moe/w4a16_moe/w4a16_moe_torch_adpt.cpp)
+endif()
+
 if(SOC_VERSION MATCHES "ascend910_93.*")
   find_package(OpenMP REQUIRED)
 endif()
@@ -114,6 +124,9 @@ set(
 )
 
 pybind11_add_module(vllm_ascend_C ${VLLM_ASCEND_SRC})
+if(SOC_VERSION MATCHES "ascend910b.*")
+    target_compile_definitions(vllm_ascend_C PRIVATE VLLM_ENABLE_V41_KERNELS)
+endif()
 if(SOC_VERSION MATCHES "ascend910_93.*")
   target_compile_definitions(vllm_ascend_C PRIVATE VLLM_ASCEND_ENABLE_SPARSE_KV_OFFLOAD)
   target_link_libraries(vllm_ascend_C PRIVATE OpenMP::OpenMP_CXX)

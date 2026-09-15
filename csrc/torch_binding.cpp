@@ -31,6 +31,9 @@
 #include "aclnn_torch_adapter/op_api_common.h"
 #include "moe/add_rms_norm_bias/add_rms_norm_bias_torch_adpt.h"
 #include "moe/rms_norm_cast/rms_norm_cast_torch_adpt.h"
+#ifdef VLLM_ENABLE_V41_KERNELS
+#include "moe/w4a16_moe/w4a16_moe_torch_adpt.h"
+#endif
 #ifdef VLLM_ENABLE_ATB_AND_DIRECT_KERNELS
 #include "batch_matmul_transpose/batch_matmul_transpose_torch_adpt.h"
 #include "mla_preprocess/mla_preprocess_torch_adpt.h"
@@ -82,6 +85,121 @@
 #include <vector>
 
 namespace vllm_ascend {
+
+#ifdef VLLM_ENABLE_V41_KERNELS
+void compressor_v41(
+    const at::Tensor& kv_score, const at::Tensor& positions,
+    const at::Tensor& slot_mapping, const at::Tensor& query_start_loc,
+    const at::Tensor& token_to_req_indices, const at::Tensor& norm_weight,
+    at::Tensor& state_cache, at::Tensor& latent_out, int64_t compress_ratio,
+    double eps)
+{
+    for (const auto& tensor : {kv_score, positions, slot_mapping, query_start_loc,
+                               token_to_req_indices, norm_weight, state_cache, latent_out}) {
+        TORCH_CHECK(tensor.device() == kv_score.device() && tensor.is_contiguous(),
+                    "compressor_v41 tensors must be contiguous and on the same NPU");
+    }
+    EXEC_NPU_CMD(aclnnCompressorV41, kv_score, positions, slot_mapping, query_start_loc,
+                 token_to_req_indices, norm_weight, state_cache, latent_out, compress_ratio, eps);
+}
+
+void engram_gate(const at::Tensor &hidden, const at::Tensor &kv,
+                 const at::Tensor &q_weight, const at::Tensor &k_weight,
+                 const at::Tensor &token_mask, at::Tensor &output, double eps)
+{
+    for (const auto *tensor : {&hidden, &kv, &q_weight, &k_weight, &token_mask,
+                              static_cast<const at::Tensor *>(&output)}) {
+        TORCH_CHECK(tensor->device() == hidden.device() && tensor->is_contiguous(),
+                    "EngramGate requires contiguous tensors on the same NPU");
+    }
+    EXEC_NPU_CMD(aclnnEngramGate, hidden, kv, q_weight, k_weight, token_mask, output, eps);
+}
+
+void indexer_v41_candidate_gather(
+    const at::Tensor &key_cache, const at::Tensor &key_scale_cache,
+    const at::Tensor &sorted_blocks, const at::Tensor &block_table,
+    const at::Tensor &seqused_k, const at::Tensor &cu_seqlens_q,
+    at::Tensor &gathered_key, at::Tensor &gathered_scale, at::Tensor &positions)
+{
+    constexpr int64_t HEAD_DIM = 128;
+    constexpr int64_t CANDIDATE_BLOCKS = 2048;
+    constexpr int64_t BLOCK_TOKENS = 8;
+    for (const auto *tensor : {&key_scale_cache, &sorted_blocks, &block_table,
+                              &seqused_k, &cu_seqlens_q,
+                              static_cast<const at::Tensor *>(&gathered_key),
+                              static_cast<const at::Tensor *>(&gathered_scale),
+                              static_cast<const at::Tensor *>(&positions)}) {
+        TORCH_CHECK(tensor->device() == key_cache.device(), "Candidate gather requires one NPU device");
+    }
+    for (const auto *tensor : {&sorted_blocks, &block_table, &seqused_k, &cu_seqlens_q,
+                              static_cast<const at::Tensor *>(&gathered_key),
+                              static_cast<const at::Tensor *>(&gathered_scale),
+                              static_cast<const at::Tensor *>(&positions)}) {
+        TORCH_CHECK(tensor->is_contiguous(), "Candidate gather metadata and outputs must be contiguous");
+    }
+    TORCH_CHECK(key_cache.scalar_type() == at::kChar && key_cache.dim() == 4 &&
+                key_cache.size(0) > 0 && key_cache.size(1) > 0 &&
+                key_cache.size(2) == 1 && key_cache.size(3) == HEAD_DIM &&
+                key_cache.stride(3) == 1 && key_cache.stride(2) == HEAD_DIM &&
+                key_cache.stride(1) == HEAD_DIM &&
+                key_cache.stride(0) >= key_cache.size(1) * HEAD_DIM,
+                "Candidate keys must be INT8 [pages,page_size,1,128] with only axis-zero gaps");
+    TORCH_CHECK(key_scale_cache.scalar_type() == at::kHalf && key_scale_cache.dim() == 3 &&
+                key_scale_cache.size(0) == key_cache.size(0) &&
+                key_scale_cache.size(1) == key_cache.size(1) && key_scale_cache.size(2) == 1 &&
+                key_scale_cache.stride(2) == 1 && key_scale_cache.stride(1) == 1 &&
+                key_scale_cache.stride(0) >= key_scale_cache.size(1),
+                "Candidate scales must be FP16 [pages,page_size,1] with only axis-zero gaps");
+    TORCH_CHECK(sorted_blocks.scalar_type() == at::kFloat && sorted_blocks.dim() == 1 &&
+                sorted_blocks.size(0) == CANDIDATE_BLOCKS,
+                "Candidate block IDs must be descending FP32 [2048]");
+    TORCH_CHECK(block_table.scalar_type() == at::kInt && block_table.dim() == 2 &&
+                block_table.size(0) == 1 && block_table.size(1) > 0 &&
+                seqused_k.scalar_type() == at::kInt && seqused_k.dim() == 1 && seqused_k.size(0) == 1 &&
+                cu_seqlens_q.scalar_type() == at::kInt && cu_seqlens_q.dim() == 1 && cu_seqlens_q.size(0) == 2,
+                "Candidate gather requires INT32 B1 page table, lengths and query boundaries");
+    TORCH_CHECK(gathered_key.scalar_type() == at::kBFloat16 && gathered_key.dim() == 3 &&
+                gathered_key.size(0) == 1 && gathered_key.size(2) == HEAD_DIM,
+                "Gathered keys must be BF16 [1,N,128]");
+    const int64_t count = gathered_key.size(1);
+    TORCH_CHECK(count > 0 && count <= CANDIDATE_BLOCKS * BLOCK_TOKENS && count % BLOCK_TOKENS == 0 &&
+                gathered_scale.scalar_type() == at::kFloat && gathered_scale.dim() == 1 &&
+                gathered_scale.size(0) == count && positions.scalar_type() == at::kInt &&
+                positions.dim() == 1 && positions.size(0) == count,
+                "Candidate output N must be a positive multiple of 8 up to 16384, with FP32 scales/INT32 positions");
+    int64_t key_stride0 = key_cache.stride(0);
+    int64_t scale_stride0 = key_scale_cache.stride(0);
+    EXEC_NPU_CMD(aclnnIndexerV41CandidateGather, key_cache, key_scale_cache, sorted_blocks,
+                 block_table, seqused_k, cu_seqlens_q, gathered_key, gathered_scale,
+                 positions, key_stride0, scale_stride0);
+}
+
+void indexer_v41_candidate_score(
+    const at::Tensor &qk, const at::Tensor &weights, const at::Tensor &query_scale,
+    const at::Tensor &gathered_scale, const at::Tensor &positions, at::Tensor &scores)
+{
+    constexpr int64_t HEADS = 32;
+    for (const auto *tensor : {&qk, &weights, &query_scale, &gathered_scale, &positions,
+                              static_cast<const at::Tensor *>(&scores)}) {
+        TORCH_CHECK(tensor->device() == qk.device() && tensor->is_contiguous(),
+                    "Candidate score requires contiguous tensors on one NPU device");
+    }
+    TORCH_CHECK(qk.scalar_type() == at::kFloat && qk.dim() == 3 &&
+                qk.size(0) == 1 && qk.size(1) == HEADS && qk.size(2) > 0 &&
+                weights.scalar_type() == at::kHalf && weights.dim() == 2 &&
+                weights.size(0) == 1 && weights.size(1) == HEADS &&
+                query_scale.scalar_type() == at::kHalf && query_scale.sizes() == weights.sizes(),
+                "Candidate score needs FP32 QK [1,32,N] and FP16 weights/query scales [1,32]");
+    const int64_t count = qk.size(2);
+    TORCH_CHECK(gathered_scale.scalar_type() == at::kFloat && gathered_scale.dim() == 1 &&
+                gathered_scale.size(0) == count && positions.scalar_type() == at::kInt &&
+                positions.dim() == 1 && positions.size(0) == count &&
+                scores.scalar_type() == at::kFloat && scores.dim() == 2 &&
+                scores.size(0) == 1 && scores.size(1) == count,
+                "Candidate score needs FP32 scales [N], INT32 positions [N] and FP32 output [1,N]");
+    EXEC_NPU_CMD(aclnnIndexerV41CandidateScore, qk, weights, query_scale, gathered_scale, positions, scores);
+}
+#endif
 
 // Required by EXEC_NPU_CMD hash helpers in aclnn_torch_adapter/op_api_common.h
 thread_local char g_hashBuf[kHashBufSize];
@@ -2869,6 +2987,27 @@ TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 // Pybind on other platform
 TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 {
+#ifdef VLLM_ENABLE_V41_KERNELS
+    ops.def("compressor_v41(Tensor kv_score, Tensor positions, Tensor slot_mapping, "
+            "Tensor query_start_loc, Tensor token_to_req_indices, Tensor norm_weight, "
+            "Tensor(a!) state_cache, Tensor(b!) latent_out, int compress_ratio, "
+            "float eps=1e-20) -> ()");
+    ops.impl("compressor_v41", torch::kPrivateUse1, &vllm_ascend::compressor_v41);
+    ops.def("engram_gate(Tensor hidden, Tensor kv, Tensor q_weight, Tensor k_weight, "
+            "Tensor token_mask, Tensor(a!) output, float eps=1e-20) -> ()");
+    ops.impl("engram_gate", torch::kPrivateUse1, &vllm_ascend::engram_gate);
+    ops.def("indexer_v41_candidate_gather(Tensor key_cache, Tensor key_scale_cache, "
+            "Tensor sorted_blocks, Tensor block_table, Tensor seqused_k, Tensor cu_seqlens_q, "
+            "Tensor(a!) gathered_key, Tensor(b!) gathered_scale, Tensor(c!) positions) -> ()");
+    ops.impl("indexer_v41_candidate_gather", torch::kPrivateUse1, &vllm_ascend::indexer_v41_candidate_gather);
+    ops.def("indexer_v41_candidate_score(Tensor qk, Tensor weights, Tensor query_scale, "
+            "Tensor gathered_scale, Tensor positions, Tensor(a!) scores) -> ()");
+    ops.impl("indexer_v41_candidate_score", torch::kPrivateUse1, &vllm_ascend::indexer_v41_candidate_score);
+    ops.def("npu_w4a16_moe(Tensor x, Tensor w13, Tensor w13_scale, Tensor w2, "
+            "Tensor w2_scale, Tensor expert_ids, Tensor topk_weights, "
+            "float swiglu_limit=0.0) -> Tensor");
+    ops.impl("npu_w4a16_moe", torch::kPrivateUse1, &vllm_ascend::npu_w4a16_moe);
+#endif
 
     // vLLM-Ascend custom ops
     // Gemma RmsNorm

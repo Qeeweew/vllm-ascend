@@ -110,6 +110,10 @@ elif [[ "$SOC_VERSION" =~ ^ascend910b ]]; then
         "causal_conv1d"
         "lightning_indexer_quant"
         "compressor"
+        "compressor_v41"
+        "engram_gate"
+        "indexer_v41_candidate_gather"
+        "indexer_v41_candidate_score"
         "compressor_metadata"
         "vllm_quant_lightning_indexer"
         "vllm_quant_lightning_indexer_metadata"
@@ -270,8 +274,12 @@ log_selected_ops
   log "subshell cwd before cd=$(pwd)"
   cd "${ROOT_DIR}/csrc"
   log "subshell cwd after cd=$(pwd)"
-  log "preserving csrc/build and cleaning output dirs"
-  rm -rf -- output build_out
+  # Generated kernel *_src_copy.done / binary stamps do not depend on all
+  # AscendC sources and headers. Reusing this tree can package an old kernel
+  # together with new source text, even after a successful editable build.
+  # Keep complete builds reliable until source dependency tracking is fixed.
+  log "cleaning generated build tree and output dirs"
+  rm -rf -- build output build_out
 
   : "${CUSTOM_OPS:?CUSTOM_OPS is not set}"
   : "${SOC_VERSION:?SOC_VERSION is not set}"

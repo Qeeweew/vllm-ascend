@@ -39,6 +39,43 @@ const int64_t INT4_NUMS_IN_INT32 = 8;
 constexpr int64_t DSA_SLOT_MAPPING_FLAT = 1;
 constexpr int64_t DSA_SLOT_MAPPING_BLOCK_OFFSET = 2;
 
+#ifdef VLLM_ENABLE_V41_KERNELS
+void engram_gate_meta(const at::Tensor &hidden, const at::Tensor &kv,
+                      const at::Tensor &q_weight, const at::Tensor &k_weight,
+                      const at::Tensor &token_mask, at::Tensor &output, double eps)
+{}
+
+void indexer_v41_candidate_gather_meta(
+    const at::Tensor &key_cache, const at::Tensor &key_scale_cache,
+    const at::Tensor &sorted_blocks, const at::Tensor &block_table,
+    const at::Tensor &seqused_k, const at::Tensor &cu_seqlens_q,
+    at::Tensor &gathered_key, at::Tensor &gathered_scale, at::Tensor &positions)
+{}
+
+void indexer_v41_candidate_score_meta(
+    const at::Tensor &qk, const at::Tensor &weights, const at::Tensor &query_scale,
+    const at::Tensor &gathered_scale, const at::Tensor &positions, at::Tensor &scores)
+{}
+
+void compressor_v41_meta(
+    const at::Tensor& kv_score, const at::Tensor& positions,
+    const at::Tensor& slot_mapping, const at::Tensor& query_start_loc,
+    const at::Tensor& token_to_req_indices, const at::Tensor& norm_weight,
+    at::Tensor& state_cache, at::Tensor& latent_out, int64_t compress_ratio,
+    double eps)
+{
+}
+
+at::Tensor npu_w4a16_moe_meta(
+    const at::Tensor& x, const at::Tensor& w13, const at::Tensor& w13_scale,
+    const at::Tensor& w2, const at::Tensor& w2_scale,
+    const at::Tensor& expert_ids, const at::Tensor& topk_weights,
+    double swiglu_limit)
+{
+    return at::empty_symint(x.sym_sizes(), x.options());
+}
+#endif
+
 c10::SymInt ceil_div(const c10::SymInt& value, int64_t divisor)
 {
     return (value + c10::SymInt(divisor - 1)) / c10::SymInt(divisor);
@@ -2152,6 +2189,13 @@ TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 // Pybind on other platform
 namespace {
 TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
+#ifdef VLLM_ENABLE_V41_KERNELS
+    ops.impl("compressor_v41", &vllm_ascend::meta::compressor_v41_meta);
+    ops.impl("engram_gate", &vllm_ascend::meta::engram_gate_meta);
+    ops.impl("indexer_v41_candidate_gather", &vllm_ascend::meta::indexer_v41_candidate_gather_meta);
+    ops.impl("indexer_v41_candidate_score", &vllm_ascend::meta::indexer_v41_candidate_score_meta);
+    ops.impl("npu_w4a16_moe", &vllm_ascend::meta::npu_w4a16_moe_meta);
+#endif
     //Gemma rmsnorm meta implementation
     ops.impl("npu_gemma_rms_norm", &vllm_ascend::meta::npu_gemma_rms_norm_meta);
     // recurrent_gated_delta_rule meta implementation
