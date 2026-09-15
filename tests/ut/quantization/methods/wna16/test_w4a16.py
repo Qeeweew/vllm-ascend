@@ -154,6 +154,7 @@ class TestAscendW4A16FusedMoEMethod(TestBase):
     def setUp(self, mock_get_current_vllm_config, mock_get_ascend_config):
         mock_ascend_config = Mock()
         mock_ascend_config.eplb_config.dynamic_eplb = False
+        mock_ascend_config.enable_w4a16_decode = False
         mock_ascend_config.eplb_config.expert_map_record_path = None
         mock_get_ascend_config.return_value = mock_ascend_config
 
@@ -202,8 +203,8 @@ class TestAscendW4A16FusedMoEMethod(TestBase):
         self.assertEqual(param_dict["w2_weight_shape"].dtype, torch.int32)
         self.assertEqual(param_dict["w2_weight_shape"].shape, (self.experts, 2))
 
-        self.assertEqual(param_dict["w13_weight_offset"].dtype, torch.bfloat16)
-        self.assertEqual(param_dict["w13_weight_offset"].shape, expected_w13_scale_shape)
+        self.assertNotIn("w13_weight_offset", param_dict)
+        self.assertNotIn("w2_weight_offset", param_dict)
 
     def test_get_dynamic_quant_param_assertion_intermediate_size_message(self):
         message = "Expecting `intermediate_size_per_partition` 33 can be divided by `group_size` 32"
@@ -245,13 +246,6 @@ class TestAscendW4A16FusedMoEMethod(TestBase):
             torch.ones(w2_scale_shape, dtype=torch.bfloat16), requires_grad=False
         )
 
-        layer.w13_weight_offset = torch.nn.Parameter(
-            torch.zeros(w13_scale_shape, dtype=torch.bfloat16), requires_grad=False
-        )
-        layer.w2_weight_offset = torch.nn.Parameter(
-            torch.zeros(w2_scale_shape, dtype=torch.bfloat16), requires_grad=False
-        )
-
         layer.w13_weight_shape = torch.nn.Parameter(
             torch.tensor([[2 * self.input_size, self.output_size]] * self.experts, dtype=torch.int32),
             requires_grad=False,
@@ -276,7 +270,8 @@ class TestAscendW4A16FusedMoEMethod(TestBase):
         self.assertEqual(layer.w13_weight_packed.data.shape, torch.Size([8, 128, 8]))
         self.assertEqual(layer.w2_weight_packed.data.shape, torch.Size([8, 32, 16]))
         self.assertEqual(layer.w13_weight_scale.data.shape, torch.Size([8, 4, 64]))
-        self.assertEqual(layer.w2_weight_offset.data.shape, torch.Size([8, 1, 128]))
+        self.assertFalse(hasattr(layer, "w13_weight_offset"))
+        self.assertFalse(hasattr(layer, "w2_weight_offset"))
         self.assertTrue(layer.w13_weight_scale.data.is_contiguous())
 
     @patch("vllm_ascend.quantization.methods.wna16.w4a16._EXTRA_CTX")

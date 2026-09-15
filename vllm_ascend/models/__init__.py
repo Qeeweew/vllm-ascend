@@ -32,6 +32,9 @@ def register_model():
         "DeepseekV4ForCausalLM", "vllm_ascend.models.deepseek_v4.model:AscendDeepseekV4ForCausalLM"
     )
     ModelRegistry.register_model(
+        "DeepseekV41ForCausalLM", "vllm_ascend.models.deepseek_v4.model:AscendDeepseekV41ForConditionalGeneration"
+    )
+    ModelRegistry.register_model(
         "DeepseekV4ForConditionalGeneration",
         "vllm_ascend.models.deepseek_v4.vl_model:AscendDeepseekV4ForConditionalGeneration",
     )

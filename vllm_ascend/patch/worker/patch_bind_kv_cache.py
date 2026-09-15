@@ -52,7 +52,14 @@ def bind_kv_cache(
 
     # Bind kv_caches to forward context
     for layer_name, kv_cache in kv_caches.items():
-        forward_context[layer_name].kv_cache = kv_cache
+        layer = forward_context[layer_name]
+        # Current vLLM lets stateful layers unpack the raw allocation here.
+        # Direct assignment bypasses e.g. V4.1's ring view normalization.
+        binder = getattr(layer, "bind_kv_cache", None)
+        if callable(binder):
+            binder(kv_cache)
+        else:
+            layer.kv_cache = kv_cache
 
     if not vllm_version_is("0.28.0"):
         utils.share_replayssm_ring_trackers(ordered_layer_names, forward_context, kv_cache_groups)

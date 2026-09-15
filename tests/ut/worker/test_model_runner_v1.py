@@ -95,6 +95,29 @@ class TestGlm5MtpGraphMetadata(unittest.TestCase):
         call_kwargs = runner.cudagraph_dispatcher.dispatch.call_args.kwargs
         self.assertTrue(call_kwargs["uniform_decode"])
 
+    def test_native_w4_graph_requires_finished_prompt(self):
+        for computed, native, forced, expected in (
+            ([9, 10], True, None, False),
+            ([10, 10], True, None, True),
+            ([9, 10], False, None, True),
+            ([0, 0], True, True, True),
+        ):
+            with self.subTest(computed=computed, native=native, forced=forced):
+                runner = self._build_dispatch_runner(speculative=False)
+                runner.uniform_decode_query_len = 1
+                runner.ascend_config = SimpleNamespace(enable_w4a16_decode=native)
+                runner.input_batch.num_computed_tokens_cpu[:] = computed
+                with patch("vllm_ascend.worker.model_runner_v1.enable_sp", return_value=False):
+                    runner._determine_batch_execution_and_padding(
+                        num_tokens=2,
+                        num_reqs=2,
+                        num_scheduled_tokens_np=np.array([1, 1], dtype=np.int32),
+                        max_num_scheduled_tokens=1,
+                        use_cascade_attn=False,
+                        force_uniform_decode=forced,
+                    )
+                self.assertEqual(runner.cudagraph_dispatcher.dispatch.call_args.kwargs["uniform_decode"], expected)
+
 
 class TestDummyRunSlotInvalidation(unittest.TestCase):
     def test_backend_metadata_sees_invalidated_dummy_slots(self):
@@ -451,6 +474,113 @@ def _ratio_kwargs(ratio: int) -> dict[str, int]:
 
 
 class TestNPUModelRunnerKVCache(unittest.TestCase):
+    def test_v41_packed_cache_preserves_backing_offsets_and_padded_pages(self):
+        from vllm_ascend.core.kv_cache_interface import (
+            AscendV41IndexerCacheSpec,
+            AscendV41MainCacheSpec,
+            AscendV41SWACacheSpec,
+        )
+
+        for ratio in (1, 2):
+            runner = self._build_runner()
+            common = dict(block_size=32, num_kv_heads=1, head_size_v=0, page_size_padded=65536)
+            specs = {
+                "model.layers.2.self_attn.main": AscendV41MainCacheSpec(
+                    **common, head_size=512, dtype=torch.bfloat16, **_ratio_kwargs(ratio)
+                ),
+                "model.layers.2.self_attn.index": AscendV41IndexerCacheSpec(
+                    **common, head_size=128, dtype=torch.int8, **_ratio_kwargs(ratio)
+                ),
+                "model.layers.2.self_attn.swa": AscendV41SWACacheSpec(
+                    **common, head_size=512, dtype=torch.bfloat16, sliding_window=128
+                ),
+            }
+            blocks = 3
+            layer_bytes = blocks * 65536
+            descriptors = [
+                SimpleNamespace(
+                    size=layer_bytes * len(specs),
+                    layers=[name],
+                    shared_by=[name],
+                    layer_stride=layer_bytes,
+                    block_stride=65536,
+                    offset=i * layer_bytes,
+                )
+                for i, name in enumerate(specs)
+            ]
+            groups = [
+                SimpleNamespace(layer_names=[name], kv_cache_spec=spec, backend=None) for name, spec in specs.items()
+            ]
+            config = SimpleNamespace(num_blocks=blocks, kv_cache_tensors=descriptors, kv_cache_groups=groups)
+            runner._get_layer_kv_cache_specs = lambda _, specs=specs: specs
+            runner._kv_cache_spec_attn_group_iterator = lambda groups=groups: groups
+            raw = runner._allocate_kv_cache_tensors(config)
+            assert len({value.untyped_storage().data_ptr() for value in raw.values()}) == 1
+            assert len({value.data_ptr() for value in raw.values()}) == 3
+            for value in raw.values():
+                value.zero_()
+            caches = runner._reshape_kv_cache_tensors(config, raw)
+            for name, spec in specs.items():
+                value = caches[name]
+                if isinstance(spec, AscendV41IndexerCacheSpec):
+                    key, scale = value
+                    assert key.shape == (blocks, 32 // ratio, 1, 128)
+                    assert scale.shape == (blocks, 32 // ratio, 1)
+                    assert scale.data_ptr() == raw[name].data_ptr() + spec.scale_offset_bytes
+                    key.fill_(7)
+                    scale.fill_(0.25)
+                    for block in range(blocks):
+                        page = raw[name][block * 65536 : (block + 1) * 65536]
+                        assert torch.all(page[: spec.scale_offset_bytes] == 7)
+                        expected = torch.full((32 // ratio,), 0.25, dtype=torch.float16)
+                        actual = page[spec.scale_offset_bytes : spec.real_page_size_bytes].view(torch.float16)
+                        torch.testing.assert_close(actual, expected, rtol=0, atol=0)
+                        assert torch.all(page[spec.real_page_size_bytes :] == 0)
+                else:
+                    assert value.shape == (blocks, spec.physical_block_size, 1, 512)
+                    assert value.stride(0) == 65536 // 2
+                    value[1].fill_(2)
+                    assert torch.all(value[0] == 0) and torch.all(value[2] == 0)
+            descriptors[0].block_stride += 1
+            with self.assertRaisesRegex(ValueError, "descriptor geometry"):
+                runner._allocate_kv_cache_tensors(config)
+
+    def test_compressor_v41_circular_state_is_one_fp32_tensor(self):
+        from vllm.v1.kv_cache_interface import CircularBufferSpec
+
+        from vllm_ascend.models.deepseek_v4.compressor import CompressorV41Backend
+
+        runner = self._build_runner()
+        name = "model.layers.2.self_attn.compressor.state_cache"
+        spec = CircularBufferSpec(block_size=8, num_kv_heads=1, head_size=1024, head_size_v=0, dtype=torch.float32)
+        num_blocks = 3
+        descriptor = SimpleNamespace(
+            size=num_blocks * spec.page_size_bytes,
+            layers=[name],
+            shared_by=[name],
+            layer_stride=num_blocks * spec.page_size_bytes,
+            block_stride=spec.page_size_bytes,
+            offset=0,
+        )
+        config = SimpleNamespace(
+            num_blocks=num_blocks,
+            kv_cache_tensors=[descriptor],
+            kv_cache_groups=[SimpleNamespace(layer_names=[name], kv_cache_spec=spec)],
+        )
+        runner._get_layer_kv_cache_specs = lambda _: {name: spec}
+        runner._kv_cache_spec_attn_group_iterator = lambda: [
+            SimpleNamespace(backend=CompressorV41Backend, kv_cache_spec=spec, layer_names=[name])
+        ]
+        raw = runner._allocate_kv_cache_tensors(config)
+        assert isinstance(raw[name], torch.Tensor)
+        assert raw[name].numel() == num_blocks * spec.page_size_bytes
+        caches = runner._reshape_kv_cache_tensors(config, raw)
+        assert caches[name].dtype == torch.float32
+        assert caches[name].shape == (3, 1, 8, 1024)
+        assert caches[name].data_ptr() == raw[name].data_ptr()
+        with self.assertRaisesRegex(ValueError, "state pages"):
+            runner._reshape_kv_cache_tensors(config, {name: raw[name][:-1]})
+
     def _build_runner(self):
         runner = NPUModelRunner.__new__(NPUModelRunner)
         runner.device = torch.device("cpu")

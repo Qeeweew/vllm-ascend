@@ -4,12 +4,14 @@ import math
 from collections import defaultdict
 from dataclasses import replace
 
+import torch
 import vllm.v1.core.kv_cache_utils
 from vllm.config import VllmConfig
 from vllm.logger import logger
 from vllm.utils.math_utils import cdiv, round_up
 from vllm.v1.core.kv_cache_utils import _approximate_gcd, may_override_num_blocks
 from vllm.v1.kv_cache_interface import (
+    CircularBufferSpec,
     FullAttentionSpec,
     KVCacheConfig,
     KVCacheGroupSpec,
@@ -23,7 +25,12 @@ from vllm.v1.kv_cache_interface import (
     get_kv_cache_spec_kind,
 )
 
-from vllm_ascend.core.kv_cache_interface import is_prefix_cacheable
+from vllm_ascend.core.kv_cache_interface import (
+    AscendV41IndexerCacheSpec,
+    AscendV41MainCacheSpec,
+    AscendV41SWACacheSpec,
+    is_prefix_cacheable,
+)
 from vllm_ascend.models.glm5next.cache_config import (
     _get_glm5_next_cache_layout,
     get_glm5_next_kv_cache_config,
@@ -239,6 +246,8 @@ def group_and_unify_kv_cache_specs(
     Group the KV cache specs and unify each group into one UniformTypeKVCacheSpecs.
     Currently, this is only used for DeepseekV4.
     """
+    if _has_v41_cache_specs(kv_cache_spec):
+        return None
     if not any(isinstance(spec, SlidingWindowMLASpec) for spec in kv_cache_spec.values()):
         return None
 
@@ -370,6 +379,8 @@ def _ascend_get_packed_kv_cache_groups(
     kv_cache_spec: dict[str, KVCacheSpec],
 ) -> list[KVCacheGroupSpec] | None:
     """Preserve Ascend's DSV4 grouping on the live packed-group hook."""
+    if _has_v41_cache_specs(kv_cache_spec):
+        return _get_deepseek_v41_kv_cache_groups(vllm_config, kv_cache_spec)
     grouped_specs = group_and_unify_kv_cache_specs(kv_cache_spec)
     if grouped_specs is None:
         assert _orig_get_packed_kv_cache_groups is not None
@@ -589,10 +600,71 @@ def _ascend_max_memory_usage_bytes_from_groups(
     )
 
 
+def _has_v41_cache_specs(kv_cache_spec: dict[str, KVCacheSpec]) -> bool:
+    return any(
+        isinstance(spec, (AscendV41MainCacheSpec, AscendV41IndexerCacheSpec, AscendV41SWACacheSpec))
+        for spec in kv_cache_spec.values()
+    )
+
+
+def _get_deepseek_v41_kv_cache_groups(
+    vllm_config: VllmConfig, kv_cache_spec: dict[str, KVCacheSpec]
+) -> list[KVCacheGroupSpec]:
+    """Keep V4.1 roles and circular state out of the legacy C4/C128 planner.
+
+    Initial supported common page is 32 KiB: block-32 BF16 SWA/main and the
+    contiguous capacity-8 FP32 compressor ring. Smaller attention/index pages
+    may be padded because their kernels accept page strides. Circular state
+    must already occupy exactly this page; padding or resizing it is unsafe.
+    """
+    if vllm_version_is("0.28.0"):
+        raise ValueError("V4.1 cache planning requires the installed vLLM main descriptor API")
+    if vllm_config.scheduler_config.disable_hybrid_kv_cache_manager:
+        raise ValueError("V4.1 requires the hybrid cache manager to preserve SWA and circular-state semantics")
+    layout = vllm_config.cache_config.get_resolved_kv_cache_layout()
+    if not layout.is_layer_compact or not layout.is_block_compact:
+        raise ValueError("V4.1 requires a layer-compact and block-compact cache layout (LBNHC or LBHNC)")
+    common_page = 32768
+    padded = {}
+    for name, spec in kv_cache_spec.items():
+        if isinstance(spec, (AscendV41MainCacheSpec, AscendV41IndexerCacheSpec, AscendV41SWACacheSpec)):
+            if spec.real_page_size_bytes > common_page or spec.page_size_bytes > common_page:
+                raise ValueError(
+                    f"V4.1 cache {name} exceeds the supported 32 KiB common page; "
+                    "larger block/speculation configurations require compressor stride support"
+                )
+            padded[name] = replace(spec, page_size_padded=common_page)
+        elif isinstance(spec, CircularBufferSpec):
+            if (
+                spec.block_size != 8
+                or spec.num_kv_heads != 1
+                or spec.head_size != 1024
+                or spec.head_size_v != 0
+                or spec.dtype != torch.float32
+                or spec.real_page_size_bytes != common_page
+                or spec.page_size_bytes != common_page
+            ):
+                raise ValueError(
+                    f"V4.1 circular cache {name} must be an unpadded FP32 capacity-8/1024 ring; "
+                    "never emulate padded ring support with an as_strided view"
+                )
+            padded[name] = spec
+        else:
+            raise ValueError(f"Unsupported cache {name} ({type(spec).__name__}) in the V4.1 32 KiB planner")
+    # The upstream general equal-page grouping balances group layer counts and
+    # preserves exact custom spec classes. Its C4/C128 packed hook is bypassed.
+    groups = _orig_get_kv_cache_groups_uniform_page_size(padded)
+    if sorted(name for group in groups for name in group.layer_names) != sorted(kv_cache_spec):
+        raise RuntimeError("V4.1 cache grouping lost or duplicated a layer")
+    return groups
+
+
 def _get_glm5_next_kv_cache_groups(
     vllm_config: VllmConfig,
     kv_cache_spec: dict[str, KVCacheSpec],
 ) -> list[KVCacheGroupSpec]:
+    if _has_v41_cache_specs(kv_cache_spec):
+        return _get_deepseek_v41_kv_cache_groups(vllm_config, kv_cache_spec)
     if any(is_glm5_next_cache_spec(spec) for spec in kv_cache_spec.values()):
         return get_glm5_next_kv_cache_groups(vllm_config, kv_cache_spec)
     return _orig_get_kv_cache_groups(vllm_config, kv_cache_spec)

@@ -21,16 +21,22 @@ from typing import Any
 import torch
 import torch_npu
 from vllm.config import get_current_vllm_config
+from vllm.forward_context import get_forward_context
+from vllm.model_executor.layers.fused_moe.activation import MoEActivation
 
 from vllm_ascend.ascend_config import get_ascend_config
 from vllm_ascend.ascend_forward_context import _EXTRA_CTX
 from vllm_ascend.ops.fused_moe.dataclass.fused_experts import build_fused_experts_input
 from vllm_ascend.ops.fused_moe.dataclass.moe_mlp import MoEMlpComputeInput
+from vllm_ascend.ops.fused_moe.moe_comm_method import AllGatherCommImpl, FusedExpertsResult
 from vllm_ascend.ops.fused_moe.routed_experts import AscendRoutedExperts  # noqa: F401
 from vllm_ascend.utils import dispose_tensor
 
 from ..base import AscendMoEScheme, QuantType
 from ..registry import register_scheme
+
+# E384 hot-expert graph tests regress at B8; B1/2/4 pass median and P95 gates.
+_W4A16_DECODE_MAX_TOKENS = 4
 
 
 def unpack_from_int32(
@@ -109,6 +115,25 @@ def pack_to_int32(weight: torch.Tensor) -> torch.Tensor:
     return packed_weight
 
 
+def repack_experts_bounded(weight: torch.Tensor, num_bits: int = 4) -> torch.Tensor:
+    """Repack K-axis offset-binary checkpoints one expert at a time.
+
+    Output uses CANN's N-axis two's-complement INT4 layout, also consumed by
+    the native decode kernel. The expanded temporary is bounded by one expert,
+    independent of the number of experts in a layer.
+    """
+    if weight.ndim != 3 or weight.dtype != torch.int32 or num_bits != 4:
+        raise ValueError("expected INT32 [experts, outputs, inputs/8] 4-bit weights")
+    experts, outputs, packed_inputs = weight.shape
+    if outputs % 8:
+        raise ValueError("the output dimension must be divisible by 8")
+    repacked = torch.empty((experts, packed_inputs * 8, outputs // 8), device=weight.device, dtype=torch.int32)
+    for expert in range(experts):
+        unpacked = unpack_from_int32(weight[expert], torch.Size((outputs, packed_inputs * 8)), num_bits)
+        repacked[expert].copy_(torch_npu.npu_convert_weight_to_int4pack(unpacked.t().contiguous().int()))
+    return repacked
+
+
 @register_scheme("W4A16", "moe")
 class AscendW4A16FusedMoEMethod(AscendMoEScheme):
     """FusedMoE method for Ascend W4A16.
@@ -150,9 +175,8 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
     down projection is loaded as ``w2``. In
     :meth:`process_weights_after_loading`, weight tensors are unpacked,
     transposed into the data layout required by the Ascend fused MoE operator,
-    and repacked into the int32 dtype. The offset tensors are not loaded from the
-    checkpoint; they are all-zero tensors constructed because the operator
-    requires offset inputs.
+    and repacked into the int32 dtype. Symmetric quantization omits the optional
+    CANN offset input; no all-zero offset tensors are allocated.
 
     After :meth:`process_weights_after_loading`, ``apply`` consumes:
 
@@ -166,12 +190,6 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
       ``[num_experts, hidden_sizes // group_size,
       2 * moe_intermediate_size]``.
     - ``w2_weight_scale``: ``torch.bfloat16``,
-      ``[num_experts, moe_intermediate_size // group_size,
-      hidden_sizes]``.
-    - ``w13_weight_offset``: ``torch.bfloat16``, all zeros,
-      ``[num_experts, hidden_sizes // group_size,
-      2 * moe_intermediate_size]``.
-    - ``w2_weight_offset``: ``torch.bfloat16``, all zeros,
       ``[num_experts, moe_intermediate_size // group_size,
       hidden_sizes]``.
     """
@@ -190,6 +208,7 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
 
         vllm_config = get_current_vllm_config()
         self.group_size = vllm_config.quant_config.quant_description.get("group_size", 32)
+        self.enable_native_decode = get_ascend_config().enable_w4a16_decode
         self.dynamic_eplb = False if vllm_config.use_v2_model_runner else get_ascend_config().eplb_config.dynamic_eplb
 
     def get_weight(
@@ -243,14 +262,36 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
         )
         param_dict["w13_weight_shape"] = torch.empty(num_experts, 2, dtype=torch.int32)
         param_dict["w2_weight_shape"] = torch.empty(num_experts, 2, dtype=torch.int32)
-        param_dict["w13_weight_offset"] = torch.zeros(
-            num_experts, 2 * intermediate_size_per_partition, hidden_sizes // self.group_size, dtype=params_dtype
-        )
-        param_dict["w2_weight_offset"] = torch.zeros(
-            num_experts, hidden_sizes, intermediate_size_per_partition // self.group_size, dtype=params_dtype
-        )
 
         return param_dict
+
+    def _can_use_native_decode(self, layer, x, topk_ids, moe_comm_method) -> bool:
+        if not self.enable_native_decode or self.group_size != 32 or self.dynamic_eplb:
+            return False
+        if x.dtype != torch.bfloat16 or not 0 < x.shape[0] <= _W4A16_DECODE_MAX_TOKENS:
+            return False
+        if x.shape[1] != 5120 or topk_ids.shape[1] != 6 or layer.w2_weight_packed.shape[1] != 288:
+            return False
+        if not isinstance(moe_comm_method, AllGatherCommImpl) or moe_comm_method.moe_config.ep_size != 1:
+            return False
+        if layer.w13_weight_packed.shape[0] != 384 or layer.ascend_expert_map is not None:
+            return False
+        if layer.apply_router_weight_on_input or getattr(layer, "_ascend_moe_lora_context", None) is not None:
+            return False
+        if layer.global_redundant_expert_num or layer.ascend_pertoken_scale is not None:
+            return False
+        activation = moe_comm_method.moe_config.activation
+        if activation not in ("silu", MoEActivation.SILU):
+            return False
+        if not hasattr(torch.ops._C_ascend, "npu_w4a16_moe"):
+            return False
+        # Read existing host metadata. Do not classify a one-token prefill as
+        # decode, nor synchronize a device tensor to choose a launch path.
+        metadata = get_forward_context().attn_metadata
+        if isinstance(metadata, dict):
+            # Hybrid cache groups may put compressor state metadata first.
+            metadata = next((value for value in metadata.values() if hasattr(value, "num_prefills")), None)
+        return getattr(metadata, "num_prefills", None) == 0 and getattr(metadata, "num_decode_tokens", 0) > 0
 
     def apply(
         self,
@@ -264,6 +305,21 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
         topk_ids = topk_ids.to(torch.int32)
 
         moe_comm_method = _EXTRA_CTX.moe_comm_method
+        if self._can_use_native_decode(layer, x, topk_ids, moe_comm_method):
+            limit = moe_comm_method.moe_config.swiglu_limit or 0.0
+            output = torch.ops._C_ascend.npu_w4a16_moe(
+                x.contiguous(),
+                layer.w13_weight_packed,
+                layer.w13_weight_scale,
+                layer.w2_weight_packed,
+                layer.w2_weight_scale,
+                topk_ids.contiguous(),
+                topk_weights.float().contiguous(),
+                float(limit),
+            )
+            # TP finalize/allreduce and shared expert scheduling remain owned by
+            # AscendRoutedExperts. A fused kernel exposes no internal milestones.
+            return FusedExpertsResult(routed_out=output)
         return moe_comm_method.fused_experts(
             fused_experts_input=build_fused_experts_input(
                 hidden_states=x,
@@ -283,38 +339,11 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
         )
 
     def process_weights_after_loading(self, layer: torch.nn.Module) -> None:
-        w13_shape = layer.w13_weight_packed.data.shape
-        w2_shape = layer.w2_weight_packed.data.shape
-        unpacked_w13_weight = (
-            unpack_from_int32(
-                layer.w13_weight_packed.data.flatten(0, 1),
-                torch.Size([w13_shape[0] * w13_shape[1], w13_shape[2] * self.pack_factor]),
-                self.num_bits,
-            )
-            .view(w13_shape[0], w13_shape[1], -1)
-            .transpose(1, 2)
-            .contiguous()
-            .int()
-        )
-        unpacked_w2_weight = (
-            unpack_from_int32(
-                layer.w2_weight_packed.data.flatten(0, 1),
-                torch.Size([w2_shape[0] * w2_shape[1], w2_shape[2] * self.pack_factor]),
-                self.num_bits,
-            )
-            .view(w2_shape[0], w2_shape[1], -1)
-            .transpose(1, 2)
-            .contiguous()
-            .int()
-        )
-        layer.w13_weight_packed.data = pack_to_int32(unpacked_w13_weight)
-        layer.w2_weight_packed.data = pack_to_int32(unpacked_w2_weight)
+        layer.w13_weight_packed.data = repack_experts_bounded(layer.w13_weight_packed.data, self.num_bits)
+        layer.w2_weight_packed.data = repack_experts_bounded(layer.w2_weight_packed.data, self.num_bits)
 
         layer.w13_weight_scale.data = layer.w13_weight_scale.data.transpose(1, 2).contiguous()
         layer.w2_weight_scale.data = layer.w2_weight_scale.data.transpose(1, 2).contiguous()
-
-        layer.w13_weight_offset.data = layer.w13_weight_offset.data.transpose(1, 2).contiguous()
-        layer.w2_weight_offset.data = layer.w2_weight_offset.data.transpose(1, 2).contiguous()
 
     def apply_gmm1(self, mlp_compute_input: MoEMlpComputeInput):
         hidden_states = mlp_compute_input.hidden_states
@@ -324,7 +353,6 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
             x=[hidden_states],
             weight=[layer.w13_weight_packed],
             antiquant_scale=[layer.w13_weight_scale],
-            antiquant_offset=[layer.w13_weight_offset],
             split_item=2,
             group_list_type=mlp_compute_input.group_list_type,
             group_type=0,
@@ -345,7 +373,6 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
             x=[hidden_states],
             weight=[layer.w2_weight_packed],
             antiquant_scale=[layer.w2_weight_scale],
-            antiquant_offset=[layer.w2_weight_offset],
             split_item=2,
             group_list_type=mlp_compute_input.group_list_type,
             group_type=0,

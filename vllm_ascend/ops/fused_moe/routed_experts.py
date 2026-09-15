@@ -565,6 +565,7 @@ class AscendRoutedExperts(RoutedExperts):  # type: ignore[no-redef]
         router_logits: torch.Tensor,
         enable_force_load_balance: bool,
         input_ids: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
         if self.router is None:
             raise RuntimeError("AscendRoutedExperts requires a router for expert selection.")
@@ -572,6 +573,7 @@ class AscendRoutedExperts(RoutedExperts):  # type: ignore[no-redef]
             hidden_states=hidden_states,
             router_logits=router_logits,
             input_ids=input_ids,
+            **({"image_token_mask": image_token_mask} if image_token_mask is not None else {}),
         )
         if self.log2phy is not None:
             topk_ids = self.log2phy[topk_ids]
@@ -620,6 +622,7 @@ class AscendRoutedExperts(RoutedExperts):  # type: ignore[no-redef]
         hidden_states: torch.Tensor,
         router_logits: torch.Tensor,
         input_ids: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
     ):
         forward_context = get_forward_context()
         # When static kernels are enabled, the forward pass runs twice
@@ -654,6 +657,7 @@ class AscendRoutedExperts(RoutedExperts):  # type: ignore[no-redef]
             router_logits=router_logits,
             enable_force_load_balance=enable_force_load_balance,
             input_ids=input_ids,
+            **({"image_token_mask": image_token_mask} if image_token_mask is not None else {}),
         )
         self.ascend_pertoken_scale = pertoken_scale
         self.ascend_mc2_mask = mc2_mask

@@ -11,6 +11,7 @@ from vllm.utils.math_utils import cdiv
 from vllm.utils.torch_utils import get_dtype_size
 from vllm.v1.core.single_type_kv_cache_manager import FullAttentionManager, SlidingWindowManager
 from vllm.v1.kv_cache_interface import (
+    AttentionSpec,
     FullAttentionSpec,
     KVCacheSpec,
     MambaSpec,
@@ -360,7 +361,138 @@ class AscendIndexerKPoolTailSpec(SlidingWindowSpec):
         )
 
 
+class _V41PagedCacheLayout:
+    """Explicit packed layout; runner must dispatch this before legacy MLA."""
+
+    @property
+    def physical_block_size(self) -> int:
+        return self.block_size // get_kv_cache_compression_ratio(self)
+
+    @property
+    def unpadded_page_size_bytes(self) -> int:
+        return self.physical_block_size * self.state_content_size_bytes
+
+    @property
+    def real_page_size_bytes(self) -> int:
+        return self.unpadded_page_size_bytes
+
+    def _validate_v41(self, width: int, dtype: torch.dtype, scale_bytes: int = 0) -> None:
+        if self.model_version != "deepseek_v41" or not self.indexes_kv_by_block_stride:
+            raise ValueError("V4.1 cache requires its explicit model/layout marker and physical page strides")
+        expected_dtype_name = "int8" if dtype == torch.int8 else "bfloat16"
+        if self.cache_dtype_str not in (None, "auto", expected_dtype_name):
+            raise ValueError("V4.1 cache dtype string must agree with its physical BF16/INT8 layout")
+        ratio = get_kv_cache_compression_ratio(self)
+        if ratio not in (1, 2) or self.block_size <= 0 or self.block_size % ratio:
+            raise ValueError("V4.1 cache requires CR1/2 and a positive raw-token block divisible by its ratio")
+        if self.num_kv_heads != 1 or self.head_size != width or self.dtype != dtype or self.head_size_v != 0:
+            raise ValueError("Invalid V4.1 cache dtype/head shape; the layout stores one latent and no separate V")
+        content_bytes = width * get_dtype_size(dtype) + scale_bytes
+        if self.state_content_bytes not in (None, content_bytes) or self.num_head_slots not in (None, 1):
+            raise ValueError("V4.1 packed cache content/head-slot metadata does not match its physical layout")
+        object.__setattr__(self, "state_content_bytes", content_bytes)
+        # Call only generic post-init: upstream MLA alignment can overwrite a
+        # larger common page supplied by the hybrid planner. Preserve that page.
+        AttentionSpec.__post_init__(self)
+        raw = self.unpadded_page_size_bytes
+        padded = raw if self.page_size_padded is None else self.page_size_padded
+        if padded < raw or padded % 2:
+            raise ValueError("V4.1 padded pages must cover their contents and align FP16/BF16 data")
+        if self.alignment is not None:
+            if self.alignment < 1 or self.alignment % 2:
+                raise ValueError("V4.1 page alignment must be a positive even byte count")
+            padded = max(padded, cdiv(raw, self.alignment) * self.alignment)
+        if padded != raw or self.page_size_padded is not None:
+            object.__setattr__(self, "page_size_padded", padded)
+
+    @classmethod
+    def merge(cls, specs: list[Self]) -> Self:
+        if not specs or any(type(spec) is not cls or spec != specs[0] for spec in specs):
+            raise ValueError("V4.1 cache groups require identical spec type, compression, layout and retention")
+        return replace(specs[0])
+
+    def is_uniform_with_collection(self, kv_cache_specs: dict[str, KVCacheSpec]) -> bool:
+        return all(
+            type(spec) is type(self)
+            and get_kv_cache_compression_ratio(spec) == get_kv_cache_compression_ratio(self)
+            and getattr(spec, "sliding_window", None) == getattr(self, "sliding_window", None)
+            and getattr(spec, "extra_retained_tokens", 0) == getattr(self, "extra_retained_tokens", 0)
+            for spec in kv_cache_specs.values()
+        )
+
+
+@dataclass(frozen=True, kw_only=True)
+class AscendV41MainCacheSpec(_V41PagedCacheLayout, AscendMLAAttentionSpec):
+    """BF16 [pages,physical_rows,1,512], including CR1 main attention."""
+
+    indexes_kv_by_block_stride: bool = True
+    model_version: str = "deepseek_v41"
+
+    @property
+    def cache_layout(self) -> str:
+        return "v41_bf16_latent"
+
+    def __post_init__(self) -> None:
+        if self.scale_dim != 0 or self.cache_sparse_sfa_c8 or self.store_on_host:
+            raise ValueError("V4.1 main cache is an unquantized device latent without a separate scale table")
+        self._validate_v41(512, torch.bfloat16)
+
+
+@dataclass(frozen=True, kw_only=True)
+class AscendV41IndexerCacheSpec(_V41PagedCacheLayout, AscendMLAAttentionSpec):
+    """INT8 K128 followed by FP16 scale1 in each physical page, CR1/2."""
+
+    scale_dim: int = 1
+    scale_dtype: torch.dtype = torch.float16
+    indexes_kv_by_block_stride: bool = True
+    model_version: str = "deepseek_v41"
+
+    @property
+    def cache_layout(self) -> str:
+        return "v41_int8_index_scale"
+
+    @property
+    def scale_offset_bytes(self) -> int:
+        return self.physical_block_size * 128
+
+    def __post_init__(self) -> None:
+        if self.scale_dim != 1 or self.scale_dtype != torch.float16 or self.cache_sparse_sfa_c8 or self.store_on_host:
+            raise ValueError("V4.1 index cache requires one FP16 scale per INT8 key and device storage")
+        self._validate_v41(128, torch.int8, scale_bytes=2)
+
+
+@dataclass(frozen=True, kw_only=True)
+class AscendV41SWACacheSpec(_V41PagedCacheLayout, AscendSlidingWindowMLASpec):
+    """SWA keeps the current in-flight chunk plus the preceding 127 tokens.
+
+    This is a normal paged sliding-window cache, never a 128-token fixed ring.
+    Upstream SlidingWindowManager retains in-flight and speculative lookback
+    blocks according to sliding_window and extra_retained_tokens.
+    """
+
+    indexes_kv_by_block_stride: bool = True
+    model_version: str = "deepseek_v41"
+
+    @property
+    def cache_layout(self) -> str:
+        return "v41_bf16_swa"
+
+    def __post_init__(self) -> None:
+        if get_kv_cache_compression_ratio(self) != 1 or self.compress_ratio != 1 or self.sliding_window != 128:
+            raise ValueError("V4.1 SWA requires uncompressed tokens and a 128-token attention window")
+        if self.extra_retained_tokens < 0:
+            raise ValueError("V4.1 SWA extra retained token count must be nonnegative")
+        self._validate_v41(512, torch.bfloat16)
+
+
 def register_ascend_kv_cache_specs() -> None:
+    for spec, manager in (
+        (AscendV41MainCacheSpec, FullAttentionManager),
+        (AscendV41IndexerCacheSpec, FullAttentionManager),
+        (AscendV41SWACacheSpec, SlidingWindowManager),
+    ):
+        KVCacheSpecRegistry.register(kvcache_spec_cls=spec, manager_class=manager, uniform_type_base_spec=spec)
+
     # Delay this import: the cache layer imports the specs from this module.
     from vllm_ascend.models.glm5next.kv_cache import KpoolTailManager
 

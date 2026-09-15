@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from functools import lru_cache
 from typing import Any
 
@@ -293,6 +293,16 @@ class AscendCommonAttentionMetadata(CommonAttentionMetadata):
     # E.g., tensor([100, 200, 50]) means req0 has 100 tokens already computed.
     num_computed_tokens_cpu: torch.Tensor = None
 
+    # Ascend backends/proposers still use these cached host fields, which
+    # current vLLM no longer declares on CommonAttentionMetadata. Keep them
+    # explicitly on the Ascend subclass rather than relying on inherited
+    # constructor arguments or triggering an implicit device-to-host copy.
+    # _seq_lens_cpu may be optimistic in async speculation; it is distinct
+    # from seq_lens_cpu (None in async mode) and exact device seq_lens.
+    _seq_lens_cpu: torch.Tensor | None = None
+    _num_computed_tokens_cpu: torch.Tensor | None = None
+    dcp_local_seq_lens_cpu: torch.Tensor | None = None
+
     # Number of decode tokens per request, used for speculative decoding.
     # E.g., 1 for normal decoding, >1 for speculative decoding.
     decode_token_per_req: int = 1
@@ -332,7 +342,7 @@ class AscendCommonAttentionMetadata(CommonAttentionMetadata):
         def _slice_reqs(x):
             return x[:num_actual_reqs] if x is not None else None
 
-        return AscendCommonAttentionMetadata(
+        changes = dict(
             query_start_loc=self.query_start_loc[: num_actual_reqs + 1],
             query_start_loc_cpu=self.query_start_loc_cpu[: num_actual_reqs + 1],
             seq_lens=self.seq_lens[:num_actual_reqs],
@@ -347,7 +357,7 @@ class AscendCommonAttentionMetadata(CommonAttentionMetadata):
             # This is really strange since vLLM slices them as well
             block_table_tensor=self.block_table_tensor,
             slot_mapping=self.slot_mapping,
-            causal=self.causal,
+            causal=_slice_reqs(self.causal) if isinstance(self.causal, torch.Tensor) else self.causal,
             actual_seq_lengths_q=self.actual_seq_lengths_q[:num_actual_tokens],
             positions=self.positions,
             positions_cpu=self.positions_cpu,
@@ -359,7 +369,7 @@ class AscendCommonAttentionMetadata(CommonAttentionMetadata):
             if self.seq_lens_cpu_upper_bound is not None
             else None,
             max_seq_len=self.max_seq_len,
-            # Propagate parent-class fields so the unpadded view is a
+            # Propagate host caches and per-request fields so this is a
             # faithful sub-batch of the original. Missing any of these
             # would silently break downstream consumers (e.g. NPU
             # backends preferring ``_seq_lens_cpu`` over ``seq_lens_cpu``,
@@ -382,6 +392,22 @@ class AscendCommonAttentionMetadata(CommonAttentionMetadata):
             req_ids_tensor=_slice_reqs(self.req_ids_tensor),
             token_to_req=(self.token_to_req[:num_actual_tokens] if self.token_to_req is not None else None),
         )
+        # Preserve upstream additions via replace(), and slice optional fields
+        # only when the installed vLLM declares them. CPU upper bounds must not
+        # become exact lengths, and cached device-derived values must not retain
+        # the original padded batch's shapes.
+        for name in (
+            "dcp_local_seq_lens_cpu_upper_bound",
+            "req_idx",
+            "rswa_prefix_lens",
+            "replayssm_decode_base_cpu",
+        ):
+            if name in self.__dataclass_fields__:
+                changes[name] = _slice_reqs(getattr(self, name))
+        for name in ("_num_computed_tokens_cache", "_token_to_req_indices_cache"):
+            if name in self.__dataclass_fields__:
+                changes[name] = None
+        return replace(self, **changes)
 
 
 def filter_chunked_req_indices(

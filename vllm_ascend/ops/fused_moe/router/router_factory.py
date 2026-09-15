@@ -1,11 +1,13 @@
 from collections.abc import Callable
 
 import torch
+from vllm.config import get_current_vllm_config
 from vllm.distributed.eplb.eplb_state import EplbLayerState
 from vllm.model_executor.layers.fused_moe import FusedMoERouter
 from vllm.model_executor.layers.fused_moe.router.custom_routing_router import CustomRoutingRouter
 
 from vllm_ascend.device.hardware_profile import HardwareCapability, get_current_hardware_profile
+from vllm_ascend.ops.fused_moe.router.fused_topk_router import DEEPSEEK_V4_IMAGE_SENTINEL_COUNT
 from vllm_ascend.ops.fused_moe.router.fused_topk_router import (
     AscendFusedTopKRouter as AscendFusedMoERouter,
 )
@@ -86,6 +88,16 @@ def create_ascend_fused_moe_router(
         custom_routing_function=custom_routing_function,
     )
     if is_support_npu_moe_gating_top_k:
+        image_sentinel_count = DEEPSEEK_V4_IMAGE_SENTINEL_COUNT
+        require_image_token_mask = False
+        if bias_vl is not None:
+            model = get_current_vllm_config().model_config
+            text_config = getattr(model, "hf_text_config", None)
+            if getattr(text_config, "model_type", None) == "deepseek_v41":
+                # V4.1's single image token does not include the four adjacent
+                # text IDs. Determine this from the model, never the base ID.
+                image_sentinel_count = 1
+                require_image_token_mask = True
         return AscendFusedMoERouter(
             top_k=top_k,
             global_num_experts=global_num_experts,
@@ -102,6 +114,8 @@ def create_ascend_fused_moe_router(
             tid2eid=tid2eid,
             bias_vl=bias_vl,
             image_sentinel_lo=image_sentinel_lo,
+            image_sentinel_count=image_sentinel_count,
+            require_image_token_mask=require_image_token_mask,
         )
     return AscendGroupedTopKRouter(
         top_k=top_k,

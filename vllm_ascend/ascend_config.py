@@ -19,9 +19,9 @@ import dataclasses
 import importlib.util
 import json
 import os
-from typing import TYPE_CHECKING, Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal
 
-from pydantic import ConfigDict, TypeAdapter, model_validator
+from pydantic import ConfigDict, Field, TypeAdapter, model_validator
 from pydantic_core import ArgsKwargs
 from vllm.logger import logger
 from vllm.utils.math_utils import cdiv
@@ -321,6 +321,9 @@ class AscendConfig:
             "enable_cpu_binding": true,
             "multistream_dsv4_dsa_overlap": true,
             "enable_prefill_mc2": false,
+            "enable_w4a16_decode": false,
+            "enable_indexer_candidate_decode": false,
+            "engram_numa_nodes": null,
             "multistream_overlap_shared_expert": false,
             "enable_kv_nz": false,
             "enable_mc2_hierarchy_comm": false,
@@ -455,6 +458,16 @@ class AscendConfig:
     enable_cpu_binding: bool = True
     multistream_dsv4_dsa_overlap: bool = True
     enable_prefill_mc2: bool = False
+    # Experimental 910B V4.1 TP8 signed-scale group32 decode (H5120/I288,
+    # top6, B<=4). Larger batches and prefill keep CANN grouped matmul.
+    # Opt in for eight-card validation; leave off until E2E performance passes.
+    enable_w4a16_decode: bool = False
+    # Experimental V4.1 CR1 candidate consumer, one query and one request.
+    # Keep opt-in until full-model quality and TP8 performance are accepted.
+    enable_indexer_candidate_decode: bool = False
+    # Explicit host table placement indexed by TP rank; None preserves the
+    # default pinned allocator. Nodes are never inferred from device indices.
+    engram_numa_nodes: list[Annotated[int, Field(strict=True, ge=0)]] | None = None
     multistream_overlap_shared_expert: bool = False
     enable_kv_nz: bool = False
     enable_mc2_hierarchy_comm: bool = False  # deprecated, will be replaced by mc2_comm_alg = "hierarchy"
@@ -555,6 +568,7 @@ class AscendConfig:
     # the max_num_batched_tokens that sequence-parallel writeback corrected).
     def derive_and_validate(self, vllm_config: VllmConfig) -> AscendConfig:
         vc = vllm_config
+        self._validate_engram_numa_nodes(vc)
         if (
             self.enable_force_eplb
             and self.eplb_config.dynamic_eplb
@@ -855,6 +869,20 @@ class AscendConfig:
                 "cache. Disable enable_sparse_sfa_c8; enable_sparse_li_c8 is "
                 "supported because the indexer cache remains device-resident."
             )
+
+    def _validate_engram_numa_nodes(self, vllm_config: VllmConfig) -> None:
+        if self.engram_numa_nodes is None:
+            return
+        model = vllm_config.model_config
+        if (
+            model is None
+            or getattr(model, "architecture", None) != "DeepseekV41ForCausalLM"
+            or not getattr(getattr(model, "hf_text_config", None), "engram_layer_ids", None)
+        ):
+            raise ValueError("engram_numa_nodes requires DeepSeek V4.1 with nonempty Engram layers")
+        tp_size = vllm_config.parallel_config.tensor_parallel_size
+        if len(self.engram_numa_nodes) != tp_size:
+            raise ValueError(f"engram_numa_nodes must contain one node per TP rank (expected {tp_size})")
 
     @classmethod
     def _check_mooncake_c8_kv_cache_quant(cls, vllm_config: VllmConfig) -> None:

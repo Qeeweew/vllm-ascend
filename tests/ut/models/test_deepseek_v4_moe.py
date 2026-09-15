@@ -36,6 +36,75 @@ class _FakeMoERunner(nn.Module):
         return hidden_states
 
 
+@pytest.mark.parametrize("enable_ep", [False, True])
+def test_v41_without_num_hash_layers_uses_dynamic_router(monkeypatch, enable_ep):
+    config = SimpleNamespace(
+        hidden_act="silu",
+        hidden_size=8,
+        moe_intermediate_size=16,
+        n_routed_experts=384,
+        n_shared_experts=None,
+        norm_topk_prob=True,
+        num_experts_per_tok=6,
+        routed_scaling_factor=1.5,
+        scoring_func="sqrtsoftplus",
+        swiglu_limit=10.0,
+        vision_n_layers=2,
+    )
+    parallel = SimpleNamespace(
+        enable_eplb=False,
+        enable_expert_parallel=enable_ep,
+        eplb_config=SimpleNamespace(num_redundant_experts=0),
+        use_sequence_parallel_moe=False,
+    )
+    factory = MagicMock(return_value=_FakeMoERunner(MagicMock()))
+    monkeypatch.setattr(deepseek_v4_module, "FusedMoEFactory", factory)
+    monkeypatch.setattr(deepseek_v4_module, "ReplicatedLinear", lambda *a, **kw: _FakeGate())
+    monkeypatch.setattr(
+        deepseek_v4_module,
+        "get_ep_group",
+        lambda: SimpleNamespace(
+            device_group=SimpleNamespace(size=lambda: 8),
+            rank_in_group=3,
+        ),
+    )
+    monkeypatch.setattr(deepseek_v4_module, "get_tensor_model_parallel_rank", lambda: 0)
+    monkeypatch.setattr(deepseek_v4_module, "get_tensor_model_parallel_world_size", lambda: 8)
+    monkeypatch.setattr(deepseek_v4_module, "get_ascend_config", lambda: SimpleNamespace(mix_placement=False))
+    monkeypatch.setattr(deepseek_v4_module.rocm_aiter_ops, "is_fused_moe_enabled", lambda: False)
+    monkeypatch.setattr(deepseek_v4_module.rocm_aiter_ops, "is_fusion_moe_shared_experts_enabled", lambda: False)
+    moe = deepseek_v4_module.DeepseekV4MoE(config, parallel, prefix="model.layers.0.mlp", image_sentinel_lo=129264)
+    assert not moe.hash
+    assert moe.gate.tid2eid is None
+    assert moe.gate.e_score_correction_bias.shape == (384,)
+    assert factory.call_args.kwargs["image_sentinel_lo"] == 129264
+    assert factory.call_args.kwargs["top_k"] == 6
+    assert factory.call_args.kwargs["routed_scaling_factor"] == 1.5
+    assert moe.ep_size == (8 if enable_ep else 1)
+    assert moe.n_local_physical_experts == (48 if enable_ep else 384)
+    assert moe.physical_expert_start == (144 if enable_ep else 0)
+    assert moe.physical_expert_end == (192 if enable_ep else 384)
+
+
+def test_v41_vision_sentinel_does_not_reuse_v4_ids():
+    logits = torch.zeros(2, 4)
+    text_bias = torch.tensor([4.0, 3.0, 0.0, 0.0])
+    vision_bias = torch.tensor([0.0, 0.0, 4.0, 3.0])
+    weights, ids = select_deepseek_v4_vision_experts(
+        logits,
+        torch.tensor([129257, 129264]),
+        None,
+        vision_bias,
+        text_bias,
+        top_k=2,
+        renormalize=True,
+        routed_scaling_factor=1.5,
+        image_sentinel_lo=129264,
+    )
+    assert ids.tolist() == [[0, 1], [2, 3]]
+    torch.testing.assert_close(weights.sum(-1), torch.full((2,), 1.5))
+
+
 def test_deepseek_v4_hash_layer_uses_upstream_hash_router(monkeypatch):
     gate = _FakeGate()
 
@@ -75,6 +144,7 @@ def test_deepseek_v4_hash_layer_uses_upstream_hash_router(monkeypatch):
     )
     parallel_config = SimpleNamespace(
         enable_eplb=False,
+        enable_expert_parallel=False,
         eplb_config=SimpleNamespace(num_redundant_experts=0),
         use_sequence_parallel_moe=False,
     )
@@ -173,6 +243,7 @@ def test_deepseek_v4_hash_vision_layer_exposes_bias_vl(monkeypatch):
     )
     parallel_config = SimpleNamespace(
         enable_eplb=False,
+        enable_expert_parallel=False,
         eplb_config=SimpleNamespace(num_redundant_experts=0),
         use_sequence_parallel_moe=False,
     )

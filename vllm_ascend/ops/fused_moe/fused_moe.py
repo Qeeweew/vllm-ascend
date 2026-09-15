@@ -27,7 +27,12 @@ from vllm.distributed import (
 from vllm.forward_context import get_forward_context
 from vllm.model_executor.layers.fused_moe import FusedMoEConfig, FusedMoERouter
 from vllm.model_executor.layers.fused_moe.layer import MoERunner
-from vllm.model_executor.layers.fused_moe.runner.moe_runner import _moe_forward_shared
+from vllm.model_executor.layers.fused_moe.runner.moe_runner import (
+    _moe_forward_shared,
+    _resolve_layer_name,
+    _unpack,
+    get_layer_from_name,
+)
 from vllm.utils.torch_utils import direct_register_custom_op
 
 from vllm_ascend.ascend_forward_context import _EXTRA_CTX, MoECommType
@@ -86,8 +91,13 @@ def _ascend_moe_forward_complete(
     shared_experts_input: torch.Tensor | None,
     input_ids: torch.Tensor | None,
     layer_name: str,
+    image_token_mask: torch.Tensor | None = None,
 ) -> torch.Tensor:
     layer = get_forward_context().no_compile_layers[layer_name]
+    if image_token_mask is not None:
+        return _ascend_moe_forward_with_image_mask(
+            layer, hidden_states, router_logits, shared_experts_input, input_ids, image_token_mask
+        )
     # Keep the communication-dependent reduction decisions inside the same
     # opaque boundary as dispatch/combine. vLLM reuses a single Dynamo trace
     # across ALLGATHER and MC2/ALLTOALL batches.
@@ -100,12 +110,61 @@ def _ascend_moe_forward_complete(
     )
 
 
+def _ascend_moe_forward_with_image_mask(
+    layer: AscendMoERunner,
+    hidden_states: torch.Tensor,
+    router_logits: torch.Tensor,
+    shared_experts_input: torch.Tensor | None,
+    input_ids: torch.Tensor | None,
+    image_token_mask: torch.Tensor,
+) -> torch.Tensor:
+    """Upstream complete-forward order, with an explicit typed routing input.
+
+    This executes inside the complete opaque op. Keep the reduction/transform
+    order aligned with MoERunner.forward when updating the upstream dependency.
+    """
+    config = layer.moe_config
+    if config.dp_size != 1 or config.ep_size != 1 or config.is_sequence_parallel:
+        raise NotImplementedError("V4.1 typed image routing currently requires TP-only, DP=1, EP=1 and SP disabled")
+    if _EXTRA_CTX.moe_comm_type != MoECommType.ALLGATHER:
+        raise NotImplementedError("V4.1 typed image routing currently requires ALLGATHER communication")
+    if (
+        image_token_mask.dtype != torch.bool
+        or image_token_mask.shape != hidden_states.shape[:1]
+        or image_token_mask.device != hidden_states.device
+    ):
+        raise ValueError("image_token_mask must be bool[T] on the hidden-state device")
+    if shared_experts_input is None:
+        hidden_states, shared_experts_input = layer.apply_routed_input_transform(hidden_states)
+    hidden_states, original_pre_transform, original_post_transform = layer._maybe_pad_hidden_states(
+        shared_experts_input, hidden_states
+    )
+    # Resolution advances moe_layer_index for from_forward_context entries.
+    entry_layer = get_layer_from_name(_resolve_layer_name(layer._encode_layer_name()))
+    result = entry_layer._forward_impl(
+        hidden_states, router_logits, shared_experts_input, input_ids, image_token_mask=image_token_mask
+    )
+    shared_output, fused_output = _unpack(result)
+    if original_pre_transform is not None:
+        fused_output = fused_output[..., :original_pre_transform]
+    fused_output, reduced = layer._maybe_reduce_routed_output_before_transform(
+        fused_output, layer._fused_output_is_reduced
+    )
+    shared_output = layer._maybe_reduce_shared_expert_output(shared_output, reduced)
+    shared_output, fused_output = layer._maybe_apply_routed_scale_to_output(shared_output, fused_output)
+    fused_output = layer.apply_routed_output_transform(fused_output)
+    result = shared_output + fused_output if shared_output is not None else fused_output
+    result = layer._maybe_reduce_final_output(result, original_post_transform, reduced)
+    return layer._maybe_add_zero_expert_output(result)
+
+
 def _ascend_moe_forward_complete_fake(
     hidden_states: torch.Tensor,
     router_logits: torch.Tensor,
     shared_experts_input: torch.Tensor | None,
     input_ids: torch.Tensor | None,
     layer_name: str,
+    image_token_mask: torch.Tensor | None = None,
 ) -> torch.Tensor:
     output_width = shared_experts_input.shape[-1] if shared_experts_input is not None else hidden_states.shape[-1]
     return hidden_states.new_empty((*hidden_states.shape[:-1], output_width))
@@ -193,6 +252,7 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
         router_logits: torch.Tensor,
         input_ids: torch.Tensor | None = None,
         shared_experts_input: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
     ) -> torch.Tensor:
         return torch.ops.vllm.ascend_moe_forward_complete(
             hidden_states,
@@ -200,6 +260,7 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
             shared_experts_input,
             input_ids,
             self.layer_name,
+            image_token_mask,
         )
 
     @property
@@ -389,8 +450,10 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
         router_logits: torch.Tensor,
         shared_experts_input: torch.Tensor | None,
         input_ids: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
     ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
         with self._sequence_parallel_context():
+            routing_kwargs = {"image_token_mask": image_token_mask} if image_token_mask is not None else {}
             shared_hidden_states = shared_experts_input if shared_experts_input is not None else hidden_states
             if self.ascend_shared_experts is None:
                 if self.is_internal_router:
@@ -399,6 +462,7 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
                     hidden_states=hidden_states,
                     router_logits=router_logits,
                     input_ids=input_ids,
+                    **routing_kwargs,
                 )
             shared_input_is_gathered = self._can_overlap_sp_shared_with(self.routed_input_transform)
             defer_shared_output_wait = self._can_overlap_sp_shared_with(self.routed_output_transform)
@@ -415,6 +479,7 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
                 hidden_states=hidden_states,
                 router_logits=router_logits,
                 input_ids=input_ids,
+                **routing_kwargs,
             )
             assert isinstance(milestones, RoutedMoEMilestones)
             milestones.shared_input_ready = shared_input_ready

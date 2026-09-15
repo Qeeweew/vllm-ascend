@@ -38,17 +38,24 @@ def select_deepseek_v4_vision_experts(
     renormalize: bool,
     routed_scaling_factor: float = 1.0,
     image_sentinel_lo: int = DEEPSEEK_V4_IMAGE_SENTINEL_BASE_ID,
+    image_sentinel_count: int = DEEPSEEK_V4_IMAGE_SENTINEL_COUNT,
+    image_token_mask: torch.Tensor | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Select text experts and apply the vision route to image rows.
 
     DeepSeek-V4 vision checkpoints borrow five consecutive in-vocabulary
     sentinel ids for IMAGE_START..IMAGE_END. Text rows retain the deterministic
     ``tid2eid`` lookup used by the text-only model, while image rows use the
-    checkpoint's ``bias_vl`` with the sqrt-softplus router scores.
+    checkpoint's ``bias_vl`` with the sqrt-softplus router scores. V4.1 uses
+    one image token; its explicit mask distinguishes images from literal IDs.
     """
     scores = torch.nn.functional.softplus(router_logits).sqrt()
-    image_hi = image_sentinel_lo + DEEPSEEK_V4_IMAGE_SENTINEL_COUNT
-    image_mask = (input_ids >= image_sentinel_lo) & (input_ids < image_hi)
+    image_hi = image_sentinel_lo + image_sentinel_count
+    image_mask = image_token_mask
+    if image_mask is None:
+        image_mask = (input_ids >= image_sentinel_lo) & (input_ids < image_hi)
+    elif image_mask.dtype != torch.bool or image_mask.shape != input_ids.shape or image_mask.device != input_ids.device:
+        raise ValueError("image_token_mask must be bool[T] on the input-ID device")
     row_bias = torch.where(
         image_mask.unsqueeze(-1),
         bias_vl.to(scores.dtype).unsqueeze(0),
@@ -97,6 +104,8 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
         bias_vl: torch.Tensor | None = None,
         image_sentinel_lo: int = DEEPSEEK_V4_IMAGE_SENTINEL_BASE_ID,
         select_experts_fn: Callable[..., tuple[torch.Tensor, torch.Tensor]] | None = None,
+        image_sentinel_count: int = DEEPSEEK_V4_IMAGE_SENTINEL_COUNT,
+        require_image_token_mask: bool = False,
     ):
         super().__init__(
             top_k=top_k,
@@ -117,6 +126,28 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
         self.tid2eid = tid2eid
         self.bias_vl = bias_vl
         self.image_sentinel_lo = image_sentinel_lo
+        self.image_sentinel_count = image_sentinel_count
+        self.require_image_token_mask = require_image_token_mask
+
+    def _select_experts(
+        self,
+        hidden_states: torch.Tensor,
+        router_logits: torch.Tensor,
+        topk_indices_dtype: torch.dtype | None = None,
+        *,
+        input_ids: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        if image_token_mask is None:
+            return super()._select_experts(hidden_states, router_logits, topk_indices_dtype, input_ids=input_ids)
+        self._validate_eplb_state()
+        weights, indices = self._compute_routing(
+            hidden_states, router_logits, topk_indices_dtype, input_ids=input_ids, image_token_mask=image_token_mask
+        )
+        if self.capture_fn is not None:
+            self.capture_fn(indices)
+        indices = self._apply_eplb_mapping(indices)
+        return weights, self._convert_indices_dtype(indices, topk_indices_dtype)
 
     def is_fused_supported(
         self,
@@ -143,7 +174,19 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
         indices_type: torch.dtype | None,
         *,
         input_ids: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
+        if self.require_image_token_mask and image_token_mask is None:
+            raise ValueError("V4.1 vision routing requires explicit image_token_mask; text calls must pass all false")
+        if image_token_mask is not None:
+            if (
+                image_token_mask.dtype != torch.bool
+                or image_token_mask.shape != router_logits.shape[:1]
+                or image_token_mask.device != router_logits.device
+            ):
+                raise ValueError("image_token_mask must be bool[T] on the router-logit device")
+            if _EXTRA_CTX.moe_comm_type != MoECommType.ALLGATHER:
+                raise NotImplementedError("V4.1 typed image routing currently requires ALLGATHER communication")
         if self.bias_vl is None and not self.is_fused_supported(hidden_states):
             return super()._compute_routing(
                 hidden_states=hidden_states,
@@ -164,6 +207,8 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
                 if _EXTRA_CTX.moe_comm_type == MoECommType.ALLGATHER:
                     prepare_finalize = _EXTRA_CTX.moe_comm_method.prepare_finalize
                     input_ids = prepare_finalize.all_gather_input_id_with_dp_group(input_ids)
+                    # Typed calls are guarded to DP=1/EP=1/SP-off by the
+                    # complete runner, so ALLGATHER does not permute rows.
                 else:
                     input_ids = _EXTRA_CTX.moe_comm_method.pad_and_split_input_ids(input_ids)
                 if _EXTRA_CTX.moe_comm_type != MoECommType.ALLGATHER and input_ids.numel() != router_logits.shape[0]:
@@ -187,6 +232,8 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
                     renormalize=self.renormalize,
                     routed_scaling_factor=self.routed_scaling_factor,
                     image_sentinel_lo=self.image_sentinel_lo,
+                    image_sentinel_count=self.image_sentinel_count,
+                    image_token_mask=image_token_mask,
                 )
                 return topk_weights.to(torch.float32), topk_ids.to(
                     torch.int32 if indices_type is None else indices_type

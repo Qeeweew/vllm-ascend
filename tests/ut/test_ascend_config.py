@@ -108,6 +108,56 @@ class TestRlConfig(TestBase):
 
 
 class TestAscendConfig(TestBase):
+    def test_engram_numa_nodes_are_optional_strict_nonnegative_integers(self):
+        base = {"sparse_kv_offload_config": SimpleNamespace(enabled=False)}
+        self.assertIsNone(AscendConfig(**base).engram_numa_nodes)
+        self.assertEqual(AscendConfig(**base, engram_numa_nodes=[6, 0, 6]).engram_numa_nodes, [6, 0, 6])
+        for value in ([True], [1.0], ["1"], [-1], [None], "0,1"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                AscendConfig(**base, engram_numa_nodes=value)
+
+    def test_engram_numa_requires_v41_engram_and_one_node_per_tp_rank(self):
+        config = AscendConfig(
+            sparse_kv_offload_config=SimpleNamespace(enabled=False), engram_numa_nodes=[6, 7, 4, 5, 0, 1, 2, 3]
+        )
+        vc = SimpleNamespace(
+            model_config=SimpleNamespace(
+                architecture="DeepseekV41ForCausalLM", hf_text_config=SimpleNamespace(engram_layer_ids=[1, 14])
+            ),
+            parallel_config=SimpleNamespace(tensor_parallel_size=8),
+        )
+        config._validate_engram_numa_nodes(vc)
+        vc.parallel_config.tensor_parallel_size = 4
+        with self.assertRaisesRegex(ValueError, "one node per TP rank"):
+            config.derive_and_validate(vc)
+        vc.parallel_config.tensor_parallel_size = 8
+        vc.model_config.hf_text_config.engram_layer_ids = []
+        with self.assertRaisesRegex(ValueError, "nonempty Engram"):
+            config.derive_and_validate(vc)
+        vc.model_config.hf_text_config.engram_layer_ids = [1]
+        vc.model_config.architecture = "DeepseekV4ForCausalLM"
+        with self.assertRaisesRegex(ValueError, "DeepSeek V4.1"):
+            config.derive_and_validate(vc)
+        vc.model_config = None
+        with self.assertRaisesRegex(ValueError, "DeepSeek V4.1"):
+            config.derive_and_validate(vc)
+
+    def test_w4a16_decode_is_typed_and_opt_in(self):
+        base = {"sparse_kv_offload_config": SimpleNamespace(enabled=False)}
+        self.assertFalse(AscendConfig(**base).enable_w4a16_decode)
+        self.assertTrue(AscendConfig(**base, enable_w4a16_decode=True).enable_w4a16_decode)
+        self.assertFalse(AscendConfig(**base, enable_w4a16_decode="false").enable_w4a16_decode)
+        with self.assertRaises(ValueError):
+            AscendConfig(**base, enable_w4a16_decode="invalid")
+
+    def test_indexer_candidate_decode_is_typed_and_opt_in(self):
+        base = {"sparse_kv_offload_config": SimpleNamespace(enabled=False)}
+        self.assertFalse(AscendConfig(**base).enable_indexer_candidate_decode)
+        self.assertTrue(AscendConfig(**base, enable_indexer_candidate_decode=True).enable_indexer_candidate_decode)
+        self.assertFalse(AscendConfig(**base, enable_indexer_candidate_decode="false").enable_indexer_candidate_decode)
+        with self.assertRaises(ValueError):
+            AscendConfig(**base, enable_indexer_candidate_decode="invalid")
+
     @staticmethod
     def _clean_up_ascend_config(func):
         def wrapper(*args, **kwargs):
@@ -120,6 +170,17 @@ class TestAscendConfig(TestBase):
                 clear_enable_sp()
 
         return wrapper
+
+    @_clean_up_ascend_config
+    @patch("vllm_ascend.platform.NPUPlatform.check_and_update_config")
+    def test_engram_numa_nodes_survive_config_factory(self, mock_fix_incompatible_config):
+        vc = VllmConfig()
+        vc.model_config.architecture = "DeepseekV41ForCausalLM"
+        vc.model_config.hf_text_config.engram_layer_ids = [1, 14]
+        vc.parallel_config.tensor_parallel_size = 8
+        nodes = [6, 7, 4, 5, 0, 1, 2, 3]
+        vc.additional_config = {"engram_numa_nodes": nodes}
+        self.assertEqual(init_ascend_config(vc).engram_numa_nodes, nodes)
 
     @staticmethod
     def _make_model_config(

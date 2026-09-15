@@ -76,6 +76,7 @@ from vllm.v1.attention.selector import get_attn_backend  # type: ignore
 from vllm.v1.core.sched.output import SchedulerOutput
 from vllm.v1.kv_cache_interface import (
     AttentionSpec,
+    CircularBufferSpec,
     EncoderOnlyAttentionSpec,
     HiddenStateCacheSpec,
     KVCacheConfig,
@@ -256,6 +257,9 @@ from vllm_ascend.core.kv_cache_interface import (
     AscendMLAAttentionSpec,
     AscendSFAIndexerCacheSpec,
     AscendSlidingWindowMLASpec,
+    AscendV41IndexerCacheSpec,
+    AscendV41MainCacheSpec,
+    AscendV41SWACacheSpec,
     get_kv_cache_compression_ratio,
     get_storage_block_size,
     requires_padded_page_layout,
@@ -608,6 +612,7 @@ class NPUModelRunner(GPUModelRunner):
         )
         # for cleancode , actually the three attrs is defined in gpu_model_runner
         self.execute_model_state: ExecuteModelState | None = None
+        self.engram_runtime = None
         # None in the first PP rank. The rest are set after load_model.
         self.intermediate_tensors: IntermediateTensors | None = None
         self.reorder_batch_threshold: int | None = None
@@ -1018,6 +1023,87 @@ class NPUModelRunner(GPUModelRunner):
         query_start_loc.copy_to_gpu()
 
         return num_reqs_padded
+
+    def _update_engram_requests(self, scheduler_output) -> None:
+        runtime = getattr(self, "engram_runtime", None)
+        if runtime is None:
+            return
+        for request_id in scheduler_output.finished_req_ids:
+            runtime.history.drop_request(request_id)
+        for request in scheduler_output.scheduled_new_reqs:
+            if request.prompt_token_ids is None:
+                raise ValueError("V4.1 Engram requires actual prompt token IDs")
+            prompt = torch.tensor(request.prompt_token_ids, dtype=torch.int64, device="cpu")
+            prompt_mask = None
+            if request.mm_features:
+                mask_builder = getattr(self.model, "engram_prompt_mask", None)
+                if mask_builder is None:
+                    raise NotImplementedError("V4.1 image-span Engram masks are not connected to this model")
+                prompt_mask = mask_builder(request)
+            runtime.history.reset_request(
+                request.req_id, prompt, prompt_mask=prompt_mask,
+                prompt_image_mask=None if prompt_mask is None else ~prompt_mask,
+            )
+
+    def _preprocess(self, scheduler_output, num_input_tokens, intermediate_tensors=None):
+        runtime = getattr(self, "engram_runtime", None)
+        if runtime is None:
+            return super()._preprocess(scheduler_output, num_input_tokens, intermediate_tensors)
+
+        # _prepare_inputs has enqueued final device corrections on the current
+        # compute stream. Snapshot once, BEFORE upstream clamps
+        # speculative -1 IDs or performs multimodal embedding lookup. Only
+        # padding positions change in upstream _preprocess; real query bounds
+        # exclude those rows. Prompt image masks are seeded in request history.
+        positions = (
+            self.mrope_positions.gpu[:, :num_input_tokens]
+            if self.uses_mrope
+            else self.positions[:num_input_tokens]
+        )
+        engram_kwargs = {}
+        self._prepare_engram_model_kwargs(positions, num_input_tokens, engram_kwargs)
+        result = super()._preprocess(scheduler_output, num_input_tokens, intermediate_tensors)
+        result[4].update(engram_kwargs)
+        # Keep wait_ready at the forward boundary so row DMA can overlap the
+        # encoder/embedding work. On preprocess failure checked shutdown owns
+        # the pending staging buffers and synchronizes before unregistering.
+        return result
+
+    def _prepare_engram_model_kwargs(self, positions, num_tokens_padded, model_kwargs) -> None:
+        runtime = getattr(self, "engram_runtime", None)
+        if runtime is None:
+            return
+        rows, mask = runtime.prepare(
+            self.input_batch.req_ids,
+            self.input_ids.gpu[:num_tokens_padded],
+            positions,
+            self.query_start_loc.gpu[:self.input_batch.num_reqs + 1],
+            num_tokens_padded,
+            token_mask=model_kwargs.get("engram_token_mask"),
+        )
+        model_kwargs["engram_rows"] = rows
+        model_kwargs["engram_token_mask"] = mask
+        model_kwargs["image_token_mask"] = runtime.image_token_mask[:num_tokens_padded]
+
+    def _dummy_input_buffers(self, num_tokens: int):
+        # Match _preprocess exactly: raw-token MM models consume both IDs
+        # and the stable embedding buffer, even during text-only decode.
+        if self.supports_mm_inputs and not self.model_config.is_encoder_decoder:
+            return self._prepare_mm_inputs(num_tokens)
+        if self.enable_prompt_embeds:
+            return None, self.inputs_embeds.gpu[:num_tokens]
+        return self.input_ids.gpu[:num_tokens], None
+
+    def shutdown(self) -> None:
+        # Release registered host tables explicitly, including shutdown after
+        # an interrupted forward. Keep cleanup errors visible to the caller.
+        try:
+            runtime = getattr(self, "engram_runtime", None)
+            if runtime is not None:
+                runtime.shutdown()
+                self.engram_runtime = None
+        finally:
+            super().shutdown()
 
     def _track_tmp_encoder_cache_refs(
         self,
@@ -1655,6 +1741,11 @@ class NPUModelRunner(GPUModelRunner):
         scheduler_output: "SchedulerOutput",
         num_forward_tokens: int,
     ) -> None:
+        if getattr(self, "engram_runtime", None) is not None:
+            # Engram hashes the final device IDs. Preserve unresolved tokens
+            # so its history validation rejects them instead of hashing a
+            # fabricated token 0; graph padding is excluded by query bounds.
+            return
         scheduled_spec_tokens = scheduler_output.scheduled_spec_decode_tokens
         if not scheduled_spec_tokens:
             return
@@ -2215,6 +2306,7 @@ class NPUModelRunner(GPUModelRunner):
                         ):
                             req_state.prev_num_draft_len = 0
 
+                self._update_engram_requests(scheduler_output)
                 # Update persistent batch states.
                 deferred_state_corrections_fn = self._update_states(
                     scheduler_output
@@ -2499,9 +2591,15 @@ class NPUModelRunner(GPUModelRunner):
                         mamba_copy_connector = connector
                 if mamba_copy_connector is None:
                     mamba_utils.do_mamba_copy_block(preprocess_bufs)
-            hidden_states = self._model_forward(
-                num_tokens_padded, input_ids, positions, intermediate_tensors, inputs_embeds, **model_kwargs
-            )
+            if getattr(self, "engram_runtime", None) is not None:
+                self.engram_runtime.wait_ready()
+            try:
+                hidden_states = self._model_forward(
+                    num_tokens_padded, input_ids, positions, intermediate_tensors, inputs_embeds, **model_kwargs
+                )
+            finally:
+                if getattr(self, "engram_runtime", None) is not None:
+                    self.engram_runtime.mark_consumed()
             self._cpp_execution_time_ms = _finish_profiling_chunk_timing(
                 profiling_chunk_config,
                 execution_start_time,
@@ -3147,8 +3245,10 @@ class NPUModelRunner(GPUModelRunner):
     ) -> tuple[CUDAGraphMode, BatchDescriptor, bool, torch.Tensor | None, CUDAGraphStat | None]:
         num_tokens_padded = self._pad_for_sequence_parallelism(num_tokens)
         has_initial_state = np.all(self.input_batch.num_computed_tokens_cpu[:num_reqs] > 0)
-        if self.use_dcp:
-            # DCP decode graphs require the full prompt to be computed.
+        if self.use_dcp or getattr(getattr(self, "ascend_config", None), "enable_w4a16_decode", False):
+            # Decode-only MoE kernels are fixed during graph capture. A final
+            # one-token prompt chunk must not replay that decode graph.
+            # DCP likewise requires the full prompt to be computed.
             has_initial_state = has_initial_state and np.all(
                 self.input_batch.num_computed_tokens_cpu[:num_reqs] >= self.input_batch.num_prompt_tokens[:num_reqs]
             )
@@ -3382,7 +3482,10 @@ class NPUModelRunner(GPUModelRunner):
             span_pad_modulus = getattr(
                 hf_text_config,
                 "mm_prefix_span_leading_pad_modulus",
-                4 if getattr(hf_text_config, "vision_n_layers", 0) > 0 else 0,
+                4 if (
+                    getattr(hf_text_config, "vision_n_layers", 0) > 0
+                    and getattr(hf_text_config, "model_type", None) not in {"deepseek_v41", "deepseek_v41_text"}
+                ) else 0,
             )
             for req_id in self.input_batch.req_ids:
                 image_doc_ranges = []
@@ -3624,10 +3727,15 @@ class NPUModelRunner(GPUModelRunner):
             if isinstance(attn_metadata, list):
                 for ub_metadata in attn_metadata:
                     for _metadata in ub_metadata.values():
-                        _metadata.mm_prefix_range = req_doc_ranges  # type: ignore[attr-defined]
+                        if hasattr(_metadata, "mm_prefix_range"):
+                            _metadata.mm_prefix_range = req_doc_ranges
             else:
                 for _metadata in attn_metadata.values():
-                    _metadata.mm_prefix_range = req_doc_ranges  # type: ignore[attr-defined]
+                    # State-cache metadata may be frozen and has no attention
+                    # mask contract. Backends receive mm_req_doc_ranges through
+                    # the common metadata; only legacy mask consumers opt in.
+                    if hasattr(_metadata, "mm_prefix_range"):
+                        _metadata.mm_prefix_range = req_doc_ranges
 
         if spec_decode_common_attn_metadata is not None and (
             num_reqs != num_reqs_padded or num_tokens != num_tokens_padded
@@ -3882,19 +3990,7 @@ class NPUModelRunner(GPUModelRunner):
         ):
             # Make sure padding doesn't exceed max_num_tokens
             assert num_tokens_padded <= self.max_num_tokens
-            if (
-                (
-                    self.supports_mm_inputs
-                    and not self.model_config.is_encoder_decoder
-                    and not self.model_config.requires_raw_input_tokens
-                )
-                or self.enable_prompt_embeds
-            ):
-                input_ids = None
-                inputs_embeds = self.inputs_embeds.gpu[:num_tokens_padded]
-            else:
-                input_ids = self.input_ids.gpu[:num_tokens_padded]
-                inputs_embeds = None
+            input_ids, inputs_embeds = self._dummy_input_buffers(num_tokens_padded)
 
             if self.uses_mrope:
                 positions = self.mrope_positions.gpu[:, :num_tokens_padded]
@@ -3969,8 +4065,19 @@ class NPUModelRunner(GPUModelRunner):
                 if not is_graph_capturing and self.ascend_config.enable_force_eplb \
                     and self.vllm_config.model_config.is_moe:
                     build_force_eplb_topk(self.device, self.max_num_tokens)
+                dummy_kwargs = {}
+                if getattr(self, "engram_runtime", None) is not None:
+                    self.engram_runtime.token_mask[:num_tokens_padded].zero_()
+                    self.engram_runtime.image_token_mask[:num_tokens_padded].zero_()
+                    dummy_kwargs = {
+                        "engram_rows": tuple(
+                            rows[:num_tokens_padded] for rows in self.engram_runtime.offload.device_rows
+                        ),
+                        "engram_token_mask": self.engram_runtime.token_mask[:num_tokens_padded],
+                        "image_token_mask": self.engram_runtime.image_token_mask[:num_tokens_padded],
+                    }
                 outputs = self._model_forward(
-                    num_tokens_padded, input_ids, positions, intermediate_tensors, inputs_embeds
+                    num_tokens_padded, input_ids, positions, intermediate_tensors, inputs_embeds, **dummy_kwargs
                 )
             if active_device_metadata_executor is not None:
                 active_device_metadata_executor.release()
@@ -4078,6 +4185,9 @@ class NPUModelRunner(GPUModelRunner):
                 from vllm.model_executor.model_loader.default_loader import DefaultModelLoader
                 DefaultModelLoader._init_ep_weight_filter = mock_pass
             self.model: nn.Module = get_model(vllm_config=self.vllm_config)
+            engram_factory = getattr(self.model, "create_engram_runtime", None)
+            if engram_factory is not None:
+                self.engram_runtime = engram_factory()
             for name, _ in self.model.named_parameters():
                 # sinks is a kind of parameter in attention
                 # only set in weight name
@@ -4523,6 +4633,34 @@ class NPUModelRunner(GPUModelRunner):
             getattr(spec, "model_version", None) == "deepseek_v4"
             for spec in layer_kv_cache_spec.values()
         )
+        v41_specs = (AscendV41MainCacheSpec, AscendV41IndexerCacheSpec, AscendV41SWACacheSpec)
+        if any(isinstance(spec, v41_specs) for spec in layer_kv_cache_spec.values()):
+            # vLLM main descriptors address one shared backing. Honor their
+            # offsets/overlays instead of allocating descriptor.size per layer.
+            if use_legacy_shared_by_layout:
+                raise ValueError("V4.1 cache planning requires the vLLM main descriptor API")
+            if not all(isinstance(spec, (*v41_specs, CircularBufferSpec))
+                       for spec in layer_kv_cache_spec.values()):
+                raise ValueError("Unsupported cache type mixed into V4.1 cache planning")
+            descriptors = kv_cache_config.kv_cache_tensors
+            sizes = {descriptor.size for descriptor in descriptors}
+            if len(sizes) != 1:
+                raise ValueError("V4.1 requires one shared layer/block-compact cache backing")
+            backing_size = sizes.pop()
+            regions = []
+            for descriptor in descriptors:
+                for layer_idx, layer_name in enumerate(get_kv_cache_tensor_layers(descriptor)):
+                    spec = layer_kv_cache_spec[layer_name]
+                    size = kv_cache_config.num_blocks * spec.page_size_bytes
+                    start = descriptor.offset + layer_idx * descriptor.layer_stride
+                    if (descriptor.block_stride != spec.page_size_bytes or start < 0
+                            or start % max(2, get_dtype_size(spec.dtype)) or start + size > backing_size):
+                        raise ValueError("Invalid V4.1 layer/block-compact cache descriptor geometry")
+                    regions.append((layer_name, start, size))
+            if {name for name, _, _ in regions} != set(layer_kv_cache_spec):
+                raise ValueError("V4.1 cache descriptors do not cover every registered cache")
+            backing = self._allocate_int8_cache_tensor(backing_size, alignment)
+            return {name: backing[start:start + size] for name, start, size in regions}
         # vLLM #51718 no longer lists layers from different cache groups in one
         # descriptor. Detect hybrid models across all groups instead of within
         # each descriptor so the attention view keeps the combined K/V format.
@@ -4684,6 +4822,14 @@ class NPUModelRunner(GPUModelRunner):
                     use_compressed_cache = True
             for idx in range(len(shared_layers)):
                 layer_name = shared_layers[idx]
+                if isinstance(layer_kv_cache_spec[layer_name], CircularBufferSpec):
+                    # Compressor rings have one FP32 state page per request,
+                    # not separate K/V tensors. Preserve any shared backing
+                    # view already materialized by the cache planner above.
+                    if layer_name not in kv_cache_raw_tensors:
+                        layer_size = kv_cache_config.num_blocks * layer_kv_cache_spec[layer_name].page_size_bytes
+                        kv_cache_raw_tensors[layer_name] = self._allocate_int8_cache_tensor(layer_size, alignment)
+                    continue
                 # Single tensor path for: mamba, hybrid attn-mamba, or cache_only_layers
                 if (
                     "linear_attn" in layer_name
@@ -5009,7 +5155,38 @@ class NPUModelRunner(GPUModelRunner):
 
                 # TODO: remove this after the OOM issue is located and fixed, otherwise, some model may
                 # encounter OOM issue
-                if self._uses_page_strided_kv_layout(current_kv_cache_spec):
+                if isinstance(current_kv_cache_spec, CircularBufferSpec):
+                    raw = kv_cache_raw_tensors[layer_name]
+                    shape = (kv_cache_config.num_blocks, current_kv_cache_spec.num_kv_heads,
+                             current_kv_cache_spec.block_size, current_kv_cache_spec.head_size)
+                    expected_bytes = math.prod(shape) * get_dtype_size(current_kv_cache_spec.dtype)
+                    if raw.numel() != expected_bytes:
+                        raise ValueError("Circular compressor cache storage does not match its state pages")
+                    kv_caches[layer_name] = raw.view(current_kv_cache_spec.dtype).view(shape)
+                elif isinstance(current_kv_cache_spec, (
+                    AscendV41MainCacheSpec, AscendV41IndexerCacheSpec, AscendV41SWACacheSpec,
+                )):
+                    spec = current_kv_cache_spec
+                    raw = kv_cache_raw_tensors[layer_name]
+                    if raw.numel() != kv_cache_config.num_blocks * spec.page_size_bytes:
+                        raise ValueError("V4.1 cache backing size does not match its padded pages")
+                    rows = spec.physical_block_size
+                    dtype_size = get_dtype_size(spec.dtype)
+                    typed = raw.view(spec.dtype)
+                    keys = typed.as_strided(
+                        (kv_cache_config.num_blocks, rows, 1, spec.head_size),
+                        (spec.page_size_bytes // dtype_size, spec.head_size, spec.head_size, 1),
+                    )
+                    if isinstance(spec, AscendV41IndexerCacheSpec):
+                        scales = raw.view(torch.float16).as_strided(
+                            (kv_cache_config.num_blocks, rows, 1),
+                            (spec.page_size_bytes // 2, 1, 1),
+                            storage_offset=raw.storage_offset() // 2 + spec.scale_offset_bytes // 2,
+                        )
+                        kv_caches[layer_name] = (keys, scales)
+                    else:
+                        kv_caches[layer_name] = keys
+                elif self._uses_page_strided_kv_layout(current_kv_cache_spec):
                     kv_tensor = kv_cache_raw_tensors[layer_name]
                     sum_page_size_bytes = kv_tensor.numel()
                     num_blocks = sum_page_size_bytes // current_kv_cache_spec.page_size_bytes

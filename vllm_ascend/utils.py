@@ -1285,6 +1285,18 @@ def refresh_block_size(vllm_config):
     if not cache_config:
         return
 
+    if model_config is not None and model_config.hf_config.model_type == "deepseek_v41":
+        # V4.1's continuous eight-slot FP32 compressor state is 32 KiB.
+        # A token block of 32 makes SWA/main pages the same size, permitting
+        # the shared backing planner without adding unsupported ring strides.
+        if cache_config.block_size is None or not cache_config.user_specified_block_size:
+            cache_config.block_size = 32
+        elif cache_config.block_size != 32:
+            raise ValueError("Ascend V4.1 currently requires block_size=32 for its compressor state layout")
+        if cache_config.kv_cache_layout is None:
+            cache_config.kv_cache_layout = "LBNHC"
+        return
+
     if cache_config.block_size is None:
         cache_config.block_size = 128
 
