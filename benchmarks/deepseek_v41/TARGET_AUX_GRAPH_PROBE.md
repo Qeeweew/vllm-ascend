@@ -13,6 +13,22 @@ before real requests. No observation copies to CPU during capture.
 
 ## Results
 
+After correcting the target/draft `wo_a` layout (`da6da081a`), the probe was
+rerun at source commit `1e10173ae` and passed with the same exact gates.
+`target_aux_real3_graph_woa_fixed.json` records two eager calls and six graph
+replays per rank, zero auxiliary-state error, identical repeated outputs,
+eight released owners and EngineCore exit zero. The log
+`/tmp/v41-target-aux-real3-graph-woa-fixed.log` confirms graceful worker exits
+without forced termination or resource-tracker leak warnings.
+
+Corrected output IDs are `[5774, 4798, 34105, 52103]`, whereas the historical
+probe produced `[43172, 29514, 93589, 74413]`. Both runs were internally
+repeatable; only the new run includes the independently validated projection
+layout correction. Neither is a full-model language-quality evaluation.
+
+The historical results below are preserved to retain the original startup
+and lifecycle evidence; their repeatability did not detect the layout error.
+
 `target_aux_real3_graph_r2.json` passed on every rank:
 
 - All three auxiliary tensors match the independent HC average exactly.

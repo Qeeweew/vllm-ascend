@@ -44,8 +44,14 @@ Peak allocation remains 3.342 GiB per rank and all eight ranks completed
 distributed cleanup. These are actual-stage-input comparisons with synthetic
 target auxiliary states, not an independently propagated full-model oracle.
 
-Target auxiliary-output graph validation must also be
-rerun after the correction. Earlier target repetition and graph equality
+The corrected target auxiliary-output probe also passed on all eight ranks:
+three exact HC means, two eager calls and six graph replays per rank, exact
+repeated tokens/logprobs, eight released owners and EngineCore exit zero.
+Result: `target_aux_real3_graph_woa_fixed.json`; log:
+`/tmp/v41-target-aux-real3-graph-woa-fixed.log`. It uses the same bounded
+three-layer target and synthetic small Engram fixture as the earlier probe.
+Its generated token sequence changed after the layout correction, as expected
+when correcting the model computation. Earlier target repetition and graph equality
 tests checked consistency of the same erroneous math, so they do not prove
 checkpoint-level correctness or model quality. Historical timing evidence
 remains historical; final profiling must use the corrected model.

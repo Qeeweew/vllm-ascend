@@ -556,6 +556,14 @@ AscendC技能采用 `ascendc-op-dev`。API、模板、硬件行为从当前CANN�
 - HTTP r2显式shutdown-timeout30后，8worker正常退出且无强杀/资源泄漏；输出handler在MPClient teardown后打印EngineDeadError，日志保留。实际8rank profiling raw采集成功，worker daemon内自动export失败，官方离线analyse于13.197s完成8份17MB级timeline。每rank6次graph执行/18次W4A16/8次Engram gate/8次compressor，重复图像命中cache未含视觉塔；这仍是三层fixture，不替代最终整机profile。900个raw/export文件及checksum保存到workspace artifacts，见 `HTTP_PROFILE_RESULT.md` 和 `docs/performance/deepseek_v41_910b.md`。
 - 已启动一次性后台转换续接watcher（初始PID3204064，log `/tmp/v41-conversion-tail-watcher.log`），只等最终发布的47/48源文件，检查size后串行复用原转换器，任何异常停下，complete+最终index/config后退出；9项CPU测试通过。用户已恢复原下载；独立恢复器因检测到源前缀变化而安全退出，保留已有suffix，不再重启或触碰用户下载临时文件。
 
+### 12.10 真实权重逐层验证发现的修复与全模型准入
+
+- 源47/48已发布，转换watcher已自动续转；完整manifest/config/index发布前不启动完整模型。
+- 真实DSpark三层E128/top3的独立stage oracle发现target/draft共用的`wo_a`布局错误：Ascend loader已转置为`[groups,width,rank]`，旧投影却按原shape重读。修复`da6da081a`直接使用正确布局；修前三层×八rank共24项失败，修后context9和33各712项全部通过，原门限不变。参考输入为实际各stage输入和合成target辅助状态，不替代整模型质量。详见`benchmarks/deepseek_v41/WO_A_LAYOUT_CORRECTION.md`。
+- 历史target eager/graph一致性只能证明当时实现的一致性，不能证明上述投影正确；target、完整真实权重质量和最终性能须在修复后重验。
+- 初始draft输入kernel补齐页表逻辑宽度和DCP ownership读取mask；45项NPU测试通过，包括拒绝、切片table和变化长度graph，提交`1e10173ae`。最大上下文的RoPE、attention可见性、proposal有效性仍需完整衔接，DSpark生产准入保持关闭。
+- 完整headers预检得到target静态设备权重估计39.299GiB/rank、两张真实Engram共366.221833GiB pinned host。48.549GiB/rank启动余量为估算准入线，非实测峰值；卡7外部占用当前不满足要求。不会干预外部进程，同时准备低HBM的真实全表factory加载与行oracle验证。
+
 ## 13. 算子 sub-agent 的职责与严格性能验收
 
 ### 13.1 子任务边界
