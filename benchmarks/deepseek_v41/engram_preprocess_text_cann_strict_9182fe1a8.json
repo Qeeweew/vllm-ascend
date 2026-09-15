@@ -1,0 +1,1788 @@
+{
+  "status": "passed",
+  "fixture": {
+    "checkpoint": "/tmp/v41-mm-production-numa-graph-r1",
+    "language_layers": 3,
+    "experts": 384,
+    "engram_layer_ids": [
+      1
+    ],
+    "engram_rows": [
+      4096
+    ],
+    "synthetic_engram": true,
+    "quality_validation": false,
+    "performance_measurement": false,
+    "production_registry": true
+  },
+  "photo": {
+    "source": "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/tests/v1/ec_connector/integration/hato.jpg",
+    "source_sha256": "8f7e776cf614298af55cb64b7116a513c37f8710959fb90a5e2babedece489b4",
+    "original_size": [
+      3082,
+      2048
+    ],
+    "thumbnail_size": [
+      512,
+      340
+    ],
+    "thumbnail_pixels_sha256": "c118d9acb613f5a321ac804983d1e7a09e091a9b36c90b87095c01eb01f5e293"
+  },
+  "image_limit": 0,
+  "engram_numa_nodes": [
+    6,
+    7,
+    4,
+    5,
+    0,
+    1,
+    2,
+    3
+  ],
+  "git_head": "e28f9c5dc60ee43dde196f288fbde30c3ae2b099",
+  "runner_sha256": "a56ef4fe737832b7c372a1b978346b94f6e6a857c617a46b53b1376726939ba9",
+  "production_registry": true,
+  "diagnostic_worker": "smoke_mm_runner_worker.V41MMSmokeWorker",
+  "graph_mode": "FULL_DECODE_ONLY",
+  "performance_measurement": false,
+  "repeat_logprob_tolerance": 0.0001,
+  "native_decode": false,
+  "environment": {
+    "HCCL_DETERMINISTIC": "strict",
+    "ASCEND_LAUNCH_BLOCKING": null,
+    "OMP_NUM_THREADS": "4",
+    "VLLM_WORKER_MULTIPROC_METHOD": "spawn",
+    "VLLM_WORKER_SHUTDOWN_TIMEOUT_SECONDS": "60"
+  },
+  "engram_row_content_observed": false,
+  "workers_before": [
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 8,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 8
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 13,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 13
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 17,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 17
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 23,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 23
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 28,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 28
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 34,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 34
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 39,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 39
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 6
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 44,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 44
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    }
+  ],
+  "outputs": {
+    "literal_image_id_text": [
+      {
+        "token_ids": [
+          91488,
+          55063,
+          44099,
+          34954
+        ],
+        "selected_logprobs": [
+          -3.1907858848571777,
+          -2.671403646469116,
+          -2.0471644401550293,
+          -0.5807264447212219
+        ]
+      },
+      {
+        "token_ids": [
+          91488,
+          55063,
+          44099,
+          34954
+        ],
+        "selected_logprobs": [
+          -3.1907858848571777,
+          -2.671403646469116,
+          -2.0471644401550293,
+          -0.5807264447212219
+        ]
+      }
+    ],
+    "valid_zero_text": [
+      {
+        "token_ids": [
+          35590,
+          65030,
+          60862,
+          104056
+        ],
+        "selected_logprobs": [
+          -2.674492359161377,
+          -3.035109281539917,
+          -0.12861616909503937,
+          -2.9595236778259277
+        ]
+      },
+      {
+        "token_ids": [
+          35590,
+          65030,
+          60862,
+          104056
+        ],
+        "selected_logprobs": [
+          -2.674492359161377,
+          -3.035109281539917,
+          -0.12861616909503937,
+          -2.9595236778259277
+        ]
+      }
+    ]
+  },
+  "workers_final": [
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 8,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 8
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 13,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 13
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 17,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 17
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 23,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 23
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 28,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 28
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 34,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 34
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 39,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 39
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 16,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 3,
+        "fallback_eager": 18
+      },
+      "candidate_dispatch": {},
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 44,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 44
+            },
+            "status_errors": {}
+          }
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "zero_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 12,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    }
+  ],
+  "repeat_comparisons": {
+    "literal_image_id_text": {
+      "token_ids_exact": true,
+      "max_selected_logprob_abs_difference": 0.0
+    },
+    "valid_zero_text": {
+      "token_ids_exact": true,
+      "max_selected_logprob_abs_difference": 0.0
+    }
+  },
+  "structural_checks_passed": true,
+  "checks_passed": true,
+  "workers_released": [
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    }
+  ],
+  "engine_shutdown": {
+    "timeout_seconds": 30,
+    "processes": [
+      {
+        "pid": 3277445,
+        "exitcode": 0,
+        "alive": false
+      }
+    ]
+  }
+}

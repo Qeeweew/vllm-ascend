@@ -106,6 +106,7 @@ class V41MMSmokeWorker(NPUWorker, EngramSmokeProbe):
                         "layer": _layer,
                         "image_tokens": int(mask.sum()),
                         "literal_image_id_text_tokens": int((text_mask & (ids == model.config.image_token_id)).sum()),
+                        "zero_text_tokens": int((text_mask & (ids == 0)).sum()),
                         "text_hash_checked": hash_checked,
                     }
                 )
