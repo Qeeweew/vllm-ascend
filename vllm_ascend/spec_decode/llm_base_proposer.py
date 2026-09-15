@@ -46,6 +46,7 @@ from vllm_ascend import utils as ascend_utils
 from vllm_ascend.ascend_config import get_ascend_config
 from vllm_ascend.ascend_forward_context import _EXTRA_CTX, set_ascend_forward_context
 from vllm_ascend.attention.attention_v1 import AscendAttentionState
+from vllm_ascend.attention.dsa_v41 import AscendV41CacheMetadataBuilder
 from vllm_ascend.attention.utils import AscendCommonAttentionMetadata
 from vllm_ascend.compilation.acl_graph import ACLGraphWrapper, update_full_graph_params
 from vllm_ascend.compilation.breakable_aclgraph import BreakableACLGraphWrapper
@@ -54,7 +55,7 @@ from vllm_ascend.distributed.kv_transfer.sparse_kv_offload.sparse_kv_offload_man
     prepare_sparse_kv_offload_mtp_dummy_metadata,
 )
 from vllm_ascend.distributed.parallel_state import get_lmhead_tp_group
-from vllm_ascend.models.deepseek_v4.dspark import DSparkDeepseekV4ForCausalLM
+from vllm_ascend.models.deepseek_v4.dspark import DSparkDeepseekV4ForCausalLM, DSparkDeepseekV41ForCausalLM
 from vllm_ascend.models.llama_eagle3_vwn import Eagle3VwnLlamaForCausalLM
 from vllm_ascend.ops.triton.spec_decode.utils import prepare_inputs_padded_kernel
 from vllm_ascend.ops.triton.triton_utils import get_vectorcore_num
@@ -79,6 +80,7 @@ _HIDDEN_STATE_DRAFTER_TYPES = (
     Eagle3VwnLlamaForCausalLM,
     Eagle3DeepseekV2ForCausalLM,
     DSparkDeepseekV4ForCausalLM,
+    DSparkDeepseekV41ForCausalLM,
 )
 
 
@@ -2434,8 +2436,9 @@ class AscendSpecDecodeBaseProposer(SpecDecodeBaseProposer):
                 if device_metadata_executor is not None and isinstance(builder, DeviceMetadataTaskProvider)
                 else None
             )
-            extra_attn_metadata_args: dict = dict(shared_dsa_draft_cache)
-            if self.use_compress:
+            v41_draft = isinstance(builder, AscendV41CacheMetadataBuilder)
+            extra_attn_metadata_args: dict = {} if v41_draft else dict(shared_dsa_draft_cache)
+            if self.use_compress and not v41_draft:
                 extra_attn_metadata_args["block_size"] = attn_group.kv_cache_spec.block_size
             if self.method == "dspark":
                 gid = attn_group.kv_cache_group_id
@@ -2453,6 +2456,8 @@ class AscendSpecDecodeBaseProposer(SpecDecodeBaseProposer):
                 # skipped it there for dspark and re-apply here on the per-group
                 # table so FIA reads the recent-blocks clone instead of block 0.
                 # (dspark only - self.sliding_window is None for MTP.)
+                if v41_draft and self.sliding_window is not None:
+                    raise ValueError("V4.1 DSpark requires full logical page tables; draft_window_size is unsupported")
                 if self.sliding_window is not None:
                     self.sliding_window.apply(common_attn_metadata)
                 attn_metadata = builder.build_for_drafting(

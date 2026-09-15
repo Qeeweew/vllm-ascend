@@ -14,6 +14,7 @@ from vllm_ascend.ascend_config import get_ascend_config
 from vllm_ascend.ascend_forward_context import set_ascend_forward_context
 from vllm_ascend.attention.attention_v1 import AscendAttentionState
 from vllm_ascend.attention.dsa_v1 import AscendDSAMetadataBuilder
+from vllm_ascend.attention.dsa_v41 import AscendV41CacheMetadataBuilder
 from vllm_ascend.attention.utils import enable_pcp
 from vllm_ascend.ops.triton.spec_decode.utils import copy_and_expand_dflash_and_dspark_inputs_kernel
 from vllm_ascend.spec_decode.dflash_proposer import AscendDflashProposer, _compute_num_programs
@@ -177,6 +178,15 @@ class AscendDSparkProposer(AscendDflashProposer):
                     attention_groups[key].layer_names.append(layer_name)
 
             self.draft_attn_groups.extend(attention_groups.values())
+
+        for attn_group in self.draft_attn_groups:
+            builder = attn_group.get_metadata_builder()
+            if isinstance(builder, AscendV41CacheMetadataBuilder):
+                if self.num_query_per_req != 5 or not self.sample_from_anchor:
+                    raise ValueError("V4.1 DSpark currently requires K5 and sample_from_anchor=True")
+                # This mode defines draft visibility, not just an optional
+                # metadata optimization. Enable it for eager execution too.
+                builder.enable_dspark_device_metadata(self.max_query_tokens)
 
         if (
             getattr(self.runner, "device_metadata_executor", None) is not None

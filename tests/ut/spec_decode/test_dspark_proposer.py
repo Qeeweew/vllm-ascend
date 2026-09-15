@@ -48,6 +48,44 @@ _MAX_NUM_TOKENS = 8
 _HIDDEN_SIZE = 16
 
 
+@pytest.mark.parametrize("external_window", [False, True])
+def test_v41_draft_uses_full_logical_pages_without_legacy_kwargs(external_window):
+    table = torch.tensor([[7, 2, 9]], dtype=torch.int32)
+
+    class V41Builder:
+        def build_for_drafting(self, common_attn_metadata, draft_index):
+            assert draft_index == 1
+            assert common_attn_metadata.block_table_tensor.data_ptr() == table.data_ptr()
+            torch.testing.assert_close(common_attn_metadata.block_table_tensor, table)
+            assert not common_attn_metadata.causal
+            return SimpleNamespace(causal=False)
+
+    builder = V41Builder()
+    proposer = SimpleNamespace(
+        draft_attn_groups=[
+            SimpleNamespace(kv_cache_group_id=0, layer_names=["draft.swa"], get_metadata_builder=lambda: builder)
+        ],
+        use_compress=True,
+        method="dspark",
+        runner=SimpleNamespace(device_metadata_executor=None),
+        dcp_size=1,
+        vllm_config=SimpleNamespace(parallel_config=SimpleNamespace(prefill_context_parallel_size=1)),
+        sliding_window=MagicMock() if external_window else None,
+        _per_group_block_table_buffers={0: table},
+        _per_group_query_slot_mapping_buffers={0: torch.arange(5)},
+    )
+    common = SimpleNamespace(num_reqs=1, causal=False)
+    with patch("vllm_ascend.spec_decode.llm_base_proposer.AscendV41CacheMetadataBuilder", V41Builder):
+        if external_window:
+            with pytest.raises(ValueError, match="full logical page tables"):
+                AscendSpecDecodeBaseProposer.build_draft_attn_metadata(proposer, common, 5, 5)
+            proposer.sliding_window.apply.assert_not_called()
+        else:
+            result, first = AscendSpecDecodeBaseProposer.build_draft_attn_metadata(proposer, common, 5, 5)
+            assert result[0]["draft.swa"] is first
+            assert first.attn_mask is None
+
+
 @pytest.mark.parametrize(
     ("dcp_size", "pcp_enabled", "expected_submit"),
     [(1, False, True), (2, False, False), (1, True, False)],
@@ -822,6 +860,40 @@ class TestInitializeAttnBackend(_DSparkProposerTestBase):
         proposer.dcp_size = 1
         return proposer
 
+    def test_v41_draft_mode_is_enabled_without_async_metadata_executor(self, monkeypatch):
+        class V41Builder:
+            def enable_dspark_device_metadata(self, capacity):
+                self.capacity = capacity
+
+        backend = MagicMock()
+        backend.full_cls_name.return_value = "v41.backend"
+        layer = MagicMock()
+        layer.get_attn_backend.return_value = backend
+        monkeypatch.setattr(
+            "vllm_ascend.spec_decode.dspark_proposer.get_layers_from_vllm_config",
+            lambda *args, **kwargs: {"draft.swa": layer},
+        )
+        proposer = self._make_proposer_for_init()
+        proposer.model = SimpleNamespace(get_draft_kv_cache_layer_names=lambda: {"draft.swa"})
+        proposer.max_query_tokens = 5
+        proposer.max_num_tokens = 16
+        proposer.num_query_per_req = 5
+        proposer.sample_from_anchor = True
+        cache_config = SimpleNamespace(
+            kv_cache_groups=[SimpleNamespace(layer_names=["draft.swa"], kv_cache_spec=MagicMock(block_size=32))]
+        )
+        builder = V41Builder()
+        with (
+            patch.object(AttentionGroup, "create_metadata_builders"),
+            patch.object(AttentionGroup, "get_metadata_builder", return_value=builder),
+            patch("vllm_ascend.spec_decode.dspark_proposer.AscendV41CacheMetadataBuilder", V41Builder),
+        ):
+            proposer.initialize_attn_backend(cache_config)
+            assert builder.capacity == 5
+            proposer.num_query_per_req = 6
+            with pytest.raises(ValueError, match="K5"):
+                proposer.initialize_attn_backend(cache_config)
+
     @pytest.mark.parametrize(
         ("dcp_size", "pcp_enabled", "has_executor", "expected_tokens"),
         [
@@ -907,7 +979,10 @@ class TestInitializeAttnBackend(_DSparkProposerTestBase):
             ],
         )
 
-        with patch.object(AttentionGroup, "create_metadata_builders") as create_builders:
+        with (
+            patch.object(AttentionGroup, "create_metadata_builders") as create_builders,
+            patch.object(AttentionGroup, "get_metadata_builder", return_value=MagicMock()),
+        ):
             proposer.initialize_attn_backend(
                 kv_cache_config,
                 kernel_block_sizes=[128, 64],
@@ -981,7 +1056,10 @@ class TestInitializeAttnBackend(_DSparkProposerTestBase):
             ]
         )
 
-        with patch.object(AttentionGroup, "create_metadata_builders"):
+        with (
+            patch.object(AttentionGroup, "create_metadata_builders"),
+            patch.object(AttentionGroup, "get_metadata_builder", return_value=MagicMock()),
+        ):
             proposer.initialize_attn_backend(
                 kv_cache_config,
                 kernel_block_sizes=[128],
