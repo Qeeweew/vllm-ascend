@@ -2,6 +2,13 @@
 
 **状态：未完成全模型验收。这是阶段报告，不是最终整机性能结论。**
 
+2026-09-15 后续真实 DSpark 逐层比对发现 `wo_a` 权重布局错误：Ascend
+loader 已转置为 `[groups, width, rank]`，V4.1 输出投影却按原布局重读。
+该问题同时影响 target 和 draft。历史 target 的重复性、eager/graph
+一致性和接口运行记录仍保留，但不能作为完整数值正确性或模型质量证据；
+修复后的真实权重数值和整机性能需要重新验证。详情见
+[输出投影布局修复](../../benchmarks/deepseek_v41/WO_A_LAYOUT_CORRECTION.md)。
+
 截至 2026-09-15，本分支已完成独立算子、host offload 与有限范围
 TP8 eager/graph 集成验证。完整 40 层真实权重、两层真实全尺寸 Engram、
 长上下文、DSpark 和最终整机 profiling 尚未验收。下面保留通过、失败与

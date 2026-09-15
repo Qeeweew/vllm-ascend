@@ -6,12 +6,45 @@ The first attempt loaded real draft weights and shared vocabulary, then failed
 before forward execution because this harness omitted `enable_custom_op()`.
 All eight rank records have `distributed_cleanup=true`; torchrun exited 1.
 Evidence remains in `/tmp/v41-dspark-component-c9/rank*.json` and
-`/tmp/v41-dspark-component-c9-run.log`. No numerical pass is claimed.
+`/tmp/v41-dspark-component-c9-run.log`. That attempt produced no numerical result.
 
 The harness now explicitly enables the compiled custom operators and logs
-construction, loading and capture phases. Attempt r2 is running, with a fresh
-prepared directory `/tmp/v41-dspark-component-c9-r2` and log
-`/tmp/v41-dspark-component-c9-r2-run.log`. Its results are pending.
+construction, loading and capture phases. Attempt r2 completed device capture
+but its CPU comparison exposed a missing shared-expert capture. Ascend splits
+the shared MLP into linear/activation stages, bypassing the module forward
+hook. The harness now observes the actual `_run_shared_mlp` input/output before
+its collective and rejects incomplete captures before saving them.
+
+## Context-9 numerical result
+
+Attempt r3 captured every required stage and failed the unchanged numerical
+gates: 688 of 712 checks passed, with all 24 failures isolated to `wo_a`
+(three layers across eight ranks). The maximum NRMSE was 2.0652. Independent
+CPU diagnosis reproduced the actual output using the loaded transposed weight
+storage incorrectly reinterpreted as the original layout. The production
+projection was corrected to consume the loaded layout.
+
+Attempt r4 passed all **712 of 712** independent stage checks, with identical
+TP attention outputs across ranks. Both attempts exited torchrun with code 0,
+and every rank recorded successful distributed cleanup. Peak allocated NPU
+memory was 3,588,575,744 bytes per rank (3.342 GiB), below the fixed 8 GiB gate.
+All numerical thresholds remained unchanged.
+
+| Context-9 r4 stage | Maximum NRMSE across ranks/layers |
+| --- | --- |
+| Grouped output projection `wo_a` | 0.00024408 |
+| Routed W4A16 experts | 0.00064369 |
+| Shared BF16 experts | 0.00536281 |
+| Noncausal attention | 0.00204518 |
+| LM-head logits | 0.00005708 |
+| Markov bias | 0.00002199 |
+| Confidence | 0.000000091 |
+
+Tracked evidence is in [dspark_real_components](dspark_real_components/manifest.json):
+r3/r4 comparisons, per-rank status/memory records, layout diagnosis, source
+fingerprints and a manifest of original log paths and SHA256 values. Large
+capture tensors remain in the corresponding `/tmp/v41-dspark-component-c9-r*`
+directories. Contexts 33 and 129 are prepared; their execution is pending.
 
 ## Scope and provenance
 

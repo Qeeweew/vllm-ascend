@@ -172,8 +172,11 @@ class Captures:
                 "apply",
                 lambda args, kwargs, output, data=data: data.update(output_b_local=snapshot(output)),
             )
-            self.hook(
-                layer.mlp.shared_experts,
+            # Ascend splits the shared MLP and bypasses its Module.__call__.
+            # Capture the real local split result before any shared collective.
+            self.wrap(
+                layer.mlp.experts.ascend_shared_experts,
+                "_run_shared_mlp",
                 lambda args, kwargs, output, data=data: data.update(
                     shared=dict(input=snapshot(args[0] if args else kwargs["hidden_states"]), output=snapshot(output))
                 ),
@@ -426,6 +429,8 @@ def run(args):
             finally:
                 hooks.close()
             torch.npu.synchronize()
+            if any("shared" not in layer for layer in record["layers"]):
+                raise RuntimeError("Incomplete capture: the actual local shared-expert path was not observed")
             result.update(
                 status="captured_pending_cpu_oracle",
                 loaded_parameter_names=len(loaded),

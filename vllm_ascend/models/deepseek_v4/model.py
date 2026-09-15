@@ -192,6 +192,7 @@ class DeepseekV41AttentionProjections(nn.Module):
             prefix=f"{prefix}.wo_a",
         )
         # wo_a is grouped, so the forward below explicitly reads its ND weight.
+        # The Ascend loader may additionally transpose it into grouped BMM layout.
         self.wo_a.skip_weight_nz_conversion = True
         self.wo_b = RowParallelLinear(
             config.o_groups * self.o_rank,
@@ -257,8 +258,16 @@ class DeepseekV41AttentionProjections(nn.Module):
     def project_output(self, attention: torch.Tensor, positions: torch.Tensor) -> torch.Tensor:
         output = self.rotate(attention, positions, inverse=True)
         grouped = output.reshape(-1, self.local_groups, self.group_width).transpose(0, 1)
-        weight = self.wo_a.weight.view(self.local_groups, self.o_rank, self.group_width)
-        output = torch.bmm(grouped, weight.transpose(1, 2)).transpose(0, 1).flatten(1)
+        weight = self.wo_a.weight
+        if weight.ndim == 3:
+            # AscendColumnParallelLinear's loader has already transformed ND
+            # [groups * rank, width] into [groups, width, rank]. Reinterpreting
+            # that storage as the original layout silently scrambles wo_a.
+            if weight.shape != (self.local_groups, self.group_width, self.o_rank):
+                raise ValueError("Unexpected V4.1 grouped wo_a weight layout")
+        else:
+            weight = weight.view(self.local_groups, self.o_rank, self.group_width).transpose(1, 2)
+        output = torch.bmm(grouped, weight).transpose(0, 1).flatten(1)
         return self.wo_b(output)
 
 

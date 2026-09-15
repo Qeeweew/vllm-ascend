@@ -1,0 +1,150 @@
+{
+  "scope": "actual-stage-input CPU oracle; not independently propagated full-model output",
+  "target_aux_input": "deterministic synthetic BF16; all draft/shared vocabulary/expert weights real",
+  "performance_measurement": false,
+  "artifacts": [
+    {
+      "path": "context9-r3/prepared.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/prepared.json",
+      "sha256": "9c7574c82fe5a9f672ec6cffe6eb4ad7b8999a4f767d10c0a30055e84a17ee3f"
+    },
+    {
+      "path": "context9-r3/comparison.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/comparison.json",
+      "sha256": "1278c8276a76e176a0ffc623a6b5a7a285f23f3b512fcadff59b24c29e08320e"
+    },
+    {
+      "path": "context9-r3/rank0.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank0.json",
+      "sha256": "7c6dfc4d284108ce2943a79483ba6fc5815be6a2fbd9360d52a0e8e8e379ca54"
+    },
+    {
+      "path": "context9-r3/rank1.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank1.json",
+      "sha256": "89801bd772495d6b872728c776818ff3a125f72bda04b51c85e7c58570b17d57"
+    },
+    {
+      "path": "context9-r3/rank2.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank2.json",
+      "sha256": "4f1bf9aa8b48766067a2777c8525559a46c4c938445e94b2e1f7b2adcf64f075"
+    },
+    {
+      "path": "context9-r3/rank3.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank3.json",
+      "sha256": "25aa4180594f0620dedefcb6681b6594f3d91e3cc0fa5e7903d3010e546525bc"
+    },
+    {
+      "path": "context9-r3/rank4.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank4.json",
+      "sha256": "5dd78900f2830454712fff0d4c3e6d240827e18b7beb95362308991c9d95529a"
+    },
+    {
+      "path": "context9-r3/rank5.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank5.json",
+      "sha256": "42b1175995d1aca572d0a50a3f12e193399664617028cacfca57ed7ee772befa"
+    },
+    {
+      "path": "context9-r3/rank6.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank6.json",
+      "sha256": "54f9c094f08cdf12b8b89cdb652d7faf90f7b0455f6bebe05e8cd82e418bf2b0"
+    },
+    {
+      "path": "context9-r3/rank7.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r3/rank7.json",
+      "sha256": "9cd7170a2f3d8cd85ed735fb79695e0ec1148b6faf1436df9cc898aef38b24c2"
+    },
+    {
+      "path": "context9-r4/prepared.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/prepared.json",
+      "sha256": "9c7574c82fe5a9f672ec6cffe6eb4ad7b8999a4f767d10c0a30055e84a17ee3f"
+    },
+    {
+      "path": "context9-r4/comparison.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/comparison.json",
+      "sha256": "bc6656e005ad7d94fe07178bb212dc9c4fca16841274f14957bba1ea428de50e"
+    },
+    {
+      "path": "context9-r4/rank0.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank0.json",
+      "sha256": "7c6dfc4d284108ce2943a79483ba6fc5815be6a2fbd9360d52a0e8e8e379ca54"
+    },
+    {
+      "path": "context9-r4/rank1.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank1.json",
+      "sha256": "89801bd772495d6b872728c776818ff3a125f72bda04b51c85e7c58570b17d57"
+    },
+    {
+      "path": "context9-r4/rank2.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank2.json",
+      "sha256": "4f1bf9aa8b48766067a2777c8525559a46c4c938445e94b2e1f7b2adcf64f075"
+    },
+    {
+      "path": "context9-r4/rank3.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank3.json",
+      "sha256": "25aa4180594f0620dedefcb6681b6594f3d91e3cc0fa5e7903d3010e546525bc"
+    },
+    {
+      "path": "context9-r4/rank4.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank4.json",
+      "sha256": "5dd78900f2830454712fff0d4c3e6d240827e18b7beb95362308991c9d95529a"
+    },
+    {
+      "path": "context9-r4/rank5.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank5.json",
+      "sha256": "42b1175995d1aca572d0a50a3f12e193399664617028cacfca57ed7ee772befa"
+    },
+    {
+      "path": "context9-r4/rank6.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank6.json",
+      "sha256": "54f9c094f08cdf12b8b89cdb652d7faf90f7b0455f6bebe05e8cd82e418bf2b0"
+    },
+    {
+      "path": "context9-r4/rank7.json",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/rank7.json",
+      "sha256": "9cd7170a2f3d8cd85ed735fb79695e0ec1148b6faf1436df9cc898aef38b24c2"
+    },
+    {
+      "path": "output-a-layout-diagnosis.json",
+      "source_path": "/tmp/v41-dspark-output-a-layout-diagnosis.json",
+      "sha256": "74c22059b84bb8527c198059f2161e1cf8a718fb38377a797f55d8dfc0ae9f42"
+    },
+    {
+      "path": "context9-r4/source-sha256.txt",
+      "source_path": "/tmp/v41-dspark-component-c9-r4/source-sha256.txt",
+      "sha256": "69cc657261ff646c30a4a7fad4cc2d526e065d9a9dda4ea1b56ff6213a2802f6"
+    }
+  ],
+  "original_logs": [
+    {
+      "path": "/tmp/v41-dspark-component-c9-r3-prepare.log",
+      "sha256": "edcdd34802a558afbbc019db6a8e1e3bf73c332e9df0ce713ce55afe03e6f0dd"
+    },
+    {
+      "path": "/tmp/v41-dspark-component-c9-r3-run.log",
+      "sha256": "6a4613ffd5af01ebb819c4b546ee4de92b04d7dedefc559d160891933243e118"
+    },
+    {
+      "path": "/tmp/v41-dspark-component-c9-r3-compare.log",
+      "sha256": "7e2a6ce72bc5443c223844dfceaa2482cc70c03524c6bf3317085dc32e164e24"
+    },
+    {
+      "path": "/tmp/v41-dspark-component-c9-r4-prepare.log",
+      "sha256": "b677ff153a0d3f6851df2d776095ad7b5fe6946ba3acbeb37b980d6172b5a776"
+    },
+    {
+      "path": "/tmp/v41-dspark-component-c9-r4-run.log",
+      "sha256": "96d97ddaf8cafef9bc4efa3f08649bdef70b98dd1e1679bc81bad6ad276a7e22"
+    },
+    {
+      "path": "/tmp/v41-dspark-component-c9-r4-compare.log",
+      "sha256": "10c6cc5d5664b7ba714a202450314371ad2d8024337ca1421efdc7674957aa8c"
+    }
+  ],
+  "local_source_artifacts": [
+    {
+      "source_path": "/tmp/v41-dspark-component-c9-r4/production-change.diff",
+      "sha256": "ac65921298253c039fadb28fba6b9bedd6d35a335f718dc30c902e5b6659a3bb",
+      "reason": "Raw unified diff retained locally; source hashes and correction are committed."
+    }
+  ]
+}

@@ -1,0 +1,6498 @@
+{
+  "status": "passed",
+  "stage_oracle_only": true,
+  "full_model_independent_oracle": false,
+  "performance_measurement": false,
+  "ranks": [
+    {
+      "rank": 0,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 8.941098549817679e-07,
+          "peak_relative": 1.0333994708994708e-05,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0017973233820415722,
+          "peak_relative": 0.0026579137612011442,
+          "max_abs": 0.004805803298950195,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.5829500973462538e-07,
+          "peak_relative": 4.50028801843318e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.00030191183574503815,
+          "peak_relative": 0.0020242914979757085,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0039012767404373806,
+          "peak_relative": 0.00558659217877095,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 9.859266890368353e-06,
+          "peak_relative": 0.0001775568181818182,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019408022491033024,
+          "peak_relative": 0.002686617501596304,
+          "max_abs": 0.0032116174697875977,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 6.858975357898254e-08,
+          "peak_relative": 1.0614809782608696e-06,
+          "max_abs": 3.814697265625e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.8430555520826965e-09,
+          "peak_relative": 6.842506306053812e-08,
+          "max_abs": 4.76837158203125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 1.796799782415667e-05,
+          "peak_relative": 0.0006578947368421052,
+          "max_abs": 0.001953125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0037274973824772246,
+          "peak_relative": 0.0038461538461538464,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 1.7804548141287412e-07,
+          "peak_relative": 3.414554195804196e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019037814675648239,
+          "peak_relative": 0.003160183161636307,
+          "max_abs": 0.0036916732788085938,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 3.873355585244532e-08,
+          "peak_relative": 7.180606617647059e-07,
+          "max_abs": 1.9073486328125e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.3856464796046403e-06,
+          "peak_relative": 3.150201612903226e-05,
+          "max_abs": 0.000244140625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 9.637869029435655e-05,
+          "peak_relative": 0.0009191176470588235,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.003936810180025868,
+          "peak_relative": 0.0041841004184100415,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 1,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 2.6522244611510005e-07,
+          "peak_relative": 4.209321120689655e-06,
+          "max_abs": 0.0001220703125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.001863847409458374,
+          "peak_relative": 0.0024591599576553134,
+          "max_abs": 0.004097342491149902,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 0.0002440757113174672,
+          "peak_relative": 0.0023584905660377358,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.00040711127645374215,
+          "peak_relative": 0.0033783783783783786,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.00536280650391365,
+          "peak_relative": 0.006172839506172839,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 1.48094564640075e-07,
+          "peak_relative": 1.835643796992481e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019397720578908045,
+          "peak_relative": 0.00236058785977648,
+          "max_abs": 0.0023118257522583008,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 2.3667244028528414e-06,
+          "peak_relative": 4.6781437125748506e-05,
+          "max_abs": 0.0001220703125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 1.772942870681156e-05,
+          "peak_relative": 0.0006067961165048543,
+          "max_abs": 0.001953125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0039501974362563955,
+          "peak_relative": 0.00558659217877095,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.002014657686364483,
+          "peak_relative": 0.0024173792428980744,
+          "max_abs": 0.0028853416442871094,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 0.00013964204988149985,
+          "peak_relative": 0.0018796992481203006,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0006436926494175411,
+          "peak_relative": 0.0014534883720930232,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004111058697061192,
+          "peak_relative": 0.00196078431372549,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 2,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019011259305225553,
+          "peak_relative": 0.0021793478109647345,
+          "max_abs": 0.0035480260848999023,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 1.843624166840442e-05,
+          "peak_relative": 0.0003633720930232558,
+          "max_abs": 0.0009765625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0001583053917977896,
+          "peak_relative": 0.0016778523489932886,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0046150791191635725,
+          "peak_relative": 0.005780346820809248,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 5.818485631036015e-07,
+          "peak_relative": 7.2877798507462685e-06,
+          "max_abs": 0.000244140625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018924848493132374,
+          "peak_relative": 0.0026670616761377466,
+          "max_abs": 0.004251956939697266,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 3.001469094792432e-08,
+          "peak_relative": 4.6950120192307695e-07,
+          "max_abs": 1.9073486328125e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.003964960613400037,
+          "peak_relative": 0.0033333333333333335,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 2.7391535085989034e-09,
+          "peak_relative": 4.5960208019578316e-08,
+          "max_abs": 9.5367431640625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019285009734383955,
+          "peak_relative": 0.0028820253851812214,
+          "max_abs": 0.0037360191345214844,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 4.005103145873295e-09,
+          "peak_relative": 6.177647393724696e-08,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 9.524941812569622e-08,
+          "peak_relative": 2.941453313253012e-06,
+          "max_abs": 3.0517578125e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.00014250694555740053,
+          "peak_relative": 0.0004807692307692308,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0033978215750886396,
+          "peak_relative": 0.0027472527472527475,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 3,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 2.3193762280778832e-07,
+          "peak_relative": 3.0140817901234566e-06,
+          "max_abs": 0.0001220703125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0017868463772749048,
+          "peak_relative": 0.0020348553988089914,
+          "max_abs": 0.003659963607788086,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.780758141812456e-05,
+          "peak_relative": 0.0005102040816326531,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 2.4248225601483362e-05,
+          "peak_relative": 0.0008680555555555555,
+          "max_abs": 0.001953125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004480344147159321,
+          "peak_relative": 0.0034965034965034965,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018487239371197844,
+          "peak_relative": 0.002042325802188779,
+          "max_abs": 0.0037952661514282227,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 1.8010312852399662e-05,
+          "peak_relative": 0.0003453038674033149,
+          "max_abs": 0.0009765625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 2.367693478291857e-10,
+          "peak_relative": 9.304139672256098e-09,
+          "max_abs": 5.960464477539063e-08,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.00017538609352943667,
+          "peak_relative": 0.004901960784313725,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004046213416444096,
+          "peak_relative": 0.004347826086956522,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0020451772563478154,
+          "peak_relative": 0.002814570434212995,
+          "max_abs": 0.003093719482421875,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 0.00014215047981362995,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 3.758125610914908e-05,
+          "peak_relative": 0.0005286654135338346,
+          "max_abs": 0.0087890625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.003480599743627646,
+          "peak_relative": 0.0025906735751295338,
+          "max_abs": 0.125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 4,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 1.1083293694462648e-10,
+          "peak_relative": 1.4107608230861686e-09,
+          "max_abs": 5.960464477539063e-08,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.001801886196854143,
+          "peak_relative": 0.0019376753574733524,
+          "max_abs": 0.0037664175033569336,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 2.7169093082550114e-08,
+          "peak_relative": 3.676816641566265e-07,
+          "max_abs": 1.9073486328125e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 5.0690261743624676e-05,
+          "peak_relative": 0.0018248175182481751,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0050997270982693224,
+          "peak_relative": 0.005235602094240838,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019309208766464473,
+          "peak_relative": 0.0028551025743591353,
+          "max_abs": 0.002763211727142334,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 1.6324383248862026e-05,
+          "peak_relative": 0.000502008032128514,
+          "max_abs": 0.001953125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004029627871530789,
+          "peak_relative": 0.00425531914893617,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019105519309968314,
+          "peak_relative": 0.002032904508234195,
+          "max_abs": 0.003784775733947754,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 1.8205008740135216e-06,
+          "peak_relative": 2.9370300751879698e-05,
+          "max_abs": 0.0001220703125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004340873601117239,
+          "peak_relative": 0.0024509803921568627,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 5,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 1.3874689334327598e-07,
+          "peak_relative": 1.220703125e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018705597157816808,
+          "peak_relative": 0.002135375449641062,
+          "max_abs": 0.003696918487548828,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 2.8406477618846856e-09,
+          "peak_relative": 1.0309992609797298e-07,
+          "max_abs": 9.5367431640625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004096411585395237,
+          "peak_relative": 0.0047169811320754715,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018616418403372794,
+          "peak_relative": 0.0022056602170717975,
+          "max_abs": 0.0038286447525024414,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 3.437498939097794e-05,
+          "peak_relative": 0.000946969696969697,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004227984831438104,
+          "peak_relative": 0.00510204081632653,
+          "max_abs": 0.01171875,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019855857418016897,
+          "peak_relative": 0.0024214030358933273,
+          "max_abs": 0.002392411231994629,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 1.578997613291403e-05,
+          "peak_relative": 0.00027533039647577095,
+          "max_abs": 0.0009765625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.610773680778465e-06,
+          "peak_relative": 5.5407801418439715e-05,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0031582434460068836,
+          "peak_relative": 0.002512562814070352,
+          "max_abs": 0.125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 6,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 1.9024444052200032e-05,
+          "peak_relative": 0.00025,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018222835407983673,
+          "peak_relative": 0.0025989564375917497,
+          "max_abs": 0.003954648971557617,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 2.77145586250571e-06,
+          "peak_relative": 3.426535087719298e-05,
+          "max_abs": 0.0001220703125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 7.338400520509229e-07,
+          "peak_relative": 2.657312925170068e-05,
+          "max_abs": 0.000244140625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 5.308707490896887e-05,
+          "peak_relative": 0.0014367816091954023,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004017734591864214,
+          "peak_relative": 0.004484304932735426,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 1.3246453194457095e-06,
+          "peak_relative": 1.8870772946859902e-05,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0019917233110190963,
+          "peak_relative": 0.00247051341203221,
+          "max_abs": 0.0023106932640075684,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.3713714790154868e-05,
+          "peak_relative": 0.000536480686695279,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0037707400436133164,
+          "peak_relative": 0.0038819875776397515,
+          "max_abs": 0.009765625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 1.8095380010503228e-07,
+          "peak_relative": 1.719300176056338e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.001962185192929476,
+          "peak_relative": 0.0024194125361624206,
+          "max_abs": 0.00428926944732666,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 6.743154153168662e-05,
+          "peak_relative": 0.0004280821917808219,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0040904239768978735,
+          "peak_relative": 0.004166666666666667,
+          "max_abs": 0.125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    },
+    {
+      "rank": 7,
+      "passed": true,
+      "checks": [
+        {
+          "name": "context.main_projection",
+          "kind": "dense",
+          "nrmse": 3.7424546750059235e-05,
+          "peak_relative": 0.0011467889908256881,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "context.main_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018922230393424919,
+          "peak_relative": 0.002116199245930457,
+          "max_abs": 0.003769993782043457,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_a",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.output_b_local",
+          "kind": "dense",
+          "nrmse": 1.6601728350631402e-06,
+          "peak_relative": 6.793478260869565e-05,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post",
+          "kind": "hc_control",
+          "nrmse": 6.4488041016163464e-06,
+          "peak_relative": 8.175844034772975e-06,
+          "max_abs": 4.827976226806641e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 6.899424032499854e-06,
+          "peak_relative": 1.5854979154874773e-05,
+          "max_abs": 1.5854835510253906e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 3.374774915757667e-06,
+          "peak_relative": 6.316179432152864e-06,
+          "max_abs": 5.662441253662109e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 1.0380242150510178e-05,
+          "peak_relative": 1.8623095383090557e-05,
+          "max_abs": 3.2514333724975586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 7.942198646347258e-06,
+          "peak_relative": 2.109902335694713e-05,
+          "max_abs": 2.1070241928100586e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.314173158324764e-05,
+          "peak_relative": 1.2983624912241197e-05,
+          "max_abs": 1.2159347534179688e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 2.2593773911965266e-05,
+          "peak_relative": 0.0008992805755395684,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_norm",
+          "kind": "dense",
+          "nrmse": 2.875446732914362e-05,
+          "peak_relative": 0.0007961783439490446,
+          "max_abs": 0.00048828125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.query_embedding",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.router_weights",
+          "kind": "dense",
+          "nrmse": 1.8235669256040914e-07,
+          "peak_relative": 3.1432361722361407e-07,
+          "max_abs": 2.384185791015625e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 5.649822203950621e-06,
+          "peak_relative": 0.00018728595890410958,
+          "max_abs": 0.00042724609375,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "0.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.004404672019179294,
+          "peak_relative": 0.005208333333333333,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.0018880028282732483,
+          "peak_relative": 0.003083034753375009,
+          "max_abs": 0.00444185733795166,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_a",
+          "kind": "dense",
+          "nrmse": 1.7530355600030314e-05,
+          "peak_relative": 0.0002920560747663551,
+          "max_abs": 0.0009765625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.output_b_local",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.430220225410639e-06,
+          "peak_relative": 9.432887662346966e-06,
+          "max_abs": 8.672475814819336e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 2.4250784590359224e-05,
+          "peak_relative": 3.2429889400425647e-05,
+          "max_abs": 3.185868263244629e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.427856795171528e-06,
+          "peak_relative": 8.6806036064008e-06,
+          "max_abs": 8.225440979003906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.491653528496516e-06,
+          "peak_relative": 0.0001539408866995074,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 8.968213822355243e-06,
+          "peak_relative": 1.0192253373392139e-05,
+          "max_abs": 1.3709068298339844e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.6097872234616022e-06,
+          "peak_relative": 2.5752845258312657e-06,
+          "max_abs": 2.559274435043335e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 2.4464619664298103e-05,
+          "peak_relative": 4.5562612712751536e-05,
+          "max_abs": 4.094839096069336e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.router_weights",
+          "kind": "dense",
+          "nrmse": 1.3471353527670717e-07,
+          "peak_relative": 2.0407072111654437e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 3.9443761255903205e-05,
+          "peak_relative": 0.0014705882352941176,
+          "max_abs": 0.00390625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "1.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0037991103229230425,
+          "peak_relative": 0.004878048780487805,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.context_kv_rope",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query",
+          "kind": "dense",
+          "nrmse": 2.433214045190263e-05,
+          "peak_relative": 0.0005434782608695652,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.query_kv",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.noncausal_attention",
+          "kind": "attention",
+          "nrmse": 0.001941950852901049,
+          "peak_relative": 0.0025768290303456814,
+          "max_abs": 0.003855586051940918,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_a",
+          "kind": "dense",
+          "nrmse": 5.174250549782689e-06,
+          "peak_relative": 8.491847826086956e-05,
+          "max_abs": 0.000244140625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.output_b_local",
+          "kind": "dense",
+          "nrmse": 7.544507627623188e-06,
+          "peak_relative": 0.00024606299212598425,
+          "max_abs": 0.001953125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post",
+          "kind": "hc_control",
+          "nrmse": 7.292810290019368e-06,
+          "peak_relative": 1.2974340312342594e-05,
+          "max_abs": 1.4781951904296875e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.comb",
+          "kind": "hc_control",
+          "nrmse": 4.171615713553393e-06,
+          "peak_relative": 8.412696584880738e-06,
+          "max_abs": 8.404254913330078e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 1.294946964033812e-05,
+          "peak_relative": 1.851543698421102e-05,
+          "max_abs": 1.6361474990844727e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.741727046264752e-08,
+          "peak_relative": 1.278223167539267e-06,
+          "max_abs": 6.103515625e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.collapsed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post",
+          "kind": "hc_control",
+          "nrmse": 9.567034620290579e-06,
+          "peak_relative": 1.1437673122703285e-05,
+          "max_abs": 1.8656253814697266e-05,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.comb",
+          "kind": "hc_control",
+          "nrmse": 1.33006438253546e-06,
+          "peak_relative": 2.6866485150085056e-06,
+          "max_abs": 2.68593430519104e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.next_pre",
+          "kind": "hc_control",
+          "nrmse": 6.51275011420107e-06,
+          "peak_relative": 9.062138672965127e-06,
+          "max_abs": 1.9669532775878906e-06,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn.post_hidden",
+          "kind": "hc_post",
+          "nrmse": 3.43323018522194e-06,
+          "peak_relative": 3.650700934579439e-05,
+          "max_abs": 0.0078125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_input",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.ffn_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_incoming_mix",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.attention_residual",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_ids",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.router_weights",
+          "kind": "dense",
+          "nrmse": 1.5059203680053685e-07,
+          "peak_relative": 2.6632483341647993e-07,
+          "max_abs": 1.4901161193847656e-07,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.routed_moe_local",
+          "kind": "dense",
+          "nrmse": 0.0005575398126641444,
+          "peak_relative": 0.0007102272727272727,
+          "max_abs": 0.015625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "2.shared_moe_local",
+          "kind": "dense",
+          "nrmse": 0.003940042669082632,
+          "peak_relative": 0.0053475935828877,
+          "max_abs": 0.25,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.collapse",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.norm",
+          "kind": "dense",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.logits",
+          "kind": "dense",
+          "nrmse": 5.708414458558722e-05,
+          "peak_relative": 0.001893939393939394,
+          "max_abs": 0.03125,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_embed",
+          "kind": "exact",
+          "nrmse": 0.0,
+          "peak_relative": 0.0,
+          "max_abs": 0.0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.markov_bias",
+          "kind": "dense",
+          "nrmse": 2.1994352591877438e-05,
+          "peak_relative": 0.002369668246445498,
+          "max_abs": 0.0625,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "name": "head.confidence",
+          "kind": "dense",
+          "nrmse": 9.045718795321798e-08,
+          "peak_relative": 1.1920933218336064e-07,
+          "max_abs": 1.1920928955078125e-07,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "scope": "actual-stage-input CPU oracle; not independently propagated full-model output"
+    }
+  ],
+  "tp_attention_reduction": [
+    {
+      "stage": 0,
+      "rank_outputs_equal": true,
+      "nrmse": 0.003442541628567731,
+      "peak_relative": 0.004132231404958678,
+      "max_abs": 0.125,
+      "finite": true
+    },
+    {
+      "stage": 1,
+      "rank_outputs_equal": true,
+      "nrmse": 0.0034249087072286853,
+      "peak_relative": 0.005555555555555556,
+      "max_abs": 0.125,
+      "finite": true
+    },
+    {
+      "stage": 2,
+      "rank_outputs_equal": true,
+      "nrmse": 0.0034834112797922654,
+      "peak_relative": 0.005319148936170213,
+      "max_abs": 0.25,
+      "finite": true
+    }
+  ]
+}
