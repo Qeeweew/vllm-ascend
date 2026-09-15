@@ -559,7 +559,7 @@ AscendC技能采用 `ascendc-op-dev`。API、模板、硬件行为从当前CANN�
 ### 12.10 真实权重逐层验证发现的修复与全模型准入
 
 - 源47/48已发布，转换watcher已自动续转；完整manifest/config/index发布前不启动完整模型。
-- 真实DSpark三层E128/top3的独立stage oracle发现target/draft共用的`wo_a`布局错误：Ascend loader已转置为`[groups,width,rank]`，旧投影却按原shape重读。修复`da6da081a`直接使用正确布局；修前三层×八rank共24项失败，修后context9和33各712项全部通过，原门限不变。参考输入为实际各stage输入和合成target辅助状态，不替代整模型质量。详见`benchmarks/deepseek_v41/WO_A_LAYOUT_CORRECTION.md`。
+- 真实DSpark三层E128/top3的独立stage oracle发现target/draft共用的`wo_a`布局错误：Ascend loader已转置为`[groups,width,rank]`，旧投影却按原shape重读。修复`da6da081a`直接使用正确布局；修前三层×八rank共24项失败，修后context9、33、129各712项全部通过，原门限不变。参考输入为实际各stage输入和合成target辅助状态，不替代整模型质量。详见`benchmarks/deepseek_v41/WO_A_LAYOUT_CORRECTION.md`。
 - 历史target eager/graph一致性只能证明当时实现的一致性，不能证明上述投影正确；target、完整真实权重质量和最终性能须在修复后重验。
 - 初始draft输入kernel补齐页表逻辑宽度和DCP ownership读取mask；45项NPU测试通过，包括拒绝、切片table和变化长度graph，提交`1e10173ae`。最大上下文的RoPE、attention可见性、proposal有效性仍需完整衔接，DSpark生产准入保持关闭。
 - 完整headers预检得到target静态设备权重估计39.299GiB/rank、两张真实Engram共366.221833GiB pinned host。48.549GiB/rank启动余量为估算准入线，非实测峰值；卡7外部占用当前不满足要求。不会干预外部进程，同时准备低HBM的真实全表factory加载与行oracle验证。

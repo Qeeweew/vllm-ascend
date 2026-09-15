@@ -15,7 +15,7 @@ the shared MLP into linear/activation stages, bypassing the module forward
 hook. The harness now observes the actual `_run_shared_mlp` input/output before
 its collective and rejects incomplete captures before saving them.
 
-## Context-9 numerical result
+## Numerical results
 
 Attempt r3 captured every required stage and failed the unchanged numerical
 gates: 688 of 712 checks passed, with all 24 failures isolated to `wo_a`
@@ -44,7 +44,26 @@ Tracked evidence is in [dspark_real_components](dspark_real_components/manifest.
 r3/r4 comparisons, per-rank status/memory records, layout diagnosis, source
 fingerprints and a manifest of original log paths and SHA256 values. Large
 capture tensors remain in the corresponding `/tmp/v41-dspark-component-c9-r*`
-directories. Contexts 33 and 129 are prepared; their execution is pending.
+directories. The cross-page context-33 case also passed all 712 checks, with
+successful cleanup on every rank and the same 3.342 GiB peak. Its maximum
+attention NRMSE was 0.00219947 and shared-expert NRMSE was 0.00544027. Its small
+artifacts and log fingerprints are retained alongside context 9. Context 129
+also passed every check, including exclusion of the oldest context token
+while retaining all five noncausal draft queries. Its maximum attention NRMSE
+was 0.00218638 and shared-expert NRMSE was 0.00534760.
+
+| Context length | Boundary exercised | Stage checks | Peak allocated per rank |
+| --- | --- | --- | --- |
+| 9 | Short prefix, five noncausal queries | 712/712 passed | 3.342 GiB |
+| 33 | Reversed physical pages, cross-page prefix | 712/712 passed | 3.342 GiB |
+| 129 | 128-token prefix window plus five queries | 712/712 passed | 3.342 GiB |
+
+The final three cases passed **2136/2136** checks with unchanged thresholds.
+Each torchrun exited 0, all 24 rank executions recorded successful cleanup,
+and TP attention results agreed exactly across ranks for every layer/case.
+This establishes the measured real-draft stage correctness with synthetic
+target auxiliary inputs. It does not establish speculative serving behavior,
+acceptance rate, independent full-model correctness or performance.
 
 ## Scope and provenance
 

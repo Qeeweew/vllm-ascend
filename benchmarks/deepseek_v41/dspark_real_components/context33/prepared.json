@@ -1,0 +1,24 @@
+{
+  "status": "prepared_only",
+  "checkpoint": "/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32",
+  "source": "/mnt/models/DeepSeek-V4.1-Flash",
+  "context_tokens": 33,
+  "query_tokens": 5,
+  "experts": 128,
+  "top_k": 3,
+  "layers": 3,
+  "actual_weights": true,
+  "target_aux_input": "deterministic synthetic BF16; no target layers executed",
+  "stage_weight_counts": [
+    1176,
+    1174,
+    1178
+  ],
+  "peak_budget_per_rank_bytes": 8589934592,
+  "manifest_sha256": "c7c17631cc6b1f88fe7e9ffd02fb139b4c1a3cbdaaede7629b18a4afa9b5f616",
+  "npu_initialized": false,
+  "draft_architecture": [
+    "DSparkV41DraftModel"
+  ],
+  "engine_config_validated": true
+}

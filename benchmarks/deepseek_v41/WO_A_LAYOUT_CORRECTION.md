@@ -44,6 +44,13 @@ Peak allocation remains 3.342 GiB per rank and all eight ranks completed
 distributed cleanup. These are actual-stage-input comparisons with synthetic
 target auxiliary states, not an independently propagated full-model oracle.
 
+Context 33 and 129 subsequently passed the same 712 checks each, covering
+cross-page and sliding-window cases. Across the three corrected runs,
+**2136/2136 checks passed**; all 24 rank executions completed cleanup and
+retained the same 3.342 GiB allocation peak. Their compact evidence is in
+`dspark_real_components/`, with raw tensor captures kept in the recorded
+local directories. None of these instrumented runs measures model throughput.
+
 The corrected target auxiliary-output probe also passed on all eight ranks:
 three exact HC means, two eager calls and six graph replays per rank, exact
 repeated tokens/logprobs, eight released owners and EngineCore exit zero.
