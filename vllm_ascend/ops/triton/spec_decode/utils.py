@@ -81,6 +81,7 @@ def copy_and_expand_dflash_and_dspark_inputs_kernel(
     # Block table
     block_table_ptr,  # [max_reqs, max_blocks]
     block_table_stride,  # stride of block_table dim 0 (in elements)
+    block_table_width,  # logical columns; can be smaller than the row stride
     # Metadata
     query_start_loc_ptr,  # [num_reqs + 1]
     seq_lens_ptr,  # [num_reqs]
@@ -172,11 +173,15 @@ def copy_and_expand_dflash_and_dspark_inputs_kernel(
             owner_rank = DCP_RANK
             local_kv_slot_pos = query_kv_slot_pos
         block_num_q = local_kv_slot_pos // block_size
-        block_id_q = tl.load(block_table_ptr + req_idx * block_table_stride + block_num_q, mask=mask, other=0).to(
+        # The fixed draft block may extend beyond the final allocated page.
+        # Mask the load itself, including non-owned DCP rows, before producing
+        # the invalid-slot sentinel; masking only the result is too late.
+        slot_valid = mask & (block_num_q >= 0) & (block_num_q < block_table_width) & (owner_rank == DCP_RANK)
+        block_id_q = tl.load(block_table_ptr + req_idx * block_table_stride + block_num_q, mask=slot_valid, other=0).to(
             tl.int64
         )
         slot_q = block_id_q * block_size + (local_kv_slot_pos % block_size)
-        slot_q = tl.where(owner_rank == DCP_RANK, slot_q, -1)
+        slot_q = tl.where(slot_valid & (block_id_q >= 0), slot_q, -1)
         tl.store(out_query_slot_mapping_ptr + offs, slot_q, mask=mask)
 
         bonus = tl.load(next_token_ids_ptr + req_idx, mask=mask, other=0)

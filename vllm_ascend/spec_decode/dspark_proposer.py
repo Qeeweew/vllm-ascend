@@ -293,6 +293,7 @@ class AscendDSparkProposer(AscendDflashProposer):
                 # Block table
                 block_table_ptr=gid_block_table,
                 block_table_stride=gid_block_table.stride(0),
+                block_table_width=gid_block_table.shape[1],
                 # Metadata
                 query_start_loc_ptr=cad.query_start_loc,
                 seq_lens_ptr=cad.seq_lens,

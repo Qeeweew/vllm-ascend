@@ -186,6 +186,7 @@ def test_copy_and_expand_dflash_dspark(batch_size, ctx_lens, num_spec, sample_fr
         out_token_indices_ptr=out_token_indices,
         block_table_ptr=block_table,
         block_table_stride=max_blocks,
+        block_table_width=block_table.shape[1],
         query_start_loc_ptr=query_start_loc,
         seq_lens_ptr=seq_lens,
         num_rejected_tokens_ptr=(num_rejected_tokens if num_rejected_tokens is not None else 0),
@@ -210,3 +211,117 @@ def test_copy_and_expand_dflash_dspark(batch_size, ctx_lens, num_spec, sample_fr
     gc.collect()
     torch.npu.empty_cache()
     torch.npu.reset_peak_memory_stats()
+
+
+@pytest.mark.parametrize("sample_from_anchor", [False, True])
+@pytest.mark.parametrize("dcp_size,dcp_rank", [(1, 0), (2, 0), (2, 1)])
+@pytest.mark.parametrize("rejected", [None, 0, 5])
+@pytest.mark.parametrize("strided", [False, True])
+def test_final_page_slots(sample_from_anchor, dcp_size, dcp_rank, rejected, strided):
+    """Check mixed request boundaries against a scalar ownership/page oracle.
+
+    Logical width differs from row stride in the sliced-table cases. Distinct
+    adjacent rows and padding values expose accidental reads past that width.
+    A missing page is represented by -1; its offset must never turn into a
+    different negative slot. RoPE positions deliberately differ from KV slots.
+    """
+    init_device_properties_triton()
+    batch, context_length, page_size, width = 3, 6, 32, 8
+    interleave = 3
+    query_count = 5 if sample_from_anchor else 6
+    sequence_lengths = [256 * dcp_size - 2, 31, 256 * dcp_size - 1]
+    row_stride = width + 3 if strided else width
+    storage_cpu = torch.arange(batch * row_stride, dtype=torch.int32).reshape(batch, row_stride) + 11
+    storage_cpu[1, 0] = -1
+    table_cpu = storage_cpu[:, :width]
+    table = storage_cpu.npu()[:, :width]
+    assert table.stride(0) == row_stride
+    # Keep enough context for every rejection count while using arbitrary
+    # RoPE positions: physical cache addressing must follow seq_lens instead.
+    target_cpu = torch.tensor([position for start in (80, 40, 90) for position in range(start, start + 6)])
+    target = target_cpu.npu()
+    next_ids = torch.tensor([0, 101, 102], dtype=torch.int64).npu()
+    context_slots = torch.arange(batch * context_length, dtype=torch.int64).npu()
+    offsets = torch.arange(0, batch * context_length + 1, context_length, dtype=torch.int32).npu()
+    seq_lens = torch.tensor(sequence_lengths, dtype=torch.int32).npu()
+    rejects = None if rejected is None else torch.full((batch,), rejected, dtype=torch.int32).npu()
+    output = {
+        "ids": torch.empty(batch * query_count, dtype=torch.int64).npu(),
+        "positions": torch.empty(batch * query_count, dtype=torch.int64).npu(),
+        "slots": torch.empty(batch * query_count, dtype=torch.int64).npu(),
+        "context_positions": torch.empty_like(target),
+        "context_slots": torch.empty_like(context_slots),
+        "samples": torch.empty(batch * 5, dtype=torch.int32).npu(),
+    }
+
+    def launch():
+        copy_and_expand_dflash_and_dspark_inputs_kernel[(1,)](
+            next_token_ids_ptr=next_ids,
+            target_positions_ptr=target,
+            context_slot_mapping_ptr=context_slots,
+            out_input_ids_ptr=output["ids"],
+            out_context_positions_ptr=output["context_positions"],
+            out_query_positions_ptr=output["positions"],
+            out_context_slot_mapping_ptr=output["context_slots"],
+            out_query_slot_mapping_ptr=output["slots"],
+            out_token_indices_ptr=output["samples"],
+            block_table_ptr=table,
+            block_table_stride=table.stride(0),
+            block_table_width=table.shape[1],
+            query_start_loc_ptr=offsets,
+            seq_lens_ptr=seq_lens,
+            num_rejected_tokens_ptr=0 if rejects is None else rejects,
+            parallel_drafting_token_id=PARALLEL_DRAFTING_TOKEN_ID,
+            block_size=page_size,
+            num_query_per_req=query_count,
+            num_speculative_tokens=5,
+            total_input_tokens=target.numel(),
+            batch_size=batch,
+            HAS_NUM_REJECTED=rejects is not None,
+            SAMPLE_FROM_ANCHOR=sample_from_anchor,
+            DCP_SIZE=dcp_size,
+            DCP_RANK=dcp_rank,
+            CP_INTERLEAVE_SIZE=interleave,
+        )
+
+    launch()
+    if sample_from_anchor and dcp_size == 1 and rejected == 0 and strided:
+        # Capture an interior block, then replay with changing lengths at the
+        # last page. Masks must follow device values rather than capture inputs.
+        seq_lens.copy_(torch.tensor([70, 31, 70], dtype=torch.int32))
+        for _ in range(3):
+            launch()
+        torch.npu.synchronize()
+        graph = torch.npu.NPUGraph()
+        with torch.npu.graph(graph):
+            launch()
+        seq_lens.copy_(torch.tensor(sequence_lengths, dtype=torch.int32))
+        graph.replay()
+    expected_slots, expected_positions, expected_ids, expected_samples = [], [], [], []
+    for request, seq_length in enumerate(sequence_lengths):
+        last_position = int(target_cpu[(request + 1) * context_length - (rejected or 0) - 1])
+        for query in range(query_count):
+            cache_position = seq_length - (rejected or 0) + query
+            if dcp_size == 1:
+                owner, local = 0, cache_position
+            else:
+                cycle, within = divmod(cache_position, interleave * dcp_size)
+                owner, offset = divmod(within, interleave)
+                local = cycle * interleave + offset
+            column, offset = divmod(local, page_size)
+            slot = -1
+            if owner == dcp_rank and 0 <= column < width:
+                page = int(table_cpu[request, column])
+                if page >= 0:
+                    slot = page * page_size + offset
+            expected_slots.append(slot)
+            expected_positions.append(last_position + 1 + query)
+            expected_ids.append([0, 101, 102][request] if query == 0 else PARALLEL_DRAFTING_TOKEN_ID)
+            if sample_from_anchor or query > 0:
+                expected_samples.append(request * query_count + query)
+    assert output["slots"].cpu().tolist() == expected_slots
+    assert output["positions"].cpu().tolist() == expected_positions
+    assert output["ids"].cpu().tolist() == expected_ids
+    assert output["samples"].cpu().tolist() == expected_samples
+    torch.testing.assert_close(output["context_positions"], target, rtol=0, atol=0)
+    torch.testing.assert_close(output["context_slots"], context_slots, rtol=0, atol=0)

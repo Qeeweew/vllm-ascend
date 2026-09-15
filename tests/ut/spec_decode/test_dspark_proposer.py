@@ -836,6 +836,7 @@ class TestSetInputsFirstPassRejectedTokens(_DSparkProposerTestBase):
         )
         num_reqs, block_size, max_num_tokens = 4, 5, 256
         proposer = self._make_proposer(max_num_tokens=max_num_tokens, num_reqs=num_reqs, block_size=block_size)
+        proposer._per_group_block_tables[0] = torch.zeros((num_reqs, 11), dtype=torch.int32)[:, :8]
         rejected = torch.full((num_reqs,), 2, dtype=torch.int32)
         self._invoke_set_inputs_first_pass(proposer, num_reqs=num_reqs, block_size=block_size, num_rejected=rejected)
         # The proposer calls the kernel as ``kernel[1,](...)`` (Triton-style
@@ -846,6 +847,8 @@ class TestSetInputsFirstPassRejectedTokens(_DSparkProposerTestBase):
         assert kwargs["HAS_NUM_REJECTED"] is True
         assert kwargs["num_rejected_tokens_ptr"] is rejected
         assert kwargs["SAMPLE_FROM_ANCHOR"] is True
+        assert kwargs["block_table_width"] == kwargs["block_table_ptr"].shape[1]
+        assert kwargs["block_table_width"] == 8 and kwargs["block_table_stride"] == 11
 
 
 class TestInitializeAttnBackend(_DSparkProposerTestBase):
