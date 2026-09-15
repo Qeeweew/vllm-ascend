@@ -1,0 +1,626 @@
+{
+  "synthetic": true,
+  "device_weights": "/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32",
+  "engram_weights": "synthetic_small_tables",
+  "engram_numa_nodes": null,
+  "layers": 3,
+  "experts": 384,
+  "native_decode_requested": false,
+  "tensor_parallel_size": 8,
+  "graph_requested": false,
+  "host_engram": true,
+  "chunked_prefill": true,
+  "prefix_reuse_requested": true,
+  "prompt_lengths": [
+    32,
+    40
+  ],
+  "outputs": [
+    [
+      55288,
+      55288,
+      55288,
+      55288
+    ],
+    [
+      27222,
+      16091,
+      60492,
+      52069
+    ],
+    [
+      18214,
+      84098,
+      116253,
+      122284
+    ]
+  ],
+  "selected_logprobs_finite": true,
+  "selected_logprobs": [
+    [
+      -2.5668649673461914,
+      -1.957237958908081,
+      -2.929337739944458,
+      -3.5171146392822266
+    ],
+    [
+      -1.6692825555801392,
+      -2.3214967250823975,
+      -3.5956227779388428,
+      -1.7799845933914185
+    ],
+    [
+      -2.506225347518921,
+      -2.1792850494384766,
+      -2.5249197483062744,
+      -0.6309676170349121
+    ]
+  ],
+  "packed_weight_initialization": "converted_checkpoint_unmodified",
+  "workers_after_capture": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": []
+    }
+  ],
+  "workers_after_first": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 5,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1
+      ]
+    }
+  ],
+  "workers_final": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 30
+      },
+      "engram_tokens": [
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

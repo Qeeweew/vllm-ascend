@@ -1,0 +1,199 @@
+{
+  "model_directory": "/mnt/models/DeepSeek-V4.1-Flash",
+  "tensors": [
+    {
+      "name": "layers.14.attn.compressor.norm.weight",
+      "shard": "model-00017-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512
+      ],
+      "sample_kind": "all_elements",
+      "count": 512,
+      "finite": true,
+      "minimum": -0.0009307861328125,
+      "maximum": 0.8671875,
+      "abs_p50": 0.68359375,
+      "abs_p95": 0.734375,
+      "abs_p99": 0.77734375,
+      "rms": 0.6727306208754958
+    },
+    {
+      "name": "layers.14.attn.compressor.wgate.weight",
+      "shard": "model-00017-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.1787109375,
+      "maximum": 0.232421875,
+      "abs_p50": 0.0205078125,
+      "abs_p95": 0.06494140625,
+      "abs_p99": 0.095703125,
+      "rms": 0.03327089645788475
+    },
+    {
+      "name": "layers.14.attn.compressor.wkv.weight",
+      "shard": "model-00017-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.1103515625,
+      "maximum": 0.09423828125,
+      "abs_p50": 0.01544189453125,
+      "abs_p95": 0.049560546875,
+      "abs_p99": 0.06689453125,
+      "rms": 0.024539250634859438
+    },
+    {
+      "name": "layers.2.attn.compressor.norm.weight",
+      "shard": "model-00005-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512
+      ],
+      "sample_kind": "all_elements",
+      "count": 512,
+      "finite": true,
+      "minimum": 0.00225830078125,
+      "maximum": 0.50390625,
+      "abs_p50": 0.40625,
+      "abs_p95": 0.431640625,
+      "abs_p99": 0.453125,
+      "rms": 0.39389544233118934
+    },
+    {
+      "name": "layers.2.attn.compressor.wgate.weight",
+      "shard": "model-00005-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.10302734375,
+      "maximum": 0.07421875,
+      "abs_p50": 0.01483154296875,
+      "abs_p95": 0.04443359375,
+      "abs_p99": 0.059814453125,
+      "rms": 0.022558353824855243
+    },
+    {
+      "name": "layers.2.attn.compressor.wkv.weight",
+      "shard": "model-00005-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.08837890625,
+      "maximum": 0.1044921875,
+      "abs_p50": 0.016357421875,
+      "abs_p95": 0.04833984375,
+      "abs_p99": 0.06591796875,
+      "rms": 0.024755250358004268
+    },
+    {
+      "name": "layers.20.attn.compressor.norm.weight",
+      "shard": "model-00023-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512
+      ],
+      "sample_kind": "all_elements",
+      "count": 512,
+      "finite": true,
+      "minimum": -0.00299072265625,
+      "maximum": 1.1171875,
+      "abs_p50": 0.83984375,
+      "abs_p95": 0.921875,
+      "abs_p99": 0.98828125,
+      "rms": 0.8228852501483959
+    },
+    {
+      "name": "layers.20.attn.compressor.wkv.weight",
+      "shard": "model-00023-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.12451171875,
+      "maximum": 0.146484375,
+      "abs_p50": 0.01806640625,
+      "abs_p95": 0.055419921875,
+      "abs_p99": 0.083984375,
+      "rms": 0.028442437264467886
+    },
+    {
+      "name": "layers.8.attn.compressor.norm.weight",
+      "shard": "model-00011-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512
+      ],
+      "sample_kind": "all_elements",
+      "count": 512,
+      "finite": true,
+      "minimum": 6.914138793945312e-05,
+      "maximum": 0.85546875,
+      "abs_p50": 0.55078125,
+      "abs_p95": 0.578125,
+      "abs_p99": 0.61328125,
+      "rms": 0.5399919603091289
+    },
+    {
+      "name": "layers.8.attn.compressor.wgate.weight",
+      "shard": "model-00011-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.1875,
+      "maximum": 0.1611328125,
+      "abs_p50": 0.01953125,
+      "abs_p95": 0.0615234375,
+      "abs_p99": 0.09619140625,
+      "rms": 0.03162207069305113
+    },
+    {
+      "name": "layers.8.attn.compressor.wkv.weight",
+      "shard": "model-00011-of-00048.safetensors",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        5120
+      ],
+      "sample_kind": "16_equally_spaced_rows_first_256_columns",
+      "count": 4096,
+      "finite": true,
+      "minimum": -0.10302734375,
+      "maximum": 0.10009765625,
+      "abs_p50": 0.016357421875,
+      "abs_p95": 0.0498046875,
+      "abs_p99": 0.06689453125,
+      "rms": 0.025211822953458012
+    }
+  ]
+}

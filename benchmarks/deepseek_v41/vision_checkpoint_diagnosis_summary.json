@@ -1,0 +1,62 @@
+{
+  "input": "BF16 linspace(-1,1) RGB patches, not an image_processor output",
+  "tower": {
+    "finite": true,
+    "nrmse": 0.1166869156072316,
+    "cosine_error": 0.006817904253358487,
+    "max_abs": 0.10400390625,
+    "reference_rms": 0.017249282429301304
+  },
+  "aligner": {
+    "finite": true,
+    "nrmse": 0.06937203149750022,
+    "cosine_error": 0.0024060693398131328,
+    "max_abs": 0.0543212890625,
+    "reference_rms": 0.04870170412626997
+  },
+  "peak_allocated_bytes": 1144144384,
+  "gate": "finite, NRMSE<0.03, cosine_error<0.0005, peak_allocated<2GiB",
+  "passed": false,
+  "isolated_maxima": {
+    "norm": {
+      "module": "vision.blocks.24.norm2",
+      "finite": true,
+      "nrmse": 2.4203590174611985e-05,
+      "cosine_error": 2.9290148084726297e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.3424039031222237
+    },
+    "QKV": {
+      "module": "vision.blocks.0.attn.wqkv",
+      "finite": true,
+      "nrmse": 3.4308837955945474e-05,
+      "cosine_error": 5.882534459544786e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0655329465568435
+    },
+    "attention_output_projection": {
+      "module": "vision.blocks.31.attn.wo",
+      "finite": true,
+      "nrmse": 3.9751072995310154e-05,
+      "cosine_error": 7.900695653262346e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.1867624265676523
+    },
+    "MLP": {
+      "module": "vision.blocks.22.mlp",
+      "finite": true,
+      "nrmse": 0.0002077993752843767,
+      "cosine_error": 2.158803424912037e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.06507806511345017
+    },
+    "FIA": {
+      "module": "vision.blocks.30.attn.fia",
+      "finite": true,
+      "nrmse": 0.001254205141665949,
+      "cosine_error": 7.864555674474971e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.14738066611676565
+    }
+  }
+}

@@ -1,0 +1,333 @@
+{
+  "synthetic": true,
+  "layers": 3,
+  "experts": 384,
+  "native_decode_requested": true,
+  "tensor_parallel_size": 8,
+  "graph_requested": true,
+  "host_engram": true,
+  "chunked_prefill": true,
+  "prefix_reuse_requested": true,
+  "prompt_lengths": [
+    40,
+    48
+  ],
+  "outputs": [
+    [
+      12504,
+      2563,
+      12504,
+      324
+    ],
+    [
+      13632,
+      6250,
+      14928,
+      2563
+    ],
+    [
+      8953,
+      6250,
+      541,
+      1600
+    ]
+  ],
+  "selected_logprobs_finite": true,
+  "selected_logprobs": [
+    [
+      -11.769652366638184,
+      -11.769649505615234,
+      -11.769644737243652,
+      -11.769647598266602
+    ],
+    [
+      -11.769641876220703,
+      -11.769651412963867,
+      -11.7696533203125,
+      -11.769639015197754
+    ],
+    [
+      -11.76965045928955,
+      -11.7696533203125,
+      -11.769648551940918,
+      -11.769648551940918
+    ]
+  ],
+  "packed_weight_initialization": "all_nibbles_signed_one_after_dummy_load",
+  "workers_after_capture": [
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      }
+    }
+  ],
+  "workers_final": [
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    },
+    {
+      "rows": [
+        20623360646656
+      ],
+      "mask": 20623360117248,
+      "prepared": false,
+      "steps": 9,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 6,
+        "native_eager": 6,
+        "fallback_capture": 0,
+        "fallback_eager": 12
+      }
+    }
+  ]
+}

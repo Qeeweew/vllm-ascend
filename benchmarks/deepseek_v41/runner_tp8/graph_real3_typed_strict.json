@@ -1,0 +1,1192 @@
+{
+  "synthetic": true,
+  "device_weights": "/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32",
+  "engram_weights": "synthetic_small_tables",
+  "engram_numa_nodes": null,
+  "layers": 3,
+  "experts": 384,
+  "native_decode_requested": false,
+  "tensor_parallel_size": 8,
+  "graph_requested": true,
+  "host_engram": true,
+  "chunked_prefill": true,
+  "prefix_reuse_requested": false,
+  "prompt_lengths": [
+    40,
+    48
+  ],
+  "outputs": [
+    [
+      27222,
+      16091,
+      60492,
+      52069
+    ],
+    [
+      39693,
+      63798,
+      99801,
+      116843
+    ],
+    [
+      18214,
+      84098,
+      116253,
+      122284
+    ]
+  ],
+  "selected_logprobs_finite": true,
+  "selected_logprobs": [
+    [
+      -1.67024827003479,
+      -2.051069736480713,
+      -3.5938942432403564,
+      -1.789873480796814
+    ],
+    [
+      -1.0718847513198853,
+      -3.228071928024292,
+      -0.6656118035316467,
+      -1.0292973518371582
+    ],
+    [
+      -2.8623952865600586,
+      -2.0938572883605957,
+      -3.0343174934387207,
+      -1.00416898727417
+    ]
+  ],
+  "packed_weight_initialization": "converted_checkpoint_unmodified",
+  "workers_after_capture": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    }
+  ],
+  "workers_after_first": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 6,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 18
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    }
+  ],
+  "workers_final": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 11,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 24
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    }
+  ],
+  "repeat_outputs": [
+    [
+      27222,
+      16091,
+      60492,
+      52069
+    ],
+    [
+      39693,
+      63798,
+      99801,
+      116843
+    ]
+  ],
+  "repeat_selected_logprobs": [
+    [
+      -1.67024827003479,
+      -2.051069736480713,
+      -3.5938942432403564,
+      -1.789873480796814
+    ],
+    [
+      -1.0718847513198853,
+      -3.228071928024292,
+      -0.6656118035316467,
+      -1.0292973518371582
+    ]
+  ],
+  "workers_after_repeat": [
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623360650752
+      ],
+      "mask": 20623360123392,
+      "prepared": false,
+      "steps": 17,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 6,
+        "fallback_eager": 33
+      },
+      "engram_tokens": [
+        32,
+        32,
+        25,
+        2,
+        2,
+        1,
+        32,
+        9,
+        1,
+        1,
+        1,
+        32,
+        32,
+        25,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ]
+    }
+  ]
+}

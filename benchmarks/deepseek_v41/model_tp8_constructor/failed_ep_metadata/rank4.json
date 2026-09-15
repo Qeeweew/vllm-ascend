@@ -1,0 +1,6 @@
+{
+  "rank": 4,
+  "local_rank": 4,
+  "success": false,
+  "error": "Traceback (most recent call last):\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/smoke_model_tp8.py\", line 198, in run\n    result.update(validate(model, config, rank))\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/smoke_model_tp8.py\", line 64, in validate\n    assert model.num_local_physical_experts == 8, (\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('TP-only MoE must retain all experts on each rank', 1)\n"
+}

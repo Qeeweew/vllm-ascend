@@ -1,0 +1,4 @@
+# Local tensor captures; reports and compact text evidence are versioned.
+*.pt
+*.pth
+*.safetensors

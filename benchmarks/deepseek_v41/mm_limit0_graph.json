@@ -1,0 +1,1580 @@
+{
+  "status": "passed",
+  "fixture": {
+    "vision_parameter_count": 266,
+    "language_layers": 3,
+    "experts": 384
+  },
+  "photo": {
+    "source": "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/tests/v1/ec_connector/integration/hato.jpg",
+    "source_sha256": "8f7e776cf614298af55cb64b7116a513c37f8710959fb90a5e2babedece489b4",
+    "original_size": [
+      3082,
+      2048
+    ],
+    "thumbnail_size": [
+      512,
+      340
+    ],
+    "thumbnail_pixels_sha256": "c118d9acb613f5a321ac804983d1e7a09e091a9b36c90b87095c01eb01f5e293"
+  },
+  "graph_requested": true,
+  "image_limit": 0,
+  "synthetic_small_engram": true,
+  "performance_measurement": false,
+  "checkpoint": "/tmp/v41-mm-limit0-graph-r1",
+  "image_outputs": [
+    {
+      "token_ids": [
+        1096,
+        5488,
+        49428,
+        12800
+      ],
+      "selected_logprobs": [
+        -3.0034871101379395,
+        -1.6564440727233887,
+        -2.6431474685668945,
+        -1.727081060409546
+      ]
+    }
+  ],
+  "text_outputs": [
+    {
+      "token_ids": [
+        91488,
+        55063,
+        44099,
+        34954
+      ],
+      "selected_logprobs": [
+        -3.1907858848571777,
+        -2.673821449279785,
+        -2.0508320331573486,
+        -0.5774328708648682
+      ]
+    }
+  ],
+  "workers_before": [
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 3
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [],
+      "graph_replays": 0,
+      "forward_signatures": [],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 0
+    }
+  ],
+  "workers_after_image": [
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 4,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 6
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 3,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    }
+  ],
+  "workers_final": [
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    },
+    {
+      "rows": [
+        20698488930816
+      ],
+      "mask": 20623359898112,
+      "prepared": false,
+      "steps": 8,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 1,
+      "w4_dispatch": {
+        "native_capture": 3,
+        "native_eager": 3,
+        "fallback_capture": 0,
+        "fallback_eager": 9
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": null,
+          "placement": null
+        }
+      ],
+      "supports_mm_inputs": false,
+      "tower_allocated": false,
+      "mm_parameter_elements": 0,
+      "encoder_calls": 0,
+      "encoder_span_lengths": [],
+      "image_prefills": [],
+      "router_observations": [
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 0,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 0,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 1,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        },
+        {
+          "layer": 2,
+          "image_tokens": 0,
+          "literal_image_id_text_tokens": 1,
+          "text_hash_checked": false
+        }
+      ],
+      "graph_replays": 6,
+      "forward_signatures": [
+        {
+          "raw_ids": true,
+          "embeddings": false
+        },
+        {
+          "raw_ids": true,
+          "embeddings": false
+        }
+      ],
+      "image_mask_ptr": 20623359899648,
+      "image_mask_sum": 0,
+      "last_bucket": 1
+    }
+  ],
+  "workers_released": [
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "prepared": false,
+      "shard_weights_released": [
+        true
+      ]
+    }
+  ],
+  "engine_shutdown": {
+    "timeout_seconds": 30,
+    "processes": [
+      {
+        "pid": 3162688,
+        "exitcode": 0,
+        "alive": false
+      }
+    ]
+  }
+}

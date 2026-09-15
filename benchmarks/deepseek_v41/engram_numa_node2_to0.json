@@ -1,0 +1,140 @@
+{
+  "pid": 2959251,
+  "device": 7,
+  "torch": "2.10.0+cpu",
+  "torch_npu": "2.10.0.post4",
+  "kernel": "5.10.0-216.0.0.115.oe2203sp4.aarch64",
+  "cpu_affinity": [
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71
+  ],
+  "bytes_per_buffer": 4194304,
+  "target_node": 0,
+  "buffers": [
+    {
+      "requested_pinned": false,
+      "is_pinned": false,
+      "pointer": 3751217790976,
+      "before": {
+        "return": 0,
+        "errno": 0,
+        "error": null,
+        "pages": 1024,
+        "page_size": 4096,
+        "status_counts": {
+          "2": 1024
+        },
+        "status_errors": {}
+      },
+      "mapping_before": {
+        "maps": "36966000000-369a6000000 rw-p 00000000 00:00 0 ",
+        "numa_maps": "36966000000 bind:2 anon=1536 dirty=1536 active=0 N2=1536 kernelpagesize_kB=4"
+      },
+      "migration": {
+        "return": 0,
+        "errno": 0,
+        "error": null,
+        "pages": 1024,
+        "page_size": 4096,
+        "status_counts": {
+          "0": 1021,
+          "-16": 3
+        },
+        "status_errors": {
+          "-16": "EBUSY"
+        }
+      },
+      "after": {
+        "return": 0,
+        "errno": 0,
+        "error": null,
+        "pages": 1024,
+        "page_size": 4096,
+        "status_counts": {
+          "0": 1024
+        },
+        "status_errors": {}
+      },
+      "mapping_after": {
+        "maps": "36966000000-369a6000000 rw-p 00000000 00:00 0 ",
+        "numa_maps": "36966000000 bind:2 anon=1536 dirty=1536 active=0 N0=1536 kernelpagesize_kB=4"
+      },
+      "contents_preserved": true
+    },
+    {
+      "requested_pinned": true,
+      "is_pinned": true,
+      "pointer": 20618003087360,
+      "before": {
+        "return": 0,
+        "errno": 0,
+        "error": null,
+        "pages": 1024,
+        "page_size": 4096,
+        "status_counts": {
+          "-14": 1024
+        },
+        "status_errors": {
+          "-14": "EFAULT"
+        }
+      },
+      "mapping_before": {
+        "maps": "100000000000-180000000000 rw-s 00000000 00:b9 63                         /dev/davinci_manager",
+        "numa_maps": "100000000000 bind:2 file=/dev/davinci_manager"
+      },
+      "migration": {
+        "return": 0,
+        "errno": 0,
+        "error": null,
+        "pages": 1024,
+        "page_size": 4096,
+        "status_counts": {
+          "-14": 1024
+        },
+        "status_errors": {
+          "-14": "EFAULT"
+        }
+      },
+      "after": {
+        "return": 0,
+        "errno": 0,
+        "error": null,
+        "pages": 1024,
+        "page_size": 4096,
+        "status_counts": {
+          "-14": 1024
+        },
+        "status_errors": {
+          "-14": "EFAULT"
+        }
+      },
+      "mapping_after": {
+        "maps": "100000000000-180000000000 rw-s 00000000 00:b9 63                         /dev/davinci_manager",
+        "numa_maps": "100000000000 bind:2 file=/dev/davinci_manager"
+      },
+      "contents_preserved": true
+    }
+  ]
+}

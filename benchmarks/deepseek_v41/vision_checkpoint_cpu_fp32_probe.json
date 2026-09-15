@@ -1,0 +1,25 @@
+{
+  "checkpoint": "d4b58607455c3c80b5ce0db15f9c869fb2d9e328219321c4ca211a3e3a9c50cc",
+  "reference": "5d49edc196a4ef22384abe76d35a40098cbe1e74b586c8f66a2edff4f076b26c",
+  "grid": [
+    32,
+    32
+  ],
+  "torch": "2.10.0+cpu",
+  "input": "BF16 linspace(-1,1) RGB patches, not an image_processor output",
+  "scope": "CPU full FP32 arithmetic with original BF16 weight values; diagnostic only",
+  "cpu_bf16_tower_vs_fp32": {
+    "finite": true,
+    "nrmse": 0.21236442062333272,
+    "cosine_error": 0.022584697646599095,
+    "max_abs": 0.15113726258277893,
+    "reference_rms": 0.01727735339047183
+  },
+  "cpu_bf16_aligner_vs_fp32": {
+    "finite": true,
+    "nrmse": 0.1281155606773711,
+    "cosine_error": 0.008240736259036985,
+    "max_abs": 0.11737066507339478,
+    "reference_rms": 0.049115522464061985
+  }
+}

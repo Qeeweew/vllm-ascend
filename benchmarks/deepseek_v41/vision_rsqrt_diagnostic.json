@@ -1,0 +1,11 @@
+{
+  "rsqrt": {
+    "max_relative": 1.113877857181573e-07,
+    "rms_relative": 3.709364813319608e-08
+  },
+  "sqrt_div": {
+    "max_relative": 1.113877857181573e-07,
+    "rms_relative": 3.709364813319608e-08
+  },
+  "peak_allocated_bytes": 657920
+}

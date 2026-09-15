@@ -1,0 +1,447 @@
+{
+  "status": "failed_cleanup",
+  "fixture": {
+    "checkpoint": "/tmp/v41-mm-production-numa-graph-r1",
+    "language_layers": 3,
+    "experts": 384,
+    "engram_layer_ids": [
+      1
+    ],
+    "engram_rows": [
+      4096
+    ],
+    "synthetic_engram": true,
+    "quality_validation": false,
+    "performance_measurement": false,
+    "production_registry": true,
+    "test_worker_or_registration": false
+  },
+  "command": [
+    "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/../.venv/bin/python",
+    "-m",
+    "vllm.entrypoints.cli.main",
+    "serve",
+    "/tmp/v41-mm-production-numa-graph-r1",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18141",
+    "--served-model-name",
+    "v41-http-smoke-e9b54c8788e7",
+    "--tokenizer",
+    "/mnt/models/DeepSeek-V4.1-Flash",
+    "--tensor-parallel-size",
+    "8",
+    "--dtype",
+    "bfloat16",
+    "--load-format",
+    "safetensors",
+    "--safetensors-load-strategy",
+    "lazy",
+    "--max-model-len",
+    "512",
+    "--max-num-batched-tokens",
+    "1024",
+    "--max-num-seqs",
+    "1",
+    "--block-size",
+    "32",
+    "--gpu-memory-utilization",
+    "0.2",
+    "--kv-cache-memory-bytes",
+    "268435456",
+    "--no-async-scheduling",
+    "--no-enable-prefix-caching",
+    "--disable-chunked-mm-input",
+    "--limit-mm-per-prompt",
+    "{\"image\": 1}",
+    "--skip-mm-profiling",
+    "--mm-encoder-tp-mode",
+    "weights",
+    "--additional-config",
+    "{\"enable_w4a16_decode\": true, \"engram_numa_nodes\": [6, 6, 4, 4, 0, 0, 2, 2]}",
+    "--compilation-config",
+    "{\"mode\": 0, \"cudagraph_mode\": \"FULL_DECODE_ONLY\", \"cudagraph_mm_encoder\": false, \"compile_mm_encoder\": false}"
+  ],
+  "graph_requested": true,
+  "image_requested": true,
+  "cli_validation": {
+    "model": "/tmp/v41-mm-production-numa-graph-r1",
+    "tensor_parallel_size": 8,
+    "host": "127.0.0.1",
+    "port": 18141,
+    "npu_initialized": false
+  },
+  "model_name": "v41-http-smoke-e9b54c8788e7",
+  "timeouts": {
+    "startup": 600,
+    "request": 120,
+    "shutdown": 90
+  },
+  "server_log": "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/http_serving_graph_r1.server.log",
+  "server_pid": 3182129,
+  "health": {
+    "status": 200,
+    "seconds": 0.002849627286195755,
+    "body": null
+  },
+  "models": {
+    "status": 200,
+    "seconds": 0.0024180710315704346,
+    "body": {
+      "object": "list",
+      "data": [
+        {
+          "id": "v41-http-smoke-e9b54c8788e7",
+          "object": "model",
+          "created": 1789510589,
+          "owned_by": "vllm",
+          "root": "/tmp/v41-mm-production-numa-graph-r1",
+          "parent": null,
+          "max_model_len": 512,
+          "permission": [
+            {
+              "id": "modelperm-af33df51f07ea827",
+              "object": "model_permission",
+              "created": 1789510589,
+              "allow_create_engine": false,
+              "allow_sampling": true,
+              "allow_logprobs": true,
+              "allow_search_indices": false,
+              "allow_view": true,
+              "allow_fine_tuning": false,
+              "organization": "*",
+              "group": null,
+              "is_blocking": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "text_completion": {
+    "status": 200,
+    "seconds": 0.7838834002614021,
+    "body": {
+      "id": "cmpl-93ef63368936ee1c",
+      "object": "text_completion",
+      "created": 1789510589,
+      "model": "v41-http-smoke-e9b54c8788e7",
+      "choices": [
+        {
+          "index": 0,
+          "text": "\ufffd<\uff5cdeepseek_image\uff5c>\ufffdbran saintsandinavia",
+          "logprobs": {
+            "text_offset": [
+              0,
+              4,
+              11,
+              16
+            ],
+            "token_logprobs": [
+              -3.1902055740356445,
+              -2.672433376312256,
+              -2.101731061935425,
+              -0.5774943232536316
+            ],
+            "tokens": [
+              "bran",
+              " saints",
+              "andin",
+              "avia"
+            ],
+            "top_logprobs": [
+              {
+                "bran": -3.1902055740356445
+              },
+              {
+                " saints": -2.672433376312256
+              },
+              {
+                "andin": -2.101731061935425
+              },
+              {
+                "avia": -0.5774943232536316
+              }
+            ]
+          },
+          "finish_reason": "length",
+          "stop_reason": null,
+          "token_ids": [
+            91488,
+            55063,
+            44099,
+            34954
+          ],
+          "prompt_logprobs": null,
+          "prompt_token_ids": [
+            100,
+            129264,
+            101
+          ],
+          "routed_experts": null
+        }
+      ],
+      "service_tier": null,
+      "system_fingerprint": "vllm-0.1.dev1+g836bb3839-tp8-719ba8c7",
+      "usage": {
+        "prompt_tokens": 3,
+        "total_tokens": 7,
+        "completion_tokens": 4,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": null
+      },
+      "kv_transfer_params": null,
+      "ec_transfer_params": null,
+      "metrics": null
+    }
+  },
+  "sse_completion": {
+    "status": 200,
+    "seconds": 0.10973268002271652,
+    "done": true,
+    "chunks": [
+      {
+        "id": "cmpl-bdd7b1a467fb3634",
+        "object": "text_completion",
+        "created": 1789510590,
+        "model": "v41-http-smoke-e9b54c8788e7",
+        "choices": [
+          {
+            "index": 0,
+            "text": "\ufffd<\uff5cdeepseek_image\uff5c>\ufffdbran",
+            "logprobs": {
+              "text_offset": [
+                0
+              ],
+              "token_logprobs": [
+                -3.1912074089050293
+              ],
+              "tokens": [
+                "bran"
+              ],
+              "top_logprobs": [
+                {
+                  "bran": -3.1912074089050293
+                }
+              ]
+            },
+            "finish_reason": null,
+            "stop_reason": null,
+            "prompt_token_ids": [
+              100,
+              129264,
+              101
+            ],
+            "token_ids": [
+              91488
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cmpl-bdd7b1a467fb3634",
+        "object": "text_completion",
+        "created": 1789510590,
+        "model": "v41-http-smoke-e9b54c8788e7",
+        "choices": [
+          {
+            "index": 0,
+            "text": " saints",
+            "logprobs": {
+              "text_offset": [
+                24
+              ],
+              "token_logprobs": [
+                -2.6718759536743164
+              ],
+              "tokens": [
+                " saints"
+              ],
+              "top_logprobs": [
+                {
+                  " saints": -2.6718759536743164
+                }
+              ]
+            },
+            "finish_reason": null,
+            "stop_reason": null,
+            "prompt_token_ids": null,
+            "token_ids": [
+              55063
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cmpl-bdd7b1a467fb3634",
+        "object": "text_completion",
+        "created": 1789510590,
+        "model": "v41-http-smoke-e9b54c8788e7",
+        "choices": [
+          {
+            "index": 0,
+            "text": "andin",
+            "logprobs": {
+              "text_offset": [
+                31
+              ],
+              "token_logprobs": [
+                -2.048271894454956
+              ],
+              "tokens": [
+                "andin"
+              ],
+              "top_logprobs": [
+                {
+                  "andin": -2.048271894454956
+                }
+              ]
+            },
+            "finish_reason": null,
+            "stop_reason": null,
+            "prompt_token_ids": null,
+            "token_ids": [
+              44099
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cmpl-bdd7b1a467fb3634",
+        "object": "text_completion",
+        "created": 1789510590,
+        "model": "v41-http-smoke-e9b54c8788e7",
+        "choices": [
+          {
+            "index": 0,
+            "text": "avia",
+            "logprobs": {
+              "text_offset": [
+                36
+              ],
+              "token_logprobs": [
+                -0.5730412006378174
+              ],
+              "tokens": [
+                "avia"
+              ],
+              "top_logprobs": [
+                {
+                  "avia": -0.5730412006378174
+                }
+              ]
+            },
+            "finish_reason": "length",
+            "stop_reason": null,
+            "prompt_token_ids": null,
+            "token_ids": [
+              34954
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cmpl-bdd7b1a467fb3634",
+        "object": "text_completion",
+        "created": 1789510590,
+        "model": "v41-http-smoke-e9b54c8788e7",
+        "choices": [],
+        "usage": {
+          "prompt_tokens": 3,
+          "total_tokens": 7,
+          "completion_tokens": 4
+        },
+        "system_fingerprint": "vllm-0.1.dev1+g836bb3839-tp8-719ba8c7"
+      }
+    ],
+    "token_ids": [
+      91488,
+      55063,
+      44099,
+      34954
+    ],
+    "text": "\ufffd<\uff5cdeepseek_image\uff5c>\ufffdbran saintsandinavia",
+    "finish_reasons": [
+      "length"
+    ],
+    "usage": {
+      "prompt_tokens": 3,
+      "total_tokens": 7,
+      "completion_tokens": 4
+    }
+  },
+  "image_completion": {
+    "status": 200,
+    "seconds": 0.43065737560391426,
+    "body": {
+      "id": "chatcmpl-9912cb64ff2e298b",
+      "object": "chat.completion",
+      "created": 1789510590,
+      "model": "v41-http-smoke-e9b54c8788e7",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "\u6b63\u5411\u6ed1\u52a8adamadam",
+            "refusal": null,
+            "annotations": null,
+            "audio": null,
+            "function_call": null,
+            "reasoning": null
+          },
+          "logprobs": null,
+          "finish_reason": "length",
+          "stop_reason": null,
+          "token_ids": null,
+          "routed_experts": null
+        }
+      ],
+      "service_tier": null,
+      "system_fingerprint": "vllm-0.1.dev1+g836bb3839-tp8-719ba8c7",
+      "usage": {
+        "prompt_tokens": 224,
+        "total_tokens": 228,
+        "completion_tokens": 4,
+        "prompt_tokens_details": null,
+        "completion_tokens_details": null
+      },
+      "prompt_logprobs": null,
+      "prompt_token_ids": null,
+      "prompt_text": null,
+      "kv_transfer_params": null,
+      "ec_transfer_params": null,
+      "metrics": null
+    }
+  },
+  "health_after_requests": {
+    "status": 200,
+    "seconds": 0.0013975687325000763,
+    "body": null
+  },
+  "http_checks_passed": true,
+  "cleanup": {
+    "pid": 3182129,
+    "signals": [
+      "parent_SIGINT"
+    ],
+    "forced": false,
+    "survivors": [],
+    "returncode": 0,
+    "clean": false,
+    "log_audit": {
+      "internal_forced_lines": [
+        "(APIServer pid=3182129) WARNING 09-15 22:16:31 [utils.py:651] [shutdown] Process manager: force killing remaining processes count=1",
+        "(APIServer pid=3182129) WARNING 09-15 22:16:31 [utils.py:656] [shutdown] Process manager: force killing remaining process EngineCore pid 3182310"
+      ],
+      "resource_leak_warnings": [
+        "/usr/local/python3.12.13/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 8 leaked semaphore objects to clean up at shutdown",
+        "/usr/local/python3.12.13/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 10 leaked shared_memory objects to clean up at shutdown"
+      ],
+      "clean": false
+    }
+  },
+  "original_controller_status": "passed",
+  "post_run_audit": "HTTP endpoints passed; parent exit0 did not reveal upstream default abort0 internally force-killing EngineCore. Log audit corrects cleanup status."
+}

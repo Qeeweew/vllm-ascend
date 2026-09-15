@@ -1,0 +1,349 @@
+{
+  "synthetic": true,
+  "layers": 40,
+  "experts": 8,
+  "native_decode_requested": false,
+  "tensor_parallel_size": 8,
+  "graph_requested": false,
+  "host_engram": true,
+  "chunked_prefill": true,
+  "prefix_reuse_requested": true,
+  "prompt_lengths": [
+    1152,
+    1160
+  ],
+  "outputs": [
+    [
+      12504,
+      12504,
+      2563,
+      12504
+    ],
+    [
+      2563,
+      14967,
+      15355,
+      12504
+    ],
+    [
+      14967,
+      6250,
+      13711,
+      4069
+    ]
+  ],
+  "selected_logprobs_finite": true,
+  "selected_logprobs": [
+    [
+      -11.769643783569336,
+      -11.769648551940918,
+      -11.769652366638184,
+      -11.769649505615234
+    ],
+    [
+      -11.7696533203125,
+      -11.769647598266602,
+      -11.7696533203125,
+      -11.769645690917969
+    ],
+    [
+      -11.769652366638184,
+      -11.76965045928955,
+      -11.769654273986816,
+      -11.769648551940918
+    ]
+  ],
+  "packed_weight_initialization": "all_nibbles_signed_one_after_dummy_load",
+  "workers_after_capture": [
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 40
+      }
+    }
+  ],
+  "workers_final": [
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "NONE",
+      "model_wrapper": "AscendDeepseekV41ForCausalLM",
+      "captured_graphs": 0,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 0,
+        "fallback_eager": 1800
+      }
+    }
+  ]
+}

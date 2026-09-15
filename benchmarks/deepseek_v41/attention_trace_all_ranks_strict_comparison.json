@@ -1,0 +1,2273 @@
+{
+  "directory": "/tmp/v41-real3-tp-strict-trace",
+  "first": 0,
+  "second": 11,
+  "ranks": [
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank0",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 0,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank1",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 1,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank2",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 2,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank3",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 3,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank4",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 4,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank5",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 5,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank6",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 6,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    },
+    {
+      "directory": "/tmp/v41-real3-tp-strict-trace/rank7",
+      "first": 0,
+      "second": 11,
+      "tp_rank": 7,
+      "req_ids_a": [
+        "0-b10446eb"
+      ],
+      "req_ids_b": [
+        "3-8b0efa29"
+      ],
+      "inputs": {
+        "input_ids": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "positions": {
+          "equal": true,
+          "numel": 32,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "cu_seqlens_q": {
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        "seqused_kv": {
+          "equal": true,
+          "numel": 1,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      },
+      "first_difference": null,
+      "stages": [
+        {
+          "stage": "layer0.hidden_in",
+          "equal": true,
+          "numel": 655360,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.pre_mix_in",
+          "equal": true,
+          "numel": 128,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.input.0",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.input_norm.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.0",
+          "equal": true,
+          "numel": 40960,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.1",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.project_inputs.output.2",
+          "equal": true,
+          "numel": 16384,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.0",
+          "equal": true,
+          "numel": 131072,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.sparse.output.1",
+          "equal": true,
+          "numel": 0,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.input.0",
+          "equal": true,
+          "numel": 32768,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.local_matmul",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.wo_b.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        },
+        {
+          "stage": "layer0.attention.output",
+          "equal": true,
+          "numel": 163840,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "metadata": [
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.block_table",
+          "equal": false,
+          "numel": 4,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 11.0,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 1.0,
+          "value_b": 12.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 352.0,
+          "nrmse": 7.274373272861316,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 384.0
+        },
+        {
+          "name": "attention_cache.model.layers.0.self_attn.swa_cache.schedule",
+          "equal": false,
+          "numel": 1024,
+          "changed": 124,
+          "max_abs": 2201106923.0,
+          "nrmse": 1.5332601221575035,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            900
+          ],
+          "value_a": 1021558862.0,
+          "value_b": 1022082724.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.block_table_first_col",
+          "equal": false,
+          "numel": 1,
+          "changed": 1,
+          "max_abs": 11.0,
+          "nrmse": 2.75,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0,
+            0
+          ],
+          "value_a": 4.0,
+          "value_b": 15.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.slot_mapping",
+          "equal": false,
+          "numel": 32,
+          "changed": 32,
+          "max_abs": 88.0,
+          "nrmse": 2.4737260209467036,
+          "finite_a": true,
+          "finite_b": true,
+          "first_difference_index": [
+            0
+          ],
+          "value_a": 32.0,
+          "value_b": 120.0
+        },
+        {
+          "name": "compressor_state.model.layers.2.self_attn.compressor.state_cache.query_start_loc",
+          "equal": true,
+          "numel": 2,
+          "changed": 0,
+          "max_abs": 0.0,
+          "nrmse": 0.0,
+          "finite_a": true,
+          "finite_b": true
+        }
+      ],
+      "scope": "CPU snapshots from one rank; HCCL attribution requires all ranks' local inputs"
+    }
+  ],
+  "all_rank_local_inputs_identical": true,
+  "first_output_identical_across_ranks": true,
+  "second_output_identical_across_ranks": true,
+  "fp32_sum_across_forwards": {
+    "equal": true,
+    "numel": 163840,
+    "changed": 0,
+    "max_abs": 0.0,
+    "nrmse": 0.0,
+    "finite_a": true,
+    "finite_b": true
+  },
+  "hccl_output_across_forwards": {
+    "equal": true,
+    "numel": 163840,
+    "changed": 0,
+    "max_abs": 0.0,
+    "nrmse": 0.0,
+    "finite_a": true,
+    "finite_b": true
+  },
+  "first_hccl_vs_fp32_sum": {
+    "equal": false,
+    "numel": 163840,
+    "changed": 156328,
+    "max_abs": 0.017578125,
+    "nrmse": 0.0031493633257653787,
+    "finite_a": true,
+    "finite_b": true,
+    "first_difference_index": [
+      0,
+      0
+    ],
+    "value_a": 0.2890625,
+    "value_b": 0.2901611328125
+  },
+  "second_hccl_vs_fp32_sum": {
+    "equal": false,
+    "numel": 163840,
+    "changed": 156328,
+    "max_abs": 0.017578125,
+    "nrmse": 0.0031493633257653787,
+    "finite_a": true,
+    "finite_b": true,
+    "first_difference_index": [
+      0,
+      0
+    ],
+    "value_a": 0.2890625,
+    "value_b": 0.2901611328125
+  },
+  "first_hccl_vs_once_rounded_fp32_sum": {
+    "equal": false,
+    "numel": 163840,
+    "changed": 80178,
+    "max_abs": 0.015625,
+    "nrmse": 0.003512628344234105,
+    "finite_a": true,
+    "finite_b": true,
+    "first_difference_index": [
+      0,
+      0
+    ],
+    "value_a": 0.2890625,
+    "value_b": 0.291015625
+  },
+  "second_hccl_vs_once_rounded_fp32_sum": {
+    "equal": false,
+    "numel": 163840,
+    "changed": 80178,
+    "max_abs": 0.015625,
+    "nrmse": 0.003512628344234105,
+    "finite_a": true,
+    "finite_b": true,
+    "first_difference_index": [
+      0,
+      0
+    ],
+    "value_a": 0.2890625,
+    "value_b": 0.291015625
+  },
+  "scope": "Eight TP-rank CPU snapshots immediately before and after first-layer wo_b all-reduce"
+}

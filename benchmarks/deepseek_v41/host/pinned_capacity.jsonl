@@ -1,0 +1,3 @@
+{"GiB": 1, "pinned": true, "allocate_s": 0.005927320569753647, "touch_s": 0.02513580024242401, "gather_h2d_correct": true, "maxrss_KiB": 1937908}
+{"GiB": 8, "pinned": true, "allocate_s": 0.048934970051050186, "touch_s": 0.11672642081975937, "gather_h2d_correct": true, "maxrss_KiB": 1937908}
+{"GiB": 46, "pinned": true, "allocate_s": 0.43811963871121407, "touch_s": 0.8578584790229797, "gather_h2d_correct": true, "maxrss_KiB": 1937908}

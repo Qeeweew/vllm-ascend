@@ -1,0 +1,3224 @@
+{
+  "model": "/mnt/models/DeepSeek-V4.1-Flash",
+  "device": "npu:1",
+  "grid": [
+    32,
+    48
+  ],
+  "layers": 32,
+  "loaded_tensors": 263,
+  "checkpoint_vision_tensor_sha256": "d4b58607455c3c80b5ce0db15f9c869fb2d9e328219321c4ca211a3e3a9c50cc",
+  "reference_source_sha256": "5d49edc196a4ef22384abe76d35a40098cbe1e74b586c8f66a2edff4f076b26c",
+  "torch": "2.10.0+cpu",
+  "scope": "real-weight replicated ViT and aligner, no LLM or performance claim",
+  "input": {
+    "source": "sources/vllm/tests/v1/ec_connector/integration/hato.jpg",
+    "source_bytes_sha256": "8f7e776cf614298af55cb64b7116a513c37f8710959fb90a5e2babedece489b4",
+    "source_rgb_pixels_sha256": "a3a049ab5163ee469f2d6f1d171a11ea0f22ea920dc51c835d98c1b61c536ac7",
+    "source_size": [
+      3082,
+      2048
+    ],
+    "processor_source_sha256": "482759e3bcc4e9bb5ee582b244cc563f5d0e163d8b48dda91ebb7106e62f9272",
+    "thumbnail_max_edge": 512,
+    "input_rgb_pixels_sha256": "c118d9acb613f5a321ac804983d1e7a09e091a9b36c90b87095c01eb01f5e293",
+    "input_size": [
+      512,
+      340
+    ],
+    "llm_grid": [
+      11,
+      16
+    ],
+    "image_span_tokens": 189,
+    "patches_sha256": "0142bcc07e3a136f458cb16b7a9f4405b4f35c69b6a870c9d7d8e24b58ce4f38"
+  },
+  "attention": "fia",
+  "tower": {
+    "finite": true,
+    "nrmse": 0.021500502918028543,
+    "cosine_error": 0.00023085055435467794,
+    "max_abs": 0.01318359375,
+    "reference_rms": 0.01704993084820012
+  },
+  "aligner": {
+    "finite": true,
+    "nrmse": 0.014077014343809757,
+    "cosine_error": 9.881744989570507e-05,
+    "max_abs": 0.00830078125,
+    "reference_rms": 0.0488874571495731
+  },
+  "peak_allocated_bytes": 1161278976,
+  "peak_reserved_bytes": 1251999744,
+  "tower_shape": [
+    1536,
+    1024
+  ],
+  "aligner_shape": [
+    176,
+    5120
+  ],
+  "accumulated_blocks": {
+    "vision.blocks.0": {
+      "finite": true,
+      "nrmse": 0.001650116687271316,
+      "cosine_error": 1.3614416897178572e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.15848089690679648
+    },
+    "vision.blocks.1": {
+      "finite": true,
+      "nrmse": 0.0029169381136360016,
+      "cosine_error": 4.2542642177956225e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.14619862401057862
+    },
+    "vision.blocks.2": {
+      "finite": true,
+      "nrmse": 0.004349510562429981,
+      "cosine_error": 9.459160077551765e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.14329685605810938
+    },
+    "vision.blocks.3": {
+      "finite": true,
+      "nrmse": 0.005133223846185826,
+      "cosine_error": 1.3174959166306621e-05,
+      "max_abs": 0.017578125,
+      "reference_rms": 0.15034719220626674
+    },
+    "vision.blocks.4": {
+      "finite": true,
+      "nrmse": 0.005787568392725091,
+      "cosine_error": 1.6747907053638045e-05,
+      "max_abs": 0.0234375,
+      "reference_rms": 0.16233112728385615
+    },
+    "vision.blocks.5": {
+      "finite": true,
+      "nrmse": 0.006399946373062185,
+      "cosine_error": 2.0479540678852715e-05,
+      "max_abs": 0.0234375,
+      "reference_rms": 0.1688414316561181
+    },
+    "vision.blocks.6": {
+      "finite": true,
+      "nrmse": 0.006862830110864658,
+      "cosine_error": 2.3549182650683953e-05,
+      "max_abs": 0.03125,
+      "reference_rms": 0.17868892819394658
+    },
+    "vision.blocks.7": {
+      "finite": true,
+      "nrmse": 0.007385856538973897,
+      "cosine_error": 2.7275444733909637e-05,
+      "max_abs": 0.03125,
+      "reference_rms": 0.18213010076039984
+    },
+    "vision.blocks.8": {
+      "finite": true,
+      "nrmse": 0.007866885149737457,
+      "cosine_error": 3.094314872575943e-05,
+      "max_abs": 0.03125,
+      "reference_rms": 0.1884593493330642
+    },
+    "vision.blocks.9": {
+      "finite": true,
+      "nrmse": 0.008135017480941979,
+      "cosine_error": 3.308807218527221e-05,
+      "max_abs": 0.03125,
+      "reference_rms": 0.19693678330155384
+    },
+    "vision.blocks.10": {
+      "finite": true,
+      "nrmse": 0.00877309914961859,
+      "cosine_error": 3.848327829780729e-05,
+      "max_abs": 0.0625,
+      "reference_rms": 0.196008664501163
+    },
+    "vision.blocks.11": {
+      "finite": true,
+      "nrmse": 0.007956672546658636,
+      "cosine_error": 3.155561451229083e-05,
+      "max_abs": 0.5,
+      "reference_rms": 0.24777663956618462
+    },
+    "vision.blocks.12": {
+      "finite": true,
+      "nrmse": 0.012423538648748754,
+      "cosine_error": 7.692891874400143e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.0057124003723255
+    },
+    "vision.blocks.13": {
+      "finite": true,
+      "nrmse": 0.01242755728232902,
+      "cosine_error": 7.697809324769267e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.005801228886858
+    },
+    "vision.blocks.14": {
+      "finite": true,
+      "nrmse": 0.012335429325234522,
+      "cosine_error": 7.583920021536628e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.074296953657741
+    },
+    "vision.blocks.15": {
+      "finite": true,
+      "nrmse": 0.01233216199243372,
+      "cosine_error": 7.579919182643113e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.0741947374369625
+    },
+    "vision.blocks.16": {
+      "finite": true,
+      "nrmse": 0.012328893362082571,
+      "cosine_error": 7.57593284002045e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.074477331163651
+    },
+    "vision.blocks.17": {
+      "finite": true,
+      "nrmse": 0.012327625791897374,
+      "cosine_error": 7.574374240282289e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.074252723940095
+    },
+    "vision.blocks.18": {
+      "finite": true,
+      "nrmse": 0.012334596139787721,
+      "cosine_error": 7.582906139491641e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.074389744906643
+    },
+    "vision.blocks.19": {
+      "finite": true,
+      "nrmse": 0.012340626678562066,
+      "cosine_error": 7.590296385351358e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.074549759874565
+    },
+    "vision.blocks.20": {
+      "finite": true,
+      "nrmse": 0.012345574192177487,
+      "cosine_error": 7.596395839404302e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.07513534112489
+    },
+    "vision.blocks.21": {
+      "finite": true,
+      "nrmse": 0.012330945011657575,
+      "cosine_error": 7.578810315611584e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.075707002184953
+    },
+    "vision.blocks.22": {
+      "finite": true,
+      "nrmse": 0.012333507568579082,
+      "cosine_error": 7.581989714333659e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.076319990070358
+    },
+    "vision.blocks.23": {
+      "finite": true,
+      "nrmse": 0.012319075160075132,
+      "cosine_error": 7.56442330303031e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.085615212431636
+    },
+    "vision.blocks.24": {
+      "finite": true,
+      "nrmse": 0.01234693871217154,
+      "cosine_error": 7.598100596162283e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.087421008337755
+    },
+    "vision.blocks.25": {
+      "finite": true,
+      "nrmse": 0.012334815374614807,
+      "cosine_error": 7.58355944773248e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.0889191204301385
+    },
+    "vision.blocks.26": {
+      "finite": true,
+      "nrmse": 0.0123387935752516,
+      "cosine_error": 7.588424706517216e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.091654021370641
+    },
+    "vision.blocks.27": {
+      "finite": true,
+      "nrmse": 0.012325078988129045,
+      "cosine_error": 7.571951397422616e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.092643735149092
+    },
+    "vision.blocks.28": {
+      "finite": true,
+      "nrmse": 0.01230819089855954,
+      "cosine_error": 7.551575590625248e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.097661521718051
+    },
+    "vision.blocks.29": {
+      "finite": true,
+      "nrmse": 0.012315144805480096,
+      "cosine_error": 7.560223950409117e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.101530945468905
+    },
+    "vision.blocks.30": {
+      "finite": true,
+      "nrmse": 0.012323722432258787,
+      "cosine_error": 7.571307837028751e-05,
+      "max_abs": 38.0,
+      "reference_rms": 5.113399251722303
+    },
+    "vision.blocks.31": {
+      "finite": true,
+      "nrmse": 0.021062090592510817,
+      "cosine_error": 0.00022122744648023218,
+      "max_abs": 97.0,
+      "reference_rms": 10.783559314454564
+    }
+  },
+  "isolated_modules": {
+    "vision.patch_embed": {
+      "finite": true,
+      "nrmse": 3.967001947780022e-05,
+      "cosine_error": 7.868055096338367e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.1625457594448677
+    },
+    "vision.blocks.0.norm1": {
+      "finite": true,
+      "nrmse": 9.288974360064747e-06,
+      "cosine_error": 4.313616130957598e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.0966064601367691
+    },
+    "vision.blocks.0.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 9.50502589959196e-06,
+      "cosine_error": 4.516664819931293e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.0966064601367691
+    },
+    "vision.blocks.0.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.9478398273854205e-05,
+      "cosine_error": 4.342308734806011e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0043189823583434
+    },
+    "vision.blocks.0.attn.wo": {
+      "finite": true,
+      "nrmse": 5.6334640587443285e-05,
+      "cosine_error": 1.5866564728739263e-09,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.11280986892040266
+    },
+    "vision.blocks.0.norm2": {
+      "finite": true,
+      "nrmse": 7.899293988318036e-06,
+      "cosine_error": 3.119149383223885e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.14170973540905057
+    },
+    "vision.blocks.0.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.4164293678078079e-05,
+      "cosine_error": 1.0030554165041394e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.14170973540905057
+    },
+    "vision.blocks.0.mlp": {
+      "finite": true,
+      "nrmse": 7.938710857795677e-05,
+      "cosine_error": 3.1511334652734035e-09,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.12970238251647925
+    },
+    "vision.blocks.1.norm1": {
+      "finite": true,
+      "nrmse": 4.996640637837982e-06,
+      "cosine_error": 1.2469136834170058e-11,
+      "max_abs": 0.000244140625,
+      "reference_rms": 0.11201594652674618
+    },
+    "vision.blocks.1.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2448881494310942e-05,
+      "cosine_error": 7.74729169705779e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.11201594652674618
+    },
+    "vision.blocks.1.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.5397733413660547e-05,
+      "cosine_error": 3.223947775410352e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.8240763653705271
+    },
+    "vision.blocks.1.attn.wo": {
+      "finite": true,
+      "nrmse": 1.8764588483446142e-05,
+      "cosine_error": 1.7604928626013816e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.06312549357358394
+    },
+    "vision.blocks.1.norm2": {
+      "finite": true,
+      "nrmse": 1.6022080054909543e-05,
+      "cosine_error": 1.283467776502789e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.1233462370702682
+    },
+    "vision.blocks.1.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.3507419109154938e-05,
+      "cosine_error": 9.12184772161595e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.1233462370702682
+    },
+    "vision.blocks.1.mlp": {
+      "finite": true,
+      "nrmse": 0.00012093401130969646,
+      "cosine_error": 7.312483507604384e-09,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07032277475259895
+    },
+    "vision.blocks.2.norm1": {
+      "finite": true,
+      "nrmse": 1.41689055212867e-06,
+      "cosine_error": 9.859890681696015e-13,
+      "max_abs": 0.000244140625,
+      "reference_rms": 0.19430016047082074
+    },
+    "vision.blocks.2.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 3.100712905557141e-06,
+      "cosine_error": 4.789502128232925e-12,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.19430016047082074
+    },
+    "vision.blocks.2.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.8278211213594482e-05,
+      "cosine_error": 3.9966874254560025e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.0166329889192716
+    },
+    "vision.blocks.2.attn.wo": {
+      "finite": true,
+      "nrmse": 2.136723233902121e-05,
+      "cosine_error": 2.2827084666943165e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07280536780104035
+    },
+    "vision.blocks.2.norm2": {
+      "finite": true,
+      "nrmse": 1.5138923914275255e-06,
+      "cosine_error": 1.141531313919586e-12,
+      "max_abs": 0.000244140625,
+      "reference_rms": 0.15748713742906495
+    },
+    "vision.blocks.2.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2457074681407613e-05,
+      "cosine_error": 7.758504949606504e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.15748713742906495
+    },
+    "vision.blocks.2.mlp": {
+      "finite": true,
+      "nrmse": 0.00014495800164158616,
+      "cosine_error": 1.0506389092057589e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.06192187217112467
+    },
+    "vision.blocks.3.norm1": {
+      "finite": true,
+      "nrmse": 1.0984324308441166e-05,
+      "cosine_error": 6.031908306169953e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.17205282128742067
+    },
+    "vision.blocks.3.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 7.183771887739375e-06,
+      "cosine_error": 2.5794699709535962e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.17205282128742067
+    },
+    "vision.blocks.3.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.006449626049396e-05,
+      "cosine_error": 2.011936173218487e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.7633131969217732
+    },
+    "vision.blocks.3.attn.wo": {
+      "finite": true,
+      "nrmse": 3.069589614848281e-05,
+      "cosine_error": 4.711143697377906e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.05071954340311726
+    },
+    "vision.blocks.3.norm2": {
+      "finite": true,
+      "nrmse": 7.207474628175754e-06,
+      "cosine_error": 2.5969670858216887e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.15763389379600895
+    },
+    "vision.blocks.3.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 8.73778046924516e-06,
+      "cosine_error": 3.817024474273012e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.15763389379600895
+    },
+    "vision.blocks.3.mlp": {
+      "finite": true,
+      "nrmse": 0.0001420287363575772,
+      "cosine_error": 1.0086061430492066e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.05281927936110303
+    },
+    "vision.blocks.4.norm1": {
+      "finite": true,
+      "nrmse": 6.5411426073250235e-06,
+      "cosine_error": 2.138267340967559e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.22619878619731135
+    },
+    "vision.blocks.4.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.0964281550763813e-05,
+      "cosine_error": 6.00970384567745e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.22619878619731135
+    },
+    "vision.blocks.4.attn.wqkv": {
+      "finite": true,
+      "nrmse": 3.5122079617095916e-05,
+      "cosine_error": 6.167065746964795e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 0.9256347003910567
+    },
+    "vision.blocks.4.attn.wo": {
+      "finite": true,
+      "nrmse": 2.706096334942543e-05,
+      "cosine_error": 3.6613811982277866e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.062097856733617965
+    },
+    "vision.blocks.4.norm2": {
+      "finite": true,
+      "nrmse": 1.008875876107794e-05,
+      "cosine_error": 5.088796051211375e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.16821453699711697
+    },
+    "vision.blocks.4.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.388711997009453e-05,
+      "cosine_error": 9.642253662178746e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.16821453699711697
+    },
+    "vision.blocks.4.mlp": {
+      "finite": true,
+      "nrmse": 0.0001126927697692193,
+      "cosine_error": 6.349824666074255e-09,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.04806381308123797
+    },
+    "vision.blocks.5.norm1": {
+      "finite": true,
+      "nrmse": 6.033203159698314e-06,
+      "cosine_error": 1.8186785410989614e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.2414574053829497
+    },
+    "vision.blocks.5.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 7.732997147763489e-06,
+      "cosine_error": 2.9886759733699364e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.2414574053829497
+    },
+    "vision.blocks.5.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.522612281071496e-05,
+      "cosine_error": 3.181264141005613e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.8238083692487564
+    },
+    "vision.blocks.5.attn.wo": {
+      "finite": true,
+      "nrmse": 2.5090933171044908e-05,
+      "cosine_error": 3.14770098874817e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.05526683228614223
+    },
+    "vision.blocks.5.norm2": {
+      "finite": true,
+      "nrmse": 9.052854359287034e-06,
+      "cosine_error": 4.097344685760618e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.177403784735313
+    },
+    "vision.blocks.5.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 9.327183279265429e-06,
+      "cosine_error": 4.3494652324227445e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.177403784735313
+    },
+    "vision.blocks.5.mlp": {
+      "finite": true,
+      "nrmse": 0.00014371323174194322,
+      "cosine_error": 1.0326723476339339e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.04609373497970706
+    },
+    "vision.blocks.6.norm1": {
+      "finite": true,
+      "nrmse": 6.550718728766967e-06,
+      "cosine_error": 2.144362465372751e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.25306553794166214
+    },
+    "vision.blocks.6.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 6.553540946024837e-06,
+      "cosine_error": 2.146216537823875e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.25306553794166214
+    },
+    "vision.blocks.6.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.3313051976825904e-05,
+      "cosine_error": 2.716923352963363e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.914699606401554
+    },
+    "vision.blocks.6.attn.wo": {
+      "finite": true,
+      "nrmse": 2.5167938674825956e-05,
+      "cosine_error": 3.167044404506214e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.06524339463632212
+    },
+    "vision.blocks.6.norm2": {
+      "finite": true,
+      "nrmse": 1.071322769802676e-05,
+      "cosine_error": 5.738420849610293e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.18912317208460058
+    },
+    "vision.blocks.6.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 9.081583846728567e-06,
+      "cosine_error": 4.123523744681279e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.18912317208460058
+    },
+    "vision.blocks.6.mlp": {
+      "finite": true,
+      "nrmse": 0.000156572682914435,
+      "cosine_error": 1.2257490911160573e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.04868673274623925
+    },
+    "vision.blocks.7.norm1": {
+      "finite": true,
+      "nrmse": 1.023862984900033e-05,
+      "cosine_error": 5.240607947598619e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.25223709572675496
+    },
+    "vision.blocks.7.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 8.731532873227223e-06,
+      "cosine_error": 3.81110698555176e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.25223709572675496
+    },
+    "vision.blocks.7.attn.wqkv": {
+      "finite": true,
+      "nrmse": 3.055064688326708e-05,
+      "cosine_error": 4.66623295558577e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 0.9066684760177025
+    },
+    "vision.blocks.7.attn.wo": {
+      "finite": true,
+      "nrmse": 2.3491103551488757e-05,
+      "cosine_error": 2.7590929541077003e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.0664072662044071
+    },
+    "vision.blocks.7.norm2": {
+      "finite": true,
+      "nrmse": 9.858258755361795e-06,
+      "cosine_error": 4.85909090741643e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.2016193844726191
+    },
+    "vision.blocks.7.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2674200496045831e-05,
+      "cosine_error": 8.031575404743307e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.2016193844726191
+    },
+    "vision.blocks.7.mlp": {
+      "finite": true,
+      "nrmse": 0.00014373742013542806,
+      "cosine_error": 1.0330164723626467e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.05709462121851514
+    },
+    "vision.blocks.8.norm1": {
+      "finite": true,
+      "nrmse": 5.219344519731753e-06,
+      "cosine_error": 1.3613221661046282e-11,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.28236000281720713
+    },
+    "vision.blocks.8.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2492086919702848e-05,
+      "cosine_error": 7.801814749797131e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.28236000281720713
+    },
+    "vision.blocks.8.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.3323151419969144e-05,
+      "cosine_error": 2.719358072056366e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9562809292113759
+    },
+    "vision.blocks.8.attn.wo": {
+      "finite": true,
+      "nrmse": 2.097985172887563e-05,
+      "cosine_error": 2.2007096145415517e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07376707902428123
+    },
+    "vision.blocks.8.norm2": {
+      "finite": true,
+      "nrmse": 1.5147385710382603e-05,
+      "cosine_error": 1.1471579242083862e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.22007757495836974
+    },
+    "vision.blocks.8.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.605024129210838e-05,
+      "cosine_error": 1.2879919353281366e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.22007757495836974
+    },
+    "vision.blocks.8.mlp": {
+      "finite": true,
+      "nrmse": 0.00014649152796782436,
+      "cosine_error": 1.072987143579951e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.0687101181087085
+    },
+    "vision.blocks.9.norm1": {
+      "finite": true,
+      "nrmse": 1.527138689870903e-05,
+      "cosine_error": 1.1660095111665214e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.281596747915145
+    },
+    "vision.blocks.9.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.6004820520029486e-05,
+      "cosine_error": 1.2807011007254232e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.281596747915145
+    },
+    "vision.blocks.9.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.6863512713993684e-05,
+      "cosine_error": 3.6077629772535147e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9561306134912092
+    },
+    "vision.blocks.9.attn.wo": {
+      "finite": true,
+      "nrmse": 2.803007436385018e-05,
+      "cosine_error": 3.9283643005205704e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.08385296642860947
+    },
+    "vision.blocks.9.norm2": {
+      "finite": true,
+      "nrmse": 1.5878551793672928e-05,
+      "cosine_error": 1.2605805288501415e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.23772644633629178
+    },
+    "vision.blocks.9.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.518784613738628e-05,
+      "cosine_error": 1.1532930166424649e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.23772644633629178
+    },
+    "vision.blocks.9.mlp": {
+      "finite": true,
+      "nrmse": 0.00015446807287290243,
+      "cosine_error": 1.1930177734598146e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.08416961658629295
+    },
+    "vision.blocks.10.norm1": {
+      "finite": true,
+      "nrmse": 6.990829858752867e-06,
+      "cosine_error": 2.4430124589969182e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.29764174205661265
+    },
+    "vision.blocks.10.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 9.500399229690568e-06,
+      "cosine_error": 4.51229054121427e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.29764174205661265
+    },
+    "vision.blocks.10.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.4967621223469194e-05,
+      "cosine_error": 3.1165403591160157e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9505388228253037
+    },
+    "vision.blocks.10.attn.wo": {
+      "finite": true,
+      "nrmse": 2.1231739969804503e-05,
+      "cosine_error": 2.2538870769750474e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.0939412196823128
+    },
+    "vision.blocks.10.norm2": {
+      "finite": true,
+      "nrmse": 7.377230402006875e-06,
+      "cosine_error": 2.720690339685916e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.2615576327254297
+    },
+    "vision.blocks.10.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.5840765642927484e-05,
+      "cosine_error": 1.2545986471934611e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.2615576327254297
+    },
+    "vision.blocks.10.mlp": {
+      "finite": true,
+      "nrmse": 0.00013679850618943102,
+      "cosine_error": 9.356872388011084e-09,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.09764680675982576
+    },
+    "vision.blocks.11.norm1": {
+      "finite": true,
+      "nrmse": 1.1706718992984422e-05,
+      "cosine_error": 6.851952338848832e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.32115426066585445
+    },
+    "vision.blocks.11.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.1722401142001654e-05,
+      "cosine_error": 6.870337632136625e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.32115426066585445
+    },
+    "vision.blocks.11.attn.wqkv": {
+      "finite": true,
+      "nrmse": 3.0056227236672822e-05,
+      "cosine_error": 4.5165038375927224e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9660056228888202
+    },
+    "vision.blocks.11.attn.wo": {
+      "finite": true,
+      "nrmse": 3.094542903990961e-05,
+      "cosine_error": 4.788052176962765e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.09551126267876343
+    },
+    "vision.blocks.11.norm2": {
+      "finite": true,
+      "nrmse": 9.408971855836613e-06,
+      "cosine_error": 4.425926292128679e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.28443510661139754
+    },
+    "vision.blocks.11.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 9.703072940448647e-06,
+      "cosine_error": 4.7069792508125374e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.28443510661139754
+    },
+    "vision.blocks.11.mlp": {
+      "finite": true,
+      "nrmse": 9.01318538270304e-05,
+      "cosine_error": 4.061872171945424e-09,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.15019886393892667
+    },
+    "vision.blocks.12.norm1": {
+      "finite": true,
+      "nrmse": 5.851050056068085e-06,
+      "cosine_error": 1.7113421790782013e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.32598398826453406
+    },
+    "vision.blocks.12.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.999406056505872e-05,
+      "cosine_error": 1.998735621455694e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.32598398826453406
+    },
+    "vision.blocks.12.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.116740060556059e-05,
+      "cosine_error": 2.239668450698673e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0397639767502742
+    },
+    "vision.blocks.12.attn.wo": {
+      "finite": true,
+      "nrmse": 2.9250767482468863e-05,
+      "cosine_error": 4.2779868536513277e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.08794823289609502
+    },
+    "vision.blocks.12.norm2": {
+      "finite": true,
+      "nrmse": 1.266982001118883e-05,
+      "cosine_error": 8.025746733864025e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3046901300808616
+    },
+    "vision.blocks.12.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2734093448444533e-05,
+      "cosine_error": 8.107381432864713e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3046901300808616
+    },
+    "vision.blocks.12.mlp": {
+      "finite": true,
+      "nrmse": 3.0972493718641077e-06,
+      "cosine_error": 4.310773960014558e-12,
+      "max_abs": 0.001953125,
+      "reference_rms": 4.91337627690493
+    },
+    "vision.blocks.13.norm1": {
+      "finite": true,
+      "nrmse": 1.219264699166725e-05,
+      "cosine_error": 7.432732207490744e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3689496428975707
+    },
+    "vision.blocks.13.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.290599253772294e-05,
+      "cosine_error": 8.3279272367065e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3689496428975707
+    },
+    "vision.blocks.13.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.6917068849711292e-05,
+      "cosine_error": 3.6219860444219876e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0290262187612733
+    },
+    "vision.blocks.13.attn.wo": {
+      "finite": true,
+      "nrmse": 2.8450387439854688e-05,
+      "cosine_error": 4.0470748974286153e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.08031900692477498
+    },
+    "vision.blocks.13.norm2": {
+      "finite": true,
+      "nrmse": 1.2877755440934723e-05,
+      "cosine_error": 8.291245467972885e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.30252101778733537
+    },
+    "vision.blocks.13.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.6348843491406577e-05,
+      "cosine_error": 1.3363676831801286e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.30252101778733537
+    },
+    "vision.blocks.13.mlp": {
+      "finite": true,
+      "nrmse": 0.00015515904897378757,
+      "cosine_error": 1.2037143060084077e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.08470386277305354
+    },
+    "vision.blocks.14.norm1": {
+      "finite": true,
+      "nrmse": 1.1956563274574475e-05,
+      "cosine_error": 7.147682445918235e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3770263919196793
+    },
+    "vision.blocks.14.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 8.886932743012889e-06,
+      "cosine_error": 3.948597004921339e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3770263919196793
+    },
+    "vision.blocks.14.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.4849055997089397e-05,
+      "cosine_error": 3.086723099343658e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0184445065496681
+    },
+    "vision.blocks.14.attn.wo": {
+      "finite": true,
+      "nrmse": 2.698655264890097e-05,
+      "cosine_error": 3.6413205783958347e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07549330791314343
+    },
+    "vision.blocks.14.norm2": {
+      "finite": true,
+      "nrmse": 1.0630409815999734e-05,
+      "cosine_error": 5.6497362344032354e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3047785109764521
+    },
+    "vision.blocks.14.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.0284176119567604e-05,
+      "cosine_error": 5.287659199382233e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3047785109764521
+    },
+    "vision.blocks.14.mlp": {
+      "finite": true,
+      "nrmse": 0.00010017931380648003,
+      "cosine_error": 5.017941506757495e-09,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.11180324613642775
+    },
+    "vision.blocks.15.norm1": {
+      "finite": true,
+      "nrmse": 1.204373993579024e-05,
+      "cosine_error": 7.25222104591694e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.35724435976806845
+    },
+    "vision.blocks.15.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.4868304134417756e-05,
+      "cosine_error": 1.1052958548418701e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.35724435976806845
+    },
+    "vision.blocks.15.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.4930709070520825e-05,
+      "cosine_error": 3.107130108759293e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9786438221725249
+    },
+    "vision.blocks.15.attn.wo": {
+      "finite": true,
+      "nrmse": 3.2997315954752544e-05,
+      "cosine_error": 5.444052986192105e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.060626446126745524
+    },
+    "vision.blocks.15.norm2": {
+      "finite": true,
+      "nrmse": 8.482882773620795e-06,
+      "cosine_error": 3.5973113376996935e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3078840940920284
+    },
+    "vision.blocks.15.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.1239597375082635e-05,
+      "cosine_error": 6.31574792464562e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3078840940920284
+    },
+    "vision.blocks.15.mlp": {
+      "finite": true,
+      "nrmse": 0.00017631159529306713,
+      "cosine_error": 1.554286299665364e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07363199307372371
+    },
+    "vision.blocks.16.norm1": {
+      "finite": true,
+      "nrmse": 1.6658702096490713e-05,
+      "cosine_error": 1.387523429485782e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.36814470777438824
+    },
+    "vision.blocks.16.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.1539670239876185e-05,
+      "cosine_error": 6.657874251914109e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.36814470777438824
+    },
+    "vision.blocks.16.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.381779754310958e-05,
+      "cosine_error": 2.835929269195958e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9582142637372069
+    },
+    "vision.blocks.16.attn.wo": {
+      "finite": true,
+      "nrmse": 2.241109623632769e-05,
+      "cosine_error": 2.511230112745011e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.05991358021882409
+    },
+    "vision.blocks.16.norm2": {
+      "finite": true,
+      "nrmse": 8.741051085137868e-06,
+      "cosine_error": 3.8198666452160523e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.30879053626549635
+    },
+    "vision.blocks.16.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.701844079073284e-05,
+      "cosine_error": 1.4480905363711827e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.30879053626549635
+    },
+    "vision.blocks.16.mlp": {
+      "finite": true,
+      "nrmse": 0.00015491508462251257,
+      "cosine_error": 1.1999317095501283e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07046189526082094
+    },
+    "vision.blocks.17.norm1": {
+      "finite": true,
+      "nrmse": 8.861075823840395e-06,
+      "cosine_error": 3.9255265704696285e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.36501584850212926
+    },
+    "vision.blocks.17.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.5122641208802697e-05,
+      "cosine_error": 1.143429795291695e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.36501584850212926
+    },
+    "vision.blocks.17.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.7482503309863756e-05,
+      "cosine_error": 3.7761582749595846e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9342520607278216
+    },
+    "vision.blocks.17.attn.wo": {
+      "finite": true,
+      "nrmse": 3.165840420007177e-05,
+      "cosine_error": 5.01119479245915e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.05742916268965164
+    },
+    "vision.blocks.17.norm2": {
+      "finite": true,
+      "nrmse": 7.816174357561466e-06,
+      "cosine_error": 3.0540348028296194e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3128169577652796
+    },
+    "vision.blocks.17.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 2.2168466773590122e-05,
+      "cosine_error": 2.457143377654347e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3128169577652796
+    },
+    "vision.blocks.17.mlp": {
+      "finite": true,
+      "nrmse": 0.0001787868346355767,
+      "cosine_error": 1.598233811961336e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.06808253980705956
+    },
+    "vision.blocks.18.norm1": {
+      "finite": true,
+      "nrmse": 4.412306802237376e-06,
+      "cosine_error": 9.730549699327184e-12,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.3638589900336801
+    },
+    "vision.blocks.18.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 8.693129938828963e-06,
+      "cosine_error": 3.778155566180885e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3638589900336801
+    },
+    "vision.blocks.18.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.3423501123463515e-05,
+      "cosine_error": 2.742637228436706e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.981802536654157
+    },
+    "vision.blocks.18.attn.wo": {
+      "finite": true,
+      "nrmse": 3.1365174572749365e-05,
+      "cosine_error": 4.918829787925461e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.04562358474474661
+    },
+    "vision.blocks.18.norm2": {
+      "finite": true,
+      "nrmse": 1.1571149310174054e-05,
+      "cosine_error": 6.693967602444673e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3175377804280383
+    },
+    "vision.blocks.18.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.9194088220367958e-05,
+      "cosine_error": 1.8420054370693606e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3175377804280383
+    },
+    "vision.blocks.18.mlp": {
+      "finite": true,
+      "nrmse": 0.00016365234100560014,
+      "cosine_error": 1.3391034725529494e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.06162669058181209
+    },
+    "vision.blocks.19.norm1": {
+      "finite": true,
+      "nrmse": 5.463115737197305e-06,
+      "cosine_error": 1.4919288027215316e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.35810860064548017
+    },
+    "vision.blocks.19.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 7.493013495767036e-06,
+      "cosine_error": 2.8069102597783058e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.35810860064548017
+    },
+    "vision.blocks.19.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.579219456707018e-05,
+      "cosine_error": 3.325848485502547e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.8949100173159156
+    },
+    "vision.blocks.19.attn.wo": {
+      "finite": true,
+      "nrmse": 3.0131932828746102e-05,
+      "cosine_error": 4.5396142400733197e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.04509014763108166
+    },
+    "vision.blocks.19.norm2": {
+      "finite": true,
+      "nrmse": 7.431149818180554e-06,
+      "cosine_error": 2.7605695507304517e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.32323404671436184
+    },
+    "vision.blocks.19.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.3311833138489345e-05,
+      "cosine_error": 8.859668554350719e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.32323404671436184
+    },
+    "vision.blocks.19.mlp": {
+      "finite": true,
+      "nrmse": 0.00016772640637811978,
+      "cosine_error": 1.4066066422735446e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.06168340432891492
+    },
+    "vision.blocks.20.norm1": {
+      "finite": true,
+      "nrmse": 1.116989562995064e-05,
+      "cosine_error": 6.23785467723792e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3713413202496628
+    },
+    "vision.blocks.20.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.78719399262143e-05,
+      "cosine_error": 1.5969825462036624e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3713413202496628
+    },
+    "vision.blocks.20.attn.wqkv": {
+      "finite": true,
+      "nrmse": 1.925701160897699e-05,
+      "cosine_error": 1.8537704704613134e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.9407773146318914
+    },
+    "vision.blocks.20.attn.wo": {
+      "finite": true,
+      "nrmse": 2.9637338872923335e-05,
+      "cosine_error": 4.3918224612582435e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.04921657096466262
+    },
+    "vision.blocks.20.norm2": {
+      "finite": true,
+      "nrmse": 9.468095677479284e-06,
+      "cosine_error": 4.481659487964862e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.33297049209184737
+    },
+    "vision.blocks.20.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.1066076181236697e-05,
+      "cosine_error": 6.122280460374441e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.33297049209184737
+    },
+    "vision.blocks.20.mlp": {
+      "finite": true,
+      "nrmse": 0.00015350143106956417,
+      "cosine_error": 1.178128228307429e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.07382325902488207
+    },
+    "vision.blocks.21.norm1": {
+      "finite": true,
+      "nrmse": 1.1896808469376999e-05,
+      "cosine_error": 7.076295105434838e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3607313408091331
+    },
+    "vision.blocks.21.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.5015931982549133e-05,
+      "cosine_error": 1.1273493250030242e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3607313408091331
+    },
+    "vision.blocks.21.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.6556317285925717e-05,
+      "cosine_error": 3.525784109115193e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9334653412341094
+    },
+    "vision.blocks.21.attn.wo": {
+      "finite": true,
+      "nrmse": 3.740258249686705e-05,
+      "cosine_error": 6.99460045439082e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.06655622400766703
+    },
+    "vision.blocks.21.norm2": {
+      "finite": true,
+      "nrmse": 1.1001493428850212e-05,
+      "cosine_error": 6.051137368956461e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.33996135546846196
+    },
+    "vision.blocks.21.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2336228208706874e-05,
+      "cosine_error": 7.608624841282108e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.33996135546846196
+    },
+    "vision.blocks.21.mlp": {
+      "finite": true,
+      "nrmse": 0.0001729851804870674,
+      "cosine_error": 1.4961929251100514e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.07051291430473601
+    },
+    "vision.blocks.22.norm1": {
+      "finite": true,
+      "nrmse": 1.2231274276278405e-05,
+      "cosine_error": 7.479816765965097e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.393811635157033
+    },
+    "vision.blocks.22.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.1272891405050482e-05,
+      "cosine_error": 6.353551018634107e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.393811635157033
+    },
+    "vision.blocks.22.attn.wqkv": {
+      "finite": true,
+      "nrmse": 3.0047264559493354e-05,
+      "cosine_error": 4.5135917225991307e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 0.98966639397034
+    },
+    "vision.blocks.22.attn.wo": {
+      "finite": true,
+      "nrmse": 2.766989556551501e-05,
+      "cosine_error": 3.8280256742240226e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07008658964670224
+    },
+    "vision.blocks.22.norm2": {
+      "finite": true,
+      "nrmse": 1.2721496785433854e-05,
+      "cosine_error": 8.091372016849618e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3534049118142126
+    },
+    "vision.blocks.22.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.3462406073496918e-05,
+      "cosine_error": 9.061373873464618e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3534049118142126
+    },
+    "vision.blocks.22.mlp": {
+      "finite": true,
+      "nrmse": 0.00016216623570325218,
+      "cosine_error": 1.3148891975234278e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.0758041216901712
+    },
+    "vision.blocks.23.norm1": {
+      "finite": true,
+      "nrmse": 3.7544191168440065e-05,
+      "cosine_error": 7.047599170917351e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.3625471603653636
+    },
+    "vision.blocks.23.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 3.7312861894389644e-05,
+      "cosine_error": 6.961018428341958e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.3625471603653636
+    },
+    "vision.blocks.23.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.462421340643447e-05,
+      "cosine_error": 3.0310687293422234e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0112382045434118
+    },
+    "vision.blocks.23.attn.wo": {
+      "finite": true,
+      "nrmse": 3.49374478730919e-05,
+      "cosine_error": 6.103058058926081e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.06988303613508887
+    },
+    "vision.blocks.23.norm2": {
+      "finite": true,
+      "nrmse": 1.537387247560443e-05,
+      "cosine_error": 1.181723607857066e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3643701154763836
+    },
+    "vision.blocks.23.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.783226434721907e-05,
+      "cosine_error": 1.58989599263748e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3643701154763836
+    },
+    "vision.blocks.23.mlp": {
+      "finite": true,
+      "nrmse": 0.00014761233210273795,
+      "cosine_error": 1.0894684709938929e-08,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.0789307604952671
+    },
+    "vision.blocks.24.norm1": {
+      "finite": true,
+      "nrmse": 1.0304756764288277e-05,
+      "cosine_error": 5.309030992606267e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.37782154226231773
+    },
+    "vision.blocks.24.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2871442752118904e-05,
+      "cosine_error": 8.2833517822678e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.37782154226231773
+    },
+    "vision.blocks.24.attn.wqkv": {
+      "finite": true,
+      "nrmse": 1.91576090656892e-05,
+      "cosine_error": 1.8345958086030123e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9613887124602001
+    },
+    "vision.blocks.24.attn.wo": {
+      "finite": true,
+      "nrmse": 2.8650673049999802e-05,
+      "cosine_error": 4.1042547138658847e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.07156846017752756
+    },
+    "vision.blocks.24.norm2": {
+      "finite": true,
+      "nrmse": 6.866363321385392e-06,
+      "cosine_error": 2.356947970127976e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.37613461038820706
+    },
+    "vision.blocks.24.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.5766264669654368e-05,
+      "cosine_error": 1.2428358342475576e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.37613461038820706
+    },
+    "vision.blocks.24.mlp": {
+      "finite": true,
+      "nrmse": 0.00015929047116405753,
+      "cosine_error": 1.2686721118093658e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.08599937561942608
+    },
+    "vision.blocks.25.norm1": {
+      "finite": true,
+      "nrmse": 6.0039155972064846e-06,
+      "cosine_error": 1.8020140934993378e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3671880801252775
+    },
+    "vision.blocks.25.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.3341156866144902e-05,
+      "cosine_error": 8.89897044942245e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3671880801252775
+    },
+    "vision.blocks.25.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.825136823990727e-05,
+      "cosine_error": 3.9900738268983105e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0317649765582655
+    },
+    "vision.blocks.25.attn.wo": {
+      "finite": true,
+      "nrmse": 2.3515668302263756e-05,
+      "cosine_error": 2.7648916489653175e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.10030972860225636
+    },
+    "vision.blocks.25.norm2": {
+      "finite": true,
+      "nrmse": 1.3686213961781642e-05,
+      "cosine_error": 9.365308528686e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3830000782769104
+    },
+    "vision.blocks.25.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.580616033497984e-05,
+      "cosine_error": 1.2491452316965024e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3830000782769104
+    },
+    "vision.blocks.25.mlp": {
+      "finite": true,
+      "nrmse": 0.00014149070518497061,
+      "cosine_error": 1.0009728712567778e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.099688515579527
+    },
+    "vision.blocks.26.norm1": {
+      "finite": true,
+      "nrmse": 3.4991739808257935e-06,
+      "cosine_error": 6.1175509102895376e-12,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.3690245571504322
+    },
+    "vision.blocks.26.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.0926167253152419e-05,
+      "cosine_error": 5.968581184845334e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3690245571504322
+    },
+    "vision.blocks.26.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.2731777902549792e-05,
+      "cosine_error": 2.5829371974595006e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.2556443827661576
+    },
+    "vision.blocks.26.attn.wo": {
+      "finite": true,
+      "nrmse": 2.793994035689308e-05,
+      "cosine_error": 3.9030989551491757e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.1184383976706533
+    },
+    "vision.blocks.26.norm2": {
+      "finite": true,
+      "nrmse": 1.1708934536395342e-05,
+      "cosine_error": 6.854672385259164e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.40039724883340394
+    },
+    "vision.blocks.26.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.052906489621831e-05,
+      "cosine_error": 5.542777348210848e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.40039724883340394
+    },
+    "vision.blocks.26.mlp": {
+      "finite": true,
+      "nrmse": 0.00016869475431729636,
+      "cosine_error": 1.4228953348904838e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.10085911002003017
+    },
+    "vision.blocks.27.norm1": {
+      "finite": true,
+      "nrmse": 9.264749520131078e-06,
+      "cosine_error": 4.2913450570836176e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3522199438440555
+    },
+    "vision.blocks.27.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.0501083778188781e-05,
+      "cosine_error": 5.513223211295326e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3522199438440555
+    },
+    "vision.blocks.27.attn.wqkv": {
+      "finite": true,
+      "nrmse": 1.8486686196765773e-05,
+      "cosine_error": 1.7081536185514778e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0665275383443795
+    },
+    "vision.blocks.27.attn.wo": {
+      "finite": true,
+      "nrmse": 2.1090953260663724e-05,
+      "cosine_error": 2.2241031238934283e-10,
+      "max_abs": 0.0009765625,
+      "reference_rms": 0.10031838970486263
+    },
+    "vision.blocks.27.norm2": {
+      "finite": true,
+      "nrmse": 1.802634146515138e-05,
+      "cosine_error": 1.6247114764667003e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.4018942189311668
+    },
+    "vision.blocks.27.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.6275775784992828e-05,
+      "cosine_error": 1.32447164347127e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.4018942189311668
+    },
+    "vision.blocks.27.mlp": {
+      "finite": true,
+      "nrmse": 0.0001481768092360505,
+      "cosine_error": 1.0978164377561939e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.10694176662761064
+    },
+    "vision.blocks.28.norm1": {
+      "finite": true,
+      "nrmse": 1.2596203018691886e-05,
+      "cosine_error": 7.93273224886093e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.36178044895255657
+    },
+    "vision.blocks.28.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.2091914329289752e-05,
+      "cosine_error": 7.310252403414097e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.36178044895255657
+    },
+    "vision.blocks.28.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.5571500740517908e-05,
+      "cosine_error": 3.268818549173602e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.3007572966580372
+    },
+    "vision.blocks.28.attn.wo": {
+      "finite": true,
+      "nrmse": 2.6330347424893915e-05,
+      "cosine_error": 3.46633499681559e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.15001279253923702
+    },
+    "vision.blocks.28.norm2": {
+      "finite": true,
+      "nrmse": 3.945654034869548e-06,
+      "cosine_error": 7.781775224202647e-12,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.3954686208472914
+    },
+    "vision.blocks.28.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.1612213734422683e-05,
+      "cosine_error": 6.741918134878233e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.3954686208472914
+    },
+    "vision.blocks.28.mlp": {
+      "finite": true,
+      "nrmse": 0.00016679349337342785,
+      "cosine_error": 1.3910008145323616e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.11042465044299757
+    },
+    "vision.blocks.29.norm1": {
+      "finite": true,
+      "nrmse": 9.791270064398104e-06,
+      "cosine_error": 4.792988228530248e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.36295325577370935
+    },
+    "vision.blocks.29.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.6030020590215653e-05,
+      "cosine_error": 1.2847589658804281e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.36295325577370935
+    },
+    "vision.blocks.29.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.834164957100995e-05,
+      "cosine_error": 4.015600074680492e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.3401462123031875
+    },
+    "vision.blocks.29.attn.wo": {
+      "finite": true,
+      "nrmse": 2.4610992601811735e-05,
+      "cosine_error": 3.028434170104788e-10,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.15150714328313475
+    },
+    "vision.blocks.29.norm2": {
+      "finite": true,
+      "nrmse": 8.794538490744673e-06,
+      "cosine_error": 3.8667846702367115e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.35965274164720656
+    },
+    "vision.blocks.29.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.4483342015355548e-05,
+      "cosine_error": 1.0487921642265974e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.35965274164720656
+    },
+    "vision.blocks.29.mlp": {
+      "finite": true,
+      "nrmse": 0.00015187877870633738,
+      "cosine_error": 1.153356099514724e-08,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.12221057641355221
+    },
+    "vision.blocks.30.norm1": {
+      "finite": true,
+      "nrmse": 1.591180692931937e-05,
+      "cosine_error": 1.265850757548037e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.42469203908504766
+    },
+    "vision.blocks.30.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 2.0355287561548867e-05,
+      "cosine_error": 2.0716117710151138e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.42469203908504766
+    },
+    "vision.blocks.30.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.6052176298282065e-05,
+      "cosine_error": 3.393076930535699e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.504783413099544
+    },
+    "vision.blocks.30.attn.wo": {
+      "finite": true,
+      "nrmse": 2.59490293022674e-05,
+      "cosine_error": 3.3666680554489403e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.25631636108577693
+    },
+    "vision.blocks.30.norm2": {
+      "finite": true,
+      "nrmse": 9.528495880280352e-06,
+      "cosine_error": 4.538724951430595e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.2518789703538307
+    },
+    "vision.blocks.30.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.5223636982312116e-05,
+      "cosine_error": 1.1587020232184386e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.2518789703538307
+    },
+    "vision.blocks.30.mlp": {
+      "finite": true,
+      "nrmse": 0.00012031086915228773,
+      "cosine_error": 7.237336618892698e-09,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.1610225056950539
+    },
+    "vision.blocks.31.norm1": {
+      "finite": true,
+      "nrmse": 9.824300571857791e-06,
+      "cosine_error": 4.8249959583301916e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.27168880862217976
+    },
+    "vision.blocks.31.norm1.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.0651698211795474e-05,
+      "cosine_error": 5.672107228349432e-11,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.27168880862217976
+    },
+    "vision.blocks.31.attn.wqkv": {
+      "finite": true,
+      "nrmse": 2.609068063317441e-05,
+      "cosine_error": 3.4028291295840063e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.255153040726181
+    },
+    "vision.blocks.31.attn.wo": {
+      "finite": true,
+      "nrmse": 3.290551217168503e-05,
+      "cosine_error": 5.413793857655946e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.1777303261051269
+    },
+    "vision.blocks.31.norm2": {
+      "finite": true,
+      "nrmse": 1.6154938905071307e-05,
+      "cosine_error": 1.3048118141512077e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.2299793944676534
+    },
+    "vision.blocks.31.norm2.sqrt_div": {
+      "finite": true,
+      "nrmse": 1.7290347126351777e-05,
+      "cosine_error": 1.4946843762686512e-10,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.2299793944676534
+    },
+    "vision.blocks.31.mlp": {
+      "finite": true,
+      "nrmse": 7.199166345927771e-06,
+      "cosine_error": 2.573408153239143e-11,
+      "max_abs": 0.046875,
+      "reference_rms": 8.974596608116876
+    },
+    "vision.norm": {
+      "finite": true,
+      "nrmse": 1.5667892167274815e-05,
+      "cosine_error": 1.2271395011254072e-10,
+      "max_abs": 0.000244140625,
+      "reference_rms": 0.01704993084820012
+    },
+    "vision.norm.sqrt_div": {
+      "finite": true,
+      "nrmse": 2.7656566549027403e-05,
+      "cosine_error": 3.824135452745736e-10,
+      "max_abs": 0.00048828125,
+      "reference_rms": 0.01704993084820012
+    },
+    "vision.blocks.0.isolated": {
+      "finite": true,
+      "nrmse": 0.0016475807512918484,
+      "cosine_error": 1.357262044199281e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.15848089690679648
+    },
+    "vision.blocks.0.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.09024345427960886
+    },
+    "vision.blocks.0.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.15848089690679648
+    },
+    "vision.blocks.0.attn.rope_q": {
+      "finite": true,
+      "nrmse": 8.556055054704372e-06,
+      "cosine_error": 3.659472724848456e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.939539629214902
+    },
+    "vision.blocks.0.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.562046265134555e-05,
+      "cosine_error": 1.2199441457028115e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.4618881898140943
+    },
+    "vision.blocks.0.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0009163673936908555,
+      "cosine_error": 4.1984910570391776e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.032680998675264764
+    },
+    "vision.blocks.1.isolated": {
+      "finite": true,
+      "nrmse": 0.0015658824699064098,
+      "cosine_error": 1.2259802025793576e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.14619862401057862
+    },
+    "vision.blocks.1.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 1.1102230246251565e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.16030963553789296
+    },
+    "vision.blocks.1.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 1.1102230246251565e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.14619862401057862
+    },
+    "vision.blocks.1.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.903713475444963e-05,
+      "cosine_error": 1.8119883371525702e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.048202813146646
+    },
+    "vision.blocks.1.attn.rope_k": {
+      "finite": true,
+      "nrmse": 8.478577594139886e-06,
+      "cosine_error": 3.593481068264737e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.9647137978764585
+    },
+    "vision.blocks.1.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0011038226023386219,
+      "cosine_error": 6.092119381184702e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.04206669610748177
+    },
+    "vision.blocks.2.isolated": {
+      "finite": true,
+      "nrmse": 0.0018168087345316393,
+      "cosine_error": 1.6503811033352633e-06,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.14329685605810938
+    },
+    "vision.blocks.2.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.1319464226774699
+    },
+    "vision.blocks.2.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.14329685605810938
+    },
+    "vision.blocks.2.attn.rope_q": {
+      "finite": true,
+      "nrmse": 7.338085420207234e-06,
+      "cosine_error": 2.6915358830592595e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2157539105970327
+    },
+    "vision.blocks.2.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.2292920764332128e-05,
+      "cosine_error": 7.554945558041481e-11,
+      "max_abs": 0.015625,
+      "reference_rms": 1.2698783980388393
+    },
+    "vision.blocks.2.attn.fia": {
+      "finite": true,
+      "nrmse": 0.001042400373040003,
+      "cosine_error": 5.432961367457523e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.054257321843089144
+    },
+    "vision.blocks.3.isolated": {
+      "finite": true,
+      "nrmse": 0.0015862235451891073,
+      "cosine_error": 1.258045561836063e-06,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.15034719220626674
+    },
+    "vision.blocks.3.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.1399301159146016
+    },
+    "vision.blocks.3.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 1.1102230246251565e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.15034719220626674
+    },
+    "vision.blocks.3.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.320516016845256e-05,
+      "cosine_error": 8.71814842540175e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.9048687317327084
+    },
+    "vision.blocks.3.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.0570899542324149e-05,
+      "cosine_error": 5.586253681855169e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.9584482149675676
+    },
+    "vision.blocks.3.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0011498906144060423,
+      "cosine_error": 6.611162679526217e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.03881141893567789
+    },
+    "vision.blocks.4.isolated": {
+      "finite": true,
+      "nrmse": 0.0017402833308502682,
+      "cosine_error": 1.5142890977815071e-06,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.16233112728385615
+    },
+    "vision.blocks.4.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.15681494535834323
+    },
+    "vision.blocks.4.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.16233112728385615
+    },
+    "vision.blocks.4.attn.rope_q": {
+      "finite": true,
+      "nrmse": 9.272715675186242e-06,
+      "cosine_error": 4.298283950987525e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1100347436700522
+    },
+    "vision.blocks.4.attn.rope_k": {
+      "finite": true,
+      "nrmse": 6.421188260355778e-06,
+      "cosine_error": 2.060640547085768e-11,
+      "max_abs": 0.00390625,
+      "reference_rms": 1.147411313848642
+    },
+    "vision.blocks.4.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0013657068541611226,
+      "cosine_error": 9.325774066315518e-07,
+      "max_abs": 0.001953125,
+      "reference_rms": 0.05638388846618081
+    },
+    "vision.blocks.5.isolated": {
+      "finite": true,
+      "nrmse": 0.0016644080168257177,
+      "cosine_error": 1.3851120927999006e-06,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.1688414316561181
+    },
+    "vision.blocks.5.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.16179425442211895
+    },
+    "vision.blocks.5.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.1688414316561181
+    },
+    "vision.blocks.5.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.4964536733565714e-05,
+      "cosine_error": 1.1196132909674361e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 0.9862209010457433
+    },
+    "vision.blocks.5.attn.rope_k": {
+      "finite": true,
+      "nrmse": 2.302265376754952e-05,
+      "cosine_error": 2.6500968086651255e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.017898341393809
+    },
+    "vision.blocks.5.attn.fia": {
+      "finite": true,
+      "nrmse": 0.00128452163934678,
+      "cosine_error": 8.24993816816999e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.05493283492763844
+    },
+    "vision.blocks.6.isolated": {
+      "finite": true,
+      "nrmse": 0.0017908141549088014,
+      "cosine_error": 1.6034967302847036e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.17868892819394658
+    },
+    "vision.blocks.6.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.174499328196743
+    },
+    "vision.blocks.6.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.17868892819394658
+    },
+    "vision.blocks.6.attn.rope_q": {
+      "finite": true,
+      "nrmse": 9.610169285556458e-06,
+      "cosine_error": 4.617062288048146e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.0699868775788626
+    },
+    "vision.blocks.6.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.2414202684161785e-05,
+      "cosine_error": 7.704503701688736e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1543452204126683
+    },
+    "vision.blocks.6.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0013920174928270662,
+      "cosine_error": 9.688488611381274e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.06506982958152244
+    },
+    "vision.blocks.7.isolated": {
+      "finite": true,
+      "nrmse": 0.0018953060203123877,
+      "cosine_error": 1.796093719752534e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.18213010076039984
+    },
+    "vision.blocks.7.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 1.1102230246251565e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.18047058028540722
+    },
+    "vision.blocks.7.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.18213010076039984
+    },
+    "vision.blocks.7.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.50310028734399e-05,
+      "cosine_error": 1.1295941959588163e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.0226592701544666
+    },
+    "vision.blocks.7.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.3605884808247079e-05,
+      "cosine_error": 9.255418653708603e-11,
+      "max_abs": 0.015625,
+      "reference_rms": 1.177641573940683
+    },
+    "vision.blocks.7.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0014215808038454236,
+      "cosine_error": 1.0104409408073778e-06,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.06667043098582218
+    },
+    "vision.blocks.8.isolated": {
+      "finite": true,
+      "nrmse": 0.0020954962170218884,
+      "cosine_error": 2.195546071170895e-06,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.1884593493330642
+    },
+    "vision.blocks.8.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.18898572115987022
+    },
+    "vision.blocks.8.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.1884593493330642
+    },
+    "vision.blocks.8.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.5350122478615077e-05,
+      "cosine_error": 1.1780398878613596e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.0935256629303416
+    },
+    "vision.blocks.8.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.2392033544901709e-05,
+      "cosine_error": 7.67739205542739e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2246271301240452
+    },
+    "vision.blocks.8.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0014318147610683798,
+      "cosine_error": 1.0250433890579558e-06,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.07967599124792091
+    },
+    "vision.blocks.9.isolated": {
+      "finite": true,
+      "nrmse": 0.0022944063899873845,
+      "cosine_error": 2.6321372252890995e-06,
+      "max_abs": 0.015625,
+      "reference_rms": 0.19693678330155384
+    },
+    "vision.blocks.9.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.19750672659532645
+    },
+    "vision.blocks.9.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.19693678330155384
+    },
+    "vision.blocks.9.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.745899618537569e-05,
+      "cosine_error": 1.5240120276871494e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1431199270928785
+    },
+    "vision.blocks.9.attn.rope_k": {
+      "finite": true,
+      "nrmse": 8.292160125342472e-06,
+      "cosine_error": 3.4372393820092384e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1735136704556222
+    },
+    "vision.blocks.9.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0013883914848449807,
+      "cosine_error": 9.637927498307164e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.09679215339499923
+    },
+    "vision.blocks.10.isolated": {
+      "finite": true,
+      "nrmse": 0.002467626449670359,
+      "cosine_error": 3.0445926677558077e-06,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.196008664501163
+    },
+    "vision.blocks.10.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.19501515054969845
+    },
+    "vision.blocks.10.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.196008664501163
+    },
+    "vision.blocks.10.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.1048668297914832e-05,
+      "cosine_error": 6.102951477515717e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.122245275668811
+    },
+    "vision.blocks.10.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.4297728427873896e-05,
+      "cosine_error": 1.0220624346857221e-10,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1709959772044565
+    },
+    "vision.blocks.10.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0013087567280834968,
+      "cosine_error": 8.564210425276997e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.11602809646125857
+    },
+    "vision.blocks.11.isolated": {
+      "finite": true,
+      "nrmse": 0.0020533037263754383,
+      "cosine_error": 2.108015705548638e-06,
+      "max_abs": 0.0625,
+      "reference_rms": 0.24777663956618462
+    },
+    "vision.blocks.11.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.20568073292623917
+    },
+    "vision.blocks.11.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.220446049250313e-16,
+      "max_abs": 0.0,
+      "reference_rms": 0.24777663956618462
+    },
+    "vision.blocks.11.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.6809814828832813e-05,
+      "cosine_error": 1.4127898850802012e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1736032571303885
+    },
+    "vision.blocks.11.attn.rope_k": {
+      "finite": true,
+      "nrmse": 9.336622727770037e-06,
+      "cosine_error": 4.357947336330881e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1536634948568063
+    },
+    "vision.blocks.11.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012998111364777797,
+      "cosine_error": 8.447435297931349e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.12426734412729526
+    },
+    "vision.blocks.12.isolated": {
+      "finite": true,
+      "nrmse": 0.0018774935537972568,
+      "cosine_error": 1.557265101759242e-06,
+      "max_abs": 8.0,
+      "reference_rms": 5.0057124003723255
+    },
+    "vision.blocks.12.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": 0.0,
+      "max_abs": 0.0,
+      "reference_rms": 0.2486232435112884
+    },
+    "vision.blocks.12.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.8199664825478976e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.0057124003723255
+    },
+    "vision.blocks.12.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.111064938246895e-05,
+      "cosine_error": 6.171707589430753e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.257149412467292
+    },
+    "vision.blocks.12.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.5017902377336931e-05,
+      "cosine_error": 1.1276179989749835e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.2547717026051348
+    },
+    "vision.blocks.12.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012963853783883356,
+      "cosine_error": 8.4029330760238e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.12062820483658092
+    },
+    "vision.blocks.13.isolated": {
+      "finite": true,
+      "nrmse": 9.414710988095173e-05,
+      "cosine_error": 4.4318071434901185e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.005801228886858
+    },
+    "vision.blocks.13.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.4638958368304884e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.005920534673035
+    },
+    "vision.blocks.13.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.197442310920451e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.005801228886858
+    },
+    "vision.blocks.13.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.8090798980333068e-05,
+      "cosine_error": 1.636316637743107e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.2572212403333438
+    },
+    "vision.blocks.13.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.2295147633645272e-05,
+      "cosine_error": 7.557920955747477e-11,
+      "max_abs": 0.015625,
+      "reference_rms": 1.2197712508962515
+    },
+    "vision.blocks.13.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012605854454547105,
+      "cosine_error": 7.94537460935274e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.11025916368698323
+    },
+    "vision.blocks.14.isolated": {
+      "finite": true,
+      "nrmse": 9.38297158023687e-05,
+      "cosine_error": 4.401972120149367e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.074296953657741
+    },
+    "vision.blocks.14.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.907985046680551e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.006188690335445
+    },
+    "vision.blocks.14.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.3306690738754696e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074296953657741
+    },
+    "vision.blocks.14.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.0750117634594859e-05,
+      "cosine_error": 5.7777338469122697e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2390285332738453
+    },
+    "vision.blocks.14.attn.rope_k": {
+      "finite": true,
+      "nrmse": 7.612005845009007e-06,
+      "cosine_error": 2.896549666786541e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2128063527566195
+    },
+    "vision.blocks.14.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012350429030097817,
+      "cosine_error": 7.626644268343696e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.0962397715285482
+    },
+    "vision.blocks.15.isolated": {
+      "finite": true,
+      "nrmse": 8.355320215014485e-05,
+      "cosine_error": 3.4905336399049247e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.0741947374369625
+    },
+    "vision.blocks.15.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.8191672047105385e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074387779971167
+    },
+    "vision.blocks.15.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.4861002973229915e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.0741947374369625
+    },
+    "vision.blocks.15.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.564395912631586e-05,
+      "cosine_error": 1.2236101021301238e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.2197361875622705
+    },
+    "vision.blocks.15.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.1951641884081977e-05,
+      "cosine_error": 7.14124315237541e-11,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1391875858871146
+    },
+    "vision.blocks.15.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012320770146778785,
+      "cosine_error": 7.590070225660384e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.07460145097846507
+    },
+    "vision.blocks.16.isolated": {
+      "finite": true,
+      "nrmse": 8.621547808827986e-05,
+      "cosine_error": 3.7165190924781655e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.074477331163651
+    },
+    "vision.blocks.16.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -4.574118861455645e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074466167913638
+    },
+    "vision.blocks.16.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.4861002973229915e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074477331163651
+    },
+    "vision.blocks.16.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.7961142323716248e-05,
+      "cosine_error": 1.6129408919596244e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.197312328486823
+    },
+    "vision.blocks.16.attn.rope_k": {
+      "finite": true,
+      "nrmse": 9.35072775035743e-06,
+      "cosine_error": 4.37098135463998e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1105466409308333
+    },
+    "vision.blocks.16.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012353310146526624,
+      "cosine_error": 7.629866500824534e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.0785991868432951
+    },
+    "vision.blocks.17.isolated": {
+      "finite": true,
+      "nrmse": 8.126143794937283e-05,
+      "cosine_error": 3.3016729350521246e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.074252723940095
+    },
+    "vision.blocks.17.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -4.241051954068098e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074481085963679
+    },
+    "vision.blocks.17.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.6415315207705135e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074252723940095
+    },
+    "vision.blocks.17.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.4403635183470543e-05,
+      "cosine_error": 1.0372502856625943e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1330414175208872
+    },
+    "vision.blocks.17.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.718383847013066e-05,
+      "cosine_error": 1.4763390510097452e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1178039408020668
+    },
+    "vision.blocks.17.attn.fia": {
+      "finite": true,
+      "nrmse": 0.001154207943468889,
+      "cosine_error": 6.660952335257875e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.07334488882825216
+    },
+    "vision.blocks.18.isolated": {
+      "finite": true,
+      "nrmse": 8.283955756980775e-05,
+      "cosine_error": 3.4311518071206137e-09,
+      "max_abs": 0.1875,
+      "reference_rms": 5.074389744906643
+    },
+    "vision.blocks.18.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -5.5067062021407764e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.07449398608922
+    },
+    "vision.blocks.18.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.930189507173054e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074389744906643
+    },
+    "vision.blocks.18.attn.rope_q": {
+      "finite": true,
+      "nrmse": 9.673498885738446e-06,
+      "cosine_error": 4.6782577811654846e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2076732531495638
+    },
+    "vision.blocks.18.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.0632505987847073e-05,
+      "cosine_error": 5.6516791246963294e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1674140764344405
+    },
+    "vision.blocks.18.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012637206404842324,
+      "cosine_error": 7.984952163919701e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.05553806166899517
+    },
+    "vision.blocks.19.isolated": {
+      "finite": true,
+      "nrmse": 7.675135892487952e-05,
+      "cosine_error": 2.94534818756631e-09,
+      "max_abs": 0.03125,
+      "reference_rms": 5.074549759874565
+    },
+    "vision.blocks.19.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -5.750955267558311e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.0745053067613295
+    },
+    "vision.blocks.19.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.730349362740526e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074549759874565
+    },
+    "vision.blocks.19.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.6756105220982328e-05,
+      "cosine_error": 1.4037526696597524e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1016629603326271
+    },
+    "vision.blocks.19.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.0227211686386257e-05,
+      "cosine_error": 5.229017219221532e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.0569149581740276
+    },
+    "vision.blocks.19.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012031889115271628,
+      "cosine_error": 7.238257329067466e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.05368413487956809
+    },
+    "vision.blocks.20.isolated": {
+      "finite": true,
+      "nrmse": 8.569337532737574e-05,
+      "cosine_error": 3.6716438778228166e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.07513534112489
+    },
+    "vision.blocks.20.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -4.951594689828198e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.074665040925833
+    },
+    "vision.blocks.20.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.3306690738754696e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.07513534112489
+    },
+    "vision.blocks.20.attn.rope_q": {
+      "finite": true,
+      "nrmse": 2.1690439150817257e-05,
+      "cosine_error": 2.352309458331092e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1534699049684614
+    },
+    "vision.blocks.20.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.0114964993802175e-05,
+      "cosine_error": 5.11496400790179e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.114899310911473
+    },
+    "vision.blocks.20.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012913395832798724,
+      "cosine_error": 8.337670789337892e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.05609038986458415
+    },
+    "vision.blocks.21.isolated": {
+      "finite": true,
+      "nrmse": 9.092262795885235e-05,
+      "cosine_error": 4.133430930863824e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.075707002184953
+    },
+    "vision.blocks.21.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.5083047578154947e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.075449531891607
+    },
+    "vision.blocks.21.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.042011087472929e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.075707002184953
+    },
+    "vision.blocks.21.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.0221630229107646e-05,
+      "cosine_error": 5.2234661040984065e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1458189303977497
+    },
+    "vision.blocks.21.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.1942265907500832e-05,
+      "cosine_error": 7.130152024359404e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.0989334617986593
+    },
+    "vision.blocks.21.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012826668373480752,
+      "cosine_error": 8.225087747559812e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.07329714978480245
+    },
+    "vision.blocks.22.isolated": {
+      "finite": true,
+      "nrmse": 9.483460776562153e-05,
+      "cosine_error": 4.496775507512041e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.076319990070358
+    },
+    "vision.blocks.22.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -3.1308289294429414e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.076003652031255
+    },
+    "vision.blocks.22.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.531308496145357e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.076319990070358
+    },
+    "vision.blocks.22.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.0035006696703001e-05,
+      "cosine_error": 5.0343951230047423e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2073676318630187
+    },
+    "vision.blocks.22.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.554392879162852e-05,
+      "cosine_error": 1.2079992561808695e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.1733153971740278
+    },
+    "vision.blocks.22.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012082783583550296,
+      "cosine_error": 7.299684837702713e-07,
+      "max_abs": 0.00390625,
+      "reference_rms": 0.0741150908749376
+    },
+    "vision.blocks.23.isolated": {
+      "finite": true,
+      "nrmse": 9.928570984987842e-05,
+      "cosine_error": 4.928799812731199e-09,
+      "max_abs": 0.125,
+      "reference_rms": 5.085615212431636
+    },
+    "vision.blocks.23.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.864375403532904e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.076624824556012
+    },
+    "vision.blocks.23.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.2648549702353193e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.085615212431636
+    },
+    "vision.blocks.23.attn.rope_q": {
+      "finite": true,
+      "nrmse": 8.450205498223464e-06,
+      "cosine_error": 3.569611273235296e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2123383833972714
+    },
+    "vision.blocks.23.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.830120068888022e-05,
+      "cosine_error": 1.674607119639404e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.23116505298907
+    },
+    "vision.blocks.23.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012275320958292715,
+      "cosine_error": 7.534030177502871e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.07212109428933397
+    },
+    "vision.blocks.24.isolated": {
+      "finite": true,
+      "nrmse": 0.00011581573798869862,
+      "cosine_error": 6.706496025188358e-09,
+      "max_abs": 0.25,
+      "reference_rms": 5.087421008337755
+    },
+    "vision.blocks.24.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.6423307986078726e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.085588212136718
+    },
+    "vision.blocks.24.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -2.1094237467877974e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.087421008337755
+    },
+    "vision.blocks.24.attn.rope_q": {
+      "finite": true,
+      "nrmse": 6.674564299029518e-06,
+      "cosine_error": 2.2267299115696915e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.1465036842939498
+    },
+    "vision.blocks.24.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.0647829482019702e-05,
+      "cosine_error": 5.668177038842259e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.158579846883563
+    },
+    "vision.blocks.24.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012242592141567179,
+      "cosine_error": 7.494028517740503e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.08832746276185136
+    },
+    "vision.blocks.25.isolated": {
+      "finite": true,
+      "nrmse": 0.0001233049792056452,
+      "cosine_error": 7.602039886478451e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.0889191204301385
+    },
+    "vision.blocks.25.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.8207657603852567e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.0878227261194064
+    },
+    "vision.blocks.25.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.8207657603852567e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.0889191204301385
+    },
+    "vision.blocks.25.attn.rope_q": {
+      "finite": true,
+      "nrmse": 8.188081265674193e-06,
+      "cosine_error": 3.351652289040885e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2406947573218983
+    },
+    "vision.blocks.25.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.171928162183981e-05,
+      "cosine_error": 6.86647405601093e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.240816789563822
+    },
+    "vision.blocks.25.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012730293862580635,
+      "cosine_error": 8.103022250960379e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.10935792327534384
+    },
+    "vision.blocks.26.isolated": {
+      "finite": true,
+      "nrmse": 0.00013826631122337656,
+      "cosine_error": 9.558771552065082e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.091654021370641
+    },
+    "vision.blocks.26.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.3322676295501878e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.090295055249812
+    },
+    "vision.blocks.26.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.4210854715202004e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.091654021370641
+    },
+    "vision.blocks.26.attn.rope_q": {
+      "finite": true,
+      "nrmse": 2.009120495772871e-05,
+      "cosine_error": 2.0182189253148408e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.4609654731821444
+    },
+    "vision.blocks.26.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.4179351658110947e-05,
+      "cosine_error": 1.0052292331863555e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.5739645286078825
+    },
+    "vision.blocks.26.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0013153390304765293,
+      "cosine_error": 8.650556401201825e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.13850821120789703
+    },
+    "vision.blocks.27.isolated": {
+      "finite": true,
+      "nrmse": 0.0001393451467006916,
+      "cosine_error": 9.708521320206387e-09,
+      "max_abs": 0.0625,
+      "reference_rms": 5.092643735149092
+    },
+    "vision.blocks.27.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.3988810110276972e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.091504888610018
+    },
+    "vision.blocks.27.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.2656542480726785e-14,
+      "max_abs": 0.0,
+      "reference_rms": 5.092643735149092
+    },
+    "vision.blocks.27.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.2249848060925828e-05,
+      "cosine_error": 7.502354293364988e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.2603746609258908
+    },
+    "vision.blocks.27.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.9482258615635113e-05,
+      "cosine_error": 1.897721979560174e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.3054626366022668
+    },
+    "vision.blocks.27.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0013261805810376843,
+      "cosine_error": 8.793715058352802e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.11507604240959711
+    },
+    "vision.blocks.28.isolated": {
+      "finite": true,
+      "nrmse": 0.0001594904173669993,
+      "cosine_error": 1.2718586184234937e-08,
+      "max_abs": 0.03125,
+      "reference_rms": 5.097661521718051
+    },
+    "vision.blocks.28.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -9.325873406851315e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.096856567281503
+    },
+    "vision.blocks.28.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -9.769962616701378e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.097661521718051
+    },
+    "vision.blocks.28.attn.rope_q": {
+      "finite": true,
+      "nrmse": 2.2158854788233543e-05,
+      "cosine_error": 2.455023961900338e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.560271524966312
+    },
+    "vision.blocks.28.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.700847949663795e-05,
+      "cosine_error": 1.446398556481654e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.585596556864486
+    },
+    "vision.blocks.28.attn.fia": {
+      "finite": true,
+      "nrmse": 0.001356139849761135,
+      "cosine_error": 9.19532978316262e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.147529537338936
+    },
+    "vision.blocks.29.isolated": {
+      "finite": true,
+      "nrmse": 0.0001654614657127391,
+      "cosine_error": 1.3688739475270495e-08,
+      "max_abs": 0.125,
+      "reference_rms": 5.101530945468905
+    },
+    "vision.blocks.29.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -7.327471962526033e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.101169347122115
+    },
+    "vision.blocks.29.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -8.215650382226158e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.101530945468905
+    },
+    "vision.blocks.29.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.7644029618691247e-05,
+      "cosine_error": 1.5565237987402725e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.615132754932398
+    },
+    "vision.blocks.29.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.2029255460920238e-05,
+      "cosine_error": 7.234546295364908e-11,
+      "max_abs": 0.015625,
+      "reference_rms": 1.6307629208772587
+    },
+    "vision.blocks.29.attn.fia": {
+      "finite": true,
+      "nrmse": 0.00137672857701037,
+      "cosine_error": 9.476862320445534e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.1313572230801161
+    },
+    "vision.blocks.30.isolated": {
+      "finite": true,
+      "nrmse": 0.00020897420139580737,
+      "cosine_error": 2.1835103836131964e-08,
+      "max_abs": 0.0625,
+      "reference_rms": 5.113399251722303
+    },
+    "vision.blocks.30.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -4.218847493575595e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.1128269021362955
+    },
+    "vision.blocks.30.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -4.884981308350689e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.113399251722303
+    },
+    "vision.blocks.30.attn.rope_q": {
+      "finite": true,
+      "nrmse": 7.279191856604938e-06,
+      "cosine_error": 2.648659069848236e-11,
+      "max_abs": 0.0078125,
+      "reference_rms": 1.8317918442649914
+    },
+    "vision.blocks.30.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.791496700335143e-05,
+      "cosine_error": 1.6046319828433298e-10,
+      "max_abs": 0.015625,
+      "reference_rms": 1.8062503503796856
+    },
+    "vision.blocks.30.attn.fia": {
+      "finite": true,
+      "nrmse": 0.001290795521607336,
+      "cosine_error": 8.330739577067092e-07,
+      "max_abs": 0.015625,
+      "reference_rms": 0.21080201876189844
+    },
+    "vision.blocks.31.isolated": {
+      "finite": true,
+      "nrmse": 0.0007023341097287879,
+      "cosine_error": 2.4615621274648447e-07,
+      "max_abs": 4.0,
+      "reference_rms": 10.783559314454564
+    },
+    "vision.blocks.31.residual1": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -4.440892098500626e-15,
+      "max_abs": 0.0,
+      "reference_rms": 5.111846167667832
+    },
+    "vision.blocks.31.residual2": {
+      "finite": true,
+      "nrmse": 0.0,
+      "cosine_error": -1.4654943925052066e-14,
+      "max_abs": 0.0,
+      "reference_rms": 10.783559314454564
+    },
+    "vision.blocks.31.attn.rope_q": {
+      "finite": true,
+      "nrmse": 1.8797967891981223e-05,
+      "cosine_error": 1.7667778351437846e-10,
+      "max_abs": 0.03125,
+      "reference_rms": 1.5980616090753148
+    },
+    "vision.blocks.31.attn.rope_k": {
+      "finite": true,
+      "nrmse": 1.2315155966359172e-05,
+      "cosine_error": 7.582667826966372e-11,
+      "max_abs": 0.015625,
+      "reference_rms": 1.4417495995200889
+    },
+    "vision.blocks.31.attn.fia": {
+      "finite": true,
+      "nrmse": 0.0012870907247645178,
+      "cosine_error": 8.282927549396746e-07,
+      "max_abs": 0.0078125,
+      "reference_rms": 0.13036711473815701
+    }
+  },
+  "gate": "finite, NRMSE<0.03, cosine_error<0.0005, peak_allocated<2GiB",
+  "passed": true
+}

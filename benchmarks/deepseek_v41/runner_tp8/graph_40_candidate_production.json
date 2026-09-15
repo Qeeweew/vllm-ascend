@@ -1,0 +1,3019 @@
+{
+  "synthetic": true,
+  "device_weights": "dummy",
+  "engram_weights": "synthetic_small_tables",
+  "engram_numa_nodes": [
+    6,
+    7,
+    4,
+    5,
+    0,
+    1,
+    2,
+    3
+  ],
+  "layers": 40,
+  "experts": 8,
+  "native_decode_requested": false,
+  "candidate_decode_requested": true,
+  "tensor_parallel_size": 8,
+  "graph_requested": true,
+  "host_engram": true,
+  "chunked_prefill": true,
+  "prefix_reuse_requested": true,
+  "prompt_lengths": [
+    1152,
+    1160
+  ],
+  "outputs": [
+    [
+      12504,
+      12504,
+      2563,
+      12504
+    ],
+    [
+      2563,
+      14967,
+      15355,
+      12504
+    ],
+    [
+      14967,
+      6250,
+      13711,
+      4069
+    ]
+  ],
+  "selected_logprobs_finite": true,
+  "selected_logprobs": [
+    [
+      -11.769643783569336,
+      -11.769648551940918,
+      -11.769652366638184,
+      -11.769649505615234
+    ],
+    [
+      -11.7696533203125,
+      -11.769647598266602,
+      -11.7696533203125,
+      -11.769645690917969
+    ],
+    [
+      -11.769652366638184,
+      -11.76965045928955,
+      -11.769654273986816,
+      -11.769648551940918
+    ]
+  ],
+  "packed_weight_initialization": "all_nibbles_signed_one_after_dummy_load",
+  "workers_after_capture": [
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 8,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 8
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 51,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 51
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 13,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 13
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 58,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 58
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 17,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 17
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 63,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 63
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 23,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 23
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 69,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 69
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 28,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 28
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 74,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 74
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 34,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 34
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 83,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 83
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 39,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 39
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 88,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 88
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 0,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 120
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 44,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 44
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 94,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 94
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    }
+  ],
+  "workers_after_first": [
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 8,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 8
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 51,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 51
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 13,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 13
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 58,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 58
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 17,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 17
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 63,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 63
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 23,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 23
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 69,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 69
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 28,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 28
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 74,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 74
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 34,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 34
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 83,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 83
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 39,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 39
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 88,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 88
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 40,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 44,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 44
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 94,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 94
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    }
+  ],
+  "workers_final": [
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 8,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 8
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 51,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 51
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 13,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 13
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 58,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 58
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 17,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 17
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 63,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 63
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 23,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 23
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 69,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 69
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 28,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 28
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 74,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 74
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 34,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 34
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 83,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 83
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 39,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 39
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 88,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 88
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 44,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1600
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 44,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 44
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 94,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 94
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    }
+  ],
+  "repeat_outputs": [
+    [
+      12504,
+      12504,
+      2563,
+      12504
+    ],
+    [
+      2563,
+      14967,
+      15355,
+      12504
+    ]
+  ],
+  "repeat_selected_logprobs": [
+    [
+      -11.769643783569336,
+      -11.769648551940918,
+      -11.769652366638184,
+      -11.769649505615234
+    ],
+    [
+      -11.7696533203125,
+      -11.769647598266602,
+      -11.7696533203125,
+      -11.769645690917969
+    ]
+  ],
+  "workers_after_repeat": [
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 8,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 8
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 6,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 51,
+            "page_size": 4096,
+            "status_counts": {
+              "6": 51
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 13,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 13
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 7,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 58,
+            "page_size": 4096,
+            "status_counts": {
+              "7": 58
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 17,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 17
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 4,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 63,
+            "page_size": 4096,
+            "status_counts": {
+              "4": 63
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 23,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 23
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 5,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 69,
+            "page_size": 4096,
+            "status_counts": {
+              "5": 69
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 28,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 28
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 0,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 74,
+            "page_size": 4096,
+            "status_counts": {
+              "0": 74
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 34,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 34
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 1,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 83,
+            "page_size": 4096,
+            "status_counts": {
+              "1": 83
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 39,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 39
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 2,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 88,
+            "page_size": 4096,
+            "status_counts": {
+              "2": 88
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    },
+    {
+      "rows": [
+        20623361022976,
+        20623365197824
+      ],
+      "mask": 20623361072640,
+      "prepared": false,
+      "steps": 49,
+      "graph_mode": "FULL_DECODE_ONLY",
+      "model_wrapper": "ACLGraphWrapper",
+      "captured_graphs": 2,
+      "w4_dispatch": {
+        "native_capture": 0,
+        "native_eager": 0,
+        "fallback_capture": 80,
+        "fallback_eager": 1680
+      },
+      "candidate_dispatch": {
+        "capture": 4,
+        "eager": 4
+      },
+      "engram_tokens": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        9,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        32,
+        9,
+        2,
+        2,
+        1
+      ],
+      "host_tables": [
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 44,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 44
+            },
+            "status_errors": {}
+          }
+        },
+        {
+          "pinned": true,
+          "numa_node": 3,
+          "placement": {
+            "return": 0,
+            "errno": 0,
+            "error": null,
+            "pages": 94,
+            "page_size": 4096,
+            "status_counts": {
+              "3": 94
+            },
+            "status_errors": {}
+          }
+        }
+      ]
+    }
+  ],
+  "workers_released": [
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    },
+    {
+      "closed": true,
+      "shard_weights_released": [
+        true,
+        true
+      ]
+    }
+  ],
+  "engine_shutdown": [
+    {
+      "pid": 3188145,
+      "exitcode": 0,
+      "alive": false
+    }
+  ]
+}

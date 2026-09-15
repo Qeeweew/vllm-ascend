@@ -1,0 +1,9 @@
+{
+  "world_size": 8,
+  "steps": 32,
+  "graph": true,
+  "layers": 2,
+  "heads": 24,
+  "head_dim": 256,
+  "exact": true
+}

@@ -1,0 +1,205 @@
+{
+  "status": "measured",
+  "model": "/mnt/models/DeepSeek-V4.1-Flash",
+  "input": {
+    "dummy_pixels": [
+      42882,
+      42
+    ],
+    "patch_grid": [
+      3,
+      3063
+    ],
+    "llm_grid": [
+      1,
+      1021
+    ],
+    "patch_count": 9189,
+    "image_span_tokens": 1024,
+    "patches_sha256": "494651c494d126e54629cac0becf7394fd3ce9bf8de33722cc3f45ec8636b1bd",
+    "source": "unmodified local processor's actual maximum-size dummy image"
+  },
+  "layers": 32,
+  "checkpoint_tensors": 266,
+  "gate": {
+    "finite": true,
+    "exact_shapes": true,
+    "peak_allocated_bytes_lt": 4294967296
+  },
+  "scope": "encoder component only; no CPU accuracy oracle, model quality, graph, TP8, or full-model HBM claim",
+  "timing_scope": "preprocessed device patches to complete span; excludes CPU resize, H2D, loading and finite checks",
+  "device": "npu:1",
+  "device_name": "Ascend910B3",
+  "torch": "2.10.0+cpu",
+  "torch_npu": "2.10.0.post4",
+  "baseline": {
+    "allocated_bytes": 1029785600,
+    "reserved_bytes": 1046478848,
+    "free_total_bytes": [
+      63986434048,
+      65452113920
+    ]
+  },
+  "iterations": [
+    {
+      "phase": "cold",
+      "wall_ms": 1351.6127578914165,
+      "npu_event_ms": 1350.2012939453125,
+      "shapes": {
+        "tower": [
+          9189,
+          1024
+        ],
+        "aligner": [
+          1021,
+          5120
+        ],
+        "span": [
+          1024,
+          5120
+        ]
+      },
+      "finite": {
+        "tower": true,
+        "aligner": true,
+        "span": true
+      },
+      "shape_passed": true,
+      "peak_allocated_bytes": 1349122560,
+      "peak_reserved_bytes": 1549795328,
+      "free_total_bytes": [
+        63421562880,
+        65452113920
+      ]
+    },
+    {
+      "phase": "warmup",
+      "wall_ms": 233.11270773410797,
+      "npu_event_ms": 232.78134155273438,
+      "shapes": {
+        "tower": [
+          9189,
+          1024
+        ],
+        "aligner": [
+          1021,
+          5120
+        ],
+        "span": [
+          1024,
+          5120
+        ]
+      },
+      "finite": {
+        "tower": true,
+        "aligner": true,
+        "span": true
+      },
+      "shape_passed": true,
+      "peak_allocated_bytes": 1349122560,
+      "peak_reserved_bytes": 1549795328,
+      "free_total_bytes": [
+        63421562880,
+        65452113920
+      ]
+    },
+    {
+      "phase": "steady",
+      "wall_ms": 232.1261130273342,
+      "npu_event_ms": 231.78744506835938,
+      "shapes": {
+        "tower": [
+          9189,
+          1024
+        ],
+        "aligner": [
+          1021,
+          5120
+        ],
+        "span": [
+          1024,
+          5120
+        ]
+      },
+      "finite": {
+        "tower": true,
+        "aligner": true,
+        "span": true
+      },
+      "shape_passed": true,
+      "peak_allocated_bytes": 1349122560,
+      "peak_reserved_bytes": 1549795328,
+      "free_total_bytes": [
+        63421562880,
+        65452113920
+      ]
+    },
+    {
+      "phase": "steady",
+      "wall_ms": 233.05732011795044,
+      "npu_event_ms": 232.6986846923828,
+      "shapes": {
+        "tower": [
+          9189,
+          1024
+        ],
+        "aligner": [
+          1021,
+          5120
+        ],
+        "span": [
+          1024,
+          5120
+        ]
+      },
+      "finite": {
+        "tower": true,
+        "aligner": true,
+        "span": true
+      },
+      "shape_passed": true,
+      "peak_allocated_bytes": 1349122560,
+      "peak_reserved_bytes": 1549795328,
+      "free_total_bytes": [
+        63421562880,
+        65452113920
+      ]
+    },
+    {
+      "phase": "steady",
+      "wall_ms": 233.2676500082016,
+      "npu_event_ms": 232.9405059814453,
+      "shapes": {
+        "tower": [
+          9189,
+          1024
+        ],
+        "aligner": [
+          1021,
+          5120
+        ],
+        "span": [
+          1024,
+          5120
+        ]
+      },
+      "finite": {
+        "tower": true,
+        "aligner": true,
+        "span": true
+      },
+      "shape_passed": true,
+      "peak_allocated_bytes": 1349122560,
+      "peak_reserved_bytes": 1549795328,
+      "free_total_bytes": [
+        63421562880,
+        65452113920
+      ]
+    }
+  ],
+  "peak_allocated_bytes": 1349122560,
+  "peak_reserved_bytes": 1549795328,
+  "steady_wall_median_ms": 233.05732011795044,
+  "steady_event_median_ms": 232.6986846923828,
+  "passed": true
+}

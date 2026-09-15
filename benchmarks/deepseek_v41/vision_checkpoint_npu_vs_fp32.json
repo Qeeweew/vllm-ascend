@@ -1,0 +1,13 @@
+{
+  "scope": "NPU BF16 FIA versus CPU full FP32 arithmetic on identical BF16 weight values and gradient patches",
+  "tower": {
+    "nrmse": 0.22385422232520355,
+    "cosine_error": 0.025132652167374925,
+    "max_abs": 0.16220360808074474
+  },
+  "aligner": {
+    "nrmse": 0.13656450823007263,
+    "cosine_error": 0.00936830296341884,
+    "max_abs": 0.11737066507339478
+  }
+}
