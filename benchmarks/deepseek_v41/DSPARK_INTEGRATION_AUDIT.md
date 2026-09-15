@@ -10,8 +10,14 @@ Component results are recorded in
 [DSPARK_DRAFT_COMPONENT_STATUS.md](DSPARK_DRAFT_COMPONENT_STATUS.md),
 [DSPARK_ATTENTION_COMPONENT.md](DSPARK_ATTENTION_COMPONENT.md), and
 [ENGRAM_PLACEHOLDER_CLAMP_FIX.md](ENGRAM_PLACEHOLDER_CLAMP_FIX.md).
-Speculative admission remains disabled: draft registry, real-weight integrated
-execution, acceptance/rollback and end-to-end graph validation are outstanding.
+The production registry now maps `DSparkV41DraftModel` to the Ascend draft.
+A CPU test executes the real proposer `load_model` sharing branches with
+text and multimodal target shells and verifies embedding/head object identity
+(including valid token 0). Registry, loader-component and admission regressions:
+**57 passed**; log `/tmp/v41-dspark-loading-cpu.log`. Allocations and checkpoint
+IO are replaced in this sharing test, so real-worker payload loading remains
+unverified. Speculative admission stays disabled pending real-weight integrated
+execution, acceptance/rollback and end-to-end graph validation.
 The historical blockers below must not be read as the current implementation
 status or as evidence that those integration gates have passed.
 
