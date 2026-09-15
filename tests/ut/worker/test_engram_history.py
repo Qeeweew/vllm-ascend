@@ -150,6 +150,46 @@ def test_executed_draft_rollback_overwrites_and_truncates_generated_tail():
     check(run(history, "a", [13], 7), hasher, tokens, masks, 7, 8)
 
 
+@pytest.mark.parametrize("accepted", range(6))
+def test_dspark_k5_acceptance_reorders_requests_and_hashes_corrected_zero(accepted):
+    hasher = make_hasher()
+    history = EngramRequestHistory(hasher)
+    prompts = {"a": [1, 2, 3], "b": [11, 12, 13, 14]}
+    old_queries = {"a": [4, 5, 6, 7, 8, 9], "b": [15, 16, 17, 18, 19, 20]}
+    new_queries = {"a": [0, 21, 22, 23, 24, 25], "b": [0, 26, 27, 28, 29, 30]}
+    for request, prompt in prompts.items():
+        history.reset_request(request, ids(prompt))
+        # The target verifies the anchor plus all five proposed tokens.
+        run(history, request, old_queries[request], len(prompt))
+    order = ["b", "a"]
+    starts = {request: len(prompts[request]) + 1 + accepted for request in order}
+    # After verification, the next real input is the corrected/bonus token.
+    # Token zero is valid even when the scheduler had an unresolved placeholder.
+    actual = history.prepare(
+        order,
+        ids(new_queries["b"] + new_queries["a"]),
+        ids([position for request in order for position in range(starts[request], starts[request] + 6)]),
+        [0, 6, 12],
+    )
+    for layer, values in enumerate(actual.hash_ids):
+        expected = []
+        for request in order:
+            committed = prompts[request] + old_queries[request][: 1 + accepted] + new_queries[request]
+            expected.append(reference(hasher, committed, [True] * len(committed))[layer][-6:])
+        torch.testing.assert_close(values, torch.cat(expected), rtol=0, atol=0)
+    assert actual.token_mask.all() and not actual.image_token_mask.any()
+    for request in order:
+        committed = prompts[request] + old_queries[request][: 1 + accepted] + new_queries[request] + [0]
+        check(
+            run(history, request, [0], starts[request] + 6),
+            hasher,
+            committed,
+            [True] * len(committed),
+            len(committed) - 1,
+            len(committed),
+        )
+
+
 def test_rollback_keeps_complete_prompt_and_corrects_generated_masks():
     hasher = make_hasher()
     history = EngramRequestHistory(hasher)

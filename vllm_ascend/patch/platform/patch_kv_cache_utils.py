@@ -625,8 +625,19 @@ def _get_deepseek_v41_kv_cache_groups(
     if not layout.is_layer_compact or not layout.is_block_compact:
         raise ValueError("V4.1 requires a layer-compact and block-compact cache layout (LBNHC or LBHNC)")
     common_page = 32768
+    speculative = getattr(vllm_config, "speculative_config", None)
+    dspark_lookback = (
+        speculative.num_speculative_tokens if speculative is not None and speculative.method == "dspark" else 0
+    )
     padded = {}
     for name, spec in kv_cache_spec.items():
+        if isinstance(spec, AscendV41SWACacheSpec) and dspark_lookback:
+            # Upstream get_kv_cache_configs resets SWA retention to zero for
+            # non-MTP drafts. Restore V4.1's lookback before both admission
+            # sizing and scheduler grouping: K5 draft attention needs 128
+            # prefix tokens, including the extra left token versus causal
+            # SWA, and rejected speculative rows must not advance eviction.
+            spec = replace(spec, extra_retained_tokens=max(spec.extra_retained_tokens, dspark_lookback))
         if isinstance(spec, (AscendV41MainCacheSpec, AscendV41IndexerCacheSpec, AscendV41SWACacheSpec)):
             if spec.real_page_size_bytes > common_page or spec.page_size_bytes > common_page:
                 raise ValueError(
