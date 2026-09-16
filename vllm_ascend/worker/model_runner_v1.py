@@ -171,6 +171,7 @@ from vllm_ascend.eplb.core.eplb_device_transfer_loader import D2DExpertWeightLoa
 from vllm_ascend.eplb.core.eplb_worker import EplbProcess
 from vllm_ascend.eplb.eplb_updator import EplbUpdator
 from vllm_ascend.model_executor.offloader import create_offloader
+from vllm_ascend.models.deepseek_v4.compressor import CompressorV41MetadataBuilder
 from vllm_ascend.ops.fused_moe.force_eplb import build_force_eplb_topk
 from vllm_ascend.ops.rotary_embedding import set_cos_and_sin, update_cos_sin
 from vllm_ascend.ops.triton.spec_decode.ngram import triton_ngram_spec_decode
@@ -3647,7 +3648,7 @@ class NPUModelRunner(GPUModelRunner):
             )
 
             extra_attn_metadata_args = {}
-            if isinstance(builder, AscendV41CacheMetadataBuilder):
+            if isinstance(builder, (AscendV41CacheMetadataBuilder, CompressorV41MetadataBuilder)):
                 extra_attn_metadata_args["preparation"] = v41_preparation
             if (
                 use_spec_decode
@@ -3674,7 +3675,7 @@ class NPUModelRunner(GPUModelRunner):
                         AscendDSACPMetadataBuilder,
                         AscendSFADCPMetadataBuilder,
                     ))):
-                if isinstance(builder, AscendV41CacheMetadataBuilder):
+                if isinstance(builder, (AscendV41CacheMetadataBuilder, CompressorV41MetadataBuilder)):
                     attn_metadata_i = builder.build_for_cudagraph_capture(
                         common_attn_metadata, preparation=v41_preparation,
                         uniform_decode=batch_descriptor is not None and batch_descriptor.uniform,
@@ -5834,7 +5835,7 @@ class NPUModelRunner(GPUModelRunner):
             self.attn_groups.append(create_attn_groups(attn_backend_map, i))
 
         if any(
-            isinstance(builder, AscendV41CacheMetadataBuilder)
+            isinstance(builder, (AscendV41CacheMetadataBuilder, CompressorV41MetadataBuilder))
             for groups in self.attn_groups
             for group in groups
             for builder in group.metadata_builders

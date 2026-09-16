@@ -105,7 +105,7 @@ class CompressorV41Metadata:
 
 
 class CompressorV41MetadataBuilder(AttentionMetadataBuilder):
-    """Prepare stable ring metadata outside graph replay, using device boundaries.
+    """Refresh stable ring metadata from device boundaries before model replay.
 
     Adaptive verification can change query boundaries on device. Searching the
     device query_start_loc avoids using stale CPU request lengths for drafts.
@@ -123,7 +123,10 @@ class CompressorV41MetadataBuilder(AttentionMetadataBuilder):
         self.request_indices = torch.empty(maximum, dtype=torch.int32, device=self.device)
         self.slots = torch.empty(maximum, dtype=torch.int64, device=self.device)
 
-    def build(self, common_prefix_len, common_attn_metadata, fast_build=False):
+    def build_for_cudagraph_capture(self, common_attn_metadata, preparation=None, *, uniform_decode=False):
+        return self.build(0, common_attn_metadata, preparation=preparation)
+
+    def build(self, common_prefix_len, common_attn_metadata, fast_build=False, preparation=None):
         metadata = common_attn_metadata
         positions = metadata.positions
         if positions is None:
@@ -131,10 +134,19 @@ class CompressorV41MetadataBuilder(AttentionMetadataBuilder):
         tokens = metadata.slot_mapping.numel()
         if tokens > self.slots.numel():
             raise ValueError("Compressor graph bucket exceeds metadata capacity")
-        requests = self.request_indices[:tokens]
-        indices = self.token_indices[:tokens]
-        slots = self.slots[:tokens]
+        result = CompressorV41Metadata(self.slots[:tokens], metadata.query_start_loc, self.request_indices[:tokens])
+        if preparation is None:
+            self._refresh_device(result, metadata, {})
+        else:
+            preparation.add(self, result, metadata)
+        return result
+
+    def _refresh_device(self, result, metadata, schedules):
+        positions = metadata.positions
+        requests, slots = result.token_to_req_indices, result.slot_mapping
+        tokens = slots.numel()
         table = metadata.block_table_tensor
+        indices = self.token_indices[:tokens]
         if table.shape[0] == 0:
             requests.zero_()
             slots.fill_(-1)
@@ -144,7 +156,6 @@ class CompressorV41MetadataBuilder(AttentionMetadataBuilder):
             blocks = table[:, 0].index_select(0, requests.long()).long()
             slots.copy_(blocks * self.capacity + positions[:tokens] % self.capacity)
             slots.masked_fill_((indices >= metadata.query_start_loc[-1]) | (positions[:tokens] < 0) | (blocks < 0), -1)
-        return CompressorV41Metadata(slots, metadata.query_start_loc, requests)
 
 
 class CompressorV41Impl:

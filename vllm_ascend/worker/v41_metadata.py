@@ -84,7 +84,7 @@ class V41MetadataBatch:
         return tuple(
             (
                 id(builder),
-                metadata.positions.numel(),
+                metadata.slot_mapping.numel(),
                 common.num_reqs,
                 *(
                     self._binding(getattr(common, name))
@@ -102,7 +102,7 @@ class V41MetadataBatch:
     def run(self):
         if not self.tasks:
             return
-        on_npu = self.tasks[0][1].positions.device.type == "npu"
+        on_npu = self.tasks[0][1].slot_mapping.device.type == "npu"
         if not on_npu or not (self.capture or self.use_graph):
             self._refresh()
             return

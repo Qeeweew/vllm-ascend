@@ -8,6 +8,7 @@ import torch
 from vllm.v1.kv_cache_interface import CircularBufferSpec
 
 from vllm_ascend.models.deepseek_v4.compressor import CompressorV41MetadataBuilder, CompressorV41StateCache
+from vllm_ascend.worker.v41_metadata import V41MetadataPreparation
 
 
 def test_metadata_device_boundaries_padding_and_reused_storage():
@@ -33,6 +34,40 @@ def test_metadata_device_boundaries_padding_and_reused_storage():
     result = builder.build(0, common)
     assert result.slot_mapping.data_ptr() == ptr
     assert result.slot_mapping.tolist() == [61, 62, 15, 10, 11, -1, -1, -1]
+
+
+def test_preparation_refreshes_ring_metadata_and_tracks_replaced_inputs():
+    spec = CircularBufferSpec(block_size=8, num_kv_heads=1, head_size=1024, head_size_v=0, dtype=torch.float32)
+    config = SimpleNamespace(scheduler_config=SimpleNamespace(max_num_batched_tokens=8))
+    builder = CompressorV41MetadataBuilder(spec, ["test"], config, torch.device("cpu"))
+    owner = V41MetadataPreparation()
+    common = SimpleNamespace(
+        slot_mapping=torch.zeros(8, dtype=torch.int64),
+        positions=torch.tensor([5, 6, 7, 10, 11, 0, 0, 0]),
+        query_start_loc=torch.tensor([0, 3, 3, 5], dtype=torch.int32),
+        block_table_tensor=torch.tensor([[2], [9], [4]], dtype=torch.int32),
+        seq_lens=torch.tensor([8, 0, 12], dtype=torch.int32),
+        num_reqs=3,
+    )
+    builder.slots.fill_(-99)
+    batch = owner.batch(capture=True)
+    result = builder.build_for_cudagraph_capture(common, preparation=batch)
+    assert result.slot_mapping.tolist() == [-99] * 8
+    original_key = batch._key()
+    batch.run()
+    assert result.slot_mapping.tolist() == [21, 22, 23, 34, 35, -1, -1, -1]
+    common.query_start_loc.copy_(torch.tensor([0, 2, 2, 5], dtype=torch.int32))
+    common.block_table_tensor.copy_(torch.tensor([[7], [2], [1]], dtype=torch.int32))
+    batch = owner.batch(use_graph=True)
+    changed = builder.build(0, common, preparation=batch)
+    assert batch._key() == original_key
+    batch.run()
+    assert changed.slot_mapping.data_ptr() == result.slot_mapping.data_ptr()
+    assert changed.slot_mapping.tolist() == [61, 62, 15, 10, 11, -1, -1, -1]
+    common.query_start_loc = common.query_start_loc.clone()
+    batch = owner.batch(use_graph=True)
+    builder.build(0, common, preparation=batch)
+    assert batch._key() != original_key
 
 
 @pytest.mark.parametrize("drafts,capacity", [(0, 8), (5, 8), (7, 16), (15, 32)])
