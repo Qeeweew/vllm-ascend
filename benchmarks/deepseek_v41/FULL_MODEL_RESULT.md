@@ -62,10 +62,10 @@ Unmodified evidence:
 
 ## Remaining acceptance
 
-The mandatory fused lightning indexer must still pass numerical, memory and
-performance gates and full-model integration. Natural-language quality,
-long context, corrected full-model vision and speculative decoding,
-native W4A16 comparisons and final profiling remain pending.
+The mandatory fused lightning indexer must still pass memory and performance
+gates and full-model integration. Broad language/quantization quality, context
+lengths beyond the 4243-token smoke below, corrected full-model vision and
+speculative decoding, native W4A16 comparisons and final profiling remain pending.
 
 ## Graph r1
 
@@ -97,3 +97,41 @@ Unmodified evidence:
 | --- | --- |
 | `full_model_graph_r1.json` | `15b06267fa1ee7779bd0dcc2564ee575d450c4cf4ee7f51400ded698417aebbe` |
 | `full_model_graph_r1.log.txt` | `6722a258018f13098e0b0a4d8c9239422248f6997e87dea68224bbc143591679` |
+
+## Natural-language and retrieval graph r1
+
+All five exact-answer smoke cases passed using the complete checkpoint, real
+Engram and CANN W4A16 on 2026-09-16. The official V4.1 chat encoder used
+`thinking=False`; decoding was greedy, with a 32-token limit. This is a small
+functional smoke, not a general quality or quantization-accuracy benchmark.
+
+| Case | Prompt tokens | Answer |
+| --- | ---: | --- |
+| Arithmetic | 17 | `42` |
+| Chinese capital | 16 | `北京` |
+| English extraction | 22 | `Q7M2` |
+| JSON sorting | 25 | `[1, 4, 9]` |
+| Long-context retrieval | 4243 | `NPU-7319` |
+
+All selected logprobs were finite. Each rank executed 20 observed graph
+replays and 58 offload steps, with stable device staging pointers. All 144
+source/converted/host row checks passed; all 16 owners unregistered, eight
+workers exited gracefully and EngineCore exited 0. No NPU process remained.
+End-of-run Torch allocated/reserved were 42,743,025,664 / 47,414,509,568 bytes
+per rank; these are current allocator observations, not peak HBM.
+
+The launch used source HEAD `2c2b877fb`, installed production r12, maximum
+context 8192, chunk size 128 and 512 MiB KV per rank. New fusion, vision and
+DSpark were disabled. During this run, the benchmark sources were extended
+for a later image smoke; those later edits were not loaded into this run.
+Raw per-case elapsed times include instrumentation and are diagnostic only.
+
+```bash
+ASCEND_RT_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 HCCL_DETERMINISTIC=strict OMP_NUM_THREADS=4 \
+  ../.venv/bin/python -u benchmarks/deepseek_v41/check_full_text_tp8.py \
+  --run --graph --output /tmp/v41-full-text-graph-r1.json
+```
+
+Unmodified evidence: `full_text_graph_r1.json` and
+`full_text_graph_r1.log.txt`; fingerprints are recorded in
+`full_text_graph_r1_manifest.json`.

@@ -14,7 +14,10 @@ TP8 eager/graph：每卡 26 次 graph replay，四组 raw-token prompt 的
 token 与 selected logprob 在重复运行和 eager/graph 间完全一致；
 16 次 host 注销及八 worker、EngineCore 正常退出。详细结果见
 [完整模型执行验收](../../benchmarks/deepseek_v41/FULL_MODEL_RESULT.md)。
-长上下文、语言质量、完整模型视觉/DSpark 和最终整机 profiling 仍待验收。
+随后完整模型 graph 的五项自然语言 smoke 全部通过，包括 4243 token
+检索；每卡 20 次 replay、144 行真实表抽检及 16 次注销通过。
+这不替代广泛语言/量化质量、更长上下文、完整模型视觉/DSpark 和最终
+整机 profiling 验收，原始输出见上面的完整模型报告。
 以下保留历史证据范围；算子加速比不能相乘或外推为整机加速比。
 
 本文仅整理已归档数据，没有新增 NPU 测量。后续运行完成后应更新原始

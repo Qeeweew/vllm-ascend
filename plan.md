@@ -574,6 +574,8 @@ AscendC技能采用 `ascendc-op-dev`。API、模板、硬件行为从当前CANN�
 - 完整40层/E384/真实366.22GiB Engram的TP8 eager首次通过：48分片生产加载、144行oracle、四组prompt两轮共32生成token、重复token/logprob完全一致、16次注销、8worker优雅退出和EngineCore exit0。结束时每卡Torch allocated39.5538GiB/reserved42.2188GiB，非HBM峰值。已启动相同checkpoint/backend/prompt的graph对照，详见`benchmarks/deepseek_v41/FULL_MODEL_RESULT.md`；raw-token测试不代表语言质量验收。
 - 完整模型`FULL_DECODE_ONLY` graph对照随后通过：每rank实际replay26次，全部token和selected logprob与eager及自身重复逐位一致，device staging指针稳定；144行oracle、16次注销、8worker退出及EngineCore exit0均通过。结束时每卡Torch allocated39.5538GiB/reserved44.0977GiB；仍使用r12已有完整QLI，不替代新融合算子的最终接入验收。
 
+完整模型自然语言 graph 后续验收：五项 exact-answer smoke 全部通过（算术、中文、英文提取、JSON 排序、4243 token 检索），每 rank 20 次 replay；144 行 oracle、16 次注销和正常退出通过。原始结果见 `benchmarks/deepseek_v41/full_text_graph_r1.json`，仍非广泛质量或最终性能验收。
+
 ## 13. 算子 sub-agent 的职责与严格性能验收
 
 ### 13.1 子任务边界

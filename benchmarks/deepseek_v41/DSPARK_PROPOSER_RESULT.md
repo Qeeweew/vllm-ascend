@@ -81,5 +81,7 @@ cases: arithmetic, Chinese fact, English extraction, JSON sorting and a
 `full_text_prepared_r2.json` records successful CPU tokenization without NPU
 initialization. Its preflight snapshot was taken during the graph run and
 therefore records occupied HBM; admission is repeated by an actual `--run`.
-No text case has executed yet. These small exact-answer checks are not a
-general quality or quantization benchmark, and elapsed times are diagnostic.
+The subsequent complete-model graph run passed all five exact-answer cases;
+see `FULL_MODEL_RESULT.md` and the unchanged `full_text_graph_r1` evidence.
+These checks are not a general quality or quantization benchmark, and elapsed
+times are diagnostic. This target success does not resolve the DSpark failure.
