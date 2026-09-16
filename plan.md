@@ -563,6 +563,7 @@ AscendC技能采用 `ascendc-op-dev`。API、模板、硬件行为从当前CANN�
 - 历史target eager/graph一致性只能证明当时实现的一致性，不能证明上述投影正确；target、完整真实权重质量和最终性能须在修复后重验。
 - 初始draft输入kernel补齐页表逻辑宽度和DCP ownership读取mask；45项NPU测试通过，包括拒绝、切片table和变化长度graph，提交`1e10173ae`。最大上下文的RoPE、attention可见性、proposal有效性仍需完整衔接，DSpark生产准入保持关闭。
 - 完整headers预检得到target静态设备权重估计39.299GiB/rank、两张真实Engram共366.221833GiB pinned host。48.549GiB/rank启动余量为估算准入线，非实测峰值；卡7外部占用当前不满足要求。不会干预外部进程，同时准备低HBM的真实全表factory加载与行oracle验证。
+- 真实全表factory及完整40层eager/graph验收脚本已准备，默认只执行CPU预检；记录48源headers、47已发布转换headers及cgroup v1容量。独立factory使用实际生产加载/注册路径，计划检查16个owner、144个源FP8→转换BF16→host行oracle和变化输入graph replay；整模graph要求同权重、backend和prompt的已通过eager参考。上述真实加载和整模运行尚未执行，准备记录不能视为验收通过。命令、容量推导和剩余门槛见`benchmarks/deepseek_v41/FULL_MODEL_REAL_TABLE_READINESS.md`。
 
 ## 13. 算子 sub-agent 的职责与严格性能验收
 
