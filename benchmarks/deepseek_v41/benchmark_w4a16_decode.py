@@ -72,6 +72,7 @@ def main():
     parser.add_argument("--device", type=int, default=2)
     parser.add_argument("--iterations", type=int, default=20)
     parser.add_argument("--experts", type=int, default=384)
+    parser.add_argument("--top-k", type=int, choices=(3, 6), default=6)
     parser.add_argument("--batches", nargs="+", type=int, default=[1, 2, 4, 8, 16, 32, 64])
     parser.add_argument("--routing", choices=("spread", "hot", "uniform"), default="spread")
     parser.add_argument(
@@ -81,8 +82,8 @@ def main():
     parser.add_argument("--cold", action="store_true", help="Touch 512 MiB before each timed call (outside timing)")
     parser.add_argument("--graph", action="store_true", help="Measure graph replay for each complete MoE path")
     options = parser.parse_args()
-    if options.route_steps < 1 or min(options.batches) < 1 or options.experts < 6:
-        parser.error("route steps and batches must be positive, with at least six experts")
+    if options.route_steps < 1 or min(options.batches) < 1 or options.experts < options.top_k:
+        parser.error("route steps and batches must be positive, with at least top-k experts")
     torch.npu.set_device(options.device)
     torch.set_num_threads(8)
     root = Path(__file__).resolve().parents[2]
@@ -92,11 +93,11 @@ def main():
     reference = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(reference)
     # Construct the full expert bank once; spread routing touches up to 384
-    # different experts. Hot routing selects the same top-six set for every token.
-    bank, reference_weights = reference.make_case(max(options.batches), experts=options.experts)
+    # different experts. Hot routing selects the same expert set for every token.
+    bank, reference_weights = reference.make_case(max(options.batches), experts=options.experts, top_k=options.top_k)
     bank = list(bank)
     host_routes = make_routes(
-        max(options.batches), options.experts, reference.TOP_K, options.routing, options.route_steps
+        max(options.batches), options.experts, options.top_k, options.routing, options.route_steps
     )
     bank[5].copy_(host_routes[0])
     q13, q2 = reference_weights
@@ -213,6 +214,7 @@ def main():
             "baseline": "production_cann_allgather",
             "batch": batch,
             "experts": options.experts,
+            "top_k": options.top_k,
             "routing": options.routing,
             "route_steps": options.route_steps,
             "mean_active_experts": statistics.mean(route[:batch].unique().numel() for route in host_routes),
