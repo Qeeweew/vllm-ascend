@@ -30,6 +30,7 @@ from vllm_ascend.ops.fused_moe.dataclass.fused_experts import build_fused_expert
 from vllm_ascend.ops.fused_moe.dataclass.moe_mlp import MoEMlpComputeInput
 from vllm_ascend.ops.fused_moe.moe_comm_method import AllGatherCommImpl, FusedExpertsResult
 from vllm_ascend.ops.fused_moe.routed_experts import AscendRoutedExperts  # noqa: F401
+from vllm_ascend.ops.triton.int4_repack import repack_int4_moe
 from vllm_ascend.utils import dispose_tensor
 
 from ..base import AscendMoEScheme, QuantType
@@ -339,8 +340,8 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
         )
 
     def process_weights_after_loading(self, layer: torch.nn.Module) -> None:
-        layer.w13_weight_packed.data = repack_experts_bounded(layer.w13_weight_packed.data, self.num_bits)
-        layer.w2_weight_packed.data = repack_experts_bounded(layer.w2_weight_packed.data, self.num_bits)
+        layer.w13_weight_packed.data = repack_int4_moe(layer.w13_weight_packed.data)
+        layer.w2_weight_packed.data = repack_int4_moe(layer.w2_weight_packed.data)
 
         layer.w13_weight_scale.data = layer.w13_weight_scale.data.transpose(1, 2).contiguous()
         layer.w2_weight_scale.data = layer.w2_weight_scale.data.transpose(1, 2).contiguous()

@@ -256,16 +256,21 @@ class TestAscendW4A16FusedMoEMethod(TestBase):
 
         return layer
 
-    @patch("vllm_ascend.quantization.methods.wna16.w4a16.torch_npu.npu_convert_weight_to_int4pack")
-    def test_process_weights_after_loading_with_transpose(self, mock_npu_convert_weight_to_int4pack):
+    @patch("vllm_ascend.quantization.methods.wna16.w4a16.repack_int4_moe")
+    def test_process_weights_after_loading_with_transpose(self, mock_repack):
         def mock_convert_weight(weight):
-            new_shape = list(weight.shape)
-            new_shape[-1] = new_shape[-1] // 8
-            return torch.zeros(new_shape, dtype=torch.int32)
+            experts, outputs, packed_inputs = weight.shape
+            return torch.zeros((experts, packed_inputs * 8, outputs // 8), dtype=torch.int32)
 
-        mock_npu_convert_weight_to_int4pack.side_effect = mock_convert_weight
+        mock_repack.side_effect = mock_convert_weight
         layer = self.build_layer()
+        original_w13 = layer.w13_weight_packed.data.clone()
+        original_w2 = layer.w2_weight_packed.data.clone()
         self.quant_method.process_weights_after_loading(layer)
+
+        self.assertEqual(mock_repack.call_count, 2)
+        self.assertTrue(torch.equal(mock_repack.call_args_list[0].args[0], original_w13))
+        self.assertTrue(torch.equal(mock_repack.call_args_list[1].args[0], original_w2))
 
         self.assertEqual(layer.w13_weight_packed.data.shape, torch.Size([8, 128, 8]))
         self.assertEqual(layer.w2_weight_packed.data.shape, torch.Size([8, 32, 16]))

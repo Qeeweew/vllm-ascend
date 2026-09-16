@@ -3,11 +3,13 @@ import pytest
 import torch
 import torch_npu
 
+from vllm_ascend.ops.triton.int4_repack import repack_int4_moe
 from vllm_ascend.quantization.methods.wna16.w4a16 import repack_experts_bounded
 
 
 @pytest.mark.parametrize("outputs, inputs", [(576, 5120), (5120, 288)])
-def test_repack_exact_signed_scale_layout(outputs, inputs):
+@pytest.mark.parametrize("repack", [repack_experts_bounded, repack_int4_moe])
+def test_repack_exact_signed_scale_layout(outputs, inputs, repack):
     torch.manual_seed(41)
     q = torch.randint(-8, 8, (3, outputs, inputs), dtype=torch.int32)
     checkpoint = torch.zeros((3, outputs, inputs // 8), dtype=torch.int32)
@@ -16,7 +18,7 @@ def test_repack_exact_signed_scale_layout(outputs, inputs):
     for nibble in range(8):
         checkpoint |= (q[..., nibble::8] + 8) << (nibble * 4)
         expected |= (q_kn[..., nibble::8] & 15) << (nibble * 4)
-    actual = repack_experts_bounded(checkpoint.npu())
+    actual = repack(checkpoint.npu())
     torch_npu.npu.synchronize()
     assert torch.equal(actual.cpu(), expected)
 
