@@ -36,6 +36,7 @@ PER_POSITION = "vllm:spec_decode_num_accepted_tokens_per_pos_total"
 
 
 def serve_values(args, name):
+    query_tokens = 1 if args.disable_dspark else args.dspark_tokens + 1
     additional = {
         "enable_w4a16_decode": args.native_decode,
         "enable_v41_rope": args.fused_rope,
@@ -46,11 +47,11 @@ def serve_values(args, name):
     compilation = {
         "mode": 0,
         "cudagraph_mode": "FULL_DECODE_ONLY",
-        "cudagraph_capture_sizes": [(args.dspark_tokens + 1) * batch for batch in range(1, 9)],
+        "cudagraph_capture_sizes": [query_tokens * batch for batch in range(1, 9)],
         "cudagraph_mm_encoder": False,
         "compile_mm_encoder": False,
     }
-    return [
+    values = [
         str(args.checkpoint),
         "--host",
         "127.0.0.1",
@@ -68,8 +69,6 @@ def serve_values(args, name):
         "safetensors",
         "--safetensors-load-strategy",
         "lazy",
-        "--speculative-config",
-        json.dumps({"method": "dspark", "num_speculative_tokens": args.dspark_tokens}),
         "--additional-config",
         json.dumps(additional),
         "--compilation-config",
@@ -97,6 +96,26 @@ def serve_values(args, name):
         "--shutdown-timeout",
         "180",
     ]
+    if not args.disable_dspark:
+        values += [
+            "--speculative-config",
+            json.dumps({"method": "dspark", "num_speculative_tokens": args.dspark_tokens}),
+        ]
+    if args.profile_after_bench or args.profile_warmup:
+        values += [
+            "--profiler-config",
+            json.dumps(
+                {
+                    "profiler": "torch",
+                    "torch_profiler_dir": str(args.output / "traces"),
+                    "torch_profiler_with_stack": False,
+                    "ignore_frontend": True,
+                    "max_iterations": 24,
+                    "delay_iterations": 0,
+                }
+            ),
+        ]
+    return values
 
 
 def bench_command(args, name, input_len, concurrency, count, filename):
@@ -190,13 +209,17 @@ def settled_metrics(opener, base, name, expected_success, process):
     raise TimeoutError(f"Metrics did not account for {expected_success} completed requests")
 
 
-def metric_delta(before, after, count):
+def metric_delta(before, after, count, *, dspark_enabled=True):
     delta = {key: after.get(key, 0) - before.get(key, 0) for key in before.keys() | after.keys()}
     if any(value < 0 for value in delta.values()):
         raise ValueError("Metrics reset during benchmark")
     if delta.get(SUCCESS) != count:
         raise ValueError(f"Expected exactly {count} measured requests, got {delta.get(SUCCESS)}")
     drafts, tokens, accepted = (delta.get(key, 0) for key in (DRAFTS, DRAFT_TOKENS, ACCEPTED))
+    if not dspark_enabled:
+        if any((drafts, tokens, accepted)):
+            raise ValueError("Speculative decoding ran despite explicit autoregressive benchmark mode")
+        return {"counters": delta, "speculative_decoding": False}
     if drafts <= 0 or tokens <= 0 or not 0 <= accepted <= tokens:
         raise ValueError("Missing or invalid actual DSpark execution counters; no fallback permitted")
     return {
@@ -252,6 +275,11 @@ def main():
     parser.add_argument("--run", action="store_true")
     parser.add_argument("--port", type=int, default=18141)
     parser.add_argument("--dspark-tokens", type=int, choices=range(1, 9), default=5)
+    parser.add_argument("--disable-dspark", action="store_true", help="Explicit autoregressive comparison mode")
+    parser.add_argument("--profile-after-bench", action="store_true", help="Collect separate bounded torch NPU traces")
+    parser.add_argument("--profile-warmup", action="store_true", help="Profile warmup before measurement")
+    parser.add_argument("--input-lengths", nargs="+", type=int, choices=(128, 1024), default=[128, 1024])
+    parser.add_argument("--concurrencies", nargs="+", type=int, choices=(1, 4, 8), default=[1, 4, 8])
     parser.add_argument("--num-prompts", type=int, choices=(16, 32), default=16)
     parser.add_argument("--kv-gib", type=float, default=2)
     parser.add_argument("--chunk-size", type=int, default=128)
@@ -270,7 +298,7 @@ def main():
     args.output = args.output.resolve()
     args.checkpoint = args.checkpoint.resolve()
     args.output.mkdir(parents=True)
-    name = "v41-full-dspark-" + uuid.uuid4().hex[:12]
+    name = ("v41-full-ar-" if args.disable_dspark else "v41-full-dspark-") + uuid.uuid4().hex[:12]
     values = serve_values(args, name)
     command = [sys.executable, "-m", "vllm.entrypoints.cli.main", "serve", *values]
     report = {
@@ -279,15 +307,19 @@ def main():
         "command": command,
         "cli_validation": validate_server_args(values),
         "preflight": build_preflight(
-            args.source, args.checkpoint, query_hbm=args.run, reserve_gib=11 + args.kv_gib, include_dspark=True
+            args.source,
+            args.checkpoint,
+            query_hbm=args.run,
+            reserve_gib=11 + args.kv_gib,
+            include_dspark=not args.disable_dspark,
         ),
-        "num_speculative_tokens": args.dspark_tokens,
+        "num_speculative_tokens": 0 if args.disable_dspark else args.dspark_tokens,
         "measurement": "Real full-model random-token HTTP throughput; not natural-text quality or speedup",
         "graph_validation": "Graph configuration required; actual replay validation is a separate full-model audit",
         "cases": [],
     }
-    for input_len in (128, 1024):
-        for concurrency in (1, 4, 8):
+    for input_len in args.input_lengths:
+        for concurrency in args.concurrencies:
             stem = f"input{input_len}-output128-c{concurrency}"
             report["cases"].append(
                 {
@@ -302,6 +334,10 @@ def main():
                 }
             )
     path = args.output / "report.json"
+    if args.profile_warmup:
+        for case in report["cases"]:
+            case["warmup_command"].append("--profile")
+            case["warmup_profiled"] = True
     path.write_text(json.dumps(report, indent=2) + "\n")
     if not args.run:
         print(json.dumps({"status": report["status"], "report": str(path)}), flush=True)
@@ -339,10 +375,22 @@ def main():
             successes += args.num_prompts
             raw, after = settled_metrics(opener, base, name, successes, process)
             (args.output / (stem + "-metrics-after.txt")).write_text(raw)
-            case["speculative_metrics"] = metric_delta(before, after, args.num_prompts)
+            case["speculative_metrics"] = metric_delta(
+                before, after, args.num_prompts, dspark_enabled=not args.disable_dspark
+            )
             case["status"] = "passed"
             path.write_text(json.dumps(report, indent=2) + "\n")
             print(json.dumps({"event": "case_complete", "name": stem, **case["speculative_metrics"]}), flush=True)
+        if args.profile_after_bench:
+            report["profiles"] = []
+            for input_len, concurrency in ((128, 1), (128, 8), (1024, 1), (1024, 8)):
+                stem = f"profile-input{input_len}-c{concurrency}"
+                profile_command = bench_command(args, name, input_len, concurrency, concurrency, stem + ".json")
+                profile_command.append("--profile")
+                result = run_bench(profile_command, args.output / (stem + ".log"), env, concurrency)
+                report["profiles"].append({"name": stem, "command": profile_command, "benchmark": result})
+                path.write_text(json.dumps(report, indent=2) + "\n")
+                print(json.dumps({"event": "profile_complete", "name": stem}), flush=True)
         report["status"] = "passed"
     except (Exception, KeyboardInterrupt) as error:
         report["status"] = "failed"

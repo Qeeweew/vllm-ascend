@@ -30,6 +30,9 @@ def arguments(tmp_path):
         output=tmp_path,
         port=18141,
         dspark_tokens=5,
+        disable_dspark=False,
+        profile_after_bench=False,
+        profile_warmup=False,
         native_decode=False,
         fused_rope=False,
         fused_cache_store=False,
@@ -78,6 +81,23 @@ vllm:spec_decode_num_accepted_tokens_per_pos_total{model_name="owned",engine="0"
         bench.PER_POSITION + ":0": 10,
         bench.PER_POSITION + ":1": 3,
     }
+
+
+def test_ar_comparison_has_no_speculation_and_separate_profiler(tmp_path):
+    args = arguments(tmp_path)
+    args.disable_dspark = args.profile_after_bench = True
+    server = bench.serve_values(args, "owned-ar")
+    assert "--speculative-config" not in server
+    assert bench.validate_server_args(server)["npu_initialized"] is False
+    compilation = json.loads(server[server.index("--compilation-config") + 1])
+    assert compilation["cudagraph_capture_sizes"] == list(range(1, 9))
+    profiler = json.loads(server[server.index("--profiler-config") + 1])
+    assert profiler["profiler"] == "torch" and profiler["max_iterations"] == 24
+    command = bench.bench_command(args, "owned-ar", 128, 1, 16, "case.json")
+    assert "--profile" not in command
+    assert bench.metric_delta({}, {bench.SUCCESS: 16}, 16, dspark_enabled=False)["speculative_decoding"] is False
+    with pytest.raises(ValueError, match="Speculative decoding ran"):
+        bench.metric_delta({}, {bench.SUCCESS: 16, bench.DRAFTS: 1}, 16, dspark_enabled=False)
 
 
 def test_metric_delta_excludes_warmup_and_uses_draft_token_denominator():
