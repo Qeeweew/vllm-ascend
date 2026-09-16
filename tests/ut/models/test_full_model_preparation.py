@@ -41,6 +41,17 @@ def test_tp8_capacity_excludes_real_host_vision_and_draft_and_preserves_replicat
     assert (elements // 2 + elements // 32 * 2) // 8 == 38220595200
 
 
+def test_dspark_capacity_includes_sharded_experts_and_replicated_markov_weights():
+    assert preflight.resident_class("mtp.0.ffn.experts.0.w1.weight_packed", include_dspark=True) == (
+        "draft_moe_packed",
+        8,
+    )
+    assert preflight.resident_class("mtp.0.attn.wq_b.weight", include_dspark=True) == ("draft_tp_attention", 8)
+    assert preflight.resident_class("mtp.2.markov_head.head.weight", include_dspark=True)[1] == 1
+    assert preflight.resident_class("mtp.0.main_proj.weight", include_dspark=True)[1] == 1
+    assert preflight.resident_class("embed.weight", include_dspark=True) == ("tp_embedding_head", 8)
+
+
 def test_independent_factory_does_not_inherit_full_model_hbm_floor_or_bypass_conversion():
     state = {
         "blockers": ["Rank 7 free HBM below estimated static weights + load/KV/reserve"],
@@ -289,6 +300,7 @@ def dispatch_audit(monkeypatch):
 
     monkeypatch.setitem(sys.modules, "vllm_ascend.compilation.acl_graph", SimpleNamespace(ACLGraphWrapper=GraphWrapper))
     worker = worker_module.V41FullModelWorker()
+    worker.model_runner = SimpleNamespace(drafter=None)
     worker._observe_native_dispatch()
 
     def snapshot():
@@ -306,6 +318,34 @@ def dispatch_audit(monkeypatch):
         snapshot=snapshot,
         smoke=load_script("check_full_text_tp8"),
     )
+
+
+def test_graph_family_audit_identifies_actual_draft_wrappers(dispatch_audit):
+    audit = dispatch_audit
+    context = audit.wrapper(lambda value: value)
+    query = audit.wrapper(lambda value: value)
+    target = audit.wrapper(lambda value: value)
+    audit.worker.model_runner.drafter = SimpleNamespace(_v41_graph=SimpleNamespace(context=context, query=query))
+    for wrapper in (context, query, target):
+        wrapper(1)
+    audit.worker._start_request_dispatch_audit()
+    context(2)
+    target(2)
+    records = {row["family"]: row for row in audit.worker._inspect_graph_dispatch()}
+    assert records["draft_context"]["request_replays"] == 1
+    assert records["target"]["request_replays"] == 1
+    assert records["draft_query"]["request_replays"] == 0
+
+
+def test_draft_native_dispatch_cannot_stand_in_for_target(dispatch_audit):
+    audit = dispatch_audit
+    query = audit.wrapper(lambda value: torch.ops._C_ascend.v41_rope(value))
+    audit.worker.model_runner.drafter = SimpleNamespace(_v41_graph=SimpleNamespace(context=object(), query=query))
+    query(1)
+    audit.worker._start_request_dispatch_audit()
+    query(2)
+    with pytest.raises(AssertionError, match="no request replay"):
+        audit.smoke.check_native_dispatch(audit.snapshot(), enabled=True, name="v41_rope", graph=True)
 
 
 def test_dispatch_observer_preserves_native_results_and_exceptions(dispatch_audit):

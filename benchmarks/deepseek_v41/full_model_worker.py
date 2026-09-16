@@ -90,7 +90,15 @@ class V41FullModelWorker(NPUWorker):
             if entry is not None and entry.aclgraph is not None:
                 key = (id(wrapper), id(entry), id(entry.aclgraph))
                 self._full_graph_owners[key] = (wrapper, entry, entry.aclgraph)
+                draft = getattr(getattr(self.model_runner, "drafter", None), "_v41_graph", None)
+                family = "target"
+                if draft is not None:
+                    if wrapper is draft.context:
+                        family = "draft_context"
+                    elif wrapper is draft.query:
+                        family = "draft_query"
                 self._full_graph_records[key] = {
+                    "family": family,
                     "wrapper_id": key[0],
                     "entry_id": key[1],
                     "graph_id": key[2],

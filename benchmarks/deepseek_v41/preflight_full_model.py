@@ -36,8 +36,11 @@ def read_header(path):
     return {name: value for name, value in header.items() if name != "__metadata__"}
 
 
-def resident_class(name):
+def resident_class(name, *, include_dspark=False):
     """Current TP8/EP1 text model ownership, before device layout padding."""
+    if name.startswith("mtp.") and include_dspark:
+        category, divisor = resident_class("layers." + name.removeprefix("mtp."))
+        return "draft_" + category, divisor
     if name.startswith(("vision.", "aligner.", "mtp.")) or name in {"image_start", "image_end", "image_newline"}:
         return "excluded_vision_or_draft", 0
     if ".engram.embed." in name:
@@ -121,7 +124,7 @@ def hbm_memory():
     return result
 
 
-def build_preflight(source, converted, *, query_hbm=True, reserve_gib=8):
+def build_preflight(source, converted, *, query_hbm=True, reserve_gib=8, include_dspark=False):
     converter = converter_module()
     config = json.loads((source / "config.json").read_text())
     text = config["text_config"]
@@ -160,7 +163,7 @@ def build_preflight(source, converted, *, query_hbm=True, reserve_gib=8):
     per_rank = defaultdict(int)
     router_fp32 = 0
     for name, info in expected.items():
-        category, divisor = resident_class(name)
+        category, divisor = resident_class(name, include_dspark=include_dspark)
         categories[category] += info.nbytes
         if len(examples[category]) < 3:
             examples[category].append(name)
@@ -168,11 +171,15 @@ def build_preflight(source, converted, *, query_hbm=True, reserve_gib=8):
             if info.nbytes % divisor:
                 raise ValueError(f"Unexpected fractional TP ownership: {name}")
             per_rank[category] += info.nbytes // divisor
-        if name.endswith(".ffn.gate.weight") and name.startswith("layers."):
+        if name.endswith(".ffn.gate.weight") and (
+            name.startswith("layers.") or (include_dspark and name.startswith("mtp."))
+        ):
             # BF16 checkpoint/parameter stays live beside its precast FP32 copy.
             router_fp32 += math.prod(info.shape) * 4
     per_rank["router_additional_fp32_copy"] = router_fp32
     per_rank["runtime_fused_weight_shape_metadata"] = 40 * 384 * 2 * 2 * 4
+    if include_dspark:
+        per_rank["draft_runtime_fused_weight_shape_metadata"] = 3 * 128 * 2 * 2 * 4
     static = sum(per_rank.values())
     from vllm_ascend.ops.engram_hash import HostEngramLayout
 
@@ -261,6 +268,7 @@ def build_preflight(source, converted, *, query_hbm=True, reserve_gib=8):
         "header_category_bytes": dict(categories),
         "category_examples": dict(examples),
         "estimated_static_device_bytes_per_rank": static,
+        "includes_dspark_weights": include_dspark,
         "per_rank_device_categories": dict(per_rank),
         "hbm_admission_bytes_per_rank": hbm_floor,
         "hbm_workspace_reserve_gib": reserve_gib,

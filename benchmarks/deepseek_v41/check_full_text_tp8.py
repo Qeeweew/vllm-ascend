@@ -6,6 +6,7 @@ Default mode tokenizes with the official V4.1 chat encoder on CPU. Explicit
 """
 
 import argparse
+import dataclasses
 import json
 import math
 import os
@@ -60,7 +61,9 @@ def check_native_dispatch(final, *, enabled, name, graph):
     assert calls > 0, name
     if graph:
         assert any(
-            entry["request_replays"] > 0 and entry["captured_native_ops"].get(name, 0) > 0
+            entry.get("family", "target") == "target"
+            and entry["request_replays"] > 0
+            and entry["captured_native_ops"].get(name, 0) > 0
             for entry in final["graph_dispatch"]
         ), f"{name}: no request replay of its captured graph entry"
 
@@ -81,6 +84,10 @@ def execute(args, report):
             model=str(args.checkpoint),
             tokenizer=str(args.checkpoint),
             tensor_parallel_size=8,
+            speculative_config={"method": "dspark", "num_speculative_tokens": args.dspark_tokens}
+            if args.dspark_tokens
+            else None,
+            disable_log_stats=False,
             dtype="bfloat16",
             worker_cls="full_model_worker.V41FullModelWorker",
             load_format="safetensors",
@@ -138,6 +145,14 @@ def execute(args, report):
             )
             print(json.dumps({"event": "text_case_complete", **report["answers"][-1]}, ensure_ascii=False), flush=True)
         report["workers_final"] = llm.collective_rpc("inspect_full_model_audit")
+        if args.dspark_tokens:
+            report["speculative_metrics"] = [
+                dataclasses.asdict(metric) for metric in llm.get_metrics() if "spec_decode" in metric.name
+            ]
+            assert any(
+                metric["name"] == "vllm:spec_decode_num_drafts" and metric.get("value", 0) > 0
+                for metric in report["speculative_metrics"]
+            ), "No actual DSpark drafts recorded"
         for loaded, final in zip(report["workers_loaded"], report["workers_final"], strict=True):
             initial = loaded["state"]
             assert initial["rows"] == final["rows"] and initial["mask"] == final["mask"]
@@ -146,6 +161,12 @@ def execute(args, report):
             assert final["encoder_spans"] == ([189] if with_vision else [])
             if args.graph:
                 assert final["graph_replays"] > 0
+                if args.dspark_tokens:
+                    for family in ("target", "draft_context", "draft_query"):
+                        assert any(
+                            record.get("family") == family and record["request_replays"] > 0
+                            for record in final["graph_dispatch"]
+                        ), f"No actual {family} graph replay"
             for enabled, name in (
                 (args.native_decode, "w4_native"),
                 (args.fused_rope, "v41_rope"),
@@ -185,12 +206,17 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--run", action="store_true")
     parser.add_argument("--graph", action="store_true")
+    parser.add_argument(
+        "--dspark-tokens", type=int, choices=range(1, 9), help="Run real target verification with DSpark"
+    )
     parser.add_argument("--native-decode", action="store_true")
     parser.add_argument("--fused-rope", action="store_true")
     parser.add_argument("--fused-cache-store", action="store_true")
     parser.add_argument("--fused-router", action="store_true")
     parser.add_argument("--image", type=Path, help="Optional fixed hato.jpg fixture; runs real vision before text")
     args = parser.parse_args()
+    if args.dspark_tokens and args.image:
+        parser.error("DSpark full-model validation currently requires text-only input")
     if args.output.exists():
         parser.error("Use a new result path")
     from vllm.tokenizers import get_tokenizer
@@ -231,9 +257,15 @@ def main():
         "cases": prepared,
         # Add 1 GiB over the short-run admission floor for the larger KV pool
         # and long-context workspace. Actual peaks still require observation.
-        "preflight": build_preflight(args.source, args.checkpoint, reserve_gib=11 if args.image else 9),
+        "preflight": build_preflight(
+            args.source,
+            args.checkpoint,
+            reserve_gib=11 if args.image or args.dspark_tokens else 9,
+            include_dspark=bool(args.dspark_tokens),
+        ),
         "photo": photo_info,
         "graph": args.graph,
+        "dspark_tokens": args.dspark_tokens,
         "native_decode": args.native_decode,
         "fused_rope": args.fused_rope,
         "fused_cache_store": args.fused_cache_store,
