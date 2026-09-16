@@ -112,3 +112,36 @@ def test_context_callable_combines_aux_and_stores_each_layer_inside_capture():
     )
     assert graph._run_context(8) == ()
     assert calls == ["combine", "store"]
+
+
+@pytest.mark.parametrize("draft_tokens", range(1, 9))
+def test_draft_graph_marks_proposals_as_decode(draft_tokens):
+    from unittest.mock import patch
+
+    from vllm_ascend.attention.dsa_v41 import AscendV41CacheMetadataBuilder
+
+    graph = DSparkV41GraphRunner.__new__(DSparkV41GraphRunner)
+    graph.cu_q = torch.arange(3, dtype=torch.int32) * draft_tokens
+    graph.lengths = torch.tensor([33, 127], dtype=torch.int32)
+    graph.tables = {0: torch.zeros(2, 4, dtype=torch.int32)}
+    graph.sample_indices = torch.arange(2 * draft_tokens)
+    counts = []
+
+    def build(common, draft_index):
+        counts.append(AscendV41CacheMetadataBuilder._execution_counts(common))
+        assert common.causal is False
+        return object()
+
+    builder = SimpleNamespace(build_for_drafting=build)
+    group = SimpleNamespace(kv_cache_group_id=0, layer_names=["draft"], get_metadata_builder=lambda: builder)
+    graph.proposer = SimpleNamespace(
+        num_query_per_req=draft_tokens,
+        draft_model_config=SimpleNamespace(max_model_len=256),
+        draft_attn_groups=[group],
+        _per_group_query_slot_mapping_buffers={0: torch.zeros(2 * draft_tokens, dtype=torch.int64)},
+        positions=torch.arange(2 * draft_tokens),
+        _run_merged_draft=MagicMock(return_value=torch.zeros(2, draft_tokens)),
+    )
+    with patch("vllm_ascend.spec_decode.dspark_v41_graph.get_forward_context", return_value=SimpleNamespace()):
+        graph._run_query(2)
+    assert counts == [(0, 2 * draft_tokens)]

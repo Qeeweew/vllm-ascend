@@ -34,6 +34,7 @@
 #ifdef VLLM_ENABLE_V41_KERNELS
 #include "moe/w4a16_moe/w4a16_moe_torch_adpt.h"
 #include "v41_small_ops_checks.h"
+#include "v41_cache_metadata_checks.h"
 #endif
 #ifdef VLLM_ENABLE_ATB_AND_DIRECT_KERNELS
 #include "batch_matmul_transpose/batch_matmul_transpose_torch_adpt.h"
@@ -88,6 +89,15 @@
 namespace vllm_ascend {
 
 #ifdef VLLM_ENABLE_V41_KERNELS
+void v41_cache_metadata(const at::Tensor &pi, const at::Tensor &ci, const at::Tensor &li, const at::Tensor &ti,
+    at::Tensor &po, at::Tensor &co, at::Tensor &lo, at::Tensor &to,
+    at::Tensor &ro, at::Tensor &so, at::Tensor &cm, at::Tensor &re,
+    int64_t logical, int64_t physical, int64_t ratio, bool compressed)
+{
+    v41::cache_metadata(pi, ci, li, ti, po, co, lo, to, ro, so, cm, re, logical, physical, ratio, compressed);
+    EXEC_NPU_CMD(aclnnV41CacheMetadata, pi, ci, li, ti, po, co, lo, to, ro, so, cm, re, logical, physical, ratio, compressed);
+}
+
 void v41_dspark_metadata(const at::Tensor &cu_q, const at::Tensor &lengths,
                          const at::Tensor &topk_lengths, at::Tensor &schedule)
 {
@@ -3038,6 +3048,11 @@ TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 {
 #ifdef VLLM_ENABLE_V41_KERNELS
+    ops.def("v41_cache_metadata(Tensor positions_in, Tensor cu_q_in, Tensor lengths_in, Tensor table_in, "
+            "Tensor(a!) positions_out, Tensor(b!) cu_q_out, Tensor(c!) lengths_out, Tensor(d!) table_out, "
+            "Tensor(e!) requests_out, Tensor(f!) slots_out, Tensor(g!) cmp_lengths_out, Tensor(h!) residual_out, "
+            "int logical_block_size, int physical_block_size, int compress_ratio, bool compressed) -> ()");
+    ops.impl("v41_cache_metadata", torch::kPrivateUse1, &vllm_ascend::v41_cache_metadata);
     ops.def("v41_dspark_metadata(Tensor cu_q, Tensor lengths, Tensor topk_lengths, Tensor(a!) schedule) -> ()");
     ops.impl("v41_dspark_metadata", torch::kPrivateUse1, &vllm_ascend::v41_dspark_metadata);
     ops.def("v41_rope(Tensor x, Tensor positions, Tensor cos, Tensor sin, Tensor(a!) output, bool inverse=False) -> ()");

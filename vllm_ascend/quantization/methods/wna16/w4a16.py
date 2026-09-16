@@ -270,11 +270,15 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
             return False
         if x.dtype != torch.bfloat16 or not 0 < x.shape[0] <= self.native_decode_max_tokens:
             return False
-        if x.shape[1] != 5120 or topk_ids.shape[1] != 6 or layer.w2_weight_packed.shape[1] != 288:
+        if x.shape[1] != 5120 or layer.w2_weight_packed.shape[1] != 288:
             return False
         if not isinstance(moe_comm_method, AllGatherCommImpl) or moe_comm_method.moe_config.ep_size != 1:
             return False
-        if layer.w13_weight_packed.shape[0] != 384 or layer.ascend_expert_map is not None:
+        # Both the target and DSpark draft geometries have native precision
+        # and changing-route graph coverage. Keep other expert layouts gated.
+        if (layer.w13_weight_packed.shape[0], topk_ids.shape[1]) not in ((384, 6), (128, 3)):
+            return False
+        if layer.ascend_expert_map is not None:
             return False
         if layer.apply_router_weight_on_input or getattr(layer, "_ascend_moe_lora_context", None) is not None:
             return False

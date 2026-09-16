@@ -35,6 +35,7 @@
 
 #ifdef VLLM_ENABLE_V41_KERNELS
 #include "v41_small_ops_checks.h"
+#include "v41_cache_metadata_checks.h"
 #endif
 
 namespace vllm_ascend {
@@ -44,6 +45,12 @@ constexpr int64_t DSA_SLOT_MAPPING_FLAT = 1;
 constexpr int64_t DSA_SLOT_MAPPING_BLOCK_OFFSET = 2;
 
 #ifdef VLLM_ENABLE_V41_KERNELS
+void v41_cache_metadata_meta(const at::Tensor &pi, const at::Tensor &ci, const at::Tensor &li, const at::Tensor &ti,
+    at::Tensor &po, at::Tensor &co, at::Tensor &lo, at::Tensor &to,
+    at::Tensor &ro, at::Tensor &so, at::Tensor &cm, at::Tensor &re,
+    int64_t logical, int64_t physical, int64_t ratio, bool compressed)
+{ v41::cache_metadata(pi, ci, li, ti, po, co, lo, to, ro, so, cm, re, logical, physical, ratio, compressed); }
+
 void v41_dspark_metadata_meta(const at::Tensor &cu_q, const at::Tensor &lengths,
                               const at::Tensor &topk_lengths, at::Tensor &schedule)
 { v41::dspark_metadata(cu_q, lengths, topk_lengths, schedule); }
@@ -2217,6 +2224,7 @@ TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 namespace {
 TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 #ifdef VLLM_ENABLE_V41_KERNELS
+    ops.impl("v41_cache_metadata", &vllm_ascend::meta::v41_cache_metadata_meta);
     ops.impl("v41_dspark_metadata", &vllm_ascend::meta::v41_dspark_metadata_meta);
     ops.impl("v41_rope", &vllm_ascend::meta::v41_rope_meta);
     ops.impl("v41_main_cache_store", &vllm_ascend::meta::v41_main_cache_store_meta);

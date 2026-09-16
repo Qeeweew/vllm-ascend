@@ -2,6 +2,7 @@
 
 from dataclasses import fields
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 import test_dsa_v41 as attention_test
@@ -35,6 +36,49 @@ def test_device_metadata_slots_and_rebuild(runtime, role, ratio):
     if ratio == 2:
         assert first.slot_mapping.cpu().tolist() == [159, -1, 65, -1, 66, -1, -1]
         assert first.cmp_residual_kv.cpu().tolist() == [1, 1]
+
+
+@pytest.mark.parametrize("role,ratio", [("swa", 1), ("main", 1), ("main", 2), ("index", 2)])
+def test_fused_preparation_matches_strided_fallback_in_graph(runtime, role, ratio):
+    from vllm_ascend.worker.v41_metadata import V41MetadataPreparation
+
+    assert hasattr(torch.ops._C_ascend, "v41_cache_metadata")
+    fused = make_builder(role, ratio, "npu:2")
+    fallback = make_builder(role, ratio, "npu:2")
+    common = make_common("npu:2")
+    strided = make_common("npu:2")
+    storage = torch.empty((2, 8), dtype=torch.int32, device="npu:2")
+    strided.block_table_tensor = storage[:, ::2]
+    owner = V41MetadataPreparation()
+    for step in range(3):
+        changed = make_common("npu:2", changed=step == 1)
+        for name in ("positions", "query_start_loc", "seq_lens", "block_table_tensor"):
+            getattr(common, name).copy_(getattr(changed, name))
+            getattr(strided, name).copy_(getattr(changed, name))
+        if step == 2:
+            common.positions.fill_(-1)
+            strided.positions.fill_(-1)
+        batch = owner.batch(capture=step == 0, use_graph=True)
+        with patch.object(fused, "_refresh_slots", side_effect=AssertionError("Expected fused preparation")):
+            actual = fused.build(0, common, preparation=batch)
+            batch.run()
+        with patch.object(fallback, "_refresh_slots", wraps=fallback._refresh_slots) as split:
+            expected = fallback.build(0, strided)
+            split.assert_called_once()
+        for name in (
+            "positions",
+            "cu_seqlens_q",
+            "seqused_kv",
+            "block_table",
+            "slot_mapping",
+            "token_to_req_indices",
+            "seqused_cmp_kv",
+            "cmp_residual_kv",
+        ):
+            value = getattr(actual, name)
+            if value is not None:
+                torch.testing.assert_close(value.cpu(), getattr(expected, name).cpu(), rtol=0, atol=0)
+    assert len(owner.graphs) == 1
 
 
 def common_from_case(case, original_lengths, role):
@@ -104,7 +148,6 @@ def test_graph_attention_consumes_refreshed_builder_buffers(runtime, ratio, quer
 
 def test_combined_preparation_graph_refreshes_pages_boundaries_and_schedules(runtime):
     from copy import copy
-    from unittest.mock import patch
 
     from vllm_ascend.worker.v41_metadata import V41MetadataPreparation
 

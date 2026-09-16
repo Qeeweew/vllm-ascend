@@ -3676,7 +3676,8 @@ class NPUModelRunner(GPUModelRunner):
                     ))):
                 if isinstance(builder, AscendV41CacheMetadataBuilder):
                     attn_metadata_i = builder.build_for_cudagraph_capture(
-                        common_attn_metadata, preparation=v41_preparation
+                        common_attn_metadata, preparation=v41_preparation,
+                        uniform_decode=batch_descriptor is not None and batch_descriptor.uniform,
                     )
                 else:
                     attn_metadata_i = builder.build_for_cudagraph_capture(common_attn_metadata)

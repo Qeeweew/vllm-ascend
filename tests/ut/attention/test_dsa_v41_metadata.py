@@ -200,6 +200,8 @@ def test_backend_layouts_preserve_contiguous_state_per_layer():
         ([1], [True], (1, 0)),
         ([1, 1], [False, True], (1, 1)),
         ([1, 3], [False, True], (1, 1)),
+        ([2, 2], [False, False], (0, 4)),
+        ([3, 1], [False, True], (1, 3)),
         ([1, 1, 0], [False, False, False], (0, 2)),
         ([1], None, (1, 0)),
         ([], [], (0, 0)),
@@ -372,3 +374,19 @@ def test_draft_empty_middle_request_has_zero_native_length(native_metadata):
     assert common.seq_lens.tolist() == [129, 17, 132]
     assert metadata.token_to_req_indices.tolist() == [0, 0, 0, 0, 0, 2, 2, -1, -1, -1, -1]
     assert metadata.draft_swa_lengths[:, 0].tolist() == [129] * 7 + [0] * 4
+
+
+@pytest.mark.parametrize("draft_tokens", range(1, 9))
+def test_explicit_uniform_speculative_capture_and_real_prefill(native_metadata, draft_tokens):
+    tokens = draft_tokens + 1
+    common = make_execution_common([tokens], [True])
+    common.slot_mapping = torch.full((tokens,), -1, dtype=torch.int64)
+    builder = make_builder("swa")
+    captured = builder.build_for_cudagraph_capture(common, uniform_decode=True)
+    assert (captured.num_prefills, captured.num_decode_tokens) == (0, tokens)
+    assert common.is_prefilling.tolist() == [True]
+    prompt = builder.build(0, common)
+    assert (prompt.num_prefills, prompt.num_decode_tokens) == (1, 0)
+    common.is_prefilling.fill_(False)
+    verification = builder.build(0, common)
+    assert (verification.num_prefills, verification.num_decode_tokens) == (0, tokens)

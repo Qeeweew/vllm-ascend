@@ -109,6 +109,9 @@ class DSparkV41GraphRunner:
                 block_table_tensor=self.tables[gid][:batch],
                 slot_mapping=p._per_group_query_slot_mapping_buffers[gid][:tokens],
                 positions=p.positions[:tokens],
+                # This graph only evaluates proposed continuation tokens.
+                # Context prompt rows have their own precompute graph.
+                is_prefilling=torch.zeros(batch, dtype=torch.bool),
                 causal=False,
             )
             value = group.get_metadata_builder().build_for_drafting(common, draft_index=1)

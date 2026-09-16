@@ -44,7 +44,7 @@ def moe_reference(x, q13, s13, q2, s2, ids, routing, limit):
     return output.to(x.dtype)
 
 
-def make_case(batch=1, dtype=torch.bfloat16, overflow=False, experts=TOP_K):
+def make_case(batch=1, dtype=torch.bfloat16, overflow=False, experts=TOP_K, top_k=TOP_K):
     torch.manual_seed(4100 + batch)
     hidden, inter = HIDDEN_SIZE, INTERMEDIATE_SIZE
     x = (torch.randn(batch, hidden) * (100000 if overflow else 0.2)).to(dtype)
@@ -56,8 +56,8 @@ def make_case(batch=1, dtype=torch.bfloat16, overflow=False, experts=TOP_K):
     s2[..., ::2].neg_()
     q13[:, 0, 0] = -8
     q2[:, 0, -1] = -8  # Regression: last element of the ninth K group.
-    ids = torch.arange(batch * TOP_K, dtype=torch.int32).reshape(batch, TOP_K) % experts
-    routing = torch.softmax(torch.randn(batch, TOP_K), dim=-1).float() * 1.5
+    ids = torch.arange(batch * top_k, dtype=torch.int32).reshape(batch, top_k) % experts
+    routing = torch.softmax(torch.randn(batch, top_k), dim=-1).float() * 1.5
     args = (x, pack_int4(q13), s13, pack_int4(q2), s2, ids, routing)
     return args, (q13, q2)
 
@@ -120,3 +120,28 @@ def test_reject_non_group_aligned_input():
     device_args[0] = device_args[0][:, :-1].contiguous()
     with pytest.raises(RuntimeError, match="hidden"):
         torch.ops._C_ascend.npu_w4a16_moe(*device_args, 10.0)
+
+
+@pytest.mark.parametrize("batch", [8, 24, 48, 72])
+def test_dspark_draft_top3_graph(batch):
+    args, (q13, q2) = make_case(batch, experts=128, top_k=3)
+    device_args = tuple(t.npu() for t in args)
+    for _ in range(3):
+        torch.ops._C_ascend.npu_w4a16_moe(*device_args, 10.0)
+    torch.npu.synchronize()
+    graph = torch.npu.NPUGraph()
+    with torch.npu.graph(graph):
+        output = torch.ops._C_ascend.npu_w4a16_moe(*device_args, 10.0)
+    x, _, s13, _, s2, ids, routing = args
+    for concentrated in (False, True):
+        if concentrated:
+            ids.copy_(torch.arange(3, dtype=torch.int32).expand(batch, -1))
+        else:
+            ids.add_(37).remainder_(128)
+        ids[0, 0] = -1
+        x.mul_(-0.9)
+        device_args[0].copy_(x)
+        device_args[5].copy_(ids)
+        graph.replay()
+        expected = moe_reference(x, q13, s13, q2, s2, ids, routing, 10.0)
+        assert_accurate(output, expected)

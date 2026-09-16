@@ -118,14 +118,18 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         ):
             return common.num_reqs, 0
         lengths = starts[1 : common.num_reqs + 1] - starts[: common.num_reqs]
-        is_prefill = (prefilling[: common.num_reqs] | (lengths > 1)) & (lengths > 0)
+        # Verification queries contain multiple tokens after the prompt is
+        # complete. The runner's explicit request state, not query width,
+        # distinguishes those decode rows from chunked prompt prefills.
+        is_prefill = prefilling[: common.num_reqs] & (lengths > 0)
         return int(is_prefill.sum()), int(lengths.masked_fill(is_prefill, 0).sum())
 
-    def build_for_cudagraph_capture(self, common_attn_metadata, preparation=None):
+    def build_for_cudagraph_capture(self, common_attn_metadata, preparation=None, *, uniform_decode=False):
         metadata = self.build(0, common_attn_metadata, preparation=preparation)
         # Capture's synthetic batch can inherit real request prefill flags.
-        # Only uniform single-token decode capture may select the decode MoE.
-        if common_attn_metadata.max_query_len == 1:
+        # The runner explicitly identifies uniform speculative decode graphs;
+        # query width alone cannot distinguish them from prompt chunks.
+        if common_attn_metadata.max_query_len == 1 or uniform_decode:
             metadata.num_prefills = 0
             metadata.num_decode_tokens = common_attn_metadata.num_actual_tokens
         return metadata
@@ -316,6 +320,8 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
                 draft_swa_indices=self.draft_swa_indices[:tokens] if self.draft_swa_indices is not None else None,
                 draft_swa_lengths=self.draft_swa_lengths[:tokens] if self.draft_swa_lengths is not None else None,
             )
+            self._fused_cmp_lengths = self.cmp_lengths[:batch]
+            self._fused_residual = self.residual[:batch]
             self._metadata_key = key
         metadata = self._metadata
         metadata.num_prefills, metadata.num_decode_tokens = (
@@ -335,16 +341,44 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         cmp_lengths, residual = metadata.seqused_cmp_kv, metadata.cmp_residual_kv
         draft_indices, draft_lengths = metadata.draft_swa_indices, metadata.draft_swa_lengths
         tokens, batch = positions.numel(), lengths.numel()
-        positions.copy_(common.positions[:tokens])
-        cu_q.copy_(common.query_start_loc[: batch + 1])
-        lengths.copy_(common.seq_lens[:batch])
-        table.fill_(-1)
-        table[:, : common.block_table_tensor.shape[1]].copy_(common.block_table_tensor[:batch])
-        self._refresh_slots(positions, cu_q, table, requests, slots)
-        if cmp_lengths is not None:
-            torch.div(lengths, self.compress_ratio, rounding_mode="floor", out=cmp_lengths)
-        if residual is not None:
-            torch.remainder(lengths, self.compress_ratio, out=residual)
+        inputs = (common.positions, common.query_start_loc, common.seq_lens, common.block_table_tensor)
+        fused = (
+            positions.device.type == "npu"
+            and draft_indices is None
+            and self.compress_ratio in (1, 2)
+            and tokens <= 32768
+            and batch <= 4096
+            and 0 < table.shape[1] <= 1048576
+            and all(tensor.is_contiguous() for tensor in inputs)
+            and hasattr(torch.ops._C_ascend, "v41_cache_metadata")
+        )
+        if fused:
+            torch.ops._C_ascend.v41_cache_metadata(
+                *inputs,
+                positions,
+                cu_q,
+                lengths,
+                table,
+                requests,
+                slots,
+                self._fused_cmp_lengths,
+                self._fused_residual,
+                self.logical_block_size,
+                self.physical_block_size,
+                self.compress_ratio,
+                self.role != "swa",
+            )
+        else:
+            positions.copy_(common.positions[:tokens])
+            cu_q.copy_(common.query_start_loc[: batch + 1])
+            lengths.copy_(common.seq_lens[:batch])
+            table.fill_(-1)
+            table[:, : common.block_table_tensor.shape[1]].copy_(common.block_table_tensor[:batch])
+            self._refresh_slots(positions, cu_q, table, requests, slots)
+            if cmp_lengths is not None:
+                torch.div(lengths, self.compress_ratio, rounding_mode="floor", out=cmp_lengths)
+            if residual is not None:
+                torch.remainder(lengths, self.compress_ratio, out=residual)
         if draft_indices is not None:
             cache = self.vllm_config.compilation_config.static_forward_context[self.layer_names[0]].kv_cache
             if (

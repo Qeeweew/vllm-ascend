@@ -150,6 +150,20 @@ def test_native_return_preserves_finalize_and_shared_expert_contract():
     comm.fused_experts.assert_not_called()
 
 
+@pytest.mark.parametrize("experts,topk,expected", [(128, 3, True), (128, 6, False), (384, 3, False)])
+@pytest.mark.parametrize("tokens", [8, 24, 48, 72])
+def test_dspark_draft_native_geometry(experts, topk, expected, tokens):
+    method, comm, layer, context, x, _ = fixture()
+    layer.w13_weight_packed = torch.empty(experts, 5120, 72, device="meta", dtype=torch.int32)
+    ids = torch.zeros(tokens, topk, dtype=torch.int32)
+    context.attn_metadata["attention"].num_decode_tokens = tokens
+    with (
+        patch(f"{MODULE}.get_forward_context", return_value=context),
+        patch(f"{MODULE}.torch.ops._C_ascend.npu_w4a16_moe", create=True),
+    ):
+        assert method._can_use_native_decode(layer, x.expand(tokens, -1), ids, comm) == expected
+
+
 def test_one_token_prefill_keeps_cann_pipeline():
     method, comm, layer, context, x, ids = fixture()
     context.attn_metadata["attention"].num_prefills = 1
@@ -200,3 +214,23 @@ def test_real_v41_metadata_controls_native_dispatch(query_lengths, prefilling, c
         patch.object(torch.Tensor, "cpu", side_effect=AssertionError("no dispatch D2H")),
     ):
         assert method._can_use_native_decode(layer, x.expand(4, -1), ids.expand(4, -1), comm) == expected
+
+
+@pytest.mark.parametrize("draft_tokens", range(1, 9))
+def test_speculative_verification_metadata_selects_native(draft_tokens):
+    method, comm, layer, context, x, ids = fixture()
+    tokens = draft_tokens + 1
+    common = make_execution_common([tokens], [False])
+    common.slot_mapping = torch.full((tokens,), -1, dtype=torch.int64)
+    builder = make_builder("swa")
+    with patch.object(builder, "_refresh_device"):
+        context.attn_metadata = {"attention": builder.build(0, common)}
+    with (
+        patch(f"{MODULE}.get_forward_context", return_value=context),
+        patch(f"{MODULE}.torch.ops._C_ascend.npu_w4a16_moe", create=True),
+    ):
+        assert method._can_use_native_decode(layer, x.expand(tokens, -1), ids.expand(tokens, -1), comm)
+        common.is_prefilling.fill_(True)
+        with patch.object(builder, "_refresh_device"):
+            context.attn_metadata = {"attention": builder.build(0, common)}
+        assert not method._can_use_native_decode(layer, x.expand(tokens, -1), ids.expand(tokens, -1), comm)

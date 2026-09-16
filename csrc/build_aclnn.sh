@@ -114,6 +114,7 @@ elif [[ "$SOC_VERSION" =~ ^ascend910b ]]; then
         "engram_gate"
         "v41_rope"
         "v41_dspark_metadata"
+        "v41_cache_metadata"
         "v41_main_cache_store"
         "v41_index_cache_store"
         "v41_moe_router"
