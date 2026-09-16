@@ -406,6 +406,11 @@ function(add_ops_src_copy)
         file(GLOB SRC_FILES ${SRC_COPY_SRC}/*)
     endif()
     list(FILTER SRC_FILES EXCLUDE REGEX "op_host")
+    # Directory mtimes do not track edits to nested kernel headers. The copy
+    # stamp must depend on the files themselves, including newly added headers.
+    file(GLOB_RECURSE SRC_COPY_DEPENDS CONFIGURE_DEPENDS
+            LIST_DIRECTORIES false ${SRC_COPY_SRC}/*)
+    list(FILTER SRC_COPY_DEPENDS EXCLUDE REGEX "/op_host/")
 
     get_filename_component(PARENT_PTH "${SRC_COPY_SRC}" DIRECTORY)
     get_filename_component(CUR_NAME "${SRC_COPY_SRC}" NAME)
@@ -424,12 +429,14 @@ function(add_ops_src_copy)
                     COMMAND cp -rf ${SRC_FILES} ${SRC_COPY_DST}
                     COMMAND rm -rf ${SRC_COPY_DST}/op_kernel/
                     COMMAND touch ${_BUILD_FLAG}
+                    DEPENDS ${SRC_COPY_DEPENDS} ${CMAKE_CURRENT_FUNCTION_LIST_FILE}
             )
         else()
             add_custom_command(OUTPUT ${_BUILD_FLAG}
                     COMMAND mkdir -p ${SRC_COPY_DST}
                     COMMAND cp -rf ${SRC_FILES} ${SRC_COPY_DST}
                     COMMAND touch ${_BUILD_FLAG}
+                    DEPENDS ${SRC_COPY_DEPENDS} ${CMAKE_CURRENT_FUNCTION_LIST_FILE}
             )
         endif()
 
@@ -534,6 +541,7 @@ function(add_bin_compile_target)
             set(DYNAMIC_PY_FILE ${OP_SRC_OUT_DIR}/${op_type}.py)
             add_custom_command(OUTPUT ${DYNAMIC_PY_FILE}
                     COMMAND cp -rf ${ASCEND_IMPL_OUT_DIR}/dynamic/${op_file}.py ${DYNAMIC_PY_FILE}
+                    DEPENDS ${ASCEND_IMPL_OUT_DIR}/dynamic/${op_file}.py
                     # COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/cmake/scripts/update_get_kernel_source.sh ${DYNAMIC_PY_FILE}
             )
 
@@ -606,6 +614,15 @@ function(add_bin_compile_target)
         endif ()
 
         if (_compile_flag)
+            # Target dependencies below enforce ordering only. Original source
+            # files must also invalidate the binary stamp after a kernel edit.
+            file(GLOB_RECURSE OP_BINARY_DEPENDS CONFIGURE_DEPENDS
+                    LIST_DIRECTORIES false ${${op_file}_dir}/*)
+            foreach(depend_info ${${op_file}_depends})
+                file(GLOB_RECURSE OP_DEPEND_FILES CONFIGURE_DEPENDS
+                        LIST_DIRECTORIES false ${CMAKE_SOURCE_DIR}/${depend_info}/*)
+                list(APPEND OP_BINARY_DEPENDS ${OP_DEPEND_FILES})
+            endforeach()
             set(_BUILD_COMMAND)
             set(_BUILD_FLAG ${GEN_OUT_DIR}/${OP_TARGET_NAME}_${op_index}.done)
             if (ENABLE_OPS_HOST OR ENABLE_HOST_TILING)
@@ -622,6 +639,9 @@ function(add_bin_compile_target)
             add_custom_command(OUTPUT ${_BUILD_FLAG}
                     COMMAND ${_BUILD_COMMAND}
                     COMMAND touch ${_BUILD_FLAG}
+                    DEPENDS ${OP_BINARY_DEPENDS} ${bin_script}
+                            ${ASCEND_IMPL_OUT_DIR}/dynamic/${op_file}.py
+                            ${CMAKE_CURRENT_FUNCTION_LIST_FILE}
                     WORKING_DIRECTORY ${GEN_OUT_DIR}
             )
 
