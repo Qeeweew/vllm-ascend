@@ -106,6 +106,15 @@ class BlockTable:
 
         self.kernel_sizes = kernel_sizes
         self.cp_kv_cache_interleave_size = cp_kv_cache_interleave_size
+        self._dirty_ranges: dict[int, tuple[int, int]] | None = None
+
+    def _mark_dirty(self, row: int, start: int, end: int) -> None:
+        if self._dirty_ranges is None or start == end:
+            return
+        previous = self._dirty_ranges.get(row)
+        if previous is not None:
+            start, end = min(start, previous[0]), max(end, previous[1])
+        self._dirty_ranges[row] = start, end
 
     def append_row(
         self,
@@ -123,21 +132,25 @@ class BlockTable:
 
         self.block_table.np[row_idx, start : start + num_blocks] = block_ids
         self.num_blocks_per_row[row_idx] += num_blocks
+        self._mark_dirty(row_idx, start, start + num_blocks)
 
     def add_row(self, block_ids: list[int], row_idx: int) -> None:
         self.num_blocks_per_row[row_idx] = 0
         self.append_row(block_ids, row_idx)
+        self._mark_dirty(row_idx, 0, self.block_table.cpu.shape[1])
 
     def clear_row(self, row_idx: int) -> None:
         num_blocks = self.num_blocks_per_row[row_idx]
         if num_blocks > 0:
             self.block_table.np[row_idx, :num_blocks] = 0
         self.num_blocks_per_row[row_idx] = 0
+        self._mark_dirty(row_idx, 0, self.block_table.cpu.shape[1])
 
     def move_row(self, src: int, tgt: int) -> None:
         num_blocks = self.num_blocks_per_row[src]
         self.block_table.np[tgt, :num_blocks] = self.block_table.np[src, :num_blocks]
         self.num_blocks_per_row[tgt] = num_blocks
+        self._mark_dirty(tgt, 0, self.block_table.cpu.shape[1])
 
     def swap_row(self, src: int, tgt: int) -> None:
         num_blocks_src = self.num_blocks_per_row[src]
@@ -146,6 +159,8 @@ class BlockTable:
         self.num_blocks_per_row[tgt] = num_blocks_src
 
         self.block_table.np[[src, tgt]] = self.block_table.np[[tgt, src]]
+        self._mark_dirty(src, 0, self.block_table.cpu.shape[1])
+        self._mark_dirty(tgt, 0, self.block_table.cpu.shape[1])
 
     def compute_slot_mapping(
         self,
@@ -292,8 +307,10 @@ class BlockTable:
         self.block_table.copy_to_gpu(num_reqs)
 
     def clear(self) -> None:
-        self.block_table.fill_(0)
+        self.block_table.gpu.fill_(0)
         self.block_table.cpu.fill_(0)
+        if self._dirty_ranges is not None:
+            self._dirty_ranges.clear()
 
     def _convert_physical_to_logical_blocks(self, physical_blocks: np.ndarray) -> np.ndarray:
         """Convert physical block IDs to logical block IDs."""
@@ -441,6 +458,22 @@ class MultiGroupBlockTable:
             )
             self._fused_min_block_size = min(block_table.block_size for block_table in active_block_tables)
 
+        self._updates = None
+        specs = [
+            spec
+            for group in kv_cache_groups or ()
+            for spec in getattr(group.kv_cache_spec, "kv_cache_specs", {"": group.kv_cache_spec}).values()
+        ]
+        if (
+            device.type == "npu"
+            and self._can_fuse_slot_mapping
+            and len(active_block_tables) == len(self.block_tables)
+            and any(getattr(spec, "model_version", None) == "deepseek_v41" for spec in specs)
+        ):
+            from vllm_ascend.worker.block_table_updates import BlockTableUpdates
+
+            self._updates = BlockTableUpdates(self.block_tables, device)
+
     def append_row(self, block_ids: tuple[list[int], ...], row_idx: int) -> None:
         for i, block_table in enumerate(self.block_tables):
             block_table.append_row(block_ids[i], row_idx)
@@ -512,6 +545,9 @@ class MultiGroupBlockTable:
                 block_table.compute_slot_mapping_draft(req_indices, positions)
 
     def commit_block_table(self, num_reqs: int) -> None:
+        if self._updates is not None:
+            self._updates.commit(num_reqs)
+            return
         for block_table in self.block_tables:
             block_table.commit_block_table(num_reqs)
 
