@@ -1,6 +1,6 @@
 # Complete target with real Engram: integration results
 
-The first full 40-layer TP8 eager run passed on 2026-09-16. It loaded all
+The first full 40-layer TP8 eager and graph runs passed on 2026-09-16. They loaded all
 48 converted shards and both real host tables through the production model
 registry and loader. This result includes the corrected `wo_a` layout.
 It validates execution, repeatability and resource cleanup; the raw-token
@@ -62,8 +62,38 @@ Unmodified evidence:
 
 ## Remaining acceptance
 
-Full-model graph is being tested against this exact eager reference. The
-mandatory fused lightning indexer must still pass numerical, memory and
+The mandatory fused lightning indexer must still pass numerical, memory and
 performance gates and full-model integration. Natural-language quality,
 long context, corrected full-model vision and speculative decoding,
 native W4A16 comparisons and final profiling remain pending.
+
+## Graph r1
+
+The same complete checkpoint and CANN backend passed `FULL_DECODE_ONLY`
+against the exact eager r1 reference above. Prefill stays eager. Each rank
+executed **26 observed graph replays**, with 38 offload steps and unchanged
+device staging pointers. All generated token IDs and selected logprobs were
+identical both across two graph rounds and against eager. All 144 sampled
+real-table rows passed; all 16 owners unregistered and all eight workers
+exited gracefully. EngineCore exited 0; devices were idle after shutdown.
+
+Current Torch allocated was 39.553791 GiB / rank, reserved 44.097656 GiB /
+rank. Process peak RSS was 71.3055–71.4025 GiB and resident PSS at the final
+observation was 48.3111–48.3441 GiB. These are the same observation types as
+the eager table, not peak HBM measurements. Source HEAD at launch was
+`47b43226b`, native r12; the later eager-evidence commit changed only reports.
+The mandatory new fused QLI had not been installed.
+
+```bash
+ASCEND_RT_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 HCCL_DETERMINISTIC=strict OMP_NUM_THREADS=4 \
+  ../.venv/bin/python -u benchmarks/deepseek_v41/validate_full_model_tp8.py \
+  --run --graph --reference /tmp/v41-full-eager-run-r1.json \
+  --output /tmp/v41-full-graph-run-r1.json
+```
+
+Unmodified evidence:
+
+| File | SHA256 |
+| --- | --- |
+| `full_model_graph_r1.json` | `15b06267fa1ee7779bd0dcc2564ee575d450c4cf4ee7f51400ded698417aebbe` |
+| `full_model_graph_r1.log.txt` | `6722a258018f13098e0b0a4d8c9239422248f6997e87dea68224bbc143591679` |

@@ -572,6 +572,7 @@ AscendC技能采用 `ascendc-op-dev`。API、模板、硬件行为从当前CANN�
 - 融合必须保持候选块、分页、量化/舍入、head加权、top-k和NPU graph合同，消除拆分路径的候选BF16 bank及完整QK等大中间张量；同时验收数值、workspace/HBM以及完整selector的多轮median/P95，不能仅报告计算内核耗时。
 - 当前允许先用已有完整lightning indexer完成真实整模测试；融合完成后必须接入重验质量、图重放及整机性能，不能因已有路径可运行就关闭此必需项。
 - 完整40层/E384/真实366.22GiB Engram的TP8 eager首次通过：48分片生产加载、144行oracle、四组prompt两轮共32生成token、重复token/logprob完全一致、16次注销、8worker优雅退出和EngineCore exit0。结束时每卡Torch allocated39.5538GiB/reserved42.2188GiB，非HBM峰值。已启动相同checkpoint/backend/prompt的graph对照，详见`benchmarks/deepseek_v41/FULL_MODEL_RESULT.md`；raw-token测试不代表语言质量验收。
+- 完整模型`FULL_DECODE_ONLY` graph对照随后通过：每rank实际replay26次，全部token和selected logprob与eager及自身重复逐位一致，device staging指针稳定；144行oracle、16次注销、8worker退出及EngineCore exit0均通过。结束时每卡Torch allocated39.5538GiB/reserved44.0977GiB；仍使用r12已有完整QLI，不替代新融合算子的最终接入验收。
 
 ## 13. 算子 sub-agent 的职责与严格性能验收
 
