@@ -138,6 +138,7 @@ from vllm_ascend.attention.attention_v1 import AscendAttentionBackend, AscendAtt
 from vllm_ascend.attention.context_parallel.dsa_cp import AscendDSACPMetadataBuilder
 from vllm_ascend.attention.context_parallel.sfa_cp import AscendSFADCPMetadataBuilder
 from vllm_ascend.attention.dsa_v1 import AscendDSAMetadataBuilder
+from vllm_ascend.attention.dsa_v41 import AscendV41CacheMetadataBuilder
 from vllm_ascend.attention.mla_v1 import AscendMLABackend
 from vllm_ascend.attention.utils import (
     AscendCommonAttentionMetadata,
@@ -229,6 +230,7 @@ from vllm_ascend.worker.kvpp_cache import allocate_kvpp_cache
 from vllm_ascend.worker.npu_input_batch import NPUInputBatch
 from vllm_ascend.worker.utils import AscendKVBlockZeroer, disable_compilation
 from vllm_ascend.worker.v2.kvpp import KVPPRuntime
+from vllm_ascend.worker.v41_metadata import V41MetadataPreparation
 
 from vllm_ascend.ascend_forward_context import (  # isort: skip
     MoECommType,
@@ -361,6 +363,7 @@ class NPUModelRunner(GPUModelRunner):
         with _torch_cuda_wrapper():
             super().__init__(vllm_config, device)
 
+        self.v41_metadata_preparation: V41MetadataPreparation | None = None
         self.device_metadata_executor: DeviceMetadataExecutor | None = None
         self.device_metadata_providers: dict[int, DeviceMetadataTaskProvider] | None = None
         self.pin_memory = PIN_MEMORY
@@ -3371,6 +3374,12 @@ class NPUModelRunner(GPUModelRunner):
                 self._offload_req_ids_tensor,
                 self._offload_token_to_req,
             )
+        v41_preparation = (
+            self.v41_metadata_preparation.batch(
+                capture=for_cudagraph_capture,
+                use_graph=cudagraph_runtime_mode == CUDAGraphMode.FULL,
+            ) if self.v41_metadata_preparation is not None else None
+        )
         attn_metadata: PerLayerAttnMetadata = {}
         device_metadata_tasks: list[DeviceMetadataTask] | None = (
             [] if self.device_metadata_executor is not None else None
@@ -3612,6 +3621,8 @@ class NPUModelRunner(GPUModelRunner):
             )
 
             extra_attn_metadata_args = {}
+            if isinstance(builder, AscendV41CacheMetadataBuilder):
+                extra_attn_metadata_args["preparation"] = v41_preparation
             if (
                 use_spec_decode
                 and isinstance(builder, GDNAttentionMetadataBuilder)
@@ -3637,7 +3648,12 @@ class NPUModelRunner(GPUModelRunner):
                         AscendDSACPMetadataBuilder,
                         AscendSFADCPMetadataBuilder,
                     ))):
-                attn_metadata_i = builder.build_for_cudagraph_capture(common_attn_metadata)
+                if isinstance(builder, AscendV41CacheMetadataBuilder):
+                    attn_metadata_i = builder.build_for_cudagraph_capture(
+                        common_attn_metadata, preparation=v41_preparation
+                    )
+                else:
+                    attn_metadata_i = builder.build_for_cudagraph_capture(common_attn_metadata)
             else:
                 attn_metadata_i = builder.build(
                     common_prefix_len=cascade_attn_prefix_len,
@@ -3744,6 +3760,8 @@ class NPUModelRunner(GPUModelRunner):
             # the attention metadata in directly), and therefore does not want to use
             # padded attention metadata.
             spec_decode_common_attn_metadata = spec_decode_common_attn_metadata.unpadded(num_tokens, num_reqs)
+        if v41_preparation is not None:
+            v41_preparation.run()
         if device_metadata_tasks:
             assert self.device_metadata_executor is not None
             self.device_metadata_executor.submit(
@@ -5787,6 +5805,14 @@ class NPUModelRunner(GPUModelRunner):
 
         for i, attn_backend_map in enumerate(attention_backend_maps):
             self.attn_groups.append(create_attn_groups(attn_backend_map, i))
+
+        if any(
+            isinstance(builder, AscendV41CacheMetadataBuilder)
+            for groups in self.attn_groups
+            for group in groups
+            for builder in group.metadata_builders
+        ):
+            self.v41_metadata_preparation = V41MetadataPreparation()
 
         device_metadata_providers = {
             id(builder): builder

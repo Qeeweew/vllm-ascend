@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 """Device metadata for V4.1 cache groups, independent of V4 metadata.
 
-Builders run before model invocation/replay. They copy changing data into
-fixed-address buffers; native attention/indexer scheduling runs once per
-cache-group build, never once per consuming model layer. One builder owns
-one in-flight batch; concurrent or speculative overlapping steps need their
-own builder/buffer slot.
+Builders expose fixed-address buffers before model invocation/replay. The
+worker batches their device updates into a preparation graph and shares native
+scheduling for compatible request geometry within each step. Physical page
+tables and slots remain group-local. One builder owns one in-flight batch;
+concurrent or speculative overlapping steps need their own builder/buffer slot.
 """
 
 from dataclasses import dataclass
@@ -121,8 +121,8 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         is_prefill = (prefilling[: common.num_reqs] | (lengths > 1)) & (lengths > 0)
         return int(is_prefill.sum()), int(lengths.masked_fill(is_prefill, 0).sum())
 
-    def build_for_cudagraph_capture(self, common_attn_metadata):
-        metadata = self.build(0, common_attn_metadata)
+    def build_for_cudagraph_capture(self, common_attn_metadata, preparation=None):
+        metadata = self.build(0, common_attn_metadata, preparation=preparation)
         # Capture's synthetic batch can inherit real request prefill flags.
         # Only uniform single-token decode capture may select the decode MoE.
         if common_attn_metadata.max_query_len == 1:
@@ -266,7 +266,7 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             )
         self.schedule.copy_(schedule)
 
-    def build(self, common_prefix_len, common_attn_metadata, fast_build=False):
+    def build(self, common_prefix_len, common_attn_metadata, fast_build=False, preparation=None):
         """Refresh buffers from DEVICE boundaries/positions, including padding.
 
         The common block table indexes ORIGINAL token pages. ``slot_mapping`` from
@@ -298,14 +298,49 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             raise ValueError("V4.1 requires full logical block-table columns, not a rebased sliding-window table")
         positions, requests, slots = self.positions[:tokens], self.requests[:tokens], self.slots[:tokens]
         cu_q, lengths, table = self.cu_q[: batch + 1], self.lengths[:batch], self.table[:batch]
+        cmp_lengths = self.cmp_lengths[:batch] if self.role != "swa" else None
+        residual = self.residual[:batch] if self.role != "swa" and self.compress_ratio == 2 else None
+        num_prefills, num_decode_tokens = (
+            self._execution_counts(common) if preparation is None else preparation.execution_counts(self, common)
+        )
+        metadata = AscendV41CacheMetadata(
+            self.role,
+            self.compress_ratio,
+            self.physical_block_size,
+            positions,
+            cu_q,
+            lengths,
+            table,
+            slots,
+            requests,
+            self.schedule,
+            cmp_lengths,
+            residual,
+            num_prefills,
+            num_decode_tokens,
+            draft_indices,
+            draft_lengths,
+        )
+
+        if preparation is None:
+            self._refresh_device(metadata, common, {})
+        else:
+            preparation.add(self, metadata, common)
+        return metadata
+
+    def _refresh_device(self, metadata, common, schedules):
+        """Refresh fixed-address outputs; callable inside the preparation graph."""
+        positions, requests, slots = metadata.positions, metadata.token_to_req_indices, metadata.slot_mapping
+        cu_q, lengths, table = metadata.cu_seqlens_q, metadata.seqused_kv, metadata.block_table
+        cmp_lengths, residual = metadata.seqused_cmp_kv, metadata.cmp_residual_kv
+        draft_indices, draft_lengths = metadata.draft_swa_indices, metadata.draft_swa_lengths
+        tokens, batch = positions.numel(), lengths.numel()
         positions.copy_(common.positions[:tokens])
         cu_q.copy_(common.query_start_loc[: batch + 1])
         lengths.copy_(common.seq_lens[:batch])
         table.fill_(-1)
         table[:, : common.block_table_tensor.shape[1]].copy_(common.block_table_tensor[:batch])
         self._refresh_slots(positions, cu_q, table, requests, slots)
-        cmp_lengths = self.cmp_lengths[:batch] if self.role != "swa" else None
-        residual = self.residual[:batch] if self.role != "swa" and self.compress_ratio == 2 else None
         if cmp_lengths is not None:
             torch.div(lengths, self.compress_ratio, rounding_mode="floor", out=cmp_lengths)
         if residual is not None:
@@ -345,34 +380,36 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             # Empty request slots must not claim a nonzero native KV interval
             # at the duplicated query boundary of the next active request.
             lengths.masked_fill_(cu_q[1:] == cu_q[:-1], 0)
-        self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
-        num_prefills, num_decode_tokens = self._execution_counts(common)
-        return AscendV41CacheMetadata(
+        # Scheduling depends on request boundaries and geometry, never on the
+        # physical page table. Reuse only within this invocation/graph replay.
+        key = (
             self.role,
             self.compress_ratio,
-            self.physical_block_size,
-            positions,
-            cu_q,
-            lengths,
-            table,
-            slots,
-            requests,
-            self.schedule,
-            cmp_lengths,
-            residual,
-            num_prefills,
-            num_decode_tokens,
-            draft_indices,
-            draft_lengths,
+            self.num_heads,
+            self.max_tokens,
+            self.max_sequence,
+            batch,
+            common.query_start_loc.data_ptr(),
+            common.query_start_loc.stride(),
+            common.seq_lens.data_ptr(),
+            common.seq_lens.stride(),
         )
+        if draft_lengths is not None:
+            # Draft schedules also depend on group-specific visible pages.
+            self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+        elif key in schedules:
+            self.schedule.copy_(schedules[key])
+        else:
+            self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch)
+            schedules[key] = self.schedule
 
 
 class AscendV41CacheImpl:
     @staticmethod
     def update_graph_params(*args, **kwargs):
         # The runner invokes this hook for every backend during full graph
-        # replay. V4.1 has no mutable task-group parameters: build() refreshes
-        # all fixed-address tensor contents before replay, including schedules.
+        # replay. V4.1 has no mutable task-group parameters: the preparation
+        # graph refreshes fixed-address contents before replay, including schedules.
         pass
 
 
