@@ -261,7 +261,8 @@ function(gen_cust_aicpu_kernel_symbol)
       -Wl,--exclude-libs=libbase_ascend_protobuf.a
       -s
       -o ${ARM_SO_OUTPUT}
-    DEPENDS ${AICPU_CUST_OBJ_TARGETS}
+    DEPENDS ${AICPU_CUST_OBJ_TARGETS} ${ALL_OBJECTS}
+      ${LIBAICPU_CONTEXT_PATH} ${LIBBASE_ASCEND_PROTOBUF_PATH}
     COMMENT "Linking cust_aicpu_kernels.so using ARM toolchain"
   )
   add_custom_target(cust_aicpu_kernels ALL DEPENDS ${ARM_SO_OUTPUT})
