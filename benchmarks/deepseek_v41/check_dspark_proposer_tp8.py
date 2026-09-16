@@ -16,14 +16,11 @@ from pathlib import Path
 
 import torch
 from check_dspark_v41_tp8 import PEAK_BUDGET_BYTES
-from check_dspark_v41_tp8 import component_config as eager_component_config
 from check_dspark_v41_tp8 import prepare as prepare_components
 from dspark_v41_reference import ConvertedWeights
 
 
 def component_config(args):
-    if not getattr(args, "graph", False):
-        return eager_component_config(args)
     from vllm.engine.arg_utils import EngineArgs
 
     return EngineArgs(
@@ -31,23 +28,27 @@ def component_config(args):
         tokenizer=str(args.source),
         tensor_parallel_size=8,
         max_model_len=256,
-        max_num_batched_tokens=512,
-        max_num_seqs=4,
+        max_num_batched_tokens=512 if args.graph else 256,
+        max_num_seqs=4 if args.graph else 1,
         dtype="bfloat16",
-        enforce_eager=False,
+        enforce_eager=not args.graph,
         block_size=32,
         async_scheduling=False,
         enable_prefix_caching=False,
         distributed_executor_backend="external_launcher",
         limit_mm_per_prompt={"image": 0},
         additional_config={"enable_w4a16_decode": False},
-        compilation_config={"mode": 0, "cudagraph_mode": "FULL_DECODE_ONLY", "cudagraph_capture_sizes": [6, 12, 24]},
-        speculative_config={"method": "dspark", "num_speculative_tokens": 5},
+        compilation_config={
+            "mode": 0,
+            "cudagraph_mode": "FULL_DECODE_ONLY" if args.graph else "NONE",
+            "cudagraph_capture_sizes": [(args.num_speculative_tokens + 1) * b for b in (1, 2, 4)],
+        },
+        speculative_config={"method": "dspark", "num_speculative_tokens": args.num_speculative_tokens},
     ).create_engine_config()
 
 
-def cases():
-    return [(n, None) for n in (9, 33, 129)] + [(n, r) for n in (255, 256) for r in range(6)]
+def cases(tokens=5):
+    return [(n, None) for n in (9, 33, 129)] + [(n, r) for n in (255, 256) for r in range(tokens + 1)]
 
 
 def prepare(args):
@@ -63,13 +64,14 @@ def prepare(args):
         (fixture / shard).symlink_to((args.checkpoint / shard).resolve())
     (fixture / "model.safetensors.index.json").write_text(json.dumps({"weight_map": index}, indent=2) + "\n")
     config = component_config(args)
-    requested_cases = cases()
+    requested_cases = cases(args.num_speculative_tokens)
     if args.graph:
         from dspark_graph_cases import graph_cases
 
-        requested_cases = graph_cases()
+        requested_cases = graph_cases(args.num_speculative_tokens)
     result = {
         "status": "prepared_only",
+        "num_speculative_tokens": args.num_speculative_tokens,
         "cases": requested_cases,
         "source": str(args.source),
         "checkpoint": str(args.checkpoint),
@@ -199,6 +201,7 @@ def one_case(proposer, config, caches, sequence, rejected, seed, device, *, pert
 
     from vllm_ascend.attention.utils import AscendCommonAttentionMetadata
 
+    tokens = config.speculative_config.num_speculative_tokens
     effective = sequence - (rejected or 0)
     table = torch.arange(7, -1, -1, dtype=torch.int32, device=device)[None]
     positions = torch.arange(sequence, dtype=torch.int64, device=device)
@@ -237,7 +240,7 @@ def one_case(proposer, config, caches, sequence, rejected, seed, device, *, pert
     try:
         proposals = (
             proposer._propose(
-                num_speculative_tokens=5,
+                num_speculative_tokens=tokens,
                 target_token_ids=torch.arange(sequence, dtype=torch.int64, device=device),
                 target_positions=positions,
                 target_hidden_states=aux,
@@ -258,25 +261,25 @@ def one_case(proposer, config, caches, sequence, rejected, seed, device, *, pert
         )
     finally:
         proposer.model.compute_draft_logits = original_logits
-    assert proposals.shape == (1, 5) and torch.isfinite(record["raw_logits"]).all()
-    assert proposer.positions[:5].cpu().tolist() == list(range(effective, effective + 5))
+    assert proposals.shape == (1, tokens) and torch.isfinite(record["raw_logits"]).all()
+    assert proposer.positions[:tokens].cpu().tolist() == list(range(effective, effective + tokens))
     assert torch.equal(proposer._context_positions_buffer[:sequence].cpu().long(), torch.arange(sequence))
     for context_slots in proposer._context_slot_mapping_buffers:
         assert torch.equal(context_slots[:sequence].cpu().long(), slots.cpu())
     noise = config.speculative_config.draft_model_config.hf_config.dspark_noise_token_id
-    assert proposer.input_ids[:5].cpu().tolist() == [seed, noise, noise, noise, noise]
+    assert proposer.input_ids[:tokens].cpu().tolist() == [seed] + [noise] * (tokens - 1)
     builder = proposer.draft_attn_groups[0].get_metadata_builder()
-    expected_slots = [(7 - p // 32) * 32 + p % 32 if p < 256 else -1 for p in range(effective, effective + 5)]
-    assert builder.slots[:5].cpu().tolist() == expected_slots
-    visible = list(range(max(0, effective - 128), min(effective + 5, 256)))
-    indices, lengths = builder.draft_swa_indices[:5].cpu(), builder.draft_swa_lengths[:5].cpu()
-    for row, position in enumerate(range(effective, effective + 5)):
+    expected_slots = [(7 - p // 32) * 32 + p % 32 if p < 256 else -1 for p in range(effective, effective + tokens)]
+    assert builder.slots[:tokens].cpu().tolist() == expected_slots
+    visible = list(range(max(0, effective - 128), min(effective + tokens, 256)))
+    indices, lengths = builder.draft_swa_indices[:tokens].cpu(), builder.draft_swa_lengths[:tokens].cpu()
+    for row, position in enumerate(range(effective, effective + tokens)):
         if position < 256:
             assert indices[row, 0, : len(visible)].tolist() == visible
             assert lengths[row, 0] == len(visible)
         else:
             assert torch.all(indices[row] == -1) and lengths[row, 0] == 0
-    record.update(proposals=proposals, positions=proposer.positions[:5].cpu().clone(), slots=expected_slots)
+    record.update(proposals=proposals, positions=proposer.positions[:tokens].cpu().clone(), slots=expected_slots)
     return record
 
 
@@ -370,7 +373,7 @@ def run(args):
                     for record in records
                 ]
             else:
-                for index, (sequence, rejected) in enumerate(cases()):
+                for index, (sequence, rejected) in enumerate(cases(args.num_speculative_tokens)):
                     status["phase"] = f"case_{index}"
                     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
                     if rejected:
@@ -436,7 +439,12 @@ def compare(args):
     for record in torch.load(args.output / "rank0.pt", map_location="cpu", weights_only=True):
         if args.graph:
             predicted = [
-                greedy_reference(record["raw_logits"][b * 5 : (b + 1) * 5], embed, head, 100 + record["seed"] + b)
+                greedy_reference(
+                    record["raw_logits"][b * args.num_speculative_tokens : (b + 1) * args.num_speculative_tokens],
+                    embed,
+                    head,
+                    100 + record["seed"] + b,
+                )
                 for b in range(len(record["sequence"]))
             ]
             actual = record["proposals"].tolist()
@@ -462,6 +470,7 @@ def compare(args):
         "cases": results,
         "all_rank_proposals_exact": True,
         "target_aux_synthetic": True,
+        "num_speculative_tokens": args.num_speculative_tokens,
         "scheduler_validated": False,
         "graph_validated": args.graph and not padding_diagnostic,
         "graph_padding_diagnostic": padding_diagnostic,
@@ -476,6 +485,7 @@ def main():
     parser.add_argument("--source", type=Path, default=Path("/mnt/models/DeepSeek-V4.1-Flash"))
     parser.add_argument("--checkpoint", type=Path, default=Path("/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--num-speculative-tokens", type=int, choices=range(1, 9), default=5)
     parser.add_argument(
         "--graph", action="store_true", help="Validate independently bucketed context/query graph replay"
     )

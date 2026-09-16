@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Independent fixed-buffer context and query graphs for the V4.1 K5 drafter."""
+"""Independent fixed-buffer context and query graphs for the V4.1 drafter."""
 
 from bisect import bisect_left
 
@@ -11,6 +11,7 @@ from vllm_ascend.ascend_forward_context import set_ascend_forward_context
 from vllm_ascend.attention.dsa_v41 import AscendV41CacheMetadataBuilder
 from vllm_ascend.attention.utils import AscendCommonAttentionMetadata
 from vllm_ascend.compilation.acl_graph import ACLGraphWrapper
+from vllm_ascend.ops.dsa_v41 import DSPARK_MAX_QUERY_TOKENS
 
 
 def graph_buckets(capacity: int) -> tuple[int, ...]:
@@ -40,7 +41,7 @@ class DSparkV41GraphRunner:
         config = proposer.vllm_config
         parallel = config.parallel_config
         if (
-            proposer.num_query_per_req != 5
+            not 0 < proposer.num_query_per_req <= DSPARK_MAX_QUERY_TOKENS
             or not proposer.sample_from_anchor
             or parallel.data_parallel_size != 1
             or parallel.prefill_context_parallel_size != 1
@@ -48,7 +49,7 @@ class DSparkV41GraphRunner:
             or proposer._enable_probabilistic_draft_probs
             or config.lora_config is not None
         ):
-            raise ValueError("V4.1 DSpark graphs require K5, DP1/CP1, greedy drafting and no LoRA")
+            raise ValueError("V4.1 DSpark graphs require K1..8, DP1/CP1, greedy drafting and no LoRA")
         self.context_buckets = graph_buckets(proposer.max_num_tokens)
         self.query_buckets = graph_buckets(proposer.max_batch_size)
         self.aux = torch.zeros(
@@ -198,9 +199,9 @@ class DSparkV41GraphRunner:
         """Stage current requests, replay both graphs, return only active rows."""
         if not self.ready:
             raise RuntimeError("V4.1 DSpark context/query graphs must be captured before requests")
-        if num_speculative_tokens != 5:
-            raise ValueError("V4.1 DSpark graph requires exactly five draft tokens")
         p = self.proposer
+        if num_speculative_tokens != p.num_query_per_req:
+            raise ValueError("V4.1 DSpark draft length must match the configured graph query width")
         batch = common_attn_metadata.num_reqs
         query_bucket = select_bucket(batch, self.query_buckets)
         tokens, _, common, _ = p.set_inputs_first_pass(

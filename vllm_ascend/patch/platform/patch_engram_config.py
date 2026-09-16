@@ -42,8 +42,12 @@ def _resolve_and_verify_engram_config(self: VllmConfig) -> None:
         raise ValueError("Ascend V4.1 Engram does not support DBO or microbatching")
     if parallel.enable_expert_parallel or parallel.use_sequence_parallel_moe or parallel.enable_elastic_ep:
         raise ValueError("Ascend V4.1 Engram requires replicated token rows and TP MoE")
-    if self.speculative_config is not None:
-        raise ValueError("Ascend V4.1 speculative model integration is not yet enabled")
+    speculative = self.speculative_config
+    if speculative is not None and (
+        getattr(speculative, "method", None) != "dspark"
+        or not 1 <= (getattr(speculative, "num_speculative_tokens", None) or 0) <= 8
+    ):
+        raise ValueError("Ascend V4.1 speculative model integration requires DSpark with 1..8 draft tokens")
     load = self.load_config
     if load.load_format not in {"auto", "safetensors", "dummy"}:
         raise ValueError("Ascend V4.1 host Engram requires the safetensors loader (or dummy test weights)")

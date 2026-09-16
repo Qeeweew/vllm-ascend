@@ -72,15 +72,16 @@ def test_reject_missing_compressed_table():
         )
 
 
+@pytest.mark.parametrize("tokens", [1, 2, 3, 4, 5, 6, 7, 8])
 @pytest.mark.parametrize("prefix", [0, 1, 127, 128, 129, 1024])
-def test_dspark_k5_visibility_matches_official_window(prefix):
-    length = prefix + 5
+def test_dspark_visibility_matches_official_window(prefix, tokens):
+    length = prefix + tokens
     pages = (length + 31) // 32
     table = torch.arange(pages, dtype=torch.int32).flip(0)[None]
-    offsets = torch.tensor([0, 5], dtype=torch.int32)
+    offsets = torch.tensor([0, tokens], dtype=torch.int32)
     lengths = torch.tensor([length], dtype=torch.int32)
-    indices = torch.empty((7, 1, 256), dtype=torch.int32)
-    spans = torch.empty((7, 1), dtype=torch.int32)
+    indices = torch.empty((tokens + 2, 1, 256), dtype=torch.int32)
+    spans = torch.empty((tokens + 2, 1), dtype=torch.int32)
     # No value-dependent host reads are permitted in this helper.
     with (
         patch.object(torch.Tensor, "item", side_effect=AssertionError("host read")),
@@ -101,9 +102,9 @@ def test_dspark_k5_visibility_matches_official_window(prefix):
     # permutation must NOT affect these IDs: native arch22 applies pagination.
     visible = [position for position in range(length) if position >= prefix - 128]
     expected = torch.full_like(indices, -1)
-    expected[:5, 0, : len(visible)] = torch.tensor(visible, dtype=torch.int32)
+    expected[:tokens, 0, : len(visible)] = torch.tensor(visible, dtype=torch.int32)
     assert torch.equal(actual, expected)
-    assert spans[:, 0].tolist() == [len(visible)] * 5 + [0, 0]
+    assert spans[:, 0].tolist() == [len(visible)] * tokens + [0, 0]
 
 
 def test_dspark_empty_requests_invalid_pages_and_stable_outputs():
@@ -152,7 +153,7 @@ def test_dspark_metadata_and_forward_explicit_contract():
     assert native.call_args.kwargs["ori_sparse_indices"] is indices
     assert native.call_args.kwargs["ori_topk_length"] is spans
     assert native.call_args.kwargs["ori_mask_mode"] == 0
-    assert native.call_args.kwargs["ori_win_left"] == 132
+    assert native.call_args.kwargs["ori_win_left"] == 255
     with pytest.raises(ValueError, match="CR0"):
         AscendDSAV41Ops(1).build_metadata(
             offsets,

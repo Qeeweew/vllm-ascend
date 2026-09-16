@@ -9,6 +9,7 @@ from vllm.config.speculative import SpeculativeConfig
 
 _orig_post_init = SpeculativeConfig.__post_init__
 _orig_hf_config_override = SpeculativeConfig.hf_config_override
+_orig_update_arch = SpeculativeConfig.update_arch_
 
 # Transformers 5.14 inherited a hidden_size % num_heads check from Llama in
 # DeepseekV2Config. K3 MLA has independent projection/head dimensions (e.g.
@@ -101,6 +102,26 @@ def _temporarily_disable_dspark_dcp(self: SpeculativeConfig):
         self.target_parallel_config = target_parallel_config
 
 
+def _dspark_update_arch(self):
+    """Separate V4.1's runtime proposal count from its training block size.
+
+    Upstream normalizes n_predict to dspark_block_size immediately before
+    update_arch_, then applies an MTP module-reuse divisibility check. DSpark
+    executes one parallel query block, not K/n_predict reused MTP modules.
+    Keep the checkpoint's dspark_block_size intact and describe this round's
+    actual proposal count only on the independently loaded draft config.
+    """
+    _orig_update_arch(self)
+    draft = self.draft_model_config.hf_config
+    if (
+        self.method == "dspark"
+        and getattr(draft, "model_type", None) == "deepseek_v41"
+        and "DSparkV41DraftModel" in (getattr(draft, "architectures", None) or ())
+        and self.num_speculative_tokens is not None
+    ):
+        draft.n_predict = self.num_speculative_tokens
+
+
 def _dspark_post_init(self):
     # TODO: This block can be deleted after the upstream supports the overlay of mla dcp and dspark
     with _temporarily_disable_dspark_dcp(self):
@@ -119,6 +140,7 @@ def _dspark_post_init(self):
 
 SpeculativeConfig.hf_config_override = staticmethod(_normalize_legacy_qwen3_dspark_config)
 SpeculativeConfig.__post_init__ = _dspark_post_init
+SpeculativeConfig.update_arch_ = _dspark_update_arch
 
 if "glm5_next_mtp" not in get_args(speculative_config.MTPModelTypes):
     speculative_config.MTPModelTypes = Literal[

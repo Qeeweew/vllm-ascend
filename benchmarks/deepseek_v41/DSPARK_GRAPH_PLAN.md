@@ -2,8 +2,9 @@
 
 DSpark is required in the delivered configuration. Ordinary autoregressive
 execution is a comparison baseline, not a substitute. Draft graph support is
-required; the present eager-only proposer and closed production admission are
-unfinished work.
+required. Context/query capture and configurable K1..8 pass the TP8
+synthetic-target diagnostic matrix. Complete target verification is pending.
+Ordinary AR is not the delivered path.
 
 ## Verified starting point
 
@@ -35,9 +36,9 @@ page tables and output proposals have persistent storage. Padded context slots
 are -1; padded query boundaries repeat the active terminal offset and have
 zero lengths. Query capture includes visibility and AscendC scheduling.
 
-Initial execution scope is K5/anchor-first, greedy draft, DP1/CP1 and no LoRA.
-TP8 real-weight graph validation is in progress with B1/2/3/4, including B3 in
-the B4 bucket. The r3 run captured and replayed both families, but comparing
+Execution scope is K1..8/anchor-first, greedy draft, DP1/CP1 and no LoRA.
+The completed TP8 diagnostic matrix uses B1/2/3/4, including B3 in
+the B4 bucket. The historical r3 run captured and replayed both families, but comparing
 9-row eager context with a 16-row graph bucket was not bit-exact in BF16 logits
 and KV, despite identical proposals. This failure is retained. The next run
 adds an eager execution at the identical bucket shape to distinguish padding
@@ -72,10 +73,10 @@ Use two independently bucketed graph families, ordered on the same stream:
    normalization, project/store context KV for all three draft layers. Bucket
    by target context rows. Pad positions safely and set unused per-group slots
    to -1, so rejected/padded rows never modify live cache entries.
-2. Query graph: K5 query embedding, three E128/top3 draft blocks, final
-   normalization and draft vocabulary projection, then all five sequential
+2. Query graph: K query embeddings, three E128/top3 draft blocks, final
+   normalization and draft vocabulary projection, then all K sequential
    Markov steps. Include confidence computation when enabled. Bucket by padded
-   request count, with exactly 5 query rows per request; never reuse the target
+   request count, with exactly K query rows per request; never reuse the target
    model's uniform decode length as the draft block width.
 
 The number of context rows and the number of query rows vary independently.
@@ -90,7 +91,7 @@ assignment in `AscendDSparkProposer.__init__`.
 - Allocate persistent auxiliary, context, seed, sampling, per-group query and
   context-slot buffers before capture. Copy current contents before replay;
   allocation addresses and layout must remain stable across batch changes.
-- Build dummy metadata for every draft attention/cache group with K5
+- Build dummy metadata for every draft attention/cache group with configured-K
   noncausal visibility. The current DSpark dummy path supplies no attention
   metadata and cannot serve as a valid capture template.
 - Reuse each V4.1 builder's persistent schedule, page table, SWA candidate and

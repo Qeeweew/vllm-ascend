@@ -105,3 +105,40 @@ The production installation was not replaced. The tested vendor is
 The extension is `artifacts/small-ops-bindings/r6/install/`.
 The remaining acceptance gate is full TP8 proposer and target/draft serving,
 including graph execution, accepted/rejected token rollback, and `vllm bench`.
+
+## Small draft-length validation
+
+The model adaptation is scoped to **K=1..8**. Metadata kernel capacity is a
+separate property: a 256-key candidate buffer and up to 32768 total queries do
+not imply support for large model draft lengths. No metadata host/kernel change
+was necessary: the planner partitions actual `cu_q` query offsets and has never
+contained a K5/133 hard limit. The runtime visibility helper and model admission
+checks own the draft-length policy.
+
+The final test matrix uses each K=1/2/3/4/5/6/7/8:
+
+- 24 eager cases (B=1/4/32) compare native AICPU schedules and independent FP32
+  attention, including empty requests, graph tail padding and in-range zero-span
+  rows.
+- 27 visibility + schedule + attention graph cases: every K at B=1/4/16, plus
+  K5 at B=2/8/32. Each runs 16 changed-content replays (432 total). A separate
+  CPU oracle enumerates prefix-window logical indices and validates visibility
+  exactly before comparing attention. Rejection counts include zero and all K.
+- 24 direct-index graph cases (every K at B=1/4/16), six changed-content replays
+  each (144 total), also exercise spans 0/1/256 as operator capacity boundaries.
+- The original 48 fixed-K5 span/ragged cases and four empty clearing cases remain.
+  This also exercises the wrapper's explicit-index mask0 path after changing its
+  ignored window-distance argument from 132 to 255.
+- CPU planner tests cover every small K across B=1/4/32/255. A separate T32768
+  structural case uses longer per-request query ranges solely to check planner
+  partition bounds; it is not a model draft configuration.
+
+**Final validation passed: 127 NPU tests in 22.52 seconds (576 graph replays),
+and 40 CPU planner tests in 1.06 seconds.** Results are recorded in
+`smallk-final-native.log`, `smallk-final-cpu.log`,
+and `smallk-final-source.json` under the r1 artifact directory. The source
+manifest verifies all seven operator sources are byte-identical to the complete
+r1 build; that verified package and r6 binding are used without a partial build.
+Earlier `multik-*` logs preserve exploratory capacity runs and are not declarations
+of supported model draft lengths. These tests establish operator/graph correctness,
+not DSpark acceptance rate or full-model speedup; those require TP8 serving tests.

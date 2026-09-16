@@ -612,10 +612,10 @@ def _get_deepseek_v41_kv_cache_groups(
 ) -> list[KVCacheGroupSpec]:
     """Keep V4.1 roles and circular state out of the legacy C4/C128 planner.
 
-    Initial supported common page is 32 KiB: block-32 BF16 SWA/main and the
-    contiguous capacity-8 FP32 compressor ring. Smaller attention/index pages
-    may be padded because their kernels accept page strides. Circular state
-    must already occupy exactly this page; padding or resizing it is unsafe.
+    The common page exactly fits the speculative compressor ring: 32 KiB for
+    capacity 8, or 64 KiB for capacity 16. Smaller attention/index pages may
+    be padded because their kernels accept page strides. Circular state must
+    already occupy exactly this page; padding or resizing it is unsafe.
     """
     if vllm_version_is("0.28.0"):
         raise ValueError("V4.1 cache planning requires the installed vLLM main descriptor API")
@@ -624,30 +624,31 @@ def _get_deepseek_v41_kv_cache_groups(
     layout = vllm_config.cache_config.get_resolved_kv_cache_layout()
     if not layout.is_layer_compact or not layout.is_block_compact:
         raise ValueError("V4.1 requires a layer-compact and block-compact cache layout (LBNHC or LBHNC)")
-    common_page = 32768
     speculative = getattr(vllm_config, "speculative_config", None)
     dspark_lookback = (
         speculative.num_speculative_tokens if speculative is not None and speculative.method == "dspark" else 0
     )
+    ring_capacity = max(8, 1 << (dspark_lookback + 1).bit_length())
+    common_page = ring_capacity * 1024 * torch.float32.itemsize
     padded = {}
     for name, spec in kv_cache_spec.items():
         if isinstance(spec, AscendV41SWACacheSpec) and dspark_lookback:
             # Upstream get_kv_cache_configs resets SWA retention to zero for
             # non-MTP drafts. Restore V4.1's lookback before both admission
-            # sizing and scheduler grouping: K5 draft attention needs 128
+            # sizing and scheduler grouping: draft attention needs 128
             # prefix tokens, including the extra left token versus causal
             # SWA, and rejected speculative rows must not advance eviction.
             spec = replace(spec, extra_retained_tokens=max(spec.extra_retained_tokens, dspark_lookback))
         if isinstance(spec, (AscendV41MainCacheSpec, AscendV41IndexerCacheSpec, AscendV41SWACacheSpec)):
             if spec.real_page_size_bytes > common_page or spec.page_size_bytes > common_page:
                 raise ValueError(
-                    f"V4.1 cache {name} exceeds the supported 32 KiB common page; "
-                    "larger block/speculation configurations require compressor stride support"
+                    f"V4.1 cache {name} exceeds the supported {common_page // 1024} KiB common page; "
+                    "attention pages must fit the contiguous compressor ring"
                 )
             padded[name] = replace(spec, page_size_padded=common_page)
         elif isinstance(spec, CircularBufferSpec):
             if (
-                spec.block_size != 8
+                spec.block_size != ring_capacity
                 or spec.num_kv_heads != 1
                 or spec.head_size != 1024
                 or spec.head_size_v != 0
@@ -656,12 +657,14 @@ def _get_deepseek_v41_kv_cache_groups(
                 or spec.page_size_bytes != common_page
             ):
                 raise ValueError(
-                    f"V4.1 circular cache {name} must be an unpadded FP32 capacity-8/1024 ring; "
+                    f"V4.1 circular cache {name} must be an unpadded FP32 capacity-{ring_capacity}/1024 ring; "
                     "never emulate padded ring support with an as_strided view"
                 )
             padded[name] = spec
         else:
-            raise ValueError(f"Unsupported cache {name} ({type(spec).__name__}) in the V4.1 32 KiB planner")
+            raise ValueError(
+                f"Unsupported cache {name} ({type(spec).__name__}) in the V4.1 {common_page // 1024} KiB planner"
+            )
     # The upstream general equal-page grouping balances group layer counts and
     # preserves exact custom spec classes. Its C4/C128 packed hook is bypassed.
     groups = _orig_get_kv_cache_groups_uniform_page_size(padded)

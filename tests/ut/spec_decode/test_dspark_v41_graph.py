@@ -36,7 +36,8 @@ def test_raw_auxiliary_rows_preserve_address_and_clear_padding():
         graph.stage_aux(torch.ones(5, 4), 5)
 
 
-def test_graph_replay_stages_current_boundaries_pages_and_padding():
+@pytest.mark.parametrize("tokens", range(1, 9))
+def test_graph_replay_stages_current_boundaries_pages_and_padding(tokens):
     graph = DSparkV41GraphRunner.__new__(DSparkV41GraphRunner)
     graph.ready = True
     graph.context_buckets, graph.query_buckets = graph_buckets(16), graph_buckets(4)
@@ -45,43 +46,45 @@ def test_graph_replay_stages_current_boundaries_pages_and_padding():
     graph.tables = {2: torch.full((4, 8), 99, dtype=torch.int32)}
     graph.context, graph.query = object(), object()
     p = SimpleNamespace(
-        num_query_per_req=5,
+        num_query_per_req=tokens,
         _dflash_num_context=9,
         _context_positions_buffer=torch.full((16,), 3),
         _per_group_context_slot_mapping_buffers={2: torch.arange(16)},
-        _per_group_query_slot_mapping_buffers={2: torch.arange(20)},
-        input_ids=torch.full((20,), 99),
-        positions=torch.full((20,), 99),
+        _per_group_query_slot_mapping_buffers={2: torch.arange(4 * tokens)},
+        input_ids=torch.full((4 * tokens,), 99),
+        positions=torch.full((4 * tokens,), 99),
         parallel_drafting_token_id=7,
         draft_attn_groups=[SimpleNamespace(kv_cache_group_id=2)],
         _per_group_block_table_buffers={2: torch.arange(24, dtype=torch.int32).reshape(3, 8)},
     )
     common = SimpleNamespace(
-        num_reqs=3, query_start_loc=torch.tensor([0, 5, 10, 15]), seq_lens=torch.tensor([14, 38, 134])
+        num_reqs=3,
+        query_start_loc=torch.tensor([0, tokens, 2 * tokens, 3 * tokens]),
+        seq_lens=torch.tensor([9 + tokens, 33 + tokens, 129 + tokens]),
     )
-    p.set_inputs_first_pass = MagicMock(return_value=(15, None, common, None))
+    p.set_inputs_first_pass = MagicMock(return_value=(3 * tokens, None, common, None))
     graph.proposer = p
     calls = []
 
     def call(wrapper, size, mode):
         calls.append((wrapper, size))
-        return torch.arange(20).reshape(4, 5) if wrapper is graph.query else None
+        return torch.arange(4 * tokens).reshape(4, tokens) if wrapper is graph.query else None
 
     graph._call = call
-    result = graph.propose(5, None, None, None, None, None, common, None, None)
-    assert result.shape == (3, 5)
+    result = graph.propose(tokens, None, None, None, None, None, common, None, None)
+    assert result.shape == (3, tokens)
     assert calls == [(graph.context, 16), (graph.query, 4)]
-    assert graph.cu_q.tolist() == [0, 5, 10, 15, 15]
-    assert graph.lengths.tolist() == [14, 38, 134, 0]
+    assert graph.cu_q.tolist() == [0, tokens, 2 * tokens, 3 * tokens, 3 * tokens]
+    assert graph.lengths.tolist() == [9 + tokens, 33 + tokens, 129 + tokens, 0]
     assert graph.tables[2][3].eq(-1).all()
     assert p._context_positions_buffer[9:16].eq(0).all()
     assert p._per_group_context_slot_mapping_buffers[2][9:16].eq(-1).all()
-    assert p.positions[15:20].eq(-1).all()
-    assert p.input_ids[15:20].eq(7).all()
-    assert p._per_group_query_slot_mapping_buffers[2][15:20].eq(-1).all()
+    assert p.positions[3 * tokens : 4 * tokens].eq(-1).all()
+    assert p.input_ids[3 * tokens : 4 * tokens].eq(7).all()
+    assert p._per_group_query_slot_mapping_buffers[2][3 * tokens : 4 * tokens].eq(-1).all()
     graph.ready = False
     with pytest.raises(RuntimeError, match="captured before"):
-        graph.propose(5, None, None, None, None, None, common, None, None)
+        graph.propose(tokens, None, None, None, None, None, common, None, None)
 
 
 def test_context_callable_combines_aux_and_stores_each_layer_inside_capture():

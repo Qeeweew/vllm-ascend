@@ -76,6 +76,23 @@ def test_speculation_requires_separate_model_integration():
         patch._resolve_and_verify_engram_config(config)
 
 
+@pytest.mark.parametrize("tokens", [1, 2, 3, 4, 5, 6, 7, 8])
+def test_dspark_preserves_pinned_host_engram(tokens):
+    config = make_config()
+    config.speculative_config = SimpleNamespace(method="dspark", num_speculative_tokens=tokens)
+    patch._resolve_and_verify_engram_config(config)
+    assert config.engram_config.cpu_offload
+    assert config.load_config.safetensors_load_strategy == "lazy"
+
+
+@pytest.mark.parametrize(("method", "tokens"), [("mtp", 5), ("dspark", 0), ("dspark", 9)])
+def test_only_supported_dspark_width_is_admitted(method, tokens):
+    config = make_config()
+    config.speculative_config = SimpleNamespace(method=method, num_speculative_tokens=tokens)
+    with pytest.raises(ValueError, match="DSpark with"):
+        patch._resolve_and_verify_engram_config(config)
+
+
 @pytest.mark.parametrize("strategy", ["eager", "torchao"])
 def test_loader_cannot_materialize_full_host_table_in_each_worker(strategy):
     config = make_config()

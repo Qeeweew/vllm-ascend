@@ -555,8 +555,6 @@ def _v41_dspark_config(config: PretrainedConfig) -> PretrainedConfig:
     result = copy.deepcopy(config)
     if result.hidden_size != 5120 or result.hc_mult != 4:
         raise ValueError("Ascend V4.1 DSpark requires H5120 and four HC streams")
-    if int(result.dspark_block_size) != 5:
-        raise ValueError("Ascend V4.1 DSpark initially requires block size 5")
     if (getattr(result, "draft_vocab_size", None) or result.vocab_size) != result.vocab_size:
         raise ValueError("V4.1 DSpark requires the full target vocabulary")
     result.n_routed_experts = int(result.dspark_n_routed_experts)

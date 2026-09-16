@@ -166,7 +166,7 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         self.draft_swa_lengths: torch.Tensor | None = None
 
     def enable_dspark_device_metadata(self, max_query_tokens: int) -> None:
-        """Opt a dedicated CR0/SWA draft builder into fixed-K5 visibility.
+        """Opt a dedicated CR0/SWA draft builder into noncausal draft-block visibility.
 
         Call before capture. Target builders never infer this mode from the
         common metadata's causal flag. Cache tensors may bind after this call;
@@ -291,7 +291,7 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             raise ValueError("V4.1 logical block table does not fit its configured context capacity")
         required_sequence = getattr(common, "max_seq_len", 0)
         if draft_indices is not None:
-            # The proposer keeps K5 virtual queries even at the context end.
+            # The proposer keeps virtual draft queries even at the context end.
             # Only their in-range prefix/query keys require logical pages.
             required_sequence = min(required_sequence, self.max_sequence)
         if required_sequence > common.block_table_tensor.shape[1] * self.logical_block_size:
@@ -339,7 +339,7 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             padded_query = (positions < 0) | (positions >= self.max_sequence) | (draft_lengths[:, 0] == 0)
             slots.masked_fill_(padded_query, -1)
             requests.masked_fill_(padded_query, -1)
-            # Derive visibility above from the original virtual prefix + K5,
+            # Derive visibility above from the original virtual prefix + query length,
             # then bound native scheduling without mutating common.seq_lens.
             lengths.clamp_(0, self.max_sequence)
             # Empty request slots must not claim a nonzero native KV interval

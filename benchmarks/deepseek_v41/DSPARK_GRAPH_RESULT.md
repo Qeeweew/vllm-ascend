@@ -2,7 +2,7 @@
 
 Status on 2026-09-16: **same-bucket graph replay is exact across the tested TP8
 matrix; strict comparison with original unpadded eager remains incomplete**.
-Production admission and full-target validation remain closed. This is not
+Full-target validation remains incomplete. This is not
 an end-to-end performance or acceptance-rate result.
 
 ## Implemented computation
@@ -103,3 +103,23 @@ R6 evidence includes per-rank journals/capture IDs, comparison results and
 source hashes. Raw per-case stage tensors are retained under
 `/tmp/v41-dspark-proposer-graph-r6/graph_stages_case*.pt`; sizes and SHA256
 digests are recorded in `dspark_graph/r6_source_manifest.json`.
+
+## Configurable draft length K1..8
+
+The runtime proposal count supports K1..8, preserving the
+checkpoint training block size of five. The same-bucket graph harness now
+uses configured K for query rows, target capture widths, rejection cases and
+CPU Markov slicing. Every K completes all 11 TP8 cases, with exact same-bucket
+stages on all eight ranks, exact CPU Markov selection and clean distributed
+teardown. The oracle checks 24*K tokens per run, 864 tokens across the matrix.
+K8 peak allocation is 6,185,003,008 bytes. Each rank replays both graph families
+22 times per K. Per-rank results, stage journals, capture records, CPU comparisons
+and source-file hashes are preserved in `dspark_graph/smallk_r1/`.
+These are synthetic-target diagnostics, not full-target or serving acceptance.
+
+Production admission now permits text-only DSpark K1..8 so real target
+validation can proceed; that code change is not a claim of completed serving
+acceptance. The full-model harness includes draft weights in its capacity
+preflight, records speculative acceptance metrics, and requires actual
+replays of the target, draft context and draft query graph families. The
+complete native installation and real-target checks remain pending.

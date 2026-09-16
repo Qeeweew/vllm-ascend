@@ -202,3 +202,111 @@ def test_upstream_default_layout_is_compatible():
     planned = upstream.get_kv_cache_config_from_groups(config, groups, 17 * 3 * PAGE_BYTES)
     assert planned.num_blocks == 17
     assert all(tensor.block_stride == PAGE_BYTES for tensor in planned.kv_cache_tensors)
+
+
+@pytest.mark.parametrize("tokens", range(1, 9))
+def test_dspark_query_length_sets_real_ring_pages_and_runner_views(tokens):
+    # Use the actual planner and runner allocation/reshape functions; a larger
+    # ring is genuine contiguous state, never a padded capacity-eight view.
+    from tests.ut.worker.test_model_runner_v1 import TestNPUModelRunnerKVCache
+    from vllm_ascend.models.deepseek_v4.compressor import CompressorV41StateCache
+
+    config, specs = make_config(), make_specs()
+    config.speculative_config = SimpleNamespace(method="dspark", num_speculative_tokens=tokens)
+    capacity = 8 if tokens <= 6 else 16
+    page_bytes = capacity * 1024 * 4
+    specs["ring.0"] = replace(specs["ring.0"], block_size=capacity)
+    groups = upstream.get_kv_cache_groups(config, specs)
+    grouped = {name: group.kv_cache_spec for group in groups for name in group.layer_names}
+    assert all(spec.page_size_bytes == page_bytes for spec in grouped.values())
+    assert grouped["ring.0"].real_page_size_bytes == page_bytes
+    assert grouped["ring.0"].page_size_padded is None
+    assert grouped["swa.0"].extra_retained_tokens == tokens
+    assert specs["swa.0"].extra_retained_tokens == 0
+    plan = upstream.get_kv_cache_config_from_groups(config, groups, page_bytes * 17)
+    assert plan.num_blocks == 17
+    assert all(tensor.block_stride == page_bytes for tensor in plan.kv_cache_tensors)
+
+    runner = TestNPUModelRunnerKVCache()._build_runner()
+    runner._get_layer_kv_cache_specs = lambda _: grouped
+    runner._kv_cache_spec_attn_group_iterator = lambda: [
+        SimpleNamespace(backend=None, kv_cache_spec=spec, layer_names=[name]) for name, spec in grouped.items()
+    ]
+    raw = runner._allocate_kv_cache_tensors(plan)
+    for value in raw.values():
+        value.zero_()
+    caches = runner._reshape_kv_cache_tensors(plan, raw)
+    ring = caches["ring.0"]
+    assert ring.shape == (17, 1, capacity, 1024)
+    assert ring.is_contiguous() and ring.stride(0) == capacity * 1024
+    assert ring.data_ptr() == raw["ring.0"].data_ptr()
+    ring[2, 0, -1].fill_(3.25)
+    actual = raw["ring.0"][3 * page_bytes - 4096 : 3 * page_bytes].view(torch.float32)
+    assert torch.all(actual == 3.25)
+    assert torch.all(ring[1] == 0) and torch.all(ring[3] == 0)
+    state = CompressorV41StateCache.__new__(CompressorV41StateCache)
+    torch.nn.Module.__init__(state)
+    state.block_size = capacity
+    state.bind_kv_cache(ring)
+    assert state.kv_cache.shape == (17, capacity, 1024)
+    assert state.kv_cache.is_contiguous()
+
+    for name in ("main1.0", "main2.0", "swa.0"):
+        key = caches[name]
+        assert key.stride(0) * key.element_size() == page_bytes
+        assert key.shape[1] == grouped[name].physical_block_size
+    keys, scales = caches["index1.0"]
+    assert keys.stride(0) == scales.stride(0) * 2 == page_bytes
+    assert scales.data_ptr() - keys.data_ptr() == grouped["index1.0"].scale_offset_bytes
+    keys[4].fill_(7)
+    scales[4].fill_(0.25)
+    index_page = raw["index1.0"][4 * page_bytes : 5 * page_bytes]
+    assert torch.all(index_page[grouped["index1.0"].real_page_size_bytes :] == 0)
+
+
+@pytest.mark.parametrize("tokens", [7, 8])
+def test_large_dspark_rejects_old_or_fake_padded_ring(tokens):
+    config = make_config()
+    config.speculative_config = SimpleNamespace(method="dspark", num_speculative_tokens=tokens)
+    for padding in (None, 65536):
+        specs = make_specs()
+        specs["ring.0"] = replace(specs["ring.0"], page_size_padded=padding)
+        with pytest.raises(ValueError, match="capacity-16"):
+            upstream.get_kv_cache_groups(config, specs)
+
+
+@pytest.mark.parametrize("tokens", range(1, 9))
+def test_planned_compressor_ring_retains_pair_after_every_rejection(tokens):
+    from vllm_ascend.ops.compressor_v41 import compressor_v41_reference
+
+    config, specs = make_config(), make_specs()
+    config.speculative_config = SimpleNamespace(method="dspark", num_speculative_tokens=tokens)
+    specs["ring.0"] = replace(specs["ring.0"], block_size=8 if tokens <= 6 else 16)
+    groups = upstream.get_kv_cache_groups(config, specs)
+    capacity = next(group.kv_cache_spec.block_size for group in groups if "ring.0" in group.layer_names)
+    rng = torch.Generator().manual_seed(4141)
+    initial, proposed, corrected = (torch.randn((n, 1024), generator=rng) for n in (31, tokens + 1, 3))
+    weight = torch.ones(512, dtype=torch.bfloat16)
+    empty = torch.zeros((1, capacity, 1024))
+
+    def run(raw, start, state):
+        positions = torch.arange(start, start + raw.shape[0], dtype=torch.int64)
+        return compressor_v41_reference(
+            raw,
+            positions,
+            positions % capacity,
+            torch.tensor([0, raw.shape[0]], dtype=torch.int32),
+            torch.zeros(raw.shape[0], dtype=torch.int32),
+            weight,
+            state,
+            2,
+        )
+
+    _, prefix_state = run(initial, 0, empty)
+    _, speculative_state = run(proposed, 31, prefix_state)
+    for accepted in range(tokens + 1):
+        resume = 32 + accepted
+        actual, _ = run(corrected, resume, speculative_state)
+        committed = torch.cat((initial, proposed[: accepted + 1], corrected))
+        expected, _ = run(committed, 0, empty)
+        torch.testing.assert_close(actual, expected[-3:], rtol=0, atol=0)

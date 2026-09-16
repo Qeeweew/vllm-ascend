@@ -136,3 +136,21 @@ def test_production_planner_covers_random_ragged_queries(planner):
 )
 def test_empty_or_invalid_offsets_disable_all_cores(planner, offsets, tokens):
     assert planner(offsets, tokens) == [0] * 1024
+
+
+@pytest.mark.parametrize("draft_tokens", [1, 2, 3, 4, 5, 6, 7, 8])
+@pytest.mark.parametrize("batch", [1, 4, 32, 255])
+def test_variable_draft_tokens_cover_full_query_ranges(planner, draft_tokens, batch):
+    counts = [0 if request % 3 == 0 else draft_tokens for request in range(batch)]
+    counts[-1] = draft_tokens
+    offsets = [0]
+    for count in counts:
+        offsets.append(offsets[-1] + count)
+    check_coverage(planner(offsets, batch * draft_tokens + 3), counts)
+
+
+def test_maximum_token_capacity_with_long_query_ranges(planner):
+    """Planner capacity only; not a supported model draft-length claim."""
+    counts = [128] * 256
+    offsets = list(range(0, 32769, 128))
+    check_coverage(planner(offsets, 32768), counts)

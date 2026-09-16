@@ -419,6 +419,21 @@ def test_text_only_wrapper_does_not_require_image_scheduler_or_encoder_options(m
     assert make_wrapper(cfg).vision is None
 
 
+@pytest.mark.parametrize("tokens", [1, 2, 3, 4, 5, 6, 7, 8])
+def test_text_only_wrapper_admits_configurable_dspark(make_wrapper, tokens):
+    cfg = config(0)
+    cfg.speculative_config = SimpleNamespace(method="dspark", num_speculative_tokens=tokens)
+    assert make_wrapper(cfg).vision is None
+
+
+@pytest.mark.parametrize(("method", "tokens"), [("mtp", 5), ("dspark", 0), ("dspark", 9)])
+def test_text_only_wrapper_rejects_unimplemented_speculation(make_wrapper, method, tokens):
+    cfg = config(0)
+    cfg.speculative_config = SimpleNamespace(method=method, num_speculative_tokens=tokens)
+    with pytest.raises(ValueError, match="text-only DSpark"):
+        make_wrapper(cfg)
+
+
 @pytest.mark.parametrize("language_only", [False, True])
 def test_default_image_limit_matches_processor_single_image_support(make_wrapper, language_only):
     cfg = config()

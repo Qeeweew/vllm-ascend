@@ -1,7 +1,7 @@
 # V4.1 DSpark AscendC metadata
 
-Status: isolated 910B operator acceptance passed (58 NPU tests, including 96
-changed-input graph replays). Full TP8 DSpark proposer/serving acceptance remains
+Status: isolated 910B operator acceptance passed (127 NPU tests, including 576
+changed-input graph replays across K=1..8). Full TP8 DSpark proposer/serving acceptance remains
 separate. See [RESULTS.md](RESULTS.md) for measurements and artifact provenance.
 
 Interface: `v41_dspark_metadata(cu_q, lengths, topk_lengths, schedule) -> None`.
@@ -12,11 +12,15 @@ and clear the full output. No host reads of device values or AICPU launch.
 
 The required SMLA invocation has Hq=8, Hkv=1, D=512, CR=0, TND query,
 PA_BBND BF16 cache, explicit original sparse indices, topk capacity 256,
-and original mask mode 0. Released DSpark uses 128 prefix keys plus five
-query keys, so the maximum candidate span is **133**, not 132. The native
-API's `ori_win_left=132` is not the candidate count. This schedule supports
-all candidate spans 0..256; visibility is still defined by the existing
-indices/length generator and consumer.
+and original mask mode 0. Visibility contains 128 prefix keys plus K draft
+query keys, subject to the fixed 256-key capacity. The tested small draft
+lengths are K=1..8; this is not an arbitrary-K model support claim.
+K=5 has a maximum candidate span of **133**, not 132; 133 was the initial
+acceptance workload, never a kernel limit. The native API's `ori_win_left`
+is a distance, not the candidate count. This schedule supports all candidate
+spans 0..256 and query counts up to the total T limit, with no K-specific host
+or device branch. Visibility remains defined by the indices/length generator
+and consumer.
 
 The arch22 SWA consumer uses mBaseSize=gSize=8: one query is one M tile.
 Its s2BaseSize=512 covers every candidate in one tile. Therefore no S2 split

@@ -1,0 +1,277 @@
+{
+  "rank": 2,
+  "status": "executed_pending_cpu_selection_oracle",
+  "cases": [
+    {
+      "sequence": [
+        9
+      ],
+      "rejected": [
+        0
+      ],
+      "seed": 0,
+      "slots": [],
+      "proposals": [
+        [
+          10759
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        33
+      ],
+      "rejected": [
+        0
+      ],
+      "seed": 1,
+      "slots": [],
+      "proposals": [
+        [
+          122594
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        129
+      ],
+      "rejected": [
+        0
+      ],
+      "seed": 2,
+      "slots": [],
+      "proposals": [
+        [
+          118
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        9,
+        33,
+        129
+      ],
+      "rejected": [
+        0,
+        1,
+        1
+      ],
+      "seed": 3,
+      "slots": [],
+      "proposals": [
+        [
+          257
+        ],
+        [
+          1865
+        ],
+        [
+          31
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        17,
+        41,
+        113
+      ],
+      "rejected": [
+        1,
+        1,
+        1
+      ],
+      "seed": 4,
+      "slots": [],
+      "proposals": [
+        [
+          68
+        ],
+        [
+          438
+        ],
+        [
+          99
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "rejected": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "seed": 5,
+      "slots": [],
+      "proposals": [
+        [
+          342
+        ],
+        [
+          40493
+        ],
+        [
+          115841
+        ],
+        [
+          438
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        255,
+        256
+      ],
+      "rejected": [
+        0,
+        0
+      ],
+      "seed": 6,
+      "slots": [],
+      "proposals": [
+        [
+          3682
+        ],
+        [
+          10759
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        255,
+        256
+      ],
+      "rejected": [
+        0,
+        1
+      ],
+      "seed": 7,
+      "slots": [],
+      "proposals": [
+        [
+          54792
+        ],
+        [
+          232
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        33,
+        9,
+        65
+      ],
+      "rejected": [
+        1,
+        0,
+        1
+      ],
+      "seed": 8,
+      "slots": [],
+      "proposals": [
+        [
+          232
+        ],
+        [
+          5506
+        ],
+        [
+          655
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        33
+      ],
+      "rejected": [
+        1
+      ],
+      "seed": 9,
+      "slots": [],
+      "proposals": [
+        [
+          69782
+        ]
+      ]
+    },
+    {
+      "sequence": [
+        9,
+        33,
+        129
+      ],
+      "rejected": [
+        1,
+        1,
+        1
+      ],
+      "seed": 10,
+      "slots": [],
+      "proposals": [
+        [
+          2508
+        ],
+        [
+          17
+        ],
+        [
+          28
+        ]
+      ]
+    }
+  ],
+  "diagnostic_metadata_sync": false,
+  "phase": "graph_capture_and_cases",
+  "graph": {
+    "context_graphs": 10,
+    "query_graphs": 3,
+    "real_query_replays": 22,
+    "real_context_replays": 22,
+    "graph_ids": [
+      [
+        281467811720528,
+        281467811720144,
+        281467811721392,
+        281467811717744,
+        281467811714864,
+        281467811719568,
+        281467811724272,
+        281467811720432,
+        281467811713232,
+        281467811715344
+      ],
+      [
+        281467811715248,
+        281467811724560,
+        281467811715152
+      ]
+    ],
+    "actual_graph_replays": {
+      "281467811719568": 2,
+      "281467811715152": 8,
+      "281467811717744": 4,
+      "281467811720144": 10,
+      "281467811715248": 10,
+      "281467811720528": 4,
+      "281467811724560": 4,
+      "281467811721392": 2
+    }
+  },
+  "graph_padding_diagnostic": true,
+  "peak_allocated_bytes": 6165860352,
+  "reserved_bytes": 4238344192,
+  "distributed_cleanup": true
+}

@@ -2431,7 +2431,8 @@ class AscendDeepseekV41ForConditionalGeneration(nn.Module, SupportsMultiModal, S
     The processor protocol is the four fields provided by the local
     ``patch_deepseek_v41_mm`` module. Initial admission supports one image per
     request, complete image prefill, no encoder graph,
-    no speculation and no PP. A batch may contain images from several requests.
+    no image speculation and no PP. Text-only requests support DSpark.
+    A batch may contain images from several requests.
     """
 
     requires_raw_input_tokens = True
@@ -2462,13 +2463,19 @@ class AscendDeepseekV41ForConditionalGeneration(nn.Module, SupportsMultiModal, S
             raise ValueError(
                 "V4.1 requires processor-owned image spans; external multimodal embeddings are not enabled"
             )
+        speculative = vllm_config.speculative_config
+        if speculative is not None and (
+            self.image_limit
+            or getattr(speculative, "method", None) != "dspark"
+            or not 1 <= (getattr(speculative, "num_speculative_tokens", None) or 0) <= 8
+        ):
+            raise ValueError("V4.1 speculation currently requires text-only DSpark with 1..8 draft tokens")
         if (
             vllm_config.parallel_config.pipeline_parallel_size != 1
-            or vllm_config.speculative_config is not None
             or self.multimodal_config.mm_encoder_tp_mode == "data"
             or self.multimodal_config.mm_encoder_only
         ):
-            raise ValueError("V4.1 wrapper requires PP1, no speculation and replicated eager vision")
+            raise ValueError("V4.1 wrapper requires PP1 and replicated eager vision")
         if vllm_config.model_config.dtype != torch.bfloat16:
             raise ValueError("V4.1 wrapper requires BF16 dense and vision weights")
         if self.image_limit and self.config.vision_n_layers <= 0:

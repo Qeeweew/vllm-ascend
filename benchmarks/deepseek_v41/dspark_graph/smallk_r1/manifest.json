@@ -1,0 +1,3362 @@
+[
+  {
+    "k": 1,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 24,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 6165860352,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468559976176,
+            281468559982224,
+            281468559980688,
+            281468559971472,
+            281468559974832,
+            281468559975216,
+            281468559981936,
+            281468559970512,
+            281468559978480,
+            281468559981840
+          ],
+          [
+            281468559978192,
+            281468559974064,
+            281468559981552
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468559975216": 2,
+          "281468559981552": 8,
+          "281468559971472": 4,
+          "281468559982224": 10,
+          "281468559978192": 10,
+          "281468559976176": 4,
+          "281468559974064": 4,
+          "281468559980688": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468183225424,
+            281468183223984,
+            281468183223120,
+            281468183220816,
+            281468183227248,
+            281468183221776,
+            281468183220432,
+            281468183216400,
+            281468183225808,
+            281468183225904
+          ],
+          [
+            281468183217840,
+            281468183225040,
+            281468183216784
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468183221776": 2,
+          "281468183216784": 8,
+          "281468183220816": 4,
+          "281468183223984": 10,
+          "281468183217840": 10,
+          "281468183225424": 4,
+          "281468183225040": 4,
+          "281468183223120": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467811720528,
+            281467811720144,
+            281467811721392,
+            281467811717744,
+            281467811714864,
+            281467811719568,
+            281467811724272,
+            281467811720432,
+            281467811713232,
+            281467811715344
+          ],
+          [
+            281467811715248,
+            281467811724560,
+            281467811715152
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467811719568": 2,
+          "281467811715152": 8,
+          "281467811717744": 4,
+          "281467811720144": 10,
+          "281467811715248": 10,
+          "281467811720528": 4,
+          "281467811724560": 4,
+          "281467811721392": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468326880912,
+            281468326875248,
+            281468326883120,
+            281468326879952,
+            281468326879472,
+            281468326879664,
+            281468326875056,
+            281468326879856,
+            281468326881200,
+            281468326875152
+          ],
+          [
+            281468326880528,
+            281468326872272,
+            281468326881968
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468326879664": 2,
+          "281468326881968": 8,
+          "281468326879952": 4,
+          "281468326875248": 10,
+          "281468326880528": 10,
+          "281468326880912": 4,
+          "281468326872272": 4,
+          "281468326883120": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467738580336,
+            281467738577168,
+            281467738575920,
+            281467738576496,
+            281467738585712,
+            281467738580240,
+            281467738584080,
+            281467738580720,
+            281467738582256,
+            281467738579088
+          ],
+          [
+            281467738576208,
+            281467738576976,
+            281467738578896
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467738580240": 2,
+          "281467738578896": 8,
+          "281467738576496": 4,
+          "281467738577168": 10,
+          "281467738576208": 10,
+          "281467738580336": 4,
+          "281467738576976": 4,
+          "281467738575920": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468089561360,
+            281468089557904,
+            281468089563088,
+            281468089553104,
+            281468089560208,
+            281468089565008,
+            281468089557808,
+            281468089555888,
+            281468089556272,
+            281468089563376
+          ],
+          [
+            281468089558384,
+            281468089564912,
+            281468089561552
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468089565008": 2,
+          "281468089561552": 8,
+          "281468089553104": 4,
+          "281468089557904": 10,
+          "281468089558384": 10,
+          "281468089561360": 4,
+          "281468089564912": 4,
+          "281468089563088": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468130846064,
+            281468130846832,
+            281468130843952,
+            281468130845776,
+            281468130847984,
+            281468130843184,
+            281468130840784,
+            281468130843376,
+            281468130847312,
+            281468130844528
+          ],
+          [
+            281468130849712,
+            281468130852400,
+            281468130850576
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468130843184": 2,
+          "281468130850576": 8,
+          "281468130845776": 4,
+          "281468130846832": 10,
+          "281468130849712": 10,
+          "281468130846064": 4,
+          "281468130852400": 4,
+          "281468130843952": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468208079856,
+            281468208080144,
+            281468208075440,
+            281468208077744,
+            281468208077456,
+            281468208071024,
+            281468208076784,
+            281468208081200,
+            281468208070928,
+            281468208073232
+          ],
+          [
+            281468208071696,
+            281468208076112,
+            281468208079664
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468208071024": 2,
+          "281468208079664": 8,
+          "281468208077744": 4,
+          "281468208080144": 10,
+          "281468208071696": 10,
+          "281468208079856": 4,
+          "281468208076112": 4,
+          "281468208075440": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/comparison.json",
+        "sha256": "d68a156931e659f2a3584485912d25c68db18c13987c1244e5a238da8a87c1f4",
+        "bytes": 4173
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank3.json",
+        "sha256": "ae3a4918423e578ce1c962dd470eee843832ad781036d7c96468c63fe6d0fa84",
+        "bytes": 3945
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank5.json",
+        "sha256": "ba32aab408fdc24514e763f92e427334df403c587d575f060e85e5384b94a9e5",
+        "bytes": 3945
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank6.json",
+        "sha256": "ae0c8ba7ee2a6f3c0356928671cc9977092cba0388b68bcce3a97552ef94639f",
+        "bytes": 3945
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank1.json",
+        "sha256": "818ce2f13459277721601c8f352f9cb61daa5321d901c1374e7f302ac6f2171c",
+        "bytes": 3945
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank4.json",
+        "sha256": "02b35b0885b7c646c046c5232e4394b5b8ec08db5d8a9304d99789d9c979a659",
+        "bytes": 3945
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank0.json",
+        "sha256": "faf0006058a218748050a04a5061c88f689aff0ed2b5ba5d5a94fae2dfcc83aa",
+        "bytes": 3945
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank2.json",
+        "sha256": "0a4627f1407aa61e355298370f657e370f63b308cb076e7b59275526eb9a7c0d",
+        "bytes": 3945
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/rank7.json",
+        "sha256": "120403ef84dc60eb6b05661a89246740a4bb11b062d2d3e2e85e02c12e4264ec",
+        "bytes": 3945
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank7.json",
+        "sha256": "16bbe29d054986e8a1e2f54523e883f14d26101461a1e221af39ebaf42cae9bb",
+        "bytes": 72579
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank4.json",
+        "sha256": "e9ad73297d30e8cfc57fb4385c0e336d82f396241d5c38cca0257a9930d2dd00",
+        "bytes": 72579
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank6.json",
+        "sha256": "6b7b6b1ec9275b77b295f110573d938fcbad1d6c1342ad123512028ec154dd67",
+        "bytes": 72579
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank5.json",
+        "sha256": "f28b400d0c2cff3536c09f7f9b7645aa57482e6897317622eebc917b481eae44",
+        "bytes": 72579
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank3.json",
+        "sha256": "30c55f35fa085bff46c15af2cebcbde1aaf5134ba673bbfd4663182d5b174ae6",
+        "bytes": 72579
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank1.json",
+        "sha256": "6379a1897a286724fcf326484ad72276c37ea31d2b6c8c50ca273ab03e395fd3",
+        "bytes": 72579
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank0.json",
+        "sha256": "1972c376ef6dcb9d9e88531cf21a0f3f38eb53a9b1ff2175753440d9c73340ae",
+        "bytes": 72579
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_journal_rank2.json",
+        "sha256": "f6d62dd6db718cf8e0911a48fbda38e1404bfda99f57a3b6e70080cddcbef61c",
+        "bytes": 72579
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank6.json",
+        "sha256": "cda276d991b5b19458d4ab4a3adacd567006cd9368e391ac748553b600514c35",
+        "bytes": 906
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank4.json",
+        "sha256": "04a7844db97f12cb8c6d7973c8fe25bc77eb45a563434689d797cac2846468c0",
+        "bytes": 906
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank7.json",
+        "sha256": "dcfd8c709a69b80bd88209815e75471678df695c91e42e62e2b2a4b1c26e7b99",
+        "bytes": 906
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank3.json",
+        "sha256": "9b5be85cbd90dc76458e8fb18c272b63efd762ce7e8bfe234aec6714c2df5d40",
+        "bytes": 906
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank5.json",
+        "sha256": "26ec9f6ce2246a7953c8185bc6631bf1170ccec0202f35f1c84952c2c11fcb00",
+        "bytes": 906
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank2.json",
+        "sha256": "f204540f4715583c8d11b010160cc070a750030178639e0dd2cc88e1207cbe29",
+        "bytes": 906
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank0.json",
+        "sha256": "8e5797babe1fd4453fecb84fbb3fb10615908ecfa37d71919c94e83102aa8188",
+        "bytes": 906
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k1-r1/graph_capture_rank1.json",
+        "sha256": "404a7e958390708cb12d37711763b51e4bef699678577963b6627ec97b4cd4b3",
+        "bytes": 906
+      }
+    }
+  },
+  {
+    "k": 2,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 48,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 6168487424,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468035310288,
+            281468035310576,
+            281468035311152,
+            281468035314224,
+            281468035309040,
+            281468035315952,
+            281468035309808,
+            281468035306736,
+            281468035310864,
+            281468035312592
+          ],
+          [
+            281468035312496,
+            281468035307504,
+            281468035307600
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468035315952": 2,
+          "281468035307600": 8,
+          "281468035314224": 4,
+          "281468035310576": 10,
+          "281468035312496": 10,
+          "281468035310288": 4,
+          "281468035307504": 4,
+          "281468035311152": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467759605520,
+            281467759601776,
+            281467759606960,
+            281467759606192,
+            281467759603408,
+            281467759601296,
+            281467759596784,
+            281467759607536,
+            281467759607728,
+            281467759603024
+          ],
+          [
+            281467759601200,
+            281467759603120,
+            281467759602736
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467759601296": 2,
+          "281467759602736": 8,
+          "281467759606192": 4,
+          "281467759601776": 10,
+          "281467759601200": 10,
+          "281467759605520": 4,
+          "281467759603120": 4,
+          "281467759606960": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468666910128,
+            281468666913200,
+            281468666915216,
+            281468666919344,
+            281468666920688,
+            281468666919920,
+            281468666912144,
+            281468666914064,
+            281468666920880,
+            281468666914448
+          ],
+          [
+            281468666910992,
+            281468666919248,
+            281468666917520
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468666919920": 2,
+          "281468666917520": 8,
+          "281468666919344": 4,
+          "281468666913200": 10,
+          "281468666910992": 10,
+          "281468666910128": 4,
+          "281468666919248": 4,
+          "281468666915216": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467748722320,
+            281467748721360,
+            281467748719152,
+            281467748727120,
+            281467748719536,
+            281467748718384,
+            281467748720016,
+            281467748719344,
+            281467748726160,
+            281467748722032
+          ],
+          [
+            281467748727504,
+            281467748718960,
+            281467748722608
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467748718384": 2,
+          "281467748722608": 8,
+          "281467748727120": 4,
+          "281467748721360": 10,
+          "281467748727504": 10,
+          "281467748722320": 4,
+          "281467748718960": 4,
+          "281467748719152": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468040327728,
+            281468040321200,
+            281468040319664,
+            281468040320624,
+            281468040330320,
+            281468040330608,
+            281468040325328,
+            281468040327536,
+            281468040331184,
+            281468040328784
+          ],
+          [
+            281468040324752,
+            281468040321392,
+            281468040330896
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468040330608": 2,
+          "281468040330896": 8,
+          "281468040320624": 4,
+          "281468040321200": 10,
+          "281468040324752": 10,
+          "281468040327728": 4,
+          "281468040321392": 4,
+          "281468040319664": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468694617488,
+            281468694624400,
+            281468694623632,
+            281468694615376,
+            281468694615664,
+            281468694624304,
+            281468694621328,
+            281468694623824,
+            281468694615952,
+            281468694616432
+          ],
+          [
+            281468694622576,
+            281468694622768,
+            281468694624592
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468694624304": 2,
+          "281468694624592": 8,
+          "281468694615376": 4,
+          "281468694624400": 10,
+          "281468694622576": 10,
+          "281468694617488": 4,
+          "281468694622768": 4,
+          "281468694623632": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467788960560,
+            281467788957392,
+            281467788952208,
+            281467788952304,
+            281467788957488,
+            281467788956720,
+            281467788953264,
+            281467788960464,
+            281467788956336,
+            281467788960272
+          ],
+          [
+            281467788952976,
+            281467788959984,
+            281467788952880
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467788956720": 2,
+          "281467788952880": 8,
+          "281467788952304": 4,
+          "281467788957392": 10,
+          "281467788952976": 10,
+          "281467788960560": 4,
+          "281467788959984": 4,
+          "281467788952208": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468322256784,
+            281468322262832,
+            281468322261104,
+            281468322261968,
+            281468322261200,
+            281468322261488,
+            281468322263600,
+            281468322262160,
+            281468322262064,
+            281468322261776
+          ],
+          [
+            281468322258416,
+            281468322255632,
+            281468322262640
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468322261488": 2,
+          "281468322262640": 8,
+          "281468322261968": 4,
+          "281468322262832": 10,
+          "281468322258416": 10,
+          "281468322256784": 4,
+          "281468322255632": 4,
+          "281468322261104": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/comparison.json",
+        "sha256": "ddc0fef9859e5122d13539120f085630d6b425d8b9bb83db87a55fa90403a5b0",
+        "bytes": 4911
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank3.json",
+        "sha256": "faba5ef7ea80eb35005bc4878b93b9ad36e520851a412c12859143c61c201146",
+        "bytes": 4314
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank5.json",
+        "sha256": "4676333e31513bc623dd04065b8f677cafce335c6dba8c25cadcc1d9d99f78b8",
+        "bytes": 4314
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank6.json",
+        "sha256": "cc8a8708974ab87e79f9a1b693fd62f5f0ffea567c6749918bd2cc764f1d1f4d",
+        "bytes": 4314
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank1.json",
+        "sha256": "3ab1d05d91d5695b390a912000fd9e9dfeae52565c000f8da92b6b80a0e14370",
+        "bytes": 4314
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank4.json",
+        "sha256": "8e11d8e8f79ec53e177ee4c1e6e3ca4a62ad05f2708463670adc72f63e209ae3",
+        "bytes": 4314
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank0.json",
+        "sha256": "31e1e7808cc0c1f7650ec7b3bbf60171df1218d9c267337206c3e3119d7e5782",
+        "bytes": 4314
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank2.json",
+        "sha256": "df605d3a5857a2ac9cd211f03f1f0214920fe062f5edcb77dba6e4803f581e3c",
+        "bytes": 4314
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/rank7.json",
+        "sha256": "29f2732f3f3e1d90740858e64d925186e27f109994a7bab7c3d53a2e30a90558",
+        "bytes": 4314
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank7.json",
+        "sha256": "306e8607fd4b209a38360f380f44c2a320c1b36769d391f552f00f55e4b7eb7d",
+        "bytes": 71807
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank4.json",
+        "sha256": "71f8814e4c4460cc993c1e7d9166f736ab405fd0e28a977ab94b57d661c77e3b",
+        "bytes": 71807
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank6.json",
+        "sha256": "3ca105b59f8d533cc2c4e220b1a17fc3e46f1e42229b909f724538c5c858a787",
+        "bytes": 71807
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank5.json",
+        "sha256": "2d86751d47ccfa01e5d2da7136898bf3a29d985cc795394a603efba0b378afbc",
+        "bytes": 71807
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank3.json",
+        "sha256": "f982e07094804a050e92cf913bb14a9f667aab2d659f6c7db02d113dddc62c95",
+        "bytes": 71807
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank1.json",
+        "sha256": "7f6512b9d2b7952e82d764146c73173c2711c7774cc12e8adfb5660d96912284",
+        "bytes": 71807
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank0.json",
+        "sha256": "fc23687f048cf08deaefde6b9f758972dfd88243888925ac8afe9331c65e8443",
+        "bytes": 71807
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_journal_rank2.json",
+        "sha256": "1efdb358f316757609d631b71855d41e99a50c5479d6ef1297796782feca9c3c",
+        "bytes": 71807
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank6.json",
+        "sha256": "8b2e0d5aa6faf9d4f7e46504a8318070e65a02dc98202e8a16f9e7a0bf800869",
+        "bytes": 906
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank4.json",
+        "sha256": "5c8e009060a8f5521e3f926d7b5a60f72af4ea50add4a2cbc818ee210b763885",
+        "bytes": 906
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank7.json",
+        "sha256": "0160ac81d4654ecf3db7289af1452542d8d9b72d1e5d7c240368f1ed48dee0d5",
+        "bytes": 906
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank3.json",
+        "sha256": "c0a9db6a1c3002cf82b82b0f629018057edc10f5f0bc4f14a66277b05ea35230",
+        "bytes": 906
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank5.json",
+        "sha256": "a75b7bb4f1190e31093f1f495ed1a636ac4560e005d389d21cacf470ba3bfa9f",
+        "bytes": 906
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank2.json",
+        "sha256": "94637b6a4c9691220c722abc073ed6e274deed8778a3523ae2a58d50833fcfb0",
+        "bytes": 906
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank0.json",
+        "sha256": "2f436b402425c78031069a0cb2d8da59bbdc0e3420f7be82d37c1559bc589426",
+        "bytes": 906
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k2-r1/graph_capture_rank1.json",
+        "sha256": "e2baa01b2dd439f31fe2b929806a643cb268a85a90cb3b8841a867caf9923602",
+        "bytes": 906
+      }
+    }
+  },
+  {
+    "k": 3,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 72,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 6171153920,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467988160496,
+            281467988153488,
+            281467988161456,
+            281467988157616,
+            281467988161840,
+            281467988162704,
+            281467988159920,
+            281467988161936,
+            281467988162128,
+            281467988160688
+          ],
+          [
+            281467988160208,
+            281467988163952,
+            281467988162512
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467988162704": 2,
+          "281467988162512": 8,
+          "281467988157616": 4,
+          "281467988153488": 10,
+          "281467988160208": 10,
+          "281467988160496": 4,
+          "281467988163952": 4,
+          "281467988161456": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467995242224,
+            281467995238768,
+            281467995240208,
+            281467995237712,
+            281467995236656,
+            281467995233776,
+            281467995231184,
+            281467995240688,
+            281467995232336,
+            281467995241936
+          ],
+          [
+            281467995242416,
+            281467995240016,
+            281467995230992
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467995233776": 2,
+          "281467995230992": 8,
+          "281467995237712": 4,
+          "281467995238768": 10,
+          "281467995242416": 10,
+          "281467995242224": 4,
+          "281467995240016": 4,
+          "281467995240208": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468562434064,
+            281468562434544,
+            281468562431568,
+            281468562425904,
+            281468562430032,
+            281468562425424,
+            281468562426480,
+            281468562426288,
+            281468562426384,
+            281468562428400
+          ],
+          [
+            281468562426000,
+            281468562424656,
+            281468562425616
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468562425424": 2,
+          "281468562425616": 8,
+          "281468562425904": 4,
+          "281468562434544": 10,
+          "281468562426000": 10,
+          "281468562434064": 4,
+          "281468562424656": 4,
+          "281468562431568": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468496781456,
+            281468496780976,
+            281468496781648,
+            281468496780208,
+            281468496783952,
+            281468496784912,
+            281468496789136,
+            281468496788272,
+            281468496788176,
+            281468496783472
+          ],
+          [
+            281468496782992,
+            281468496778672,
+            281468496782704
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468496784912": 2,
+          "281468496782704": 8,
+          "281468496780208": 4,
+          "281468496780976": 10,
+          "281468496782992": 10,
+          "281468496781456": 4,
+          "281468496778672": 4,
+          "281468496781648": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468144066224,
+            281468144069872,
+            281468144067568,
+            281468144070352,
+            281468144063536,
+            281468144067184,
+            281468144070928,
+            281468144074000,
+            281468144065168,
+            281468144067952
+          ],
+          [
+            281468144069296,
+            281468144067664,
+            281468144063728
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468144067184": 2,
+          "281468144063728": 8,
+          "281468144070352": 4,
+          "281468144069872": 10,
+          "281468144069296": 10,
+          "281468144066224": 4,
+          "281468144067664": 4,
+          "281468144067568": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468770136912,
+            281468770138352,
+            281468770136528,
+            281468770138640,
+            281468770133552,
+            281468770135664,
+            281468770130096,
+            281468770131152,
+            281468770135088,
+            281468770135184
+          ],
+          [
+            281468770131632,
+            281468770130960,
+            281468770128080
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468770135664": 2,
+          "281468770128080": 8,
+          "281468770138640": 4,
+          "281468770138352": 10,
+          "281468770131632": 10,
+          "281468770136912": 4,
+          "281468770130960": 4,
+          "281468770136528": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468330778096,
+            281468330779824,
+            281468330777040,
+            281468330776656,
+            281468330781648,
+            281468330782800,
+            281468330777712,
+            281468330775792,
+            281468330776560,
+            281468330785296
+          ],
+          [
+            281468330780976,
+            281468330786544,
+            281468330779440
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468330782800": 2,
+          "281468330779440": 8,
+          "281468330776656": 4,
+          "281468330779824": 10,
+          "281468330780976": 10,
+          "281468330778096": 4,
+          "281468330786544": 4,
+          "281468330777040": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468447151632,
+            281468447158640,
+            281468447156048,
+            281468447153072,
+            281468447155568,
+            281468447157104,
+            281468447160560,
+            281468447151440,
+            281468447160944,
+            281468447159600
+          ],
+          [
+            281468447162000,
+            281468447154320,
+            281468447155952
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468447157104": 2,
+          "281468447155952": 8,
+          "281468447153072": 4,
+          "281468447158640": 10,
+          "281468447162000": 10,
+          "281468447151632": 4,
+          "281468447154320": 4,
+          "281468447156048": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/comparison.json",
+        "sha256": "5b695acef6447e045d49cd6c9068406a0a32d8d5b66496e20ec4f94c05fe879d",
+        "bytes": 5665
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank3.json",
+        "sha256": "12f1c18e00e157380aea4d5b66c226d0d4330fe750e6a9611569b99f2911f4c2",
+        "bytes": 4691
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank5.json",
+        "sha256": "c584284a6c507fdefe6bc772a333495c920138a54674d69ca21998d613979e33",
+        "bytes": 4691
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank6.json",
+        "sha256": "f7b68c206b4c2a2b639c7fbca9fbc9dc3390e2f30f3a641badbf7166a57b9d4a",
+        "bytes": 4691
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank1.json",
+        "sha256": "53ffb6205354baf9ef2859c7ec7546b45671208a827e7dbfc7f92d9324412a39",
+        "bytes": 4691
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank4.json",
+        "sha256": "5f16709c362dc4c3a7257b7c1d7528ccb37966529294587965a88ae1acd4febe",
+        "bytes": 4691
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank0.json",
+        "sha256": "5fd901eb66f2cf11f56e250b4fe143e6ae0d0bda14e3cc8b50cd4b390babc4ad",
+        "bytes": 4691
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank2.json",
+        "sha256": "93cdd6b4bd01dd171c1a3b5a7958ca4d514ef34cef171711d526ce7e9c3b159e",
+        "bytes": 4691
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/rank7.json",
+        "sha256": "2240e6dee31681a17e0e9aff4911f1bb0c59e4695d748e92ae7149f41b06f4a1",
+        "bytes": 4691
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank7.json",
+        "sha256": "9b6ff4758dcd971fbde9911aaf11894378e16f6cebae74c0ff7dcbf23deebdc4",
+        "bytes": 75305
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank4.json",
+        "sha256": "27e1d773c123ba003602f3523792f0f58f02be6ad8ab7fcd0f1448a1e7685564",
+        "bytes": 75305
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank6.json",
+        "sha256": "9c18a991f4f29a7e4cbb33e8fd44bba47e1121c68c46809cb596da1650498ead",
+        "bytes": 75305
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank5.json",
+        "sha256": "b649217cd69b0af01bc372cf6d549646f4a82d7f4b6f75ee02dbc0e73bb28fd5",
+        "bytes": 75305
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank3.json",
+        "sha256": "28673178e9e924089502d870aa88774e6ce23ed9ad77b1c2ff1e3042eea17935",
+        "bytes": 75305
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank1.json",
+        "sha256": "33357d0e95f6ec4d72ab99ee3dd5793804e4e2bbec73e6441f92f00235d3895a",
+        "bytes": 75305
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank0.json",
+        "sha256": "08b1c600b209b5260a0a7f8d4445518c91ffe78cb334d954562a4cf28bd4f4f5",
+        "bytes": 75305
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_journal_rank2.json",
+        "sha256": "1ddc589651b2f640b41fce95a27eada33d303494c82251691f1284474786ba68",
+        "bytes": 75305
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank6.json",
+        "sha256": "6b43bfa743953bf1cd1492106a6442f32213b4ab494f146f1137c8de40d4f825",
+        "bytes": 907
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank4.json",
+        "sha256": "fa57cf12f12c71366a930d3e53b888740da7407baac757e237fa66365a7b4831",
+        "bytes": 907
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank7.json",
+        "sha256": "8393f7042956dca54a2ad0b307a87e5f60bac718f5055a7f748a8412a08143aa",
+        "bytes": 907
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank3.json",
+        "sha256": "aa3873fd120edfd9c9fbf032e3ab04e8a163db6f7c44a433b6255843c8177682",
+        "bytes": 907
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank5.json",
+        "sha256": "5c87b8c9c09e0a402222f7f087b8e3d528cf1bad5861543af0c40cacbdaebbad",
+        "bytes": 907
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank2.json",
+        "sha256": "5cae3bf46361bea99ac38445e327b20e0eacbb4e807cd8b7109cf01c99518c8c",
+        "bytes": 907
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank0.json",
+        "sha256": "14ab896fce31226be3e0064054d6e8bb5f4b40ca66868029e3e6629d127f9894",
+        "bytes": 907
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k3-r1/graph_capture_rank1.json",
+        "sha256": "8dd0b12ee11e79d9b424be40a5a715fcf7e2c80fcc9bbc721c1df719d7ce8552",
+        "bytes": 907
+      }
+    }
+  },
+  {
+    "k": 4,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 96,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 5650362880,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467848392880,
+            281467848404304,
+            281467848395088,
+            281467848392976,
+            281467848397776,
+            281467848396624,
+            281467848399312,
+            281467848403248,
+            281467848398736,
+            281467848399696
+          ],
+          [
+            281467848401136,
+            281467848393552,
+            281467848400560
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467848396624": 2,
+          "281467848400560": 8,
+          "281467848392976": 4,
+          "281467848404304": 10,
+          "281467848401136": 10,
+          "281467848392880": 4,
+          "281467848393552": 4,
+          "281467848395088": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468265732368,
+            281468265734480,
+            281468265729392,
+            281468265728048,
+            281468265734576,
+            281468265726800,
+            281468265733616,
+            281468265732944,
+            281468265730160,
+            281468265726704
+          ],
+          [
+            281468265731984,
+            281468265734096,
+            281468265732848
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468265726800": 2,
+          "281468265732848": 8,
+          "281468265728048": 4,
+          "281468265734480": 10,
+          "281468265731984": 10,
+          "281468265732368": 4,
+          "281468265734096": 4,
+          "281468265729392": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467735104336,
+            281467735112400,
+            281467735113456,
+            281467735102608,
+            281467735107312,
+            281467735109616,
+            281467735112496,
+            281467735111824,
+            281467735102896,
+            281467735112688
+          ],
+          [
+            281467735112016,
+            281467735111056,
+            281467735108560
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467735109616": 2,
+          "281467735108560": 8,
+          "281467735102608": 4,
+          "281467735112400": 10,
+          "281467735112016": 10,
+          "281467735104336": 4,
+          "281467735111056": 4,
+          "281467735113456": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468634782736,
+            281468634788496,
+            281468634782256,
+            281468634785904,
+            281468634790512,
+            281468634787152,
+            281468634780624,
+            281468634781008,
+            281468634788784,
+            281468634785040
+          ],
+          [
+            281468634781968,
+            281468634781104,
+            281468634783888
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468634787152": 2,
+          "281468634783888": 8,
+          "281468634785904": 4,
+          "281468634788496": 10,
+          "281468634781968": 10,
+          "281468634782736": 4,
+          "281468634781104": 4,
+          "281468634782256": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468654302320,
+            281468654299152,
+            281468654298192,
+            281468654303280,
+            281468654304912,
+            281468654296656,
+            281468654299824,
+            281468654299536,
+            281468654303760,
+            281468654300592
+          ],
+          [
+            281468654298288,
+            281468654304144,
+            281468654294160
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468654296656": 2,
+          "281468654294160": 8,
+          "281468654303280": 4,
+          "281468654299152": 10,
+          "281468654298288": 10,
+          "281468654302320": 4,
+          "281468654304144": 4,
+          "281468654298192": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468074881008,
+            281468074879088,
+            281468074878320,
+            281468074878608,
+            281468074874768,
+            281468074880912,
+            281468074873520,
+            281468074879952,
+            281468074884368,
+            281468074876496
+          ],
+          [
+            281468074876592,
+            281468074878896,
+            281468074874960
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468074880912": 2,
+          "281468074874960": 8,
+          "281468074878608": 4,
+          "281468074879088": 10,
+          "281468074876592": 10,
+          "281468074881008": 4,
+          "281468074878896": 4,
+          "281468074878320": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467874259504,
+            281467874252400,
+            281467874253744,
+            281467874256048,
+            281467874262864,
+            281467874258448,
+            281467874256240,
+            281467874256144,
+            281467874258064,
+            281467874262576
+          ],
+          [
+            281467874250960,
+            281467874254128,
+            281467874252880
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467874258448": 2,
+          "281467874252880": 8,
+          "281467874256048": 4,
+          "281467874252400": 10,
+          "281467874250960": 10,
+          "281467874259504": 4,
+          "281467874254128": 4,
+          "281467874253744": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468272008688,
+            281468272006960,
+            281468272013488,
+            281468272010800,
+            281468272016368,
+            281468272014832,
+            281468272011760,
+            281468272008112,
+            281468272006096,
+            281468272014256
+          ],
+          [
+            281468272012720,
+            281468272016848,
+            281468272016464
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468272014832": 2,
+          "281468272016464": 8,
+          "281468272010800": 4,
+          "281468272006960": 10,
+          "281468272012720": 10,
+          "281468272008688": 4,
+          "281468272016848": 4,
+          "281468272013488": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/comparison.json",
+        "sha256": "02144b0462779c8b049fc28557be69722feb08a85ba23e7fb9bb1ebb3a251f83",
+        "bytes": 6423
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank3.json",
+        "sha256": "9cb6f661bb8879666a272cfc80b8cd359bfb871bd2b66b638b64baffcc44b6b5",
+        "bytes": 5070
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank5.json",
+        "sha256": "949ff2dd073cfe43e3210ab6d7a12b55564cf9120d0a7bb8ee6592872fa5a24a",
+        "bytes": 5070
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank6.json",
+        "sha256": "22c843c90a2d70c9935d5c0f7b8dd91117cc50278d4b53d68dcd04bc6e108562",
+        "bytes": 5070
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank1.json",
+        "sha256": "650fa9ce8a5c909a26206d7c69526b1346e3bb1d8ae29255971cc66810d490a4",
+        "bytes": 5070
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank4.json",
+        "sha256": "c57c3639c0d29a6387d2402c0b3bcfe5b070790fb11ee3d2e9e884d0d094697a",
+        "bytes": 5070
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank0.json",
+        "sha256": "124071f8cee201a4f7dd97f365c7aa0f55a711f2335e1f7a4d6e4b8f6e9e9e3c",
+        "bytes": 5070
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank2.json",
+        "sha256": "1d97a69860c991dfbc38a958c239e18269a498b695fd6bc310ac0ea87ba96109",
+        "bytes": 5070
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/rank7.json",
+        "sha256": "39b798d388005286b687dc5d616403c989322896e0f3667ec4b9a111604ce8e3",
+        "bytes": 5070
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank7.json",
+        "sha256": "426ad3dadfc4aa149f669e22a844924083f298fc5347b6b279b4de72cc80bf5d",
+        "bytes": 75613
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank4.json",
+        "sha256": "a3cc558c9a44f6a31fc5362b24a82a86a6e06cd36005957cbc37ce9815780a74",
+        "bytes": 75613
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank6.json",
+        "sha256": "dfecd02e187c8ebe1bca9a0e00d3ee87a24bbb06a2906faa76b9ea0af1e9173a",
+        "bytes": 75613
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank5.json",
+        "sha256": "36707b3f5b9d033a8ead73f7eb558b55b48f8168b23eea72cf9767de1053993b",
+        "bytes": 75613
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank3.json",
+        "sha256": "3ae5bfd5e04d36fcae703208fee01371376893b727f7aabb05c8f2568dd62fcd",
+        "bytes": 75613
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank1.json",
+        "sha256": "787e7f2f96b12d1f246db9d0977cd419f0fc54a2a3c939b2190bd878a4f39e2a",
+        "bytes": 75613
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank0.json",
+        "sha256": "8b5abbf3a8f62ffa01a9ae33dcb824170471530c675d1e1513c38884079013ac",
+        "bytes": 75613
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_journal_rank2.json",
+        "sha256": "59b2c1e126ae1235e81ae5ec7e1665b16f2fbb497499f1e500f3755465601fc8",
+        "bytes": 75613
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank6.json",
+        "sha256": "a63706bdcda38c5ec97730789c41104b03d1103ea291f807e1dcf4ef35a14728",
+        "bytes": 907
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank4.json",
+        "sha256": "18e14eb187d0b15a9d4893a284ba3b8896effd40cc5a04f3205501e6c8aa892a",
+        "bytes": 907
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank7.json",
+        "sha256": "7df68b41e4ae11433b897e3f7db82f4b8ca168719794bd4698e0fa49cd6dfbde",
+        "bytes": 907
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank3.json",
+        "sha256": "94084321f3c58177cf3ba5afde00839c124cf64fb463bd3522ee57021f3e5c0e",
+        "bytes": 907
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank5.json",
+        "sha256": "9baab03beb55ce38a6475214377c058ccb015fe149412876d164ac0c6d36c88a",
+        "bytes": 907
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank2.json",
+        "sha256": "36a3e2fd170331b5f305d5b04c01760892179b64b7c25cf53e6ec965777384f4",
+        "bytes": 907
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank0.json",
+        "sha256": "5dce222718c606ba47f749c736563b93ec4113219c180637156a598e535cb3d2",
+        "bytes": 907
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k4-r1/graph_capture_rank1.json",
+        "sha256": "35e21a68eb0d82fac5044cbc03dd9754f67a3e648e55f0d7c7b0e084f93dba45",
+        "bytes": 907
+      }
+    }
+  },
+  {
+    "k": 5,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 120,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 6175574528,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468487282768,
+            281468487284880,
+            281468487284016,
+            281468487281712,
+            281468487274704,
+            281468487277488,
+            281468487279024,
+            281468487277104,
+            281468487286032,
+            281468487275952
+          ],
+          [
+            281468487275568,
+            281468487281424,
+            281468487278352
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468487277488": 2,
+          "281468487278352": 8,
+          "281468487281712": 4,
+          "281468487284880": 10,
+          "281468487275568": 10,
+          "281468487282768": 4,
+          "281468487281424": 4,
+          "281468487284016": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468708190736,
+            281468708187856,
+            281468708183152,
+            281468708185936,
+            281468708185648,
+            281468708189968,
+            281468708182864,
+            281468708184688,
+            281468708190448,
+            281468708190352
+          ],
+          [
+            281468708185072,
+            281468708181520,
+            281468708189680
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468708189968": 2,
+          "281468708189680": 8,
+          "281468708185936": 4,
+          "281468708187856": 10,
+          "281468708185072": 10,
+          "281468708190736": 4,
+          "281468708181520": 4,
+          "281468708183152": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468125243024,
+            281468125248016,
+            281468125242064,
+            281468125241584,
+            281468125238896,
+            281468125241488,
+            281468125248976,
+            281468125245328,
+            281468125247632,
+            281468125243312
+          ],
+          [
+            281468125240048,
+            281468125248784,
+            281468125242832
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468125241488": 2,
+          "281468125242832": 8,
+          "281468125241584": 4,
+          "281468125248016": 10,
+          "281468125240048": 10,
+          "281468125243024": 4,
+          "281468125248784": 4,
+          "281468125242064": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468278662128,
+            281468278661456,
+            281468278662704,
+            281468278658864,
+            281468278665776,
+            281468278664720,
+            281468278661936,
+            281468278667792,
+            281468278665008,
+            281468278662416
+          ],
+          [
+            281468278668560,
+            281468278666736,
+            281468278660976
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468278664720": 2,
+          "281468278660976": 8,
+          "281468278658864": 4,
+          "281468278661456": 10,
+          "281468278668560": 10,
+          "281468278662128": 4,
+          "281468278666736": 4,
+          "281468278662704": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468171713136,
+            281468171709968,
+            281468171712272,
+            281468171703728,
+            281468171709008,
+            281468171705360,
+            281468171705072,
+            281468171713328,
+            281468171708336,
+            281468171712752
+          ],
+          [
+            281468171702480,
+            281468171709200,
+            281468171708048
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468171705360": 2,
+          "281468171708048": 8,
+          "281468171703728": 4,
+          "281468171709968": 10,
+          "281468171702480": 10,
+          "281468171713136": 4,
+          "281468171709200": 4,
+          "281468171712272": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468311098608,
+            281468311098800,
+            281468311101584,
+            281468311099472,
+            281468311105136,
+            281468311106480,
+            281468311108016,
+            281468311099568,
+            281468311103504,
+            281468311108880
+          ],
+          [
+            281468311098992,
+            281468311105616,
+            281468311105712
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468311106480": 2,
+          "281468311105712": 8,
+          "281468311099472": 4,
+          "281468311098800": 10,
+          "281468311098992": 10,
+          "281468311098608": 4,
+          "281468311105616": 4,
+          "281468311101584": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468474042096,
+            281468474046992,
+            281468474045072,
+            281468474037776,
+            281468474045456,
+            281468474038736,
+            281468474042288,
+            281468474044304,
+            281468474046704,
+            281468474046224
+          ],
+          [
+            281468474040368,
+            281468474042768,
+            281468474043920
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468474038736": 2,
+          "281468474043920": 8,
+          "281468474037776": 4,
+          "281468474046992": 10,
+          "281468474040368": 10,
+          "281468474042096": 4,
+          "281468474042768": 4,
+          "281468474045072": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468483075344,
+            281468483068144,
+            281468483066608,
+            281468483074768,
+            281468483068048,
+            281468483066128,
+            281468483075824,
+            281468483073616,
+            281468483073808,
+            281468483064496
+          ],
+          [
+            281468483068432,
+            281468483074960,
+            281468483065648
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468483066128": 2,
+          "281468483065648": 8,
+          "281468483074768": 4,
+          "281468483068144": 10,
+          "281468483068432": 10,
+          "281468483075344": 4,
+          "281468483074960": 4,
+          "281468483066608": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/comparison.json",
+        "sha256": "02b44f1e48d6cae520f98cbfef0c24335112fb0dbe034ff1c528cd1242704925",
+        "bytes": 7109
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank3.json",
+        "sha256": "eefd36d798ec34cf6c2ba0b070e51be130543ca9327080914354ebfc2fe3aa12",
+        "bytes": 5413
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank5.json",
+        "sha256": "278d5951ebfb5e45d51c92a2709aad2b9ce2534481b522224ac3ca18c60b03b5",
+        "bytes": 5413
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank6.json",
+        "sha256": "461ee2d5f5c66a38139bc6ccdd8605297e9fc3767d58662ff113377dba6494cf",
+        "bytes": 5413
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank1.json",
+        "sha256": "dbc0edcb4e51299699357532af59eafb19b3f7513d57773d9052093061cc4341",
+        "bytes": 5413
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank4.json",
+        "sha256": "c1f98ac09f9c0264195c8013c416f95792485c489e7f1ba5f464ad510b01505e",
+        "bytes": 5413
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank0.json",
+        "sha256": "a82189df2b213153666ec2a763df298f1d60e872e3e7ac883a49112937ee7d8d",
+        "bytes": 5413
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank2.json",
+        "sha256": "5a27e57986d757a023b68fad9493632a801b2f245261d7cb158a1510fc7b7a98",
+        "bytes": 5413
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/rank7.json",
+        "sha256": "9b274ed9e6c1d0099b91e1b85428a400b25b387457c06946660dd5b103037da4",
+        "bytes": 5413
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank7.json",
+        "sha256": "3c526a66f573ea5a11a5b1c5122f7c647b731029f43badc3ffcf1646a39660d0",
+        "bytes": 79071
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank4.json",
+        "sha256": "752b548dbecc01769b8c20faefba3c671bbd52cb2e6af1f63a85634a288e3200",
+        "bytes": 79071
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank6.json",
+        "sha256": "0033fc1e789763e3679bdfa7981274edede086715ff615739612331a640604b4",
+        "bytes": 79071
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank5.json",
+        "sha256": "f4d1072038f7bfc4759c2efe2b1b907142ef3b2d3e9ea05190734b6d16be9170",
+        "bytes": 79071
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank3.json",
+        "sha256": "530beb5f5d6b1aa3d231c4b0ae42ab649f9da39fea043abd4a744a9e8b2fd8f3",
+        "bytes": 79071
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank1.json",
+        "sha256": "5c096451bb669006314aa7f574af2a4278b7352a948cfe8ed5e55321a45da4bb",
+        "bytes": 79071
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank0.json",
+        "sha256": "ef8c6ec654399f0b4c824545157253164a207141b5cb50e392a5d123b2523eed",
+        "bytes": 79071
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_journal_rank2.json",
+        "sha256": "de31eb51a4ba5008dd50be383afe59cdc489e27b0577fa01f43c5ea1e1018fa0",
+        "bytes": 79071
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank6.json",
+        "sha256": "fdd0a4c6a64e0583cd449e27b6901e24eeebb591c9a1f2b8059a020d12a2df62",
+        "bytes": 908
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank4.json",
+        "sha256": "bb6d2255555cddc079a716fe42bc0a1b320bd0266de90dd24e3d2b1a76bf2e18",
+        "bytes": 908
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank7.json",
+        "sha256": "10b3d5ae6afb22f7eba9886c1428df17f6a0d4be7120bbfdac4bb016648df592",
+        "bytes": 908
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank3.json",
+        "sha256": "82855f804353d857322ba91e4e804939c10d14ea5d7e649d344bda54a77a706e",
+        "bytes": 908
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank5.json",
+        "sha256": "9d381c8e51438aefdb298dd8f1e876bf8f5aeb295e11bd0390bd0144e50bd9a8",
+        "bytes": 908
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank2.json",
+        "sha256": "56a64d7eea5a377792e1570829c0c8a58cede6efcb03ac6ee1ef69a74787de37",
+        "bytes": 908
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank0.json",
+        "sha256": "58b3744bb27822b12caa92ef2a783c44bb47c40ab90478b6af4460d83819bcd3",
+        "bytes": 908
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k5-r1/graph_capture_rank1.json",
+        "sha256": "58d66e990a70b34da0cd3e88a09d2c5c92fa4c3c2ab4b341f4c7f4d1394b0348",
+        "bytes": 908
+      }
+    }
+  },
+  {
+    "k": 6,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 144,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 4560104960,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468114317488,
+            281468114313840,
+            281468114312400,
+            281468114320848,
+            281468114313264,
+            281468114320656,
+            281468114310480,
+            281468114320464,
+            281468114317872,
+            281468114321136
+          ],
+          [
+            281468114309328,
+            281468114313552,
+            281468114320560
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468114320656": 2,
+          "281468114320560": 8,
+          "281468114320848": 4,
+          "281468114313840": 10,
+          "281468114309328": 10,
+          "281468114317488": 4,
+          "281468114313552": 4,
+          "281468114312400": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468467737232,
+            281468467733392,
+            281468467733200,
+            281468467732336,
+            281468467730320,
+            281468467729072,
+            281468467738768,
+            281468467732624,
+            281468467739344,
+            281468467730800
+          ],
+          [
+            281468467731184,
+            281468467729168,
+            281468467737616
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468467729072": 2,
+          "281468467737616": 8,
+          "281468467732336": 4,
+          "281468467733392": 10,
+          "281468467731184": 10,
+          "281468467737232": 4,
+          "281468467729168": 4,
+          "281468467733200": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467947236528,
+            281467947228560,
+            281467947234416,
+            281467947228176,
+            281467947229904,
+            281467947227696,
+            281467947232400,
+            281467947234032,
+            281467947231632,
+            281467947231056
+          ],
+          [
+            281467947228848,
+            281467947227408,
+            281467947225872
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467947227696": 2,
+          "281467947225872": 8,
+          "281467947228176": 4,
+          "281467947228560": 10,
+          "281467947228848": 10,
+          "281467947236528": 4,
+          "281467947227408": 4,
+          "281467947234416": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467277075536,
+            281467277074096,
+            281467277080720,
+            281467277078128,
+            281467277073424,
+            281467277080624,
+            281467277078320,
+            281467277073040,
+            281467277079280,
+            281467277076880
+          ],
+          [
+            281467277071408,
+            281467277074480,
+            281467277076112
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467277080624": 2,
+          "281467277076112": 8,
+          "281467277078128": 4,
+          "281467277074096": 10,
+          "281467277071408": 10,
+          "281467277075536": 4,
+          "281467277074480": 4,
+          "281467277080720": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468423616176,
+            281468423612048,
+            281468423608976,
+            281468423616080,
+            281468423609552,
+            281468423609264,
+            281468423612720,
+            281468423612432,
+            281468423614256,
+            281468423609744
+          ],
+          [
+            281468423611664,
+            281468423613392,
+            281468423617712
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468423609264": 2,
+          "281468423617712": 8,
+          "281468423616080": 4,
+          "281468423612048": 10,
+          "281468423611664": 10,
+          "281468423616176": 4,
+          "281468423613392": 4,
+          "281468423608976": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468453370480,
+            281468453369712,
+            281468453369328,
+            281468453371824,
+            281468453367120,
+            281468453363856,
+            281468453368368,
+            281468453371248,
+            281468453362800,
+            281468453370576
+          ],
+          [
+            281468453365680,
+            281468453360880,
+            281468453365104
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468453363856": 2,
+          "281468453365104": 8,
+          "281468453371824": 4,
+          "281468453369712": 10,
+          "281468453365680": 10,
+          "281468453370480": 4,
+          "281468453360880": 4,
+          "281468453369328": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468600182896,
+            281468600184720,
+            281468600181072,
+            281468600178384,
+            281468600182224,
+            281468600181552,
+            281468600186640,
+            281468600179536,
+            281468600184144,
+            281468600187024
+          ],
+          [
+            281468600178096,
+            281468600182800,
+            281468600178192
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468600181552": 2,
+          "281468600178192": 8,
+          "281468600178384": 4,
+          "281468600184720": 10,
+          "281468600178096": 10,
+          "281468600182896": 4,
+          "281468600182800": 4,
+          "281468600181072": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468773902928,
+            281468773892848,
+            281468773902352,
+            281468773894288,
+            281468773898512,
+            281468773893136,
+            281468773892656,
+            281468773900912,
+            281468773903120,
+            281468773900048
+          ],
+          [
+            281468773898704,
+            281468773895248,
+            281468773899664
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468773893136": 2,
+          "281468773899664": 8,
+          "281468773894288": 4,
+          "281468773892848": 10,
+          "281468773898704": 10,
+          "281468773902928": 4,
+          "281468773895248": 4,
+          "281468773902352": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/comparison.json",
+        "sha256": "caae3d6e73011680cd553598e6c8d64b7a907b3fe4ee51b4b57c7c5362857cb0",
+        "bytes": 7871
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank3.json",
+        "sha256": "05040f7ce4f28a002717d2cfc5ad9d35d0153c43ca83c469b7438efcc9aa8f0d",
+        "bytes": 5794
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank5.json",
+        "sha256": "6313b73edf11ef1d4d633bc920156258e7a6ebe115440dd5d2d74d06e92fa525",
+        "bytes": 5794
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank6.json",
+        "sha256": "e67a179744d1857d0b2a1d3ddf2bde0d4393f9b1ad67712e33d88ae632be3805",
+        "bytes": 5794
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank1.json",
+        "sha256": "d26495885cd65a2d66bd1cf2ed6f22b843226e1a00fc87862d6f568626b965cb",
+        "bytes": 5794
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank4.json",
+        "sha256": "c99e49ec4eb1f962d55b736981f3cfdefa7f376b5d740916328836ebb3544864",
+        "bytes": 5794
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank0.json",
+        "sha256": "fd921d174d0778415cfe5dd382acb56875319f8a32978fe00208138d5f253ef6",
+        "bytes": 5794
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank2.json",
+        "sha256": "15cb3c931993ef9288ba13f0dc59e3e051462580cfca4b187592189fe938473b",
+        "bytes": 5794
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/rank7.json",
+        "sha256": "1333e5da0ddc7417616442a69e2afa5dc8f06c435eedf09b4b1e4cabba7ab6bf",
+        "bytes": 5794
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank7.json",
+        "sha256": "4fcf7439b9c8f78126139227a3e3e53bd5228f6fe3b1e2915fca161f7bba2002",
+        "bytes": 81834
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank4.json",
+        "sha256": "4f4c3737d6da262be2777de944e6a29ef2e7ab65117ed84d6d4193ef2af2e1e2",
+        "bytes": 81834
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank6.json",
+        "sha256": "e37fb68a8b1ecd11a4f60731c6b59f4b69d7de92d9021f625226086dff23c058",
+        "bytes": 81834
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank5.json",
+        "sha256": "fba42dfde274e7e7715bfe710e708d85db406c9e893de34558c8dca59efe8696",
+        "bytes": 81834
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank3.json",
+        "sha256": "43f5e8f274db94f519cc1b90544b854c53751f25b32e05b3b80d6cb45fe1ff79",
+        "bytes": 81834
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank1.json",
+        "sha256": "fa6d41199b1797c73c5769b4f052f3fb6b015ce81ec176dd29cb796f9b694b0d",
+        "bytes": 81834
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank0.json",
+        "sha256": "d0a8446e9cc6d5ee04402cea311e92d78b0c2ef7b98902cdb399a3b3d6cb0e20",
+        "bytes": 81834
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_journal_rank2.json",
+        "sha256": "5a3afd5e917c5085f6d3fb22c6f1200e698b17ad8b2dce9a6306e27f9abb14ef",
+        "bytes": 81834
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank6.json",
+        "sha256": "b648a0a3b58b57be401c6c42bc2d1d191d1c90728884552ac9be290bbe02a3dc",
+        "bytes": 908
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank4.json",
+        "sha256": "e2577fa3149a539fe44b826b6bc23c06813862d921b764c976a8785dfd3f5177",
+        "bytes": 908
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank7.json",
+        "sha256": "299119d1076618d9ca779cdfb4477548f843f249aa4d507117efad45a93b7eb8",
+        "bytes": 908
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank3.json",
+        "sha256": "0354708a384655ef97d1dcbffa088c8752578e854bde6cfe5fa9b04ebcfa34d3",
+        "bytes": 908
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank5.json",
+        "sha256": "a7cfe7b276fd98a0cb1b14a41f3a3946daed15d757c28836c9027de32993ac3e",
+        "bytes": 908
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank2.json",
+        "sha256": "5948b70c6666310ba25a643056b044726db501b1c16032924dcc08f220a445f1",
+        "bytes": 908
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank0.json",
+        "sha256": "b645e8679a8bb9757bb6c98b60b9bd025e73ea4a08adc79a55c495b311a32bc9",
+        "bytes": 908
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k6-r1/graph_capture_rank1.json",
+        "sha256": "59dd122fd52595f670b231885af4d9b1fbfbd71faf3ef83ecda6c6f71d0f81f1",
+        "bytes": 908
+      }
+    }
+  },
+  {
+    "k": 7,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 168,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 6183655424,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468432078064,
+            281468432088432,
+            281468432081136,
+            281468432080560,
+            281468432078736,
+            281468432082384,
+            281468432083632,
+            281468432079504,
+            281468432085264,
+            281468432084400
+          ],
+          [
+            281468432084880,
+            281468432085648,
+            281468432078832
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468432082384": 2,
+          "281468432078832": 8,
+          "281468432080560": 4,
+          "281468432088432": 10,
+          "281468432084880": 10,
+          "281468432078064": 4,
+          "281468432085648": 4,
+          "281468432081136": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468180771472,
+            281468180773968,
+            281468180764464,
+            281468180770032,
+            281468180771952,
+            281468180770800,
+            281468180769168,
+            281468180770128,
+            281468180771280,
+            281468180763408
+          ],
+          [
+            281468180766288,
+            281468180774064,
+            281468180773008
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468180770800": 2,
+          "281468180773008": 8,
+          "281468180770032": 4,
+          "281468180773968": 10,
+          "281468180766288": 10,
+          "281468180771472": 4,
+          "281468180774064": 4,
+          "281468180764464": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468117855088,
+            281468117852016,
+            281468117860080,
+            281468117852880,
+            281468117852304,
+            281468117851440,
+            281468117856720,
+            281468117854896,
+            281468117850288,
+            281468117859024
+          ],
+          [
+            281468117857008,
+            281468117851920,
+            281468117855664
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468117851440": 2,
+          "281468117855664": 8,
+          "281468117852880": 4,
+          "281468117852016": 10,
+          "281468117857008": 10,
+          "281468117855088": 4,
+          "281468117851920": 4,
+          "281468117860080": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468437655536,
+            281468437652272,
+            281468437654288,
+            281468437658032,
+            281468437650448,
+            281468437650064,
+            281468437649104,
+            281468437650160,
+            281468437649008,
+            281468437656784
+          ],
+          [
+            281468437655248,
+            281468437654768,
+            281468437648048
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468437650064": 2,
+          "281468437648048": 8,
+          "281468437658032": 4,
+          "281468437652272": 10,
+          "281468437655248": 10,
+          "281468437655536": 4,
+          "281468437654768": 4,
+          "281468437654288": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467898967920,
+            281467898963792,
+            281467898967824,
+            281467898962160,
+            281467898960912,
+            281467898966480,
+            281467898960048,
+            281467898960624,
+            281467898969744,
+            281467898965712
+          ],
+          [
+            281467898965808,
+            281467898964176,
+            281467898964272
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467898966480": 2,
+          "281467898964272": 8,
+          "281467898962160": 4,
+          "281467898963792": 10,
+          "281467898965808": 10,
+          "281467898967920": 4,
+          "281467898964176": 4,
+          "281467898967824": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467937516688,
+            281467937516880,
+            281467937521200,
+            281467937510928,
+            281467937514672,
+            281467937512176,
+            281467937510064,
+            281467937516400,
+            281467937516208,
+            281467937512944
+          ],
+          [
+            281467937519088,
+            281467937514576,
+            281467937515152
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467937512176": 2,
+          "281467937515152": 8,
+          "281467937510928": 4,
+          "281467937516880": 10,
+          "281467937519088": 10,
+          "281467937516688": 4,
+          "281467937514576": 4,
+          "281467937521200": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468193707344,
+            281468193709936,
+            281468193709840,
+            281468193708688,
+            281468193713968,
+            281468193704176,
+            281468193711088,
+            281468193710416,
+            281468193705712,
+            281468193702064
+          ],
+          [
+            281468193704080,
+            281468193709456,
+            281468193713392
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468193704176": 2,
+          "281468193713392": 8,
+          "281468193708688": 4,
+          "281468193709936": 10,
+          "281468193704080": 10,
+          "281468193707344": 4,
+          "281468193709456": 4,
+          "281468193709840": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468687918736,
+            281468687915856,
+            281468687916432,
+            281468687917008,
+            281468687920176,
+            281468687911824,
+            281468687912496,
+            281468687917872,
+            281468687912016,
+            281468687916240
+          ],
+          [
+            281468687910192,
+            281468687910288,
+            281468687920368
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468687911824": 2,
+          "281468687920368": 8,
+          "281468687917008": 4,
+          "281468687915856": 10,
+          "281468687910192": 10,
+          "281468687918736": 4,
+          "281468687910288": 4,
+          "281468687916432": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/comparison.json",
+        "sha256": "a1fd41a49abde3d2bc7f17bde86c601b8a4b9dd41e53f4cabaa9f67f70445aee",
+        "bytes": 8591
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank3.json",
+        "sha256": "cfa51d37056e1d49cb1630220801470ed738d45f290375c5b0b2528cdc657502",
+        "bytes": 6154
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank5.json",
+        "sha256": "9f685945f8d45ea820d02242de6d7870b82f7027af521167faf1b12f77903ee8",
+        "bytes": 6154
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank6.json",
+        "sha256": "bae9b6c2fb03f740cbb4b3f5dd5e92c8472dfe5f90407e5019a45be386d60621",
+        "bytes": 6154
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank1.json",
+        "sha256": "e4d3daa68659b6c02eff3f947c63834155395ec0ce992bc8a96e2b4583f45d94",
+        "bytes": 6154
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank4.json",
+        "sha256": "e6550a96ee1f3a8f1582f1e371202db35ef2be39e10f1492e1504ad49e64f635",
+        "bytes": 6154
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank0.json",
+        "sha256": "528fbdf6116e83c69d9c662910d3fd7a816e3eb169bcd86f37855bf40c159304",
+        "bytes": 6154
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank2.json",
+        "sha256": "e60cc26db97c58707eb8d51993b8d81d9c525a45046760302572bd966c50c494",
+        "bytes": 6154
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/rank7.json",
+        "sha256": "aab8168c57ae94adf1cdc8ec2750ff3fb563c5b9e8836df64633b76e31edbce9",
+        "bytes": 6154
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank7.json",
+        "sha256": "f7d1689c1e95fc48eefcceeea48583ae040c1540ddc89f7e14f53a0de9c617f0",
+        "bytes": 83830
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank4.json",
+        "sha256": "c8764d08cafcc91afa69c0c649e6c6f876e4d372222b805cef41dfe190e60173",
+        "bytes": 83830
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank6.json",
+        "sha256": "a5c2d5e91f148103bfa64db7b34b702a2be247f918065e92e439776ff9f66a4a",
+        "bytes": 83830
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank5.json",
+        "sha256": "cf154ad49b2df443c0c2ebdaf8508cec5aabfcf9abab2cfdafe94078f44b0664",
+        "bytes": 83830
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank3.json",
+        "sha256": "3d9430c16fc0173f7dfcce26afd5ca1fbb9361674d9113f525f8877d790e4df0",
+        "bytes": 83830
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank1.json",
+        "sha256": "7f38507f3d023af4bbeccf24dc9bc06c9d9d96da51dd24897fdef61fa9c60c6b",
+        "bytes": 83830
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank0.json",
+        "sha256": "4ac0536e979c31add2a56bc4ff986be0f3dc58e8f947f0df500fe48d063afb20",
+        "bytes": 83830
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_journal_rank2.json",
+        "sha256": "91389025c7f4d32ae8ae36357c27735351394e00b6cf0421fd2929ecd5022730",
+        "bytes": 83830
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank6.json",
+        "sha256": "ac9fda836b42a9f07886f24457407c9c16d94f2441df0529c65236b264342de0",
+        "bytes": 908
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank4.json",
+        "sha256": "72a6fb2795c50cd040d2e06e49460c87d5013af21687a7d8b44349c41ab8f8fe",
+        "bytes": 908
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank7.json",
+        "sha256": "41b3ad3bb12156d999da1b3a2fa96e0dd9c4ff0ee4f79236bff1d5d1bac07f66",
+        "bytes": 908
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank3.json",
+        "sha256": "a78f45401e80714a6c848fc961e6c0c714391144273a0185c172ba7c2fc6e2e3",
+        "bytes": 908
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank5.json",
+        "sha256": "71e599a8cac084ebdac48ac5134f0a779bf4267e4adb09948adcb9cd6071bc91",
+        "bytes": 908
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank2.json",
+        "sha256": "f481a128eadde8e4d631a321fd83c28cb42c54acf94a4ab04b06204d6880c091",
+        "bytes": 908
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank0.json",
+        "sha256": "5ee38d98211e7b5c67df22192f366c7868aa565c01c11009acf650aa2f4f0c7e",
+        "bytes": 908
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k7-r1/graph_capture_rank1.json",
+        "sha256": "2c44973533fa224b11b2fd2c6a3bdcca0c2916c4a165308905756cd2484e4149",
+        "bytes": 908
+      }
+    }
+  },
+  {
+    "k": 8,
+    "status": "diagnostic_passed",
+    "cases": 11,
+    "cpu_markov_tokens": 192,
+    "all_rank_proposals_exact": true,
+    "same_bucket_stages_exact": true,
+    "target_aux_synthetic": true,
+    "full_target_validated": false,
+    "peak_allocated_bytes": 6185003008,
+    "graphs_by_rank": [
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467991045904,
+            281467991042448,
+            281467991039952,
+            281467991038992,
+            281467991038416,
+            281467991047344,
+            281467991042736,
+            281467991040624,
+            281467991040336,
+            281467991047728
+          ],
+          [
+            281467991045520,
+            281467991041776,
+            281467991047152
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467991047344": 2,
+          "281467991047152": 8,
+          "281467991038992": 4,
+          "281467991042448": 10,
+          "281467991045520": 10,
+          "281467991045904": 4,
+          "281467991041776": 4,
+          "281467991039952": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467757453456,
+            281467757450768,
+            281467757455952,
+            281467757451056,
+            281467757450864,
+            281467757451920,
+            281467757456624,
+            281467757455568,
+            281467757450192,
+            281467757458736
+          ],
+          [
+            281467757453648,
+            281467757454608,
+            281467757455088
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467757451920": 2,
+          "281467757455088": 8,
+          "281467757451056": 4,
+          "281467757450768": 10,
+          "281467757453648": 10,
+          "281467757453456": 4,
+          "281467757454608": 4,
+          "281467757455952": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281467759960016,
+            281467759957040,
+            281467759965776,
+            281467759960304,
+            281467759964816,
+            281467759965200,
+            281467759964624,
+            281467759964912,
+            281467759957424,
+            281467759964432
+          ],
+          [
+            281467759962320,
+            281467759964240,
+            281467759964048
+          ]
+        ],
+        "actual_graph_replays": {
+          "281467759965200": 2,
+          "281467759964048": 8,
+          "281467759960304": 4,
+          "281467759957040": 10,
+          "281467759962320": 10,
+          "281467759960016": 4,
+          "281467759964240": 4,
+          "281467759965776": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468696329872,
+            281468696329008,
+            281468696322096,
+            281468696321616,
+            281468696324880,
+            281468696320848,
+            281468696325744,
+            281468696322192,
+            281468696322864,
+            281468696328432
+          ],
+          [
+            281468696326512,
+            281468696321232,
+            281468696327856
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468696320848": 2,
+          "281468696327856": 8,
+          "281468696321616": 4,
+          "281468696329008": 10,
+          "281468696326512": 10,
+          "281468696329872": 4,
+          "281468696321232": 4,
+          "281468696322096": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468656151120,
+            281468656153520,
+            281468656151024,
+            281468656146128,
+            281468656155248,
+            281468656149104,
+            281468656156208,
+            281468656153040,
+            281468656153904,
+            281468656151408
+          ],
+          [
+            281468656147184,
+            281468656155344,
+            281468656148240
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468656149104": 2,
+          "281468656148240": 8,
+          "281468656146128": 4,
+          "281468656153520": 10,
+          "281468656147184": 10,
+          "281468656151120": 4,
+          "281468656155344": 4,
+          "281468656151024": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468425402896,
+            281468425401360,
+            281468425398960,
+            281468425400496,
+            281468425393488,
+            281468425393776,
+            281468425399728,
+            281468425403856,
+            281468425398096,
+            281468425395600
+          ],
+          [
+            281468425403280,
+            281468425400688,
+            281468425403568
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468425393776": 2,
+          "281468425403568": 8,
+          "281468425400496": 4,
+          "281468425401360": 10,
+          "281468425403280": 10,
+          "281468425402896": 4,
+          "281468425400688": 4,
+          "281468425398960": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468415648848,
+            281468415645968,
+            281468415654800,
+            281468415655280,
+            281468415653168,
+            281468415653648,
+            281468415649328,
+            281468415654416,
+            281468415648272,
+            281468415654032
+          ],
+          [
+            281468415655760,
+            281468415645104,
+            281468415645680
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468415653648": 2,
+          "281468415645680": 8,
+          "281468415655280": 4,
+          "281468415645968": 10,
+          "281468415655760": 10,
+          "281468415648848": 4,
+          "281468415645104": 4,
+          "281468415654800": 2
+        }
+      },
+      {
+        "context_graphs": 10,
+        "query_graphs": 3,
+        "real_query_replays": 22,
+        "real_context_replays": 22,
+        "graph_ids": [
+          [
+            281468345722320,
+            281468345725008,
+            281468345719632,
+            281468345726640,
+            281468345721168,
+            281468345725776,
+            281468345725680,
+            281468345723088,
+            281468345720496,
+            281468345719248
+          ],
+          [
+            281468345724624,
+            281468345721456,
+            281468345722128
+          ]
+        ],
+        "actual_graph_replays": {
+          "281468345725776": 2,
+          "281468345722128": 8,
+          "281468345726640": 4,
+          "281468345725008": 10,
+          "281468345724624": 10,
+          "281468345722320": 4,
+          "281468345721456": 4,
+          "281468345719632": 2
+        }
+      }
+    ],
+    "files": {
+      "comparison.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/comparison.json",
+        "sha256": "d484c2824d7e50e18992b1dedc48a7e731dad9b0843e0aba8a7bc8adbfe03afb",
+        "bytes": 9347
+      },
+      "rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank3.json",
+        "sha256": "0f179bec30cd97a2d2d8166022802e72065271406020ecaa8948cfd3da2a1fdd",
+        "bytes": 6532
+      },
+      "rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank5.json",
+        "sha256": "0c5654fab2cd9e295372006bb153284a7a2db6ed15f80d7d209e105f001d25ab",
+        "bytes": 6532
+      },
+      "rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank6.json",
+        "sha256": "2220c689a1c871240627661d7d69c5d37aa9523071a5c90309c2d91be5ede054",
+        "bytes": 6532
+      },
+      "rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank1.json",
+        "sha256": "d18b0d624713f15a6e42ee7e097cb271e2e59ba1a9e7628727af1bba887666f4",
+        "bytes": 6532
+      },
+      "rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank4.json",
+        "sha256": "b259aec34d84881677b5b43769d26f3b37c70a47981e9ab26eacd728f1a73222",
+        "bytes": 6532
+      },
+      "rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank0.json",
+        "sha256": "027f0ae59f870a3a585cd0198898043ce2ab5911de966059432253f2cd04bc48",
+        "bytes": 6532
+      },
+      "rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank2.json",
+        "sha256": "a292d9dd594bb32da934fa932d31b12c992e63db62d135caaea07755a3a5b28b",
+        "bytes": 6532
+      },
+      "rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/rank7.json",
+        "sha256": "3436afc5e216056e94f0d47dd7328da01aeaf0e5353cd0bc03d74fed37213745",
+        "bytes": 6532
+      },
+      "graph_journal_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank7.json",
+        "sha256": "113c7fc98d3ded850bdc2e78ac8ec7abdf7782206ee862300b90cba7a9146b28",
+        "bytes": 88022
+      },
+      "graph_journal_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank4.json",
+        "sha256": "c09217e618926c0a797357837a0ce6078b9d51246b5bfffc8724d07442711579",
+        "bytes": 88022
+      },
+      "graph_journal_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank6.json",
+        "sha256": "e1fa58f01598fc310f94d4e5c6643eb8e9879488c9048682f510dc4a7a606733",
+        "bytes": 88022
+      },
+      "graph_journal_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank5.json",
+        "sha256": "0ea562bfc263c6a6bf1ba6f588cac4b51bd01f9fe22b4b35ad76556e4c47293c",
+        "bytes": 88022
+      },
+      "graph_journal_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank3.json",
+        "sha256": "308571137be385cd359bf5bec7a632066ec841081cf06824dd8fe798bdff695b",
+        "bytes": 88022
+      },
+      "graph_journal_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank1.json",
+        "sha256": "f3356793a58904f889bcb3e6a0234e6253a41117d58fe68a800fdee1c3870efc",
+        "bytes": 88022
+      },
+      "graph_journal_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank0.json",
+        "sha256": "57ca9b511689925811cd27c764f7486f4e1fd60f8f33f75cdf8e4abe5a21df23",
+        "bytes": 88022
+      },
+      "graph_journal_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_journal_rank2.json",
+        "sha256": "803bb92904fd4dd267d9ea71416ca4049a9050c512517904101d4307e031b4b0",
+        "bytes": 88022
+      },
+      "graph_capture_rank6.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank6.json",
+        "sha256": "d9c70b55c38438fe1856d56b5ea211dc454b4c0020df2a2bcffee63d74b35223",
+        "bytes": 908
+      },
+      "graph_capture_rank4.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank4.json",
+        "sha256": "883fb2998d5f7a39ed39ec2a1f643d55daa9e5e50131a815ccefd63bebca41f0",
+        "bytes": 908
+      },
+      "graph_capture_rank7.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank7.json",
+        "sha256": "696a98de7f7081ff9cc388592b077417f02a199bc40dd4b2c3cde6ac3caadd2d",
+        "bytes": 908
+      },
+      "graph_capture_rank3.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank3.json",
+        "sha256": "54b140cdeca4e8a8ce72b3d9482f6c461d0aacd04ffc0767e285cc8cd67c911d",
+        "bytes": 908
+      },
+      "graph_capture_rank5.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank5.json",
+        "sha256": "b6531f688dffb5bde4d3e0e4d002cd66404876483e33ebb49b30ef9202b866ca",
+        "bytes": 908
+      },
+      "graph_capture_rank2.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank2.json",
+        "sha256": "dee75e69e80cb5ab0aa11e7fe86f3899835c74641bde76ff92e079bf93479d98",
+        "bytes": 908
+      },
+      "graph_capture_rank0.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank0.json",
+        "sha256": "6466b5841fd0c2d0432eacffa09b52a934ace892e4ffa7d3b57c38b7336cf9ee",
+        "bytes": 908
+      },
+      "graph_capture_rank1.json": {
+        "source": "/tmp/v41-dspark-proposer-graph-k8-r1/graph_capture_rank1.json",
+        "sha256": "bcdaa610077a542b5e77bdba38c53e80cd8943a49b6af9e511d35a45866d727c",
+        "bytes": 908
+      }
+    }
+  }
+]

@@ -13,8 +13,8 @@ from vllm.forward_context import BatchDescriptor
 from vllm_ascend.attention.utils import AscendCommonAttentionMetadata
 
 
-def graph_cases():
-    return [
+def graph_cases(tokens=5):
+    cases = [
         ([9], [0]),
         ([33], [0]),
         ([129], [0]),
@@ -22,11 +22,12 @@ def graph_cases():
         ([17, 41, 113], [1, 2, 3]),
         ([64, 64, 64, 64], [0, 1, 2, 3]),
         ([255, 256], [0, 0]),
-        ([255, 256], [4, 5]),
-        ([33, 9, 65], [5, 0, 1]),
+        ([255, 256], [max(0, tokens - 1), tokens]),
+        ([33, 9, 65], [tokens, 0, 1]),
         ([33], [1]),
         ([9, 33, 129], [2, 3, 4]),
     ]
+    return [(sequence, [min(value, tokens) for value in rejected]) for sequence, rejected in cases]
 
 
 def inputs(proposer, sequence, rejected, device, seed, *, perturb=False):
@@ -67,7 +68,7 @@ def inputs(proposer, sequence, rejected, device, seed, *, perturb=False):
     for group in proposer.draft_attn_groups:
         proposer.set_per_group_attn_metadata(group.kv_cache_group_id, table, slots)
     return dict(
-        num_speculative_tokens=5,
+        num_speculative_tokens=proposer.num_speculative_tokens,
         target_token_ids=torch.arange(sum(sequence), dtype=torch.int64, device=device),
         target_positions=positions,
         target_hidden_states=aux,
@@ -181,7 +182,7 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
         }
         (output / f"graph_capture_rank{rank}.json").write_text(json.dumps(captured, indent=2) + "\n")
         records = []
-        for case, (sequence, rejected) in enumerate(graph_cases()):
+        for case, (sequence, rejected) in enumerate(graph_cases(proposer.num_speculative_tokens)):
             results = {}
             for mode in ("unpadded", "eager", "graph", "perturbed"):
                 for cache in caches:
@@ -204,9 +205,15 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
                     graph._call = original_call
                     proposer._v41_graph = graph
                     proposer.use_cuda_graph = True
-                logits = logits_buffer[: len(sequence) * 5].cpu().clone()
+                logits = logits_buffer[: len(sequence) * proposer.num_speculative_tokens].cpu().clone()
                 stages = {
-                    name: buffer[: sum(sequence) if name.startswith("context_") else len(sequence) * 5].cpu().clone()
+                    name: buffer[
+                        : sum(sequence)
+                        if name.startswith("context_")
+                        else len(sequence) * proposer.num_speculative_tokens
+                    ]
+                    .cpu()
+                    .clone()
                     for name, buffer in stage_buffers.items()
                 }
                 results[mode] = (proposals, logits, [cache.kv_cache.cpu().clone() for cache in caches], stages)

@@ -16,6 +16,10 @@ from dataclasses import dataclass
 
 import torch
 
+DSPARK_PREFIX_WINDOW = 128
+DSPARK_CANDIDATE_CAPACITY = 256
+DSPARK_MAX_QUERY_TOKENS = 8
+
 
 def build_dspark_v41_swa_indices(
     block_table: torch.Tensor,
@@ -28,11 +32,11 @@ def build_dspark_v41_swa_indices(
     lengths_output: torch.Tensor,
     max_model_len: int | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Write fixed-K5 noncausal visibility into caller-owned device buffers.
+    """Write noncausal block visibility into caller-owned device buffers.
 
     Official DSpark uses [max(prefix_length - 128, 0), sequence_length) for
     every valid query in the block: 128 prefix tokens plus all valid draft
-    queries. ``seqused_kv`` retains the virtual prefix + 5 length, including
+    queries. ``seqused_kv`` retains the virtual prefix + query length, including
     padded queries beyond max_model_len. Clamping it before this helper would
     shift the prefix backwards and expose the wrong window.
     Unlike the old V4 helper's physical slots, arch22 SparseFlashMla consumes
@@ -40,7 +44,8 @@ def build_dspark_v41_swa_indices(
     become -1, without compacting later valid columns. Lengths cover the full
     column span, including holes. Padding rows have length zero and -1 IDs.
 
-    Active requests must have five query rows; empty request slots are allowed.
+    Active requests may have 1..8 query rows; empty request slots are allowed.
+    The current tuning scope is at most eight draft tokens per request.
     Offsets must be nondecreasing, and active rows must fit the output capacity.
     No runtime tensor values are read on host. Intermediate tensors are device
     operations; the output addresses remain stable across graph replay.
@@ -68,9 +73,9 @@ def build_dspark_v41_swa_indices(
         capacity = min(capacity, max_model_len)
     query_lengths = cu_seqlens_q[1:].long() - cu_seqlens_q[:-1].long()
     prefix_lengths = seqused_kv.long() - query_lengths
-    starts = (prefix_lengths - 128).clamp_min(0)
-    visible_lengths = (seqused_kv.long().clamp_max(capacity) - starts).clamp(0, 133)
-    request_valid = (query_lengths == 5) & (prefix_lengths >= 0)
+    starts = (prefix_lengths - DSPARK_PREFIX_WINDOW).clamp_min(0)
+    visible_lengths = (seqused_kv.long().clamp_max(capacity) - starts).clamp(0, DSPARK_CANDIDATE_CAPACITY)
+    request_valid = (query_lengths > 0) & (query_lengths <= DSPARK_MAX_QUERY_TOKENS) & (prefix_lengths >= 0)
     columns = torch.arange(256, device=block_table.device)
     positions = starts[:, None] + columns[None, :]
     logical_pages = positions // page_size
@@ -190,7 +195,7 @@ class AscendDSAV41Ops:
             cmp_ratio=self.compress_ratio,
             ori_mask_mode=0 if draft else 4,
             cmp_mask_mode=3,
-            ori_win_left=self.WINDOW + 5 - 1 if draft else self.WINDOW - 1,
+            ori_win_left=DSPARK_CANDIDATE_CAPACITY - 1 if draft else self.WINDOW - 1,
             ori_win_right=0,
             layout_q="TND",
             layout_kv="PA_BBND",
@@ -281,7 +286,7 @@ class AscendDSAV41Ops:
             cmp_ratio=self.compress_ratio,
             ori_mask_mode=0 if draft else 4,
             cmp_mask_mode=3,
-            ori_win_left=self.WINDOW + 5 - 1 if draft else self.WINDOW - 1,
+            ori_win_left=DSPARK_CANDIDATE_CAPACITY - 1 if draft else self.WINDOW - 1,
             ori_win_right=0,
             layout_q="TND",
             layout_kv="PA_BBND",

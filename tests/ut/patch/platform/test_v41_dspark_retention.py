@@ -14,7 +14,7 @@ from tests.ut.patch.platform.test_v41_cache_planner import make_config, make_spe
 from vllm_ascend.core.kv_cache_interface import register_ascend_kv_cache_specs
 
 
-def configured_swa_specs(monkeypatch):
+def configured_swa_specs(monkeypatch, tokens=5):
     """Run the real public entry through merge/policy/grouping, before sizing.
 
     Only the subsequent memory planning is intercepted. The exact group specs
@@ -22,11 +22,11 @@ def configured_swa_specs(monkeypatch):
     """
     register_ascend_kv_cache_specs()
     config = make_config()
-    spec_config = SimpleNamespace(method="dspark", num_speculative_tokens=5, draft_model_config=None)
+    spec_config = SimpleNamespace(method="dspark", num_speculative_tokens=tokens, draft_model_config=None)
     spec_config.use_multi_module_mtp = lambda: SpeculativeConfig.use_multi_module_mtp(spec_config)
     config.speculative_config = spec_config
     assert spec_config.use_multi_module_mtp() is False
-    swa = replace(make_specs()["swa.0"], extra_retained_tokens=5)
+    swa = replace(make_specs()["swa.0"], extra_retained_tokens=tokens)
     captured = {}
     real_group = upstream.get_kv_cache_groups
 
@@ -92,3 +92,18 @@ def test_processed_boundary_preserves_all_rejection_windows(accepted):
             assert manager.req_to_blocks["request"][position // 32] is not manager.block_pool.null_block
         manager.remove_skipped_blocks("request", processed_computed_tokens=q)
         assert manager.req_to_blocks["request"][max(q - 128, 0) // 32] is not manager.block_pool.null_block
+
+
+@pytest.mark.parametrize("tokens", range(1, 9))
+def test_variable_dspark_real_entry_and_all_rejection_windows(monkeypatch, tokens):
+    specs = configured_swa_specs(monkeypatch, tokens)
+    assert all(spec.extra_retained_tokens == tokens for spec in specs.values())
+    for p in range(128, 192):
+        for accepted in range(tokens + 1):
+            manager = manager_for(specs["draft.swa"])
+            manager.remove_skipped_blocks("request", processed_computed_tokens=p)
+            q = p + 1 + accepted
+            for position in range(max(q - 128, 0), q + tokens):
+                assert manager.req_to_blocks["request"][position // 32] is not manager.block_pool.null_block
+            manager.remove_skipped_blocks("request", processed_computed_tokens=q)
+            assert manager.req_to_blocks["request"][max(q - 128, 0) // 32] is not manager.block_pool.null_block
