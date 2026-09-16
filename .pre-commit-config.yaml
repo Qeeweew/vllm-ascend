@@ -19,6 +19,8 @@ repos:
   rev: v2.4.1
   hooks:
     - id: codespell
+      # Immutable vendor failure logs retain original text and recorded SHA256.
+      exclude: '^benchmarks/deepseek_v41/dspark_proposer/r(2_failed|3_diagnostic)_run\.log\.txt$'
       args: [
         --toml, pyproject.toml,
         '--skip', 'tests/prompts/**,./benchmarks/sonnet.txt,*tests/lora/data/**,build/**,./vllm_ascend.egg-info/**,typos.toml',
@@ -31,6 +33,8 @@ repos:
   rev: v1.32.0
   hooks:
   - id: typos
+    # Same two checksum-preserved vendor failure logs as codespell above.
+    exclude: '^benchmarks/deepseek_v41/dspark_proposer/r(2_failed|3_diagnostic)_run\.log\.txt$'
     args: [
       "--force-exclude",
       "--exclude", "csrc/**"

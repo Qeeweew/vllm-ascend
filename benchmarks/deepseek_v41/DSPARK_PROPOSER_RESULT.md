@@ -53,6 +53,10 @@ passing integration result. A separate physical-device-1 builder probe passed
 Root cause remains open; changing lengths and optional-input handling are
 being investigated without relaxing the native parameter checks.
 
+The two raw failure logs retain the vendor's original spelling and SHA256.
+Only these exact log paths are excluded from spelling hooks; source, reports,
+JSON evidence and all other applicable checks remain enabled.
+
 The venv does not provide a `torchrun` executable; use its Python module:
 
 ```bash
