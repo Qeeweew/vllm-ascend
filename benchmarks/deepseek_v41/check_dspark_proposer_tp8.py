@@ -90,6 +90,8 @@ def initialize_caches(proposer, config, device):
 
 def observe_metadata(proposer, output):
     """Diagnostic D2H changes synchronization; never use it as the final gate."""
+    import torch_npu
+
     records = []
     for group_index, group in enumerate(proposer.draft_attn_groups):
         builder = group.get_metadata_builder()
@@ -114,6 +116,15 @@ def observe_metadata(proposer, output):
                 "max_sequence": owner.max_sequence,
                 "batch": batch,
                 "diagnostic_synchronization": True,
+                "stream": torch.npu.current_stream().npu_stream,
+                "custom_opp_path": os.environ.get("ASCEND_CUSTOM_OPP_PATH"),
+                "mapped_operator_libraries": sorted(
+                    {
+                        line.split()[-1]
+                        for line in Path("/proc/self/maps").read_text().splitlines()
+                        if any(name in line for name in ("libcust_opapi", "libopapi", "vllm_ascend_C"))
+                    }
+                ),
                 "inputs": {},
             }
             for name, tensor in (
@@ -128,6 +139,12 @@ def observe_metadata(proposer, output):
                     if tensor is None
                     else {
                         "shape": list(tensor.shape),
+                        "stride": list(tensor.stride()),
+                        "storage_offset": tensor.storage_offset(),
+                        "storage_bytes": tensor.untyped_storage().nbytes(),
+                        "data_ptr": tensor.data_ptr(),
+                        "contiguous": tensor.is_contiguous(),
+                        "npu_format": torch_npu.get_npu_format(tensor),
                         "dtype": str(tensor.dtype),
                         "device": str(tensor.device),
                         "values": tensor.cpu().tolist(),

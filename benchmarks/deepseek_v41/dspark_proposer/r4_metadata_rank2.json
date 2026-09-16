@@ -1,0 +1,197 @@
+[
+  {
+    "group": 0,
+    "num_heads": 8,
+    "max_tokens": 256,
+    "max_sequence": 256,
+    "batch": 1,
+    "diagnostic_synchronization": true,
+    "stream": 281468352503816,
+    "custom_opp_path": "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/_cann_ops_custom/vendors/custom_transformer",
+    "mapped_operator_libraries": [
+      "/home/xwj/workspace/deepseek-v41-flash/artifacts/small-ops-bindings/r3/install/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so",
+      "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/_cann_ops_custom/vendors/custom_transformer/op_api/lib/libcust_opapi.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_cv.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_math.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_nn.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_oam.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_ras.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_transformer.so",
+      "/usr/local/Ascend/cann-9.1.0/opp/vendors/batch_invariant/op_api/lib/libcust_opapi.so"
+    ],
+    "inputs": {
+      "cu_q": {
+        "shape": [
+          2
+        ],
+        "stride": [
+          1
+        ],
+        "storage_offset": 0,
+        "storage_bytes": 8,
+        "data_ptr": 20616936774144,
+        "contiguous": true,
+        "npu_format": 2,
+        "dtype": "torch.int32",
+        "device": "npu:2",
+        "values": [
+          0,
+          5
+        ]
+      },
+      "lengths": {
+        "shape": [
+          1
+        ],
+        "stride": [
+          1
+        ],
+        "storage_offset": 0,
+        "storage_bytes": 4,
+        "data_ptr": 20616936774656,
+        "contiguous": true,
+        "npu_format": 2,
+        "dtype": "torch.int32",
+        "device": "npu:2",
+        "values": [
+          14
+        ]
+      },
+      "cmp_lengths": null,
+      "residual": null,
+      "draft_lengths": {
+        "shape": [
+          5,
+          1
+        ],
+        "stride": [
+          1,
+          1
+        ],
+        "storage_offset": 0,
+        "storage_bytes": 20,
+        "data_ptr": 20616936786944,
+        "contiguous": true,
+        "npu_format": 2,
+        "dtype": "torch.int32",
+        "device": "npu:2",
+        "values": [
+          [
+            14
+          ],
+          [
+            14
+          ],
+          [
+            14
+          ],
+          [
+            14
+          ],
+          [
+            14
+          ]
+        ]
+      }
+    },
+    "completed": true
+  },
+  {
+    "group": 0,
+    "num_heads": 8,
+    "max_tokens": 256,
+    "max_sequence": 256,
+    "batch": 1,
+    "diagnostic_synchronization": true,
+    "stream": 281468352503816,
+    "custom_opp_path": "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/_cann_ops_custom/vendors/custom_transformer",
+    "mapped_operator_libraries": [
+      "/home/xwj/workspace/deepseek-v41-flash/artifacts/small-ops-bindings/r3/install/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so",
+      "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/_cann_ops_custom/vendors/custom_transformer/op_api/lib/libcust_opapi.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_cv.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_math.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_nn.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_oam.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_ras.so",
+      "/usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libopapi_transformer.so",
+      "/usr/local/Ascend/cann-9.1.0/opp/vendors/batch_invariant/op_api/lib/libcust_opapi.so"
+    ],
+    "inputs": {
+      "cu_q": {
+        "shape": [
+          2
+        ],
+        "stride": [
+          1
+        ],
+        "storage_offset": 0,
+        "storage_bytes": 8,
+        "data_ptr": 20616936774144,
+        "contiguous": true,
+        "npu_format": 2,
+        "dtype": "torch.int32",
+        "device": "npu:2",
+        "values": [
+          0,
+          5
+        ]
+      },
+      "lengths": {
+        "shape": [
+          1
+        ],
+        "stride": [
+          1
+        ],
+        "storage_offset": 0,
+        "storage_bytes": 4,
+        "data_ptr": 20616936774656,
+        "contiguous": true,
+        "npu_format": 2,
+        "dtype": "torch.int32",
+        "device": "npu:2",
+        "values": [
+          38
+        ]
+      },
+      "cmp_lengths": null,
+      "residual": null,
+      "draft_lengths": {
+        "shape": [
+          5,
+          1
+        ],
+        "stride": [
+          1,
+          1
+        ],
+        "storage_offset": 0,
+        "storage_bytes": 20,
+        "data_ptr": 20616936786944,
+        "contiguous": true,
+        "npu_format": 2,
+        "dtype": "torch.int32",
+        "device": "npu:2",
+        "values": [
+          [
+            38
+          ],
+          [
+            38
+          ],
+          [
+            38
+          ],
+          [
+            38
+          ],
+          [
+            38
+          ]
+        ]
+      }
+    }
+  }
+]

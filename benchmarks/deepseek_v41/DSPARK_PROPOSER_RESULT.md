@@ -53,6 +53,29 @@ passing integration result. A separate physical-device-1 builder probe passed
 Root cause remains open; changing lengths and optional-input handling are
 being investigated without relaxing the native parameter checks.
 
+Diagnostic r4 repeats the real TP8 proposer with the revised scratch-ownership
+extension (`64931ce51efb20c460b64cae5aea4b5eeb24ecb1ac29ec256f3ef62fde36cb13`)
+and unchanged production r12 OPP. All eight ranks pass context 9 and fail the
+next context 33 at the metadata synchronization, as in r3. This separates the
+confirmed shared scratch bug from the still-unresolved metadata failure.
+The new `r4_metadata_rank*.json` also records shape, stride, storage offsets,
+storage bytes, data pointers, NPU format, stream and mapped operator libraries.
+Observed inputs remain contiguous ND INT32 `[0,5]`, `[38]` and five `[38]`
+top-k lengths. The attempted run used shared devices and is correctness
+diagnosis only; no timing result is inferred. Production DSpark stays gated.
+
+Diagnostic r5 additionally supplies explicit `seqused_q = cu_q[1:] - cu_q[:-1]`
+to each native metadata call, using the same r3 extension and r12 OPP. All
+eight ranks again complete context 9 and fail context 33 with invalid
+parameters. Per-rank records are retained as `r5_rank*.json`; the temporary
+probe and raw log hashes are recorded in the manifest. This tests one optional
+input only and does not establish that all optional-input handling is correct.
+The rank-0 teardown aborts after the device error; launcher cleanup terminates
+the remaining workers. No test workers remained in the process namespace.
+The next diagnostic will capture the actual AICPU validation branch and input
+values in an isolated operator package, with a guard that prevents diagnostic
+output from reaching attention. Production validation remains unchanged.
+
 The two raw failure logs retain the vendor's original spelling and SHA256.
 Only these exact log paths are excluded from spelling hooks; source, reports,
 JSON evidence and all other applicable checks remain enabled.
