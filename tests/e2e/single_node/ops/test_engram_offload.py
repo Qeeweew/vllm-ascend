@@ -32,7 +32,8 @@ def test_inflight_replay_uses_current_rows_and_zero_padding(graph_mode, numa_sto
         torch.testing.assert_close(shard.weight, torch.cat((full[:3], full[8:])), rtol=0, atol=0)
     else:
         shard = EngramTableShard(torch.cat((full[:3], full[8:])), [0, 2], [(0, 3), (8, 13)])
-    manager = EngramOffloadManager([shard, shard], 8, device)
+    manager = EngramOffloadManager([shard, shard], 8, device, capture_sizes=(4,))
+    assert set(manager._upload_graphs) == {(slot, size) for slot in range(2) for size in (4, 8)}
     ptrs = tuple(rows.data_ptr() for rows in manager.device_rows)
     graphs, graph_outputs = {}, {}
     if graph_mode:

@@ -3,10 +3,12 @@
 """Runner-side Engram handoff, always outside model capture and replay."""
 
 from collections.abc import Sequence
+from functools import partial
 
 import torch
 from vllm.v1.utils import record_function_or_nullcontext
 
+from vllm_ascend.ops.engram_cpu import EngramCpuLookup
 from vllm_ascend.ops.engram_offload import EngramOffloadManager
 from vllm_ascend.worker.engram_history import EngramRequestHistory
 
@@ -28,8 +30,8 @@ class EngramRuntime:
             raise ValueError("Engram history and offload layer counts differ")
         self.history = history
         self.offload = offload
-        self.token_mask = torch.zeros(offload.max_tokens, dtype=torch.bool, device=offload.device)
-        self.image_token_mask = torch.zeros_like(self.token_mask)
+        self.lookup = EngramCpuLookup(history.hasher, offload.shards)
+        self.token_mask, self.image_token_mask = offload.device_masks
         # IDs, positions, optional mask, and at most max_tokens request
         # boundaries. Storage is reused only after the snapshot event completes.
         capacity = 4 * offload.max_tokens + 1
@@ -106,13 +108,17 @@ class EngramRuntime:
         request_ids, bucket_tokens, has_mask, size = self._snapshot_pending
         with record_function_or_nullcontext("v41::engram_snapshot_d2h"):
             self._snapshot_ready.synchronize()
+        # A validation/lookup failure must not leave a stale snapshot pending.
+        # DMA has finished, so a subsequent attempt may snapshot corrected IDs.
+        self._snapshot_pending = None
         snapshot = self._snapshot_host[:size]
         boundaries = snapshot[2 * bucket_tokens : 2 * bucket_tokens + len(request_ids) + 1]
         count = int(boundaries[-1])
         if count < 0 or count > bucket_tokens:
             raise ValueError("Engram final query boundary exceeds the token bucket")
         mask = snapshot[-bucket_tokens:].bool()[:count] if has_mask else None
-        with record_function_or_nullcontext("v41::engram_hash"):
+        staging = self.offload.acquire_staging(bucket_tokens)
+        with record_function_or_nullcontext("v41::engram_hash_gather"):
             batch = self.history.prepare(
                 request_ids,
                 snapshot[:count],
@@ -120,15 +126,10 @@ class EngramRuntime:
                 boundaries,
                 token_mask=mask,
                 use_seeded_prompt_mask=mask is None,
+                gather_into=partial(self.lookup.gather_into, outputs=staging, bucket_tokens=bucket_tokens),
             )
-        with record_function_or_nullcontext("v41::engram_gather_h2d"):
-            rows = self.offload.prepare(batch.hash_ids, bucket_tokens)
-        # A blocking copy keeps the small pageable CPU mask alive until DMA
-        # completes. Large embedding rows use the independent pinned ring.
-        self.token_mask[:count].copy_(batch.token_mask)
-        self.token_mask[count:bucket_tokens].zero_()
-        self.image_token_mask[:count].copy_(batch.image_token_mask)
-        self.image_token_mask[count:bucket_tokens].zero_()
+        with record_function_or_nullcontext("v41::engram_upload_graph"):
+            rows = self.offload.submit_staging(bucket_tokens, count, batch.token_mask, batch.image_token_mask)
         self._snapshot_pending = None
         self._prepared = True
         return rows, self.token_mask[:bucket_tokens]
@@ -144,6 +145,7 @@ class EngramRuntime:
         if self.snapshot_pending:
             raise RuntimeError("Engram snapshot must be finished before close; use shutdown on failure")
         self.offload.close()
+        self.lookup.close()
         self._closed = True
 
     def shutdown(self) -> None:
@@ -154,5 +156,6 @@ class EngramRuntime:
             self._snapshot_ready.synchronize()
             self._snapshot_pending = None
         self.offload.shutdown()
+        self.lookup.close()
         self._prepared = False
         self._closed = True

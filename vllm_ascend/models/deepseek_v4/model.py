@@ -2157,6 +2157,7 @@ class AscendDeepseekV41ForCausalLM(nn.Module, DeepseekV2MixtureOfExperts, Suppor
                 shards,
                 self.vllm_config.scheduler_config.max_num_batched_tokens,
                 device,
+                capture_sizes=self.vllm_config.compilation_config.cudagraph_capture_sizes or (),
             )
         except Exception:
             for shard in shards:

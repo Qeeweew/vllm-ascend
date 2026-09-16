@@ -3,8 +3,8 @@
 """Host Engram head shards and explicit preparation before NPU graph replay.
 
 Lookup depends only on token hashes. Projection and residual-dependent gating
-remain in the model. None of this module's host work is expected to replay as
-part of an NPU graph: the runner calls prepare/wait/mark_consumed every step.
+remain in the model. Host lookup runs before replay; fixed-address pinned H2D
+copies are captured in a separate upload graph.
 """
 
 from collections.abc import Sequence
@@ -159,7 +159,13 @@ class EngramOffloadManager:
     using hashes from placeholder token history is not supported.
     """
 
-    def __init__(self, shards: Sequence[EngramTableShard], max_tokens: int, device: torch.device) -> None:
+    def __init__(
+        self,
+        shards: Sequence[EngramTableShard],
+        max_tokens: int,
+        device: torch.device,
+        capture_sizes: Sequence[int] = (),
+    ) -> None:
         if not shards or max_tokens <= 0 or device.type != "npu":
             raise ValueError("Engram offload needs host shards, a positive token capacity, and an NPU")
         self.shards = tuple(shards)
@@ -174,9 +180,14 @@ class EngramOffloadManager:
         )
         self._host_rows = tuple(
             tuple(
-                torch.empty(rows.shape, dtype=torch.bfloat16, device="cpu", pin_memory=True)
+                torch.zeros(rows.shape, dtype=torch.bfloat16, device="cpu", pin_memory=True)
                 for rows in self.device_rows
             )
+            for _ in range(HOST_BUFFER_COUNT)
+        )
+        self.device_masks = tuple(torch.zeros(max_tokens, dtype=torch.bool, device=device) for _ in range(2))
+        self._host_masks = tuple(
+            tuple(torch.zeros(max_tokens, dtype=torch.bool, device="cpu", pin_memory=True) for _ in range(2))
             for _ in range(HOST_BUFFER_COUNT)
         )
         with torch.npu.device(device):
@@ -186,6 +197,21 @@ class EngramOffloadManager:
             self._ready = torch.npu.Event()
             self._consumed = torch.npu.Event()
             self._consumed.record(torch.npu.current_stream(device))
+            self._upload_sizes = sorted({max_tokens, *(size for size in capture_sizes if 0 < size <= max_tokens)})
+            self._upload_graphs = {}
+            # Every captured source address belongs to one persistent host
+            # slot. Capture once at startup, never in a serving step.
+            self._copy_stream.wait_stream(torch.npu.current_stream(device))
+            for slot in range(HOST_BUFFER_COUNT):
+                for size in self._upload_sizes:
+                    graph = torch.npu.NPUGraph()
+                    with torch.npu.graph(graph, stream=self._copy_stream):
+                        for dst, src in zip(self.device_rows, self._host_rows[slot]):
+                            dst[:size].copy_(src[:size], non_blocking=True)
+                        for dst, src in zip(self.device_masks, self._host_masks[slot]):
+                            dst[:size].copy_(src[:size], non_blocking=True)
+                    self._upload_graphs[slot, size] = graph
+            self._copy_stream.synchronize()
         self._step = 0
         self._prepared = False
         self._waited = False
@@ -204,19 +230,44 @@ class EngramOffloadManager:
         tokens = hash_ids[0].shape[0]
         if tokens > bucket_tokens or any(ids.shape[0] != tokens for ids in hash_ids):
             raise ValueError("All Engram layers must describe the same tokens within the bucket")
-        host_slot = self._step % HOST_BUFFER_COUNT
-        if self._host_used[host_slot]:
-            # This fences only the last DMA reading this pinned host slot.
-            self._host_free[host_slot].synchronize()
-        staging = self._host_rows[host_slot]
+        staging = self.acquire_staging(bucket_tokens)
         for shard, ids, rows in zip(self.shards, hash_ids, staging):
             shard.gather_into(ids, rows[:tokens])
             rows[tokens:bucket_tokens].zero_()
+        return self.submit_staging(bucket_tokens, tokens)
+
+    def acquire_staging(self, bucket_tokens: int) -> tuple[torch.Tensor, ...]:
+        if self._closed or self._prepared:
+            raise RuntimeError("Engram manager is closed or the previous step was not marked consumed")
+        if not 0 < bucket_tokens <= self.max_tokens:
+            raise ValueError("Invalid Engram token bucket")
+        host_slot = self._step % HOST_BUFFER_COUNT
+        if self._host_used[host_slot]:
+            # Wait only for the previous DMA reading this slot, not the model.
+            self._host_free[host_slot].synchronize()
+        return self._host_rows[host_slot]
+
+    def submit_staging(
+        self,
+        bucket_tokens: int,
+        tokens: int,
+        token_mask: torch.Tensor | None = None,
+        image_token_mask: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, ...]:
+        if self._closed or self._prepared:
+            raise RuntimeError("Engram manager is closed or the previous step was not marked consumed")
+        if not 0 <= tokens <= bucket_tokens <= self.max_tokens or bucket_tokens == 0:
+            raise ValueError("Invalid Engram token bucket")
+        host_slot = self._step % HOST_BUFFER_COUNT
+        for index, (dst, source) in enumerate(zip(self._host_masks[host_slot], (token_mask, image_token_mask))):
+            values = dst.numpy()
+            values[:tokens] = (index == 0) if source is None else source.numpy()
+            values[tokens:bucket_tokens] = False
+        upload_size = next(size for size in self._upload_sizes if size >= bucket_tokens)
         with torch.npu.stream(self._copy_stream):
             # Device inputs cannot be overwritten while the prior graph reads.
             self._copy_stream.wait_event(self._consumed)
-            for rows, host_rows in zip(self.device_rows, staging):
-                rows[:bucket_tokens].copy_(host_rows[:bucket_tokens], non_blocking=True)
+            self._upload_graphs[host_slot, upload_size].replay()
             self._host_free[host_slot].record(self._copy_stream)
             self._ready.record(self._copy_stream)
         self._host_used[host_slot] = True
@@ -247,6 +298,7 @@ class EngramOffloadManager:
             raise RuntimeError("Mark the final model invocation consumed before closing Engram offload")
         self._copy_stream.synchronize()
         self._consumed.synchronize()
+        self._upload_graphs.clear()
         for shard in self.shards:
             shard.close()
         self._closed = True

@@ -32,7 +32,7 @@ def test_shutdown_real_registration_after_unconsumed_step(pending_forward):
             manager.device_rows[0] + 1
         torch.npu.synchronize(device)
         graph = torch.npu.NPUGraph()
-        with torch.npu.graph(graph):
+        with torch.npu.graph(graph, stream=torch.npu.Stream(device=device)):
             output = manager.device_rows[0] + 1
         manager.mark_consumed()
 

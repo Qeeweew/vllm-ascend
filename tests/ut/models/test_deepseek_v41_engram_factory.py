@@ -48,6 +48,7 @@ def factory(tmp_path, monkeypatch):
     model.vllm_config = SimpleNamespace(
         model_config=SimpleNamespace(model=str(tmp_path), trust_remote_code=False),
         scheduler_config=SimpleNamespace(max_num_batched_tokens=37),
+        compilation_config=SimpleNamespace(cudagraph_capture_sizes=[1, 8, 32]),
     )
     backend = Tokenizer(WordLevel({"one": 0, "two": 1, "[PAD]": 2, "three": 3}, unk_token="[PAD]"))
     tokenizer = PreTrainedTokenizerFast(tokenizer_object=backend, pad_token="[PAD]")
@@ -57,8 +58,11 @@ def factory(tmp_path, monkeypatch):
     monkeypatch.setattr(model_module, "get_tensor_model_parallel_world_size", lambda: 8)
     monkeypatch.setattr(model_module, "get_ascend_config", lambda: SimpleNamespace(engram_numa_nodes=None))
     manager = Mock(
-        side_effect=lambda shards, max_tokens, device: SimpleNamespace(
-            shards=tuple(shards), max_tokens=max_tokens, device=device
+        side_effect=lambda shards, max_tokens, device, capture_sizes: SimpleNamespace(
+            shards=tuple(shards),
+            max_tokens=max_tokens,
+            device=device,
+            device_masks=tuple(torch.zeros(max_tokens, dtype=torch.bool, device="cpu") for _ in range(2)),
         )
     )
     monkeypatch.setattr(engram_offload, "EngramOffloadManager", manager)
@@ -105,9 +109,11 @@ def test_factory_loads_tp_local_heads_from_indexed_converted_files(factory, monk
     assert runtime.history.hasher.layout == factory.layout
     assert runtime.token_mask.shape == (37,)
     factory.tokenizer_loader.assert_called_once_with(factory.root, trust_remote_code=False)
-    assert factory.requested_pin == [True, True]
+    # Two table shards and the runtime's packed D2H snapshot are pinned.
+    assert factory.requested_pin == [True, True, True]
     factory.manager.assert_called_once()
     assert factory.manager.call_args.args[1:] == (37, torch.device("cpu"))
+    assert factory.manager.call_args.kwargs == {"capture_sizes": [1, 8, 32]}
     for layer, shard in enumerate(runtime.offload.shards):
         assert shard.head_indices == tuple(range(rank * 3, rank * 3 + 3))
         heads, ranges = factory.layout.head_shard(layer, rank, 8)

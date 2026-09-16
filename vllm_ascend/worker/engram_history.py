@@ -9,10 +9,11 @@ requires an explicit reset. Storage is a compact integer array plus mask bytes.
 """
 
 from array import array
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from numbers import Integral
 
+import numpy as np
 import torch
 
 from vllm_ascend.ops.engram_hash import HostEngramHasher
@@ -49,7 +50,8 @@ class EngramRequestHistory:
     def _validate_ids(self, ids: torch.Tensor) -> None:
         if ids.device.type != "cpu" or ids.dtype != torch.int64 or ids.ndim != 1:
             raise ValueError("Engram history requires one-dimensional CPU int64 token IDs")
-        if (ids < 0).any() or (ids >= self.hasher.token_map.numel()).any():
+        values = ids.numpy()
+        if np.any(values < 0) or np.any(values >= self.hasher.token_map.numel()):
             raise ValueError("Actual token IDs are required; async placeholders are not history")
 
     @staticmethod
@@ -114,6 +116,7 @@ class EngramRequestHistory:
         *,
         token_mask: torch.Tensor | None = None,
         use_seeded_prompt_mask: bool = False,
+        gather_into: Callable | None = None,
     ) -> EngramHistoryBatch:
         """Hash actual unpadded input rows and record their executed history.
 
@@ -130,7 +133,11 @@ class EngramRequestHistory:
         self._validate_ids(input_ids)
         if use_seeded_prompt_mask and token_mask is not None:
             raise ValueError("An explicit Engram step mask cannot be combined with seeded-mask selection")
-        token_mask = self._mask(input_ids, token_mask).clone()
+        if token_mask is None:
+            mask_values = np.ones(input_ids.numel(), dtype=np.bool_)
+        else:
+            mask_values = self._mask(input_ids, token_mask).numpy().copy()
+        token_mask = torch.from_numpy(mask_values)
         if positions.device.type != "cpu" or positions.dtype != torch.int64 or positions.shape != input_ids.shape:
             raise ValueError("Engram history positions must be CPU int64 with matching token shape")
         if isinstance(query_start_loc, torch.Tensor):
@@ -152,9 +159,10 @@ class EngramRequestHistory:
         ):
             raise ValueError("Invalid Engram query boundaries or duplicate request IDs")
         depth = self.hasher.max_ngram - 1
-        lookback = torch.full((len(request_ids), depth), -1, dtype=torch.int64, device="cpu")
-        lookback_mask = torch.zeros_like(lookback, dtype=torch.bool)
-        image_token_mask = torch.zeros(input_ids.shape, dtype=torch.bool, device="cpu")
+        lookback_values = np.full((len(request_ids), depth), -1, dtype=np.int64)
+        lookback_mask_values = np.zeros(lookback_values.shape, dtype=np.bool_)
+        image_values = np.zeros(input_ids.numel(), dtype=np.bool_)
+        input_values, position_values = input_ids.numpy(), positions.numpy()
         starts, updates = [], []
         for row, request_id in enumerate(request_ids):
             history = self._requests.get(request_id)
@@ -164,25 +172,24 @@ class EngramRequestHistory:
             if first == end:
                 starts.append(0)
                 continue
-            start = int(positions[first])
+            start = int(position_values[first])
             stop = start + end - first
-            if start < 0 or not torch.equal(
-                positions[first:end], torch.arange(start, stop, dtype=torch.int64, device="cpu")
-            ):
+            if start < 0 or not np.array_equal(position_values[first:end], np.arange(start, stop, dtype=np.int64)):
                 raise ValueError("Engram request positions must be nonnegative and contiguous")
             if start > len(history.tokens):
                 raise ValueError(f"Missing actual Engram history before position {start} for request {request_id!r}")
-            tokens = array("q", input_ids[first:end].tolist())
+            tokens = array("q")
+            tokens.frombytes(input_values[first:end].tobytes())
             prompt_overlap = max(0, min(stop, history.prompt_length) - start)
             if prompt_overlap:
-                image_token_mask[first : first + prompt_overlap] = torch.tensor(
-                    history.prompt_image_mask[start : start + prompt_overlap], dtype=torch.bool, device="cpu"
+                image_values[first : first + prompt_overlap] = np.frombuffer(
+                    history.prompt_image_mask, dtype=np.bool_, count=prompt_overlap, offset=start
                 )
             if use_seeded_prompt_mask and prompt_overlap:
-                token_mask[first : first + prompt_overlap] = torch.tensor(
-                    history.mask[start : start + prompt_overlap], dtype=torch.bool, device="cpu"
+                mask_values[first : first + prompt_overlap] = np.frombuffer(
+                    history.mask, dtype=np.bool_, count=prompt_overlap, offset=start
                 )
-            masks = bytearray(token_mask[first:end].tolist())
+            masks = bytearray(mask_values[first:end].tobytes())
             if (
                 tokens[:prompt_overlap] != history.tokens[start : start + prompt_overlap]
                 or masks[:prompt_overlap] != history.mask[start : start + prompt_overlap]
@@ -192,16 +199,24 @@ class EngramRequestHistory:
                 )
             needed = min(start, depth)
             if needed:
-                lookback[row, :needed] = torch.tensor(
-                    history.tokens[start - needed : start][::-1], dtype=torch.int64, device="cpu"
-                )
-                lookback_mask[row, :needed] = torch.tensor(
-                    history.mask[start - needed : start][::-1], dtype=torch.bool, device="cpu"
-                )
+                lookback_values[row, :needed] = np.frombuffer(
+                    history.tokens, dtype=np.int64, count=needed, offset=(start - needed) * 8
+                )[::-1]
+                lookback_mask_values[row, :needed] = np.frombuffer(
+                    history.mask, dtype=np.bool_, count=needed, offset=start - needed
+                )[::-1]
             starts.append(start)
             updates.append((history, start, stop, tokens, masks))
-        hashes = self.hasher.hash_chunk(
-            input_ids, boundaries, starts, lookback, token_mask=token_mask, lookback_mask=lookback_mask
+        # The native runtime writes rows directly into its pinned staging slot.
+        # Keep the hash-only path for independent references and history tests.
+        lookup = self.hasher.hash_chunk if gather_into is None else gather_into
+        hashes = lookup(
+            input_ids,
+            boundaries,
+            starts,
+            torch.from_numpy(lookback_values),
+            token_mask=token_mask,
+            lookback_mask=torch.from_numpy(lookback_mask_values),
         )
         # All validation and hashing have succeeded. No full-prefix copy or
         # per-token Python object is retained for a long-running request.
@@ -211,4 +226,4 @@ class EngramRequestHistory:
             keep = max(history.prompt_length, stop)
             del history.tokens[keep:]
             del history.mask[keep:]
-        return EngramHistoryBatch(hashes, token_mask, image_token_mask)
+        return EngramHistoryBatch(() if hashes is None else hashes, token_mask, torch.from_numpy(image_values))

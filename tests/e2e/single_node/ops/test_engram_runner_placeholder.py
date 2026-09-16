@@ -72,6 +72,9 @@ def test_npu_placeholder_rejected_before_embedding_and_corrected_zero_graph_repl
             assert not runtime._prepared
 
             graph = torch.npu.NPUGraph()
+            # torch.npu.graph caches one default stream across devices. This
+            # test may follow tests on NPU 0, so capture on this device explicitly.
+            capture_stream = torch.npu.Stream(device=device)
             for step, token in enumerate((0, 3, 0, 4)):
                 # Queue final device correction immediately before the snapshot.
                 # Scheduler placeholders remain unchanged; graph padding is -1.
@@ -86,7 +89,7 @@ def test_npu_placeholder_rejected_before_embedding_and_corrected_zero_graph_repl
                     for _ in range(3):
                         torch.where(runtime.token_mask[:, None, None], result[4]["engram_rows"][0], 0)
                     torch.npu.synchronize()
-                    with torch.npu.graph(graph):
+                    with torch.npu.graph(graph, stream=capture_stream):
                         output = torch.where(runtime.token_mask[:, None, None], result[4]["engram_rows"][0], 0)
                 graph.replay()
                 outputs.append(output.clone())
