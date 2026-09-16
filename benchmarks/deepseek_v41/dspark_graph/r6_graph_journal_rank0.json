@@ -1,0 +1,3127 @@
+[
+  {
+    "case": 0,
+    "sequence": [
+      9
+    ],
+    "rejected": [
+      0
+    ],
+    "eager_proposals": [
+      [
+        10759,
+        104603,
+        8564,
+        72668,
+        122257
+      ]
+    ],
+    "graph_proposals": [
+      [
+        10759,
+        104603,
+        8564,
+        72668,
+        122257
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        10759,
+        104603,
+        8564,
+        72668,
+        122257
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.25,
+    "unpadded_cache_max_abs": [
+      6.103515625e-05,
+      0.015625,
+      0.0234375
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0009609460830688477,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.004845529794692993
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.004987835884094238
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.008861839771270752,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.007133305072784424
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.007384061813354492
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.011646866798400879,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.000148773193359375
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0011237263679504395
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.00048828125,
+        "unpadded_different_values": 8
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 3.0517578125e-05,
+        "unpadded_different_values": 6
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 2334
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.00390625,
+        "unpadded_different_values": 1888
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.046875,
+        "unpadded_different_values": 17213
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.09375,
+        "unpadded_different_values": 52254
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.006741523742675781,
+        "unpadded_different_values": 640
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0008742809295654297,
+        "unpadded_different_values": 15
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 20014
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01171875,
+        "unpadded_different_values": 19813
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1484375,
+        "unpadded_different_values": 21963
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 84962
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.034876465797424316,
+        "unpadded_different_values": 640
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.004052996635437012,
+        "unpadded_different_values": 15
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.3125,
+        "unpadded_different_values": 21650
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.015625,
+        "unpadded_different_values": 22561
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.5,
+        "unpadded_different_values": 22805
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 2.0,
+        "unpadded_different_values": 91614
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.05168628692626953,
+        "unpadded_different_values": 640
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.006099045276641846,
+        "unpadded_different_values": 15
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 1,
+    "sequence": [
+      33
+    ],
+    "rejected": [
+      0
+    ],
+    "eager_proposals": [
+      [
+        304,
+        611,
+        260,
+        1017,
+        1836
+      ]
+    ],
+    "graph_proposals": [
+      [
+        304,
+        611,
+        260,
+        1017,
+        1836
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        304,
+        611,
+        260,
+        1017,
+        1836
+      ]
+    ],
+    "unpadded_logits_max_abs": 5.8828125,
+    "unpadded_cache_max_abs": [
+      0.00390625,
+      0.015625,
+      0.0234375
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 4,
+      "281468074482896": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0030596256256103516,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.00031697750091552734
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0009510517120361328
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [
+          0
+        ],
+        "selection_score_max_abs": 0.010625958442687988,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.012411832809448242
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.013509809970855713
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [
+          3
+        ],
+        "changed_order_or_membership_rows": [
+          3
+        ],
+        "selection_score_max_abs": 0.026118874549865723,
+        "selection_score_max_abs_on_changed_rows": [
+          0.026118874549865723
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              19,
+              6,
+              51
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.008548080921173096
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.008548080921173096
+          ],
+          "minimum_actual_selection_margin": 0.008548080921173096
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              19,
+              6,
+              38
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.013955116271972656
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.013955116271972656
+          ],
+          "minimum_actual_selection_margin": 0.012719392776489258
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 25
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 42
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 12200
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 10176
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 19679
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 69880
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.020200252532958984,
+        "unpadded_different_values": 640
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0017229318618774414,
+        "unpadded_different_values": 15
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 21014
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.009765625,
+        "unpadded_different_values": 20924
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.203125,
+        "unpadded_different_values": 22346
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.3125,
+        "unpadded_different_values": 88375
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.04834342002868652,
+        "unpadded_different_values": 640
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.004637420177459717,
+        "unpadded_different_values": 15
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 38.0,
+        "unpadded_different_values": 2
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.375,
+        "unpadded_different_values": 22091
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01708984375,
+        "unpadded_different_values": 22601
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 10.51171875,
+        "unpadded_different_values": 23576
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 13.65625,
+        "unpadded_different_values": 94603
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.09138756990432739,
+        "unpadded_different_values": 640
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0033963918685913086,
+        "unpadded_different_values": 15
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 13.0,
+        "unpadded_different_values": 1
+      }
+    }
+  },
+  {
+    "case": 2,
+    "sequence": [
+      129
+    ],
+    "rejected": [
+      0
+    ],
+    "eager_proposals": [
+      [
+        231,
+        16,
+        342,
+        5922,
+        3394
+      ]
+    ],
+    "graph_proposals": [
+      [
+        231,
+        16,
+        342,
+        5922,
+        3394
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        231,
+        16,
+        342,
+        5922,
+        3394
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.3359375,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.027099609375
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.005155742168426514,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.006487399339675903
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.006726473569869995
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [
+          4
+        ],
+        "selection_score_max_abs": 0.011723577976226807,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.03321021795272827
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.030925393104553223
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [
+          1
+        ],
+        "selection_score_max_abs": 0.013145864009857178,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.017270445823669434
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0160178542137146
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 92
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 96
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 13152
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 10846
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 19718
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 72859
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01746705174446106,
+        "unpadded_different_values": 640
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0018100440502166748,
+        "unpadded_different_values": 15
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 21081
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0087890625,
+        "unpadded_different_values": 20943
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 22127
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 88977
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.05355215072631836,
+        "unpadded_different_values": 640
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0038133859634399414,
+        "unpadded_different_values": 15
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 65.0,
+        "unpadded_different_values": 2
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.203125,
+        "unpadded_different_values": 22305
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.017578125,
+        "unpadded_different_values": 22645
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.5,
+        "unpadded_different_values": 23064
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.5,
+        "unpadded_different_values": 93342
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.06323051452636719,
+        "unpadded_different_values": 640
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0052623748779296875,
+        "unpadded_different_values": 15
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 13.0,
+        "unpadded_different_values": 2
+      }
+    }
+  },
+  {
+    "case": 3,
+    "sequence": [
+      9,
+      33,
+      129
+    ],
+    "rejected": [
+      0,
+      1,
+      2
+    ],
+    "eager_proposals": [
+      [
+        1393,
+        19508,
+        18,
+        16,
+        37157
+      ],
+      [
+        10759,
+        51372,
+        1320,
+        426,
+        53
+      ],
+      [
+        31,
+        7534,
+        18,
+        426,
+        864
+      ]
+    ],
+    "graph_proposals": [
+      [
+        1393,
+        19508,
+        18,
+        16,
+        37157
+      ],
+      [
+        10759,
+        51372,
+        1320,
+        426,
+        53
+      ],
+      [
+        31,
+        7534,
+        18,
+        426,
+        864
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        1393,
+        19508,
+        18,
+        16,
+        37157
+      ],
+      [
+        10759,
+        716,
+        15,
+        7449,
+        1600
+      ],
+      [
+        31,
+        7534,
+        18,
+        426,
+        864
+      ]
+    ],
+    "unpadded_logits_max_abs": 8.9921875,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.69140625
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 4,
+      "281468074485200": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.006222426891326904,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0019707977771759033
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0033017098903656006
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [
+          7
+        ],
+        "changed_order_or_membership_rows": [
+          7,
+          14
+        ],
+        "selection_score_max_abs": 0.011609792709350586,
+        "selection_score_max_abs_on_changed_rows": [
+          0.00994873046875
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              97,
+              82,
+              127
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.009174227714538574
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.009174227714538574
+          ],
+          "minimum_actual_selection_margin": 0.007680237293243408
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              97,
+              82,
+              39
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0037223100662231445
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0037223100662231445
+          ],
+          "minimum_actual_selection_margin": 0.0024860501289367676
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [
+          7,
+          8
+        ],
+        "changed_order_or_membership_rows": [
+          0,
+          7,
+          8
+        ],
+        "selection_score_max_abs": 0.21026623249053955,
+        "selection_score_max_abs_on_changed_rows": [
+          0.21026623249053955,
+          0.036933064460754395
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              97,
+              9,
+              98
+            ],
+            [
+              9,
+              19,
+              78
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.04686981439590454,
+            0.03314250707626343
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.04686981439590454,
+            0.03314250707626343
+          ],
+          "minimum_actual_selection_margin": 0.0036649107933044434
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              97,
+              98,
+              58
+            ],
+            [
+              9,
+              19,
+              6
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0425228476524353,
+            0.002102792263031006
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0425228476524353,
+            0.002102792263031006
+          ],
+          "minimum_actual_selection_margin": 0.002102792263031006
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.015625,
+        "unpadded_different_values": 134
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 156
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 39492
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 33069
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 59517
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 219669
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.03245735168457031,
+        "unpadded_different_values": 1920
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0023724734783172607,
+        "unpadded_different_values": 45
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 62579
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01171875,
+        "unpadded_different_values": 62789
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 6.0234375,
+        "unpadded_different_values": 67560
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 5.90234375,
+        "unpadded_different_values": 268233
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.04759621620178223,
+        "unpadded_different_values": 1920
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.00400090217590332,
+        "unpadded_different_values": 45
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 88.0,
+        "unpadded_different_values": 3
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 7.75,
+        "unpadded_different_values": 69509
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.3798828125,
+        "unpadded_different_values": 70217
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 25.75,
+        "unpadded_different_values": 71632
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 24.453125,
+        "unpadded_different_values": 287124
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.7777183055877686,
+        "unpadded_different_values": 1920
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.05010908842086792,
+        "unpadded_different_values": 45
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 89.0,
+        "unpadded_different_values": 5
+      }
+    }
+  },
+  {
+    "case": 4,
+    "sequence": [
+      17,
+      41,
+      113
+    ],
+    "rejected": [
+      1,
+      2,
+      3
+    ],
+    "eager_proposals": [
+      [
+        295,
+        100815,
+        14,
+        554,
+        295
+      ],
+      [
+        11620,
+        223,
+        939,
+        24,
+        695
+      ],
+      [
+        241,
+        42988,
+        28609,
+        2635,
+        4
+      ]
+    ],
+    "graph_proposals": [
+      [
+        295,
+        100815,
+        14,
+        554,
+        295
+      ],
+      [
+        11620,
+        223,
+        939,
+        24,
+        695
+      ],
+      [
+        241,
+        42988,
+        28609,
+        2635,
+        4
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        295,
+        100815,
+        14,
+        554,
+        295
+      ],
+      [
+        438,
+        223,
+        939,
+        24,
+        695
+      ],
+      [
+        241,
+        42988,
+        28609,
+        2635,
+        4
+      ]
+    ],
+    "unpadded_logits_max_abs": 12.1875,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.92578125
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 6,
+      "281468074485200": 4
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.003515481948852539,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0022501200437545776
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0018726885318756104
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [
+          7
+        ],
+        "changed_order_or_membership_rows": [
+          7
+        ],
+        "selection_score_max_abs": 0.013960838317871094,
+        "selection_score_max_abs_on_changed_rows": [
+          0.006316959857940674
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              32,
+              97,
+              12
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0030673742294311523
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0030673742294311523
+          ],
+          "minimum_actual_selection_margin": 0.0017659664154052734
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              32,
+              97,
+              60
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0018672943115234375
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0018672943115234375
+          ],
+          "minimum_actual_selection_margin": 0.00025713443756103516
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [
+          7,
+          9
+        ],
+        "changed_order_or_membership_rows": [
+          7,
+          9,
+          14
+        ],
+        "selection_score_max_abs": 0.2914663553237915,
+        "selection_score_max_abs_on_changed_rows": [
+          0.2914663553237915,
+          0.04497885704040527
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              58,
+              19,
+              98
+            ],
+            [
+              83,
+              58,
+              98
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.018477559089660645,
+            0.021891474723815918
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.018477559089660645,
+            0.021891474723815918
+          ],
+          "minimum_actual_selection_margin": 0.002581954002380371
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              48,
+              98,
+              58
+            ],
+            [
+              83,
+              58,
+              6
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.005373179912567139,
+            0.014102697372436523
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.005373179912567139,
+            0.014102697372436523
+          ],
+          "minimum_actual_selection_margin": 0.005373179912567139
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 117
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 113
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 34923
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 29264
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.09375,
+        "unpadded_different_values": 58502
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.12890625,
+        "unpadded_different_values": 210584
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.024614334106445312,
+        "unpadded_different_values": 1920
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0020531117916107178,
+        "unpadded_different_values": 45
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 62556
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01171875,
+        "unpadded_different_values": 62321
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 6.28125,
+        "unpadded_different_values": 67012
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 6.484375,
+        "unpadded_different_values": 267391
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.04906511306762695,
+        "unpadded_different_values": 1920
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.003357410430908203,
+        "unpadded_different_values": 45
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 48.0,
+        "unpadded_different_values": 1
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 4.96875,
+        "unpadded_different_values": 68315
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.45458984375,
+        "unpadded_different_values": 69587
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 42.75,
+        "unpadded_different_values": 70615
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 49.0,
+        "unpadded_different_values": 284073
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.8124403953552246,
+        "unpadded_different_values": 1920
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.06144362688064575,
+        "unpadded_different_values": 45
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 92.0,
+        "unpadded_different_values": 6
+      }
+    }
+  },
+  {
+    "case": 5,
+    "sequence": [
+      64,
+      64,
+      64,
+      64
+    ],
+    "rejected": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "eager_proposals": [
+      [
+        355,
+        82,
+        1143,
+        81,
+        6150
+      ],
+      [
+        45154,
+        1930,
+        2291,
+        481,
+        116135
+      ],
+      [
+        115841,
+        17,
+        21192,
+        223,
+        792
+      ],
+      [
+        253,
+        435,
+        1200,
+        2366,
+        56928
+      ]
+    ],
+    "graph_proposals": [
+      [
+        355,
+        82,
+        1143,
+        81,
+        6150
+      ],
+      [
+        45154,
+        1930,
+        2291,
+        481,
+        116135
+      ],
+      [
+        115841,
+        17,
+        21192,
+        223,
+        792
+      ],
+      [
+        253,
+        435,
+        1200,
+        2366,
+        56928
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        355,
+        82,
+        1143,
+        81,
+        6150
+      ],
+      [
+        45154,
+        1930,
+        2291,
+        481,
+        116135
+      ],
+      [
+        115841,
+        17,
+        21192,
+        223,
+        792
+      ],
+      [
+        253,
+        435,
+        1200,
+        2366,
+        56928
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.0,
+    "unpadded_cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 8,
+      "281468074485200": 6
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.013116240501403809
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.013116240501403809
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0021016597747802734
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0021016597747802734
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0014811456203460693
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0014811456203460693
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 6,
+    "sequence": [
+      255,
+      256
+    ],
+    "rejected": [
+      0,
+      0
+    ],
+    "eager_proposals": [
+      [
+        3682,
+        72,
+        3760,
+        16,
+        539
+      ],
+      [
+        10759,
+        201,
+        15,
+        19,
+        16
+      ]
+    ],
+    "graph_proposals": [
+      [
+        3682,
+        72,
+        3760,
+        16,
+        539
+      ],
+      [
+        10759,
+        201,
+        15,
+        19,
+        16
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        3682,
+        72,
+        3760,
+        16,
+        539
+      ],
+      [
+        10759,
+        201,
+        15,
+        19,
+        16
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.0,
+    "unpadded_cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 8,
+      "281468074485200": 6,
+      "281468074481552": 2,
+      "281468074476272": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.033554792404174805
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.033554792404174805
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.008127748966217041
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.008127748966217041
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.015733838081359863
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.015733838081359863
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 7,
+    "sequence": [
+      255,
+      256
+    ],
+    "rejected": [
+      4,
+      5
+    ],
+    "eager_proposals": [
+      [
+        85,
+        29,
+        2513,
+        678,
+        23917
+      ],
+      [
+        31,
+        25,
+        463,
+        44624,
+        302
+      ]
+    ],
+    "graph_proposals": [
+      [
+        85,
+        29,
+        2513,
+        678,
+        23917
+      ],
+      [
+        31,
+        25,
+        463,
+        44624,
+        302
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        85,
+        29,
+        2513,
+        678,
+        23917
+      ],
+      [
+        31,
+        25,
+        463,
+        44624,
+        302
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.0,
+    "unpadded_cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 8,
+      "281468074485200": 6,
+      "281468074481552": 4,
+      "281468074476272": 4
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.008055657148361206
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.008055657148361206
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.009804725646972656
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.009804725646972656
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0028998851776123047
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0028998851776123047
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 8,
+    "sequence": [
+      33,
+      9,
+      65
+    ],
+    "rejected": [
+      5,
+      0,
+      1
+    ],
+    "eager_proposals": [
+      [
+        253,
+        343,
+        3567,
+        4508,
+        14
+      ],
+      [
+        294,
+        7231,
+        42557,
+        6514,
+        9553
+      ],
+      [
+        61,
+        18,
+        16,
+        4480,
+        734
+      ]
+    ],
+    "graph_proposals": [
+      [
+        253,
+        343,
+        3567,
+        4508,
+        14
+      ],
+      [
+        294,
+        7231,
+        42557,
+        6514,
+        9553
+      ],
+      [
+        61,
+        18,
+        16,
+        4480,
+        734
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        253,
+        343,
+        3567,
+        4508,
+        14
+      ],
+      [
+        294,
+        7231,
+        42557,
+        6514,
+        9553
+      ],
+      [
+        61,
+        18,
+        16,
+        4480,
+        734
+      ]
+    ],
+    "unpadded_logits_max_abs": 10.40625,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      1.0107421875
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 6,
+      "281468074482896": 2,
+      "281468074479440": 8,
+      "281468074485200": 8,
+      "281468074481552": 4,
+      "281468074476272": 4,
+      "281468074476656": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.004303634166717529,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.002936422824859619
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.002848327159881592
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [
+          13
+        ],
+        "changed_order_or_membership_rows": [
+          10,
+          13
+        ],
+        "selection_score_max_abs": 0.013271570205688477,
+        "selection_score_max_abs_on_changed_rows": [
+          0.00822073221206665
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              7,
+              55,
+              94
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.00864189863204956
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.00864189863204956
+          ],
+          "minimum_actual_selection_margin": 0.006115257740020752
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              7,
+              55,
+              108
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0009293556213378906
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0009293556213378906
+          ],
+          "minimum_actual_selection_margin": 0.0009293556213378906
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [
+          13
+        ],
+        "changed_order_or_membership_rows": [
+          1,
+          11,
+          13
+        ],
+        "selection_score_max_abs": 0.6471590995788574,
+        "selection_score_max_abs_on_changed_rows": [
+          0.6471590995788574
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              46,
+              109,
+              80
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0629723072052002
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0629723072052002
+          ],
+          "minimum_actual_selection_margin": 0.004439175128936768
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              46,
+              80,
+              40
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.02486598491668701
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.02486598491668701
+          ],
+          "minimum_actual_selection_margin": 0.006021678447723389
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 77
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 81
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 40236
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 34287
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 59537
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 217708
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.030031681060791016,
+        "unpadded_different_values": 1920
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0022032856941223145,
+        "unpadded_different_values": 45
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 62489
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01171875,
+        "unpadded_different_values": 62981
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 4.7265625,
+        "unpadded_different_values": 67435
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 5.30859375,
+        "unpadded_different_values": 267098
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.058825016021728516,
+        "unpadded_different_values": 1920
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0027761459350585938,
+        "unpadded_different_values": 45
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 120.0,
+        "unpadded_different_values": 3
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 9.75,
+        "unpadded_different_values": 68296
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.48681640625,
+        "unpadded_different_values": 69405
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 25.0,
+        "unpadded_different_values": 70486
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 30.75,
+        "unpadded_different_values": 283226
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 2.618154764175415,
+        "unpadded_different_values": 1920
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.013466477394104004,
+        "unpadded_different_values": 45
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 101.0,
+        "unpadded_different_values": 6
+      }
+    }
+  },
+  {
+    "case": 9,
+    "sequence": [
+      33
+    ],
+    "rejected": [
+      1
+    ],
+    "eager_proposals": [
+      [
+        10,
+        6615,
+        11,
+        790,
+        14414
+      ]
+    ],
+    "graph_proposals": [
+      [
+        10,
+        6615,
+        11,
+        790,
+        14414
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        10,
+        32133,
+        1766,
+        97858,
+        2292
+      ]
+    ],
+    "unpadded_logits_max_abs": 5.46484375,
+    "unpadded_cache_max_abs": [
+      0.00390625,
+      0.015625,
+      0.029296875
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 8,
+      "281468074482896": 4,
+      "281468074479440": 8,
+      "281468074485200": 8,
+      "281468074481552": 4,
+      "281468074476272": 4,
+      "281468074476656": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.0037619471549987793,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.007484376430511475
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.008419632911682129
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.01671445369720459,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.015948891639709473
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.016059160232543945
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [
+          1
+        ],
+        "changed_order_or_membership_rows": [
+          1,
+          3
+        ],
+        "selection_score_max_abs": 0.016759634017944336,
+        "selection_score_max_abs_on_changed_rows": [
+          0.016759634017944336
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              35,
+              103,
+              11
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.007925689220428467
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.007925689220428467
+          ],
+          "minimum_actual_selection_margin": 0.007925689220428467
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              35,
+              103,
+              58
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0018224716186523438
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0018224716186523438
+          ],
+          "minimum_actual_selection_margin": 0.0018224716186523438
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 25
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 35
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 14048
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.005859375,
+        "unpadded_different_values": 11694
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.078125,
+        "unpadded_different_values": 19585
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.15625,
+        "unpadded_different_values": 75227
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.026785850524902344,
+        "unpadded_different_values": 640
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0015738308429718018,
+        "unpadded_different_values": 15
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.234375,
+        "unpadded_different_values": 21267
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.009765625,
+        "unpadded_different_values": 20945
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.203125,
+        "unpadded_different_values": 22561
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.34375,
+        "unpadded_different_values": 89681
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.05515913665294647,
+        "unpadded_different_values": 640
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.002583026885986328,
+        "unpadded_different_values": 15
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.375,
+        "unpadded_different_values": 22523
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.01953125,
+        "unpadded_different_values": 23228
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 23.5,
+        "unpadded_different_values": 23921
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 27.28125,
+        "unpadded_different_values": 95858
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0802619457244873,
+        "unpadded_different_values": 640
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.008179008960723877,
+        "unpadded_different_values": 15
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 47.0,
+        "unpadded_different_values": 3
+      }
+    }
+  },
+  {
+    "case": 10,
+    "sequence": [
+      9,
+      33,
+      129
+    ],
+    "rejected": [
+      2,
+      3,
+      4
+    ],
+    "eager_proposals": [
+      [
+        18,
+        16,
+        9611,
+        603,
+        15
+      ],
+      [
+        17,
+        8338,
+        73298,
+        28,
+        13742
+      ],
+      [
+        69,
+        26,
+        71,
+        15,
+        939
+      ]
+    ],
+    "graph_proposals": [
+      [
+        18,
+        16,
+        9611,
+        603,
+        15
+      ],
+      [
+        17,
+        8338,
+        73298,
+        28,
+        13742
+      ],
+      [
+        69,
+        26,
+        71,
+        15,
+        939
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        18,
+        16,
+        9611,
+        603,
+        15
+      ],
+      [
+        17,
+        8338,
+        73298,
+        28,
+        13742
+      ],
+      [
+        69,
+        26,
+        71,
+        15,
+        939
+      ]
+    ],
+    "unpadded_logits_max_abs": 6.6015625,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.023681640625
+    ],
+    "actual_graph_replays": {
+      "281468074478192": 2,
+      "281468074481264": 8,
+      "281468074482896": 4,
+      "281468074479440": 10,
+      "281468074485200": 10,
+      "281468074481552": 4,
+      "281468074476272": 4,
+      "281468074476656": 2
+    },
+    "routing": {
+      "layer0_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [
+          11
+        ],
+        "selection_score_max_abs": 0.005889832973480225,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.0031149983406066895
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.003343731164932251
+        }
+      },
+      "layer1_router": {
+        "changed_membership_rows": [],
+        "changed_order_or_membership_rows": [],
+        "selection_score_max_abs": 0.012730658054351807,
+        "selection_score_max_abs_on_changed_rows": [],
+        "unpadded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.011864066123962402
+        },
+        "padded": {
+          "ids_on_changed_rows": [],
+          "boundary_margin_on_changed_rows": [],
+          "actual_selection_margin_on_changed_rows": [],
+          "minimum_actual_selection_margin": 0.01853501796722412
+        }
+      },
+      "layer2_router": {
+        "changed_membership_rows": [
+          5,
+          10
+        ],
+        "changed_order_or_membership_rows": [
+          5,
+          10
+        ],
+        "selection_score_max_abs": 0.015300571918487549,
+        "selection_score_max_abs_on_changed_rows": [
+          0.013861775398254395,
+          0.015300571918487549
+        ],
+        "unpadded": {
+          "ids_on_changed_rows": [
+            [
+              48,
+              79,
+              27
+            ],
+            [
+              119,
+              66,
+              27
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0032205581665039062,
+            0.0023546814918518066
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0032205581665039062,
+            0.0023546814918518066
+          ],
+          "minimum_actual_selection_margin": 0.0018362998962402344
+        },
+        "padded": {
+          "ids_on_changed_rows": [
+            [
+              48,
+              79,
+              69
+            ],
+            [
+              119,
+              66,
+              61
+            ]
+          ],
+          "boundary_margin_on_changed_rows": [
+            0.0018199682235717773,
+            0.0009922981262207031
+          ],
+          "actual_selection_margin_on_changed_rows": [
+            0.0018199682235717773,
+            0.0009922981262207031
+          ],
+          "minimum_actual_selection_margin": 0.0009922981262207031
+        }
+      }
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 113
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 118
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 23417
+      },
+      "layer0_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.005859375,
+        "unpadded_different_values": 19404
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 38487
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 138532
+      },
+      "layer0_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.02376079559326172,
+        "unpadded_different_values": 1280
+      },
+      "layer0_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0014712214469909668,
+        "unpadded_different_values": 30
+      },
+      "layer0_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 26.0,
+        "unpadded_different_values": 2
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 42317
+      },
+      "layer1_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.009765625,
+        "unpadded_different_values": 40993
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.15625,
+        "unpadded_different_values": 44295
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.2578125,
+        "unpadded_different_values": 177442
+      },
+      "layer1_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.04937171936035156,
+        "unpadded_different_values": 1280
+      },
+      "layer1_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.002531111240386963,
+        "unpadded_different_values": 30
+      },
+      "layer1_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.5625,
+        "unpadded_different_values": 57294
+      },
+      "layer2_moe_input": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.017578125,
+        "unpadded_different_values": 55983
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 64.5,
+        "unpadded_different_values": 66939
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 76.25,
+        "unpadded_different_values": 264442
+      },
+      "layer2_router_logits": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.06799077987670898,
+        "unpadded_different_values": 1920
+      },
+      "layer2_router_weights": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0031927525997161865,
+        "unpadded_different_values": 45
+      },
+      "layer2_router_ids": {
+        "graph_exact": true,
+        "unpadded_max_abs": 42.0,
+        "unpadded_different_values": 2
+      }
+    }
+  }
+]

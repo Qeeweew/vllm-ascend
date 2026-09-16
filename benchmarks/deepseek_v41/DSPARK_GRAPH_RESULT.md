@@ -38,7 +38,7 @@ B3 padding into B4, and independently changing context/query buckets.
   `scheduler_validated=false`. The default strict harness still rejects such
   differences; `--graph-padding-diagnostic` enables this additional analysis.
 
-## Padding sensitivity still under investigation
+## Padding sensitivity and actual router choices
 
 R1 failed before capture because the generic proposer required torch.compile;
 V4.1 now uses its actual FULL graph configuration. R2 reached context capture
@@ -50,9 +50,34 @@ proposal mismatch. All four failure histories are retained.
 In r5 case 3, context projection changes by at most 0.015625 in 134 values;
 context norm changes by at most 0.0009765625. The maximum difference grows to
 0.25 in the second attention block, then 6.0234375 in that block's MoE output.
-Every observed same-bucket eager/graph stage remains exact. This locates a
-major amplification at MoE, but does not yet establish which router/expert
-operation causes it. Inspect expert choices and routing margins next.
+Every observed same-bucket eager/graph stage remains exact. R5 located a
+major amplification at MoE without recording which expert choices caused it.
+
+R6 records actual FP32 router logits, top-k IDs and weights with device-only
+copies during capture, plus the normalized MoE inputs. All 11 cases complete
+on all eight ranks with clean teardown; same-bucket eager and graph are exact
+at every observed stage, including actual router choices. The CPU Markov
+oracle matches all 120 tokens. Peak allocation is 6,175,574,528 bytes.
+
+In case 3, the second draft block changes its selected experts on query row 7
+from `[97, 82, 127]` to `[97, 82, 39]`. The maximum selection-score change on
+that row is 0.00994873; the original third/fourth score gap is 0.00917423.
+The padded gap is 0.00372231. The following block changes two rows' expert
+membership. Case 4 similarly changes the second block's row 7 from
+`[32, 97, 12]` to `[32, 97, 60]`; case 9 changes the third block's row 1.
+This directly establishes expert-boundary crossings accompanying the large
+MoE amplification. Across all recorded cases and ranks, same-bucket routing
+remains exact. CPU sqrt-softplus plus checkpoint text bias gives a positive
+actual selection margin for every observed row on rank 0 (minimum 0.000148773),
+so the recorded choices agree with that score reference.
+
+Different BF16 matrix shapes can perturb the inputs to discontinuous expert
+selection. Requiring identical proposals across those shapes is therefore
+stronger than graph replay correctness. R6 preserves the original strict
+check and explicitly remains diagnostic; it does not force expert IDs or
+change numerical tolerances. Next evaluate real target auxiliary states,
+target verification and acceptance, with the same-bucket check as the direct
+graph equivalence test and unpadded drift reported separately.
 
 An independent one-NPU F.linear probe with real context-projection weights
 also reproduces shape sensitivity: 171 versus 256 rows changes 132 of 875,520
@@ -62,9 +87,9 @@ an initial BF16 perturbation, not proof of the entire downstream cause.
 
 ## Remaining acceptance
 
-Explain the padding-induced routing/proposal differences using actual router
-inputs and expert choices, then test real target auxiliary states and final
-target verification. Complete target/draft cache rollback, chunked prefill,
+Test real target auxiliary states and final target verification after the
+observed routing-boundary crossings. Complete target/draft cache rollback,
+chunked prefill,
 serving and DSpark-enabled vllm bench. Profile both graph families and total
 proposal time; operator timings cannot establish end-to-end speedup.
 
@@ -73,3 +98,8 @@ counts, stage journals, proposal results, CPU comparison, source hashes and
 raw log/tensor hashes. Native artifacts remain r6 Torch binding plus the
 isolated AscendC metadata vendor and production r12 fallback vendor. The
 production native installation is unchanged.
+
+R6 evidence includes per-rank journals/capture IDs, comparison results and
+source hashes. Raw per-case stage tensors are retained under
+`/tmp/v41-dspark-proposer-graph-r6/graph_stages_case*.pt`; sizes and SHA256
+digests are recorded in `dspark_graph/r6_source_manifest.json`.

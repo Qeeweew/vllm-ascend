@@ -1,0 +1,62 @@
+{
+  "source_sha256": {
+    "vllm_ascend/spec_decode/dspark_v41_graph.py": "e8314b13ecca6c7576b4de8c504e5275644cce54cf55ff1bdec1d0ee021842c6",
+    "vllm_ascend/spec_decode/dspark_proposer.py": "51f8929330c5bf54f648dd7769f741c44a663ae39d5b7b74f933522b4a31cc82",
+    "benchmarks/deepseek_v41/dspark_graph_cases.py": "d03fdb78ba4413508b451ef0ab28f1a805aed27be761b8d50598181d49fa5db1",
+    "benchmarks/deepseek_v41/dspark_router_diagnostic.py": "c3114fafb41c1cfcf7fb17b4cd1305a40d6a43a96b38ce41c0cf9a0d170a8f6e",
+    "benchmarks/deepseek_v41/check_dspark_proposer_tp8.py": "73cb191525485934f719b7ddb165705b36d8dc31b08532997f6ad6ed5a70cde5"
+  },
+  "artifacts": {
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case0.pt": {
+      "bytes": 5099869,
+      "sha256": "15a624f22ae0ef1d818bce2f4299b2a5d2b64c4f8d6e13b172e1b280e623cd68"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case1.pt": {
+      "bytes": 7065949,
+      "sha256": "7aac9d17df7d7468b55d345258493e2d3cd4943b765abf6fd87bf64ad4fc4710"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case10.pt": {
+      "bytes": 27037186,
+      "sha256": "30172de2a5eecd33dd4f0b99433bfe380d720521d05d647f2987779f95110251"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case2.pt": {
+      "bytes": 14930269,
+      "sha256": "1cca1cbddc371368d6f545dc7a792890211ae5d4244116288816344c7dc56c33"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case3.pt": {
+      "bytes": 27035549,
+      "sha256": "e2818c51e9f67c395f6d6675974845dc1fedb152aa31a1da5b82498cc5742ac0"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case4.pt": {
+      "bytes": 27035549,
+      "sha256": "0a5dfa74b1cc2ea7a708861f37153486f178a5eb013b17f696c6997e78d19fc0"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case5.pt": {
+      "bytes": 38331805,
+      "sha256": "6fe317fb7b0334b6098f03e1e25bcc68eeaa1a902061194230fc7afb0f6ca24d"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case6.pt": {
+      "bytes": 50556765,
+      "sha256": "e8f76a08831e18a3039fe2ea5e27857e6041d082c7d0bafbbd454bfb9e51e562"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case7.pt": {
+      "bytes": 50556765,
+      "sha256": "1bda5890b43fa85e4fdf7733574d07b1687ee9ca504db4fa75ad4b72549b88f5"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case8.pt": {
+      "bytes": 21792669,
+      "sha256": "2faed9df30a71c9ad2b49303c843e16fc7d08fa20db155949260c2553498524e"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/graph_stages_case9.pt": {
+      "bytes": 7065949,
+      "sha256": "140235194ef3ed5e204739d593646107e1ead4baf5ba7132346272367b3a72c8"
+    },
+    "/tmp/v41-dspark-proposer-graph-r6/rank0.pt": {
+      "bytes": 31034473,
+      "sha256": "b53ee7031e658d46194e261f8818eab26c2ff65527cb88f56d1fb0b11857b4ea"
+    }
+  },
+  "log_sha256": "6552bb21833d9d11dfa8e481654428f8390d88cd24f470c99e114b419b42cbf7",
+  "launcher_exit_code": 0,
+  "cpu_comparison_exit_code": 0
+}

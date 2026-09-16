@@ -6,6 +6,7 @@ from collections import Counter
 from unittest.mock import patch
 
 import torch
+from dspark_router_diagnostic import compare_routes
 from vllm.config import CUDAGraphMode
 from vllm.forward_context import BatchDescriptor
 
@@ -92,6 +93,7 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
     replays = Counter()
     journal = []
     stage_buffers, stage_handles = {}, []
+    router_patches, router_biases = [], {}
     if padding_diagnostic:
         # Device-only observation also runs inside capture. Copying to CPU is
         # deferred until the complete proposer returns.
@@ -110,8 +112,40 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
         watch("context_norm", draft.main_norm, proposer.max_num_tokens, proposer.hidden_size)
         for index, layer in enumerate(draft.layers):
             watch(f"layer{index}_attention", layer.self_attn, proposer.max_query_tokens, proposer.hidden_size)
+            watch(
+                f"layer{index}_moe_input",
+                layer.post_attention_layernorm,
+                proposer.max_query_tokens,
+                proposer.hidden_size,
+            )
             watch(f"layer{index}_moe", layer.mlp, proposer.max_query_tokens, proposer.hidden_size)
             watch(f"layer{index}_output", layer, proposer.max_query_tokens, proposer.hidden_size * draft.hc_mult)
+            # Observe actual choices; recomputing top-k would hide a routing
+            # implementation error. Only persistent device copies enter capture.
+            router = layer.mlp.experts.routed_experts.router
+            assert router.scoring_func == "sqrtsoftplus" and not router.use_grouped_topk
+            assert router.tid2eid is None
+            name = f"layer{index}_router"
+            router_biases[name] = router.e_score_correction_bias.detach().cpu().clone()
+            for suffix, width, dtype in (
+                ("logits", layer.mlp.n_routed_experts, torch.float32),
+                ("weights", router.top_k, torch.float32),
+                ("ids", router.top_k, torch.int32),
+            ):
+                stage_buffers[f"{name}_{suffix}"] = torch.empty(
+                    (proposer.max_query_tokens, width), dtype=dtype, device=device
+                )
+
+            def observe_router(*args, original=router._select_experts, prefix=name, **kwargs):
+                logits = kwargs["router_logits"]
+                weights, ids = original(*args, **kwargs)
+                for suffix, value in (("logits", logits), ("weights", weights), ("ids", ids)):
+                    stage_buffers[f"{prefix}_{suffix}"][: value.shape[0]].copy_(value)
+                return weights, ids
+
+            observer = patch.object(router, "_select_experts", observe_router)
+            observer.start()
+            router_patches.append(observer)
 
     def observe_replay(owner, *args, **kwargs):
         replays[id(owner)] += 1
@@ -177,6 +211,14 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
                 }
                 results[mode] = (proposals, logits, [cache.kv_cache.cpu().clone() for cache in caches], stages)
             eager, replay, perturbed = results["eager"], results["graph"], results["perturbed"]
+            routing = {}
+            for name, bias in router_biases.items():
+                routing[name] = compare_routes(results["unpadded"][3], eager[3], name, bias)
+            if padding_diagnostic and rank == 0:
+                torch.save(
+                    {"biases": router_biases, "stages": {mode: result[3] for mode, result in results.items()}},
+                    output / f"graph_stages_case{case}.pt",
+                )
             journal.append(
                 {
                     "case": case,
@@ -193,6 +235,7 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
                         float((a.float() - b.float()).abs().max()) for a, b in zip(results["unpadded"][2], eager[2])
                     ],
                     "actual_graph_replays": dict(replays),
+                    "routing": routing,
                     "stages": {
                         name: {
                             "graph_exact": torch.equal(value, replay[3][name]),
@@ -243,6 +286,8 @@ def run_graph_cases(proposer, config, caches, device, rank, output, *, padding_d
             actual_graph_replays=dict(replays),
         )
     finally:
+        for observer in reversed(router_patches):
+            observer.stop()
         for handle in stage_handles:
             handle.remove()
         replay_observer.stop()
