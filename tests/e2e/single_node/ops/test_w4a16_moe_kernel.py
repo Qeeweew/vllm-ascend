@@ -5,6 +5,7 @@ import pytest
 import torch
 import torch.nn.functional as F
 import torch_npu
+
 import vllm_ascend.vllm_ascend_C  # noqa: F401
 
 GROUP_SIZE = 32
@@ -44,9 +45,16 @@ def moe_reference(x, q13, s13, q2, s2, ids, routing, limit):
     return output.to(x.dtype)
 
 
-def make_case(batch=1, dtype=torch.bfloat16, overflow=False, experts=TOP_K, top_k=TOP_K):
+def make_case(
+    batch=1,
+    dtype=torch.bfloat16,
+    overflow=False,
+    experts=TOP_K,
+    top_k=TOP_K,
+    hidden=HIDDEN_SIZE,
+    inter=INTERMEDIATE_SIZE,
+):
     torch.manual_seed(4100 + batch)
-    hidden, inter = HIDDEN_SIZE, INTERMEDIATE_SIZE
     x = (torch.randn(batch, hidden) * (100000 if overflow else 0.2)).to(dtype)
     q13 = torch.randint(-8, 8, (experts, 2 * inter, hidden), dtype=torch.int32)
     q2 = torch.randint(-8, 8, (experts, hidden, inter), dtype=torch.int32)
@@ -120,6 +128,26 @@ def test_reject_non_group_aligned_input():
     device_args[0] = device_args[0][:, :-1].contiguous()
     with pytest.raises(RuntimeError, match="hidden"):
         torch.ops._C_ascend.npu_w4a16_moe(*device_args, 10.0)
+
+
+@pytest.mark.parametrize("dtype", [torch.float16, torch.bfloat16])
+@pytest.mark.parametrize("batch,hidden,inter", [(2, 128, 32), (2, 128, 256), (2, 128, 1056), (128, 5120, 288)])
+def test_contiguous_and_tiled_weight_reads(batch, hidden, inter, dtype):
+    # Full-N DMA, split N=2112, full/partial K blocks, and the decode limit.
+    args, (q13, q2) = make_case(batch, dtype=dtype, hidden=hidden, inter=inter)
+    x, _, s13, _, s2, ids, routing = args
+    device_args = tuple(t.npu() for t in args)
+    expected = moe_reference(x, q13, s13, q2, s2, ids, routing, 10.0)
+    output = torch.ops._C_ascend.npu_w4a16_moe(*device_args, 10.0)
+    assert_accurate(output, expected)
+    graph = torch.npu.NPUGraph()
+    with torch.npu.graph(graph):
+        output = torch.ops._C_ascend.npu_w4a16_moe(*device_args, 10.0)
+    ids.add_(1).remainder_(TOP_K)
+    ids[0, 0] = -1
+    device_args[5].copy_(ids)
+    graph.replay()
+    assert_accurate(output, moe_reference(x, q13, s13, q2, s2, ids, routing, 10.0))
 
 
 @pytest.mark.parametrize("batch", [8, 24, 48, 72])

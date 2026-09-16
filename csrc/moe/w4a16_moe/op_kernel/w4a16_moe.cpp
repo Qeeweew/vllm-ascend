@@ -5,6 +5,15 @@
 using namespace AscendC;
 
 // -----------------------------------------------------------------------------
+// Type Traits for BFloat16 detection
+// -----------------------------------------------------------------------------
+template<typename T>
+struct IsBFloat16 : std::false_type {};
+
+template<>
+struct IsBFloat16<bfloat16_t> : std::true_type {};
+
+// -----------------------------------------------------------------------------
 // Constants
 // -----------------------------------------------------------------------------
 constexpr int32_t BLOCK_SIZE       = 128; // 一次处理的计算块大小
@@ -42,7 +51,6 @@ public:
         int32_t core_num = GetBlockNum();
 
         Duplicate(tile, (T)0, TILE_LEN);
-        PipeBarrier<PIPE_V>();
         // V -> MTE3
         SetFlag<HardEvent::V_MTE3>(EID_V_MTE3);
         WaitFlag<HardEvent::V_MTE3>(EID_V_MTE3);
@@ -125,18 +133,12 @@ private:
 
             if (swiglu_limit > 0.0f) {
                 Mins(f_in, f_in, swiglu_limit, len);
-                PipeBarrier<PIPE_V>();
                 Mins(f_in[len], f_in[len], swiglu_limit, len);
-                PipeBarrier<PIPE_V>();
                 Maxs(f_in[len], f_in[len], -swiglu_limit, len);
-                PipeBarrier<PIPE_V>();
             }
             Silu(f_out, f_in, len);
-            PipeBarrier<PIPE_V>();
             Mul(f_out, f_out, f_in[len], len);
-            PipeBarrier<PIPE_V>();
             Cast(t_out, f_out, RoundMode::CAST_ROUND, len);
-            PipeBarrier<PIPE_V>();
 
             // mark V done for next tile's CopyIn overwrite protection
             SetFlag<HardEvent::V_MTE2>(EID_V_MTE2);
@@ -230,7 +232,6 @@ public:
         for (int32_t n_start = 0; n_start < out_dim; n_start += TILE_N) {
             int32_t cur_n_len = (out_dim - n_start < TILE_N) ? (out_dim - n_start) : TILE_N;
             Duplicate(y_fp32, 0.0f, cur_n_len);
-            PipeBarrier<PIPE_V>();
 
             int32_t current_row_idx = -1;
             if (start_task < end_task) current_row_idx = start_task / num_blocks;
@@ -242,7 +243,6 @@ public:
                 if (row_idx != current_row_idx) {
                     CopyOut(current_row_idx, n_start, cur_n_len);
                     Duplicate(y_fp32, 0.0f, cur_n_len);
-                    PipeBarrier<PIPE_V>();
                     current_row_idx = row_idx;
                 }
 
@@ -276,15 +276,12 @@ private:
         y_fp32 = LocalTensor<float>(TPosition::VECOUT, addr, TILE_N);
         addr += (uint32_t)(TILE_N * sizeof(float));
 
-        // Four FP32 group accumulators; never narrow BF16 activations to FP16.
-        group_acc = LocalTensor<float>(TPosition::VECCALC, addr, GROUPS_PER_BLOCK * TILE_N);
-        addr += (uint32_t)(GROUPS_PER_BLOCK * TILE_N * sizeof(float));
+        // 开辟 4 组计算和的缓存区，用于延迟乘 Scale
+        group_acc = LocalTensor<half>(TPosition::VECCALC, addr, GROUPS_PER_BLOCK * TILE_N);
+        addr += (uint32_t)(GROUPS_PER_BLOCK * TILE_N * sizeof(half) + 256);
 
         w_half = LocalTensor<half>(TPosition::VECCALC, addr, GROUP_TILE * TILE_N);
         addr += (uint32_t)(GROUP_TILE * TILE_N * sizeof(half));
-        w_float = LocalTensor<float>(TPosition::VECCALC, addr, GROUP_TILE * TILE_N);
-        addr += GROUP_TILE * TILE_N * sizeof(float);
-        x_float = LocalTensor<float>(TPosition::VECCALC, addr, BLOCK_SIZE);
     }
 
     __aicore__ inline void PrefetchW(int32_t expert_id, int32_t b_idx, int32_t k_inner_start,
@@ -296,6 +293,13 @@ private:
         uint64_t w_offset = (uint64_t)expert_id * (uint64_t)in_dim * w_stride_k +
                             (uint64_t)(b_idx * BLOCK_SIZE + k_inner_start) * w_stride_k +
                             (uint64_t)n_offset_packed;
+
+        // A full output row has no GM or UB gap. Combining the 32 rows
+        // avoids issuing separate 288-byte reads for the V4.1 W13 N=576.
+        if (cur_n_len == out_dim) {
+            DataCopy(w_local[buf_id], weightGm[w_offset], COMPUTE_ROWS * cur_n_packed);
+            return;
+        }
 
         DataCopyExtParams p{
             (uint16_t)COMPUTE_ROWS,
@@ -333,18 +337,22 @@ private:
                                         int32_t x_offset_idx,
                                         int32_t tile_n,
                                         int32_t tile_n_packed,
-                                        LocalTensor<float>& current_group_acc) {
+                                        LocalTensor<half>& x_full_half,
+                                        LocalTensor<half>& current_group_acc) {
+        LocalTensor<uint64_t> x_u64 = x_full_half.template ReinterpretCast<uint64_t>();
+
+        constexpr int STEP = 4;
+        half x_val_buf[COMPUTE_ROWS];
+        uint64_t* x_val_buf_u64 = (uint64_t*)x_val_buf;
+        for (int i = 0; i < COMPUTE_ROWS / STEP; ++i) {
+            x_val_buf_u64[i] = x_u64.GetValue(x_offset_idx / STEP + i);
+        }
+
         for (int i = 0; i < COMPUTE_ROWS; i += GROUP_TILE) {
             LocalTensor<int4b_t> w_int4 = w_i32[i * tile_n_packed].template ReinterpretCast<int4b_t>();
-            // INT4 -> FP16 is exact; all activation products and reductions use FP32.
             Cast(w_half, w_int4, RoundMode::CAST_NONE, GROUP_TILE * tile_n);
-            PipeBarrier<PIPE_V>();
-            Cast(w_float, w_half, RoundMode::CAST_NONE, GROUP_TILE * tile_n);
-            PipeBarrier<PIPE_V>();
             for (int k = 0; k < GROUP_TILE; ++k) {
-                Axpy(current_group_acc, w_float[k * tile_n],
-                     x_float.GetValue(x_offset_idx + i + k), tile_n);
-                PipeBarrier<PIPE_V>();
+                Axpy(current_group_acc, w_half[k * tile_n], x_val_buf[i + k], tile_n);
             }
         }
     }
@@ -375,17 +383,24 @@ private:
         DataCopy(x_local, xGm[x_offset], block_k);
         SetFlag<HardEvent::MTE2_V>(EID_MTE2_V);
         WaitFlag<HardEvent::MTE2_V>(EID_MTE2_V);
-        Cast(x_float, x_local, RoundMode::CAST_NONE, block_k);
-        PipeBarrier<PIPE_V>();
-        SetFlag<HardEvent::V_S>(0);
-        WaitFlag<HardEvent::V_S>(0);
+
+        // 如果是 BF16，需要转换为 half 供后续计算使用
+        // 使用 y_fp32 的前 64 个 float (256 bytes) 作为中转，可以容纳 128 个 float
+        // 转换流程：bf16 -> fp32 -> fp16
+        if constexpr (IsBFloat16<T>::value) {
+            LocalTensor<float> f_tmp = w_half.template ReinterpretCast<float>();
+            LocalTensor<half> x_half = x_local.template ReinterpretCast<half>();
+            // bf16 -> fp32
+            Cast(f_tmp, x_local, RoundMode::CAST_NONE, block_k);
+            // fp32 -> fp16 (原地覆盖 x_local)
+            Cast(x_half, f_tmp, RoundMode::CAST_ROUND, block_k);
+        }
 
         PrefetchW(expert_id, b_idx, 0, n_offset, cur_n_len, 0);
         SetFlag<HardEvent::MTE2_V>(EID_MTE2_V);
 
-        // Initialize all groups; the final K block may contain only one group.
-        Duplicate(group_acc, 0.0f, GROUPS_PER_BLOCK * TILE_N);
-        PipeBarrier<PIPE_V>();
+        // 初始化 4 个 group 的累加器
+        Duplicate(group_acc, (half)0.0f, GROUPS_PER_BLOCK * TILE_N);
 
         int32_t cur_n_packed = cur_n_len / PACK_RATIO;
         int ping = 0;
@@ -408,9 +423,11 @@ private:
 
             // 计算该 32 行该放入哪个 group_acc
             int step = k_inner / COMPUTE_ROWS;
-            LocalTensor<float> current_acc = group_acc[step * TILE_N];
+            LocalTensor<half> current_acc = group_acc[step * TILE_N];
 
-            ComputeChunk(w_local[ping], k_inner, cur_n_len, cur_n_packed, current_acc);
+            // x_local 现在已经是 half 类型（如果是 bf16 已经转换过了）
+            LocalTensor<half> x_input = x_local.template ReinterpretCast<half>();
+            ComputeChunk(w_local[ping], k_inner, cur_n_len, cur_n_packed, x_input, current_acc);
 
             if (k_inner + COMPUTE_ROWS < block_k) {
                 SetFlag<HardEvent::V_MTE2>(EID_V_MTE2);
@@ -420,16 +437,36 @@ private:
 
         WaitFlag<HardEvent::MTE2_V>(EID_MTE2_V);
 
-        // Scale stays signed. Only the valid groups in the final K block are read.
-        LocalTensor<float> f_scale = w_float;
-        for (int i = 0; i < block_k / GROUP_SIZE; ++i) {
-            LocalTensor<float> current_acc = group_acc[i * TILE_N];
-            LocalTensor<T> current_scale = s_local[i * TILE_N];
-            Cast(f_scale, current_scale, RoundMode::CAST_NONE, cur_n_len);
-            PipeBarrier<PIPE_V>();
-            MulAddDst(global_acc, current_acc, f_scale, cur_n_len);
-            PipeBarrier<PIPE_V>();
+        // 对称量化，省去了 zero-point offset 补偿
+        // 遍历 4 个分组，将 4 个 FP16 Group累加器 分别乘上对应的 Scale 后加入全局 Float 累加器中
+        if constexpr (IsBFloat16<T>::value) {
+            // 对于 BF16，需要复用 w_half 作为 fp32 workspace
+            // w_half 大小为 GROUP_TILE * TILE_N = 8 * 2048 个 half
+            // 作为 fp32 可以容纳 8192 个 float，足够覆盖 cur_n_len (<= 2048)
+            LocalTensor<float> f_acc = w_half.template ReinterpretCast<float>();
+            LocalTensor<float> f_scale = f_acc[TILE_N];
+
+            for (int i = 0; i < block_k / GROUP_SIZE; ++i) {
+                LocalTensor<half> current_acc = group_acc[i * TILE_N];
+                LocalTensor<T> current_scale = s_local[i * TILE_N];
+
+                // current_acc (half) -> f_acc (float)
+                Cast(f_acc, current_acc, RoundMode::CAST_NONE, cur_n_len);
+                // current_scale (bfloat16) -> f_scale (float)
+                Cast(f_scale, current_scale, RoundMode::CAST_NONE, cur_n_len);
+                // f_acc * f_scale -> f_acc
+                MulAddDst(global_acc, f_acc, f_scale, cur_n_len);
+            }
+        } else {
+            // FP16 使用原来的 MulAddDst
+            for (int i = 0; i < block_k / GROUP_SIZE; ++i) {
+                LocalTensor<half> current_acc = group_acc[i * TILE_N];
+                LocalTensor<T> current_scale = s_local[i * TILE_N];
+                MulAddDst(global_acc, current_acc, current_scale, cur_n_len);
+            }
         }
+        // A short final K block can begin its next DMA before the previous
+        // block has consumed shared activation/scale buffers.
         SetFlag<HardEvent::V_MTE2>(EID_V_MTE2);
         WaitFlag<HardEvent::V_MTE2>(EID_V_MTE2);
     }
@@ -440,7 +477,6 @@ private:
         if (is_weighted_sum) {
             float w_val = topkWeightsGm.GetValue(row_idx);
             Muls(y_fp32, y_fp32, w_val, cur_n_len);
-            PipeBarrier<PIPE_V>();
         }
 
         SetFlag<HardEvent::V_MTE3>(EID_V_MTE3);
@@ -464,7 +500,6 @@ private:
             // T output: cast from FP32 to T
             LocalTensor<T> y_half = y_fp32.template ReinterpretCast<T>();
             Cast(y_half, y_fp32, RoundMode::CAST_ROUND, cur_n_len);
-            PipeBarrier<PIPE_V>();
 
             SetAtomicAdd<T>();
 
@@ -499,9 +534,8 @@ private:
     LocalTensor<T>        s_local;
 
     LocalTensor<float>    y_fp32;
-    LocalTensor<float>    group_acc;
+    LocalTensor<half>     group_acc;
     LocalTensor<half>     w_half;
-    LocalTensor<float>    w_float, x_float;
 
     int32_t top_k = 0;
     int32_t in_dim = 0;
@@ -516,7 +550,7 @@ private:
     bool is_broadcast_x = false;
     bool is_weighted_sum = false;
 
-    static constexpr int32_t TILE_N = 1024;
+    static constexpr int32_t TILE_N = 2048;
 };
 
 // -----------------------------------------------------------------------------
@@ -551,7 +585,6 @@ public:
             WaitFlag<HardEvent::MTE2_V>(EID_MTE2_V);
 
             Cast(t_local, f_local, RoundMode::CAST_ROUND, len);
-            PipeBarrier<PIPE_V>();
 
             SetFlag<HardEvent::V_MTE3>(EID_V_MTE3);
             WaitFlag<HardEvent::V_MTE3>(EID_V_MTE3);
