@@ -2492,21 +2492,22 @@ class NPUModelRunner(GPUModelRunner):
                         batch_desc.num_reqs,
                     )
 
-                (attn_metadata, spec_decode_common_attn_metadata) = self._build_attention_metadata(
-                    num_tokens=num_tokens_unpadded,
-                    num_tokens_padded=num_tokens_padded,
-                    num_reqs=num_reqs,
-                    num_reqs_padded=num_reqs_padded,
-                    max_query_len=max_num_scheduled_tokens,
-                    ubatch_slices=ubatch_slices_attn,
-                    logits_indices=logits_indices,
-                    use_spec_decode=use_spec_decode,
-                    num_scheduled_tokens=scheduler_output.num_scheduled_tokens,
-                    num_scheduled_tokens_np=num_scheduled_tokens_np,
-                    cascade_attn_prefix_lens=cascade_attn_prefix_lens,
-                    cudagraph_runtime_mode=cudagraph_mode,
-                    batch_descriptor=batch_desc,
-                )
+                with record_function_or_nullcontext("v41::metadata_prepare"):
+                    (attn_metadata, spec_decode_common_attn_metadata) = self._build_attention_metadata(
+                        num_tokens=num_tokens_unpadded,
+                        num_tokens_padded=num_tokens_padded,
+                        num_reqs=num_reqs,
+                        num_reqs_padded=num_reqs_padded,
+                        max_query_len=max_num_scheduled_tokens,
+                        ubatch_slices=ubatch_slices_attn,
+                        logits_indices=logits_indices,
+                        use_spec_decode=use_spec_decode,
+                        num_scheduled_tokens=scheduler_output.num_scheduled_tokens,
+                        num_scheduled_tokens_np=num_scheduled_tokens_np,
+                        cascade_attn_prefix_lens=cascade_attn_prefix_lens,
+                        cudagraph_runtime_mode=cudagraph_mode,
+                        batch_descriptor=batch_desc,
+                    )
 
                 self._sanitize_placeholder_input_ids_for_forward(
                     scheduler_output,

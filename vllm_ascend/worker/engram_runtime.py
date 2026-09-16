@@ -5,6 +5,7 @@
 from collections.abc import Sequence
 
 import torch
+from vllm.v1.utils import record_function_or_nullcontext
 
 from vllm_ascend.ops.engram_offload import EngramOffloadManager
 from vllm_ascend.worker.engram_history import EngramRequestHistory
@@ -70,21 +71,24 @@ class EngramRuntime:
             fields.append(token_mask[:bucket_tokens])
         # One D2H synchronization, independent of request count. Never read
         # input_batch.token_ids_cpu for asynchronously sampled/decode tokens.
-        snapshot = torch.cat([field.to(torch.int64) for field in fields]).cpu()
+        with record_function_or_nullcontext("v41::engram_snapshot_d2h"):
+            snapshot = torch.cat([field.to(torch.int64) for field in fields]).cpu()
         boundaries = snapshot[2 * bucket_tokens : 2 * bucket_tokens + len(request_ids) + 1]
         count = int(boundaries[-1])
         if count < 0 or count > bucket_tokens:
             raise ValueError("Engram final query boundary exceeds the token bucket")
         mask = snapshot[-bucket_tokens:].bool()[:count] if token_mask is not None else None
-        batch = self.history.prepare(
-            request_ids,
-            snapshot[:count],
-            snapshot[bucket_tokens : bucket_tokens + count],
-            boundaries,
-            token_mask=mask,
-            use_seeded_prompt_mask=mask is None,
-        )
-        rows = self.offload.prepare(batch.hash_ids, bucket_tokens)
+        with record_function_or_nullcontext("v41::engram_hash"):
+            batch = self.history.prepare(
+                request_ids,
+                snapshot[:count],
+                snapshot[bucket_tokens : bucket_tokens + count],
+                boundaries,
+                token_mask=mask,
+                use_seeded_prompt_mask=mask is None,
+            )
+        with record_function_or_nullcontext("v41::engram_gather_h2d"):
+            rows = self.offload.prepare(batch.hash_ids, bucket_tokens)
         # A blocking copy keeps the small pageable CPU mask alive until DMA
         # completes. Large embedding rows use the independent pinned ring.
         self.token_mask[:count].copy_(batch.token_mask)
