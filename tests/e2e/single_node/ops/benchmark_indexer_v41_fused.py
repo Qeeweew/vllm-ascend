@@ -84,6 +84,7 @@ def loaded_candidate_libraries(opp_root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--baseline", type=Path, required=True, help="Local JSON output from benchmark_indexer_v41.py")
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument(
         "--cann-api-workspace-bytes",
@@ -106,7 +107,7 @@ def main():
     if first_opp != args.opp_root:
         raise ValueError(f"Candidate OPP must be selected before bootstrap: {first_opp}")
     root = Path(__file__).parents[4]
-    frozen_path = root / "benchmarks/deepseek_v41/indexer_v41/candidate_frozen_baseline.json"
+    frozen_path = args.baseline.resolve(strict=True)
     frozen = json.loads(frozen_path.read_text())
     source_dir = root / "csrc/attention/quant_lightning_indexer_v2"
     hashes = {
@@ -125,6 +126,7 @@ def main():
             if path.is_file()
         },
         source_sha256=hashes,
+        frozen_baseline=str(frozen_path),
         cases=[],
         user_workspace_bytes=USER_WORKSPACE_BYTES,
         cann_api_workspace_bytes=args.cann_api_workspace_bytes,
@@ -184,7 +186,11 @@ def main():
             for name in order:
                 samples[name].append(measure(graphs[name].replay, 4 if name == "dense" else 64))
         statistics = {name: summarize(values) for name, values in samples.items()}
-        baseline = next(row["dense"] for row in frozen["cases"] if row["batch"] == 1 and row["length"] == length)
+        baseline = next(
+            row["dense"]
+            for row in frozen["cases"]
+            if row["batch"] == 1 and row["length"] == length and row["mode"] == "consumer"
+        )
         acceptance = gates(statistics, baseline)
         peak = memory["fused"]["incremental_peak_allocated_bytes"]
         acceptance["memory_gate"] = USER_WORKSPACE_BYTES <= 256 * 1024 and all(

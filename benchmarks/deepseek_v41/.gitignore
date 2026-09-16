@@ -10,8 +10,5 @@
 *.log
 *.json.new
 
-# Input fixture used by the candidate/fused indexer benchmark comparisons.
-!indexer_v41/candidate_frozen_baseline.json
-
 # Local development notes and benchmark reports.
 *.md

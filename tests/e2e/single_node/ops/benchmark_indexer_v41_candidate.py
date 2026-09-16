@@ -18,15 +18,16 @@ from vllm_ascend.ops.indexer_v41_candidate import CandidateIndexerB1
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--baseline", type=Path, required=True, help="Local JSON output from benchmark_indexer_v41.py")
     parser.add_argument("--lengths", type=int, nargs="+", default=[4097, 32771, 131075])
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--stages", action="store_true")
     args = parser.parse_args()
+    frozen_path = args.baseline.resolve(strict=True)
+    frozen = json.loads(frozen_path.read_text())
     torch.set_num_threads(8)
     torch.npu.set_device(args.device)
     torch.npu.matmul.allow_hf32 = False
-    frozen_path = Path(__file__).parents[4] / "benchmarks/deepseek_v41/indexer_v41/candidate_frozen_baseline.json"
-    frozen = json.loads(frozen_path.read_text())
     report = dict(
         cases=[],
         frozen_baseline=str(frozen_path),
@@ -113,7 +114,11 @@ def main():
                 samples[name].append(measure(graphs[name].replay, 4 if name == "dense" else 64))
         statistics = {name: summarize(values) for name, values in samples.items()}
         c, d = statistics["candidate"], statistics["dense"]
-        baseline = next(row for row in frozen["cases"] if row["batch"] == 1 and row["length"] == length)["dense"]
+        baseline = next(
+            row["dense"]
+            for row in frozen["cases"]
+            if row["batch"] == 1 and row["length"] == length and row["mode"] == "consumer"
+        )
         record = dict(
             batch=1,
             length=length,
