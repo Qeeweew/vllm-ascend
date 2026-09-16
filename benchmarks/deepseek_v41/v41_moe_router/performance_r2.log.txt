@@ -1,8 +1,0 @@
-[W916 02:45:16.559141240 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
-INFO 09-16 02:45:22 [__init__.py:52] Available plugins for group vllm.platform_plugins:
-INFO 09-16 02:45:22 [__init__.py:54] - ascend -> vllm_ascend:register
-INFO 09-16 02:45:22 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
-INFO 09-16 02:45:22 [__init__.py:272] Platform plugin ascend is activated
-INFO 09-16 02:45:22 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
-{"isolated_extension": "/home/xwj/workspace/deepseek-v41-flash/artifacts/small-ops-bindings/r1/install/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so", "extension_sha256": "22d1d373655ecb9d9c7e0b40b58b03b47b8471c7fd57fd84777c1f1665cf841f", "candidate_opp": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/r2/opp/vendors/v41_router_candidate_transformer"}
-[W916 02:45:41.879446770 NPUCachingAllocator.cpp:202] Warning: The current CANN and HDK(driver) versions require processing for 32 padding size, with memory allocation. (function operator())

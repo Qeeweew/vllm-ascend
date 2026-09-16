@@ -1,9 +1,0 @@
-{
-  "rank": 0,
-  "status": "failed",
-  "cases": [],
-  "diagnostic_metadata_sync": false,
-  "phase": "loading_draft",
-  "error": "Traceback (most recent call last):\n  File \"benchmarks/deepseek_v41/check_dspark_proposer_tp8.py\", line 348, in run\n    records, status[\"graph\"] = run_graph_cases(proposer, config, caches, device, rank, args.output)\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/dspark_graph_cases.py\", line 108, in run_graph_cases\n    proposer.dummy_run(\n  File \"/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/dspark_proposer.py\", line 416, in dummy_run\n    self._v41_graph.capture()\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/dspark_v41_graph.py\", line 171, in capture\n    self._call(wrapper, size, CUDAGraphMode.FULL)\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/dspark_v41_graph.py\", line 140, in _call\n    return wrapper(size)\n           ^^^^^^^^^^^^^\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/compilation/acl_graph.py\", line 220, in __call__\n    output = weak_ref_tensors(output)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/utils.py\", line 1047, in weak_ref_tensors\n    raise ValueError(\"Invalid type for tensors\")\nValueError: Invalid type for tensors\n",
-  "distributed_cleanup": true
-}

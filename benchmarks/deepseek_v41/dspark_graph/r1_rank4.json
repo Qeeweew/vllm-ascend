@@ -1,9 +1,0 @@
-{
-  "rank": 4,
-  "status": "failed",
-  "cases": [],
-  "diagnostic_metadata_sync": false,
-  "phase": "loading_draft",
-  "error": "Traceback (most recent call last):\n  File \"benchmarks/deepseek_v41/check_dspark_proposer_tp8.py\", line 338, in run\n    assert proposer.use_cuda_graph == args.graph and proposer.parallel_drafting\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
-  "distributed_cleanup": true
-}

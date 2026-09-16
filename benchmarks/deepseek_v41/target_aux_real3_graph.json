@@ -1,7 +1,0 @@
-{
-  "status": "failed",
-  "real_target_layers": 3,
-  "synthetic_small_engram": true,
-  "performance_measurement": false,
-  "error": "RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}"
-}

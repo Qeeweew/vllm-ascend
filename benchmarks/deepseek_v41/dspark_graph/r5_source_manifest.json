@@ -1,6 +1,0 @@
-{
-  "vllm_ascend/spec_decode/dspark_v41_graph.py": "e8314b13ecca6c7576b4de8c504e5275644cce54cf55ff1bdec1d0ee021842c6",
-  "vllm_ascend/spec_decode/dspark_proposer.py": "51f8929330c5bf54f648dd7769f741c44a663ae39d5b7b74f933522b4a31cc82",
-  "benchmarks/deepseek_v41/dspark_graph_cases.py": "3d011d908c045118327b1ede46e6bb9874a40a055b3dd5146ab62a2094da0d97",
-  "benchmarks/deepseek_v41/check_dspark_proposer_tp8.py": "73cb191525485934f719b7ddb165705b36d8dc31b08532997f6ad6ed5a70cde5"
-}

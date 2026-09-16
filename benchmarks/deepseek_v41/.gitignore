@@ -1,4 +1,14 @@
-# Local tensor captures; reports and compact text evidence are versioned.
+# Generated benchmark results stay local; commit scripts and fixtures only.
 *.pt
 *.pth
 *.safetensors
+*.json
+*.jsonl
+*.xml
+*.csv
+*.txt
+*.log
+*.json.new
+
+# Input fixture used by the candidate/fused indexer benchmark comparisons.
+!indexer_v41/candidate_frozen_baseline.json

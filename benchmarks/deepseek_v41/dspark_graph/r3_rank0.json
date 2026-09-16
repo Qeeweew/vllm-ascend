@@ -1,9 +1,0 @@
-{
-  "rank": 0,
-  "status": "failed",
-  "cases": [],
-  "diagnostic_metadata_sync": false,
-  "phase": "loading_draft",
-  "error": "Traceback (most recent call last):\n  File \"benchmarks/deepseek_v41/check_dspark_proposer_tp8.py\", line 348, in run\n    records, status[\"graph\"] = run_graph_cases(proposer, config, caches, device, rank, args.output)\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/dspark_graph_cases.py\", line 154, in run_graph_cases\n    assert torch.equal(eager[1], replay[1]) and torch.equal(replay[1], perturbed[1])\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
-  "distributed_cleanup": true
-}
