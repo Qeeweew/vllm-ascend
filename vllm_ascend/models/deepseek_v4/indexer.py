@@ -824,7 +824,12 @@ class AscendIndexerV41Ops:
     """
 
     def __init__(
-        self, compress_ratio: int, candidate_mode: str = "off", *, candidate_max_context: int | None = None
+        self,
+        compress_ratio: int,
+        candidate_mode: str = "off",
+        *,
+        candidate_max_context: int | None = None,
+        trusted_unique_candidates: bool = False,
     ) -> None:
         if compress_ratio not in (1, 2):
             raise ValueError("V4.1 indexer compress_ratio must be 1 or 2")
@@ -837,6 +842,11 @@ class AscendIndexerV41Ops:
                 raise ValueError("candidate_max_context requires a CR1 candidate consumer")
             if not isinstance(candidate_max_context, int) or not 1 <= candidate_max_context <= 2**27:
                 raise ValueError("candidate_max_context must be a static bound in [1, 2**27]")
+        if type(trusted_unique_candidates) is not bool:
+            raise TypeError("trusted_unique_candidates must be a bool")
+        if trusted_unique_candidates and (candidate_mode != "consumer" or candidate_max_context is not None):
+            raise ValueError("trusted_unique_candidates requires a native CR1 consumer without B1 workspace")
+        self.trusted_unique_candidates = trusted_unique_candidates
         self.compress_ratio = compress_ratio
         self.candidate_mode = {"source": 1, "consumer": 2, "off": 3}[candidate_mode]
         self.candidate_max_context = candidate_max_context
@@ -973,7 +983,7 @@ class AscendIndexerV41Ops:
             layout_k="PA_BBND",
             mask_mode=3,
             cmp_ratio=self.compress_ratio,
-            candidate_mode=self.candidate_mode,
+            candidate_mode=4 if self.trusted_unique_candidates else self.candidate_mode,
             candidate_topk_blocks=2048,
             candidate_block_size=8,
         )

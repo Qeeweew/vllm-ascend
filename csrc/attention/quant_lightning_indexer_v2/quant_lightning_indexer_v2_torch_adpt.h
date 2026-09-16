@@ -143,8 +143,8 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> QuantLightningIndexerCandidate(
                 "QLI V2 query/key must be INT8");
     TORCH_CHECK(weights.scalar_type() == at::kHalf && queryDequantScale.scalar_type() == at::kHalf &&
                 keyDequantScale.scalar_type() == at::kHalf, "QLI V2 weights/scales must be FP16");
-    TORCH_CHECK(candidateMode >= 1 && candidateMode <= 3, "Invalid candidate_mode");
-    TORCH_CHECK(candidateMode != 2 || candidateTopkIndexIn.has_value(), "Consumer requires candidate blocks");
+    TORCH_CHECK(candidateMode >= 1 && candidateMode <= 4, "Invalid candidate_mode");
+    TORCH_CHECK((candidateMode != 2 && candidateMode != 4) || candidateTopkIndexIn.has_value(), "Consumer requires candidate blocks");
     if (query.device().is_meta()) return {sparseIndicesOut, sparseValuesOut, candidateTopkIndexOut};
 
     // A11: key 0 轴非连续 — aclnn 动态调用下 tiling 拿不到 tensor stride (仅 TensorV2/图模式可见),

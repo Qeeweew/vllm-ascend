@@ -146,21 +146,14 @@ def test_all_backbone_cache_and_projection_owners(chain):
 
 
 @pytest.mark.parametrize("chain", [False, True], indirect=True)
-def test_candidate_workspaces_only_on_enabled_index_consumers(chain):
+def test_consumers_use_direct_paged_kernel_without_legacy_key_workspace(chain):
     consumers = (24, 28, 32, 36)
-    enabled = model_module.get_ascend_config().enable_indexer_candidate_decode
     for layer, module in enumerate(chain.modules):
         if module.selector is None:
             continue
-        workspace = module.selector._candidate_selector
-        if enabled and layer in consumers:
-            assert module.selector.candidate_max_context == chain.config.model_config.max_model_len
-            assert workspace.key.device == module.indexer.wq_b.weight.device
-            ptr = workspace.key.data_ptr()
-            module.selector.prepare_candidate_workspace(workspace.key.device)
-            assert workspace.key.data_ptr() == ptr
-        else:
-            assert workspace is None
+        assert module.selector._candidate_selector is None
+        assert module.selector.candidate_max_context is None
+        assert module.selector.trusted_unique_candidates == (layer in consumers)
 
 
 def metadata_for_step(chain, positions):

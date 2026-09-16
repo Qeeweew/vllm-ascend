@@ -273,3 +273,37 @@ def test_candidate_graph_dynamic_metadata(runtime, integrated):  # noqa: F811
         graph.replay()
         assert_candidate_selection(indices.cpu(), candidate_reference(case, candidates))
         assert addresses == (selector.key.data_ptr(), selector.qk.data_ptr(), selector.scores.data_ptr())
+
+
+@pytest.mark.parametrize("trusted,query_lengths", [(False, [1]), (True, [1]), (True, [32, 1]), (True, [0])])
+def test_cpu_unique_candidate_dispatch(cpu_dispatch_type, monkeypatch, trusted, query_lengths):
+    ops_type, _ = cpu_dispatch_type
+    ops = ops_type(1, "consumer", trusted_unique_candidates=trusted)
+    modes = []
+
+    def native_call(**kwargs):
+        modes.append(kwargs["candidate_mode"])
+        rows = kwargs["query"].shape[0]
+        indices = torch.full((rows, 1, 512), -1, dtype=torch.int32)
+        return indices, None, torch.empty(0, dtype=torch.int32)
+
+    monkeypatch.setattr(torch.ops._C_ascend, "npu_quant_lightning_indexer_v3", native_call, raising=False)
+    case = make_case(1, query_lengths, [4097] * len(query_lengths))
+    info = metadata(case)
+    info.qli_metadata = torch.empty(0)
+    blocks = torch.full((sum(query_lengths), 1, 2048), -1, dtype=torch.int32)
+    result, _ = ops.select_topk(case["q"], case["w"], case["qs"], case["k"], case["ks"], info, blocks)
+    assert modes == ([4 if trusted else 2] if sum(query_lengths) else [])
+    assert torch.all(result == -1)
+    assert ops._candidate_selector is None
+
+
+def test_cpu_unique_candidate_contract(cpu_dispatch_type):
+    ops_type, _ = cpu_dispatch_type
+    for mode in ("off", "source"):
+        with pytest.raises(ValueError, match="native CR1 consumer"):
+            ops_type(1, mode, trusted_unique_candidates=True)
+    with pytest.raises(ValueError, match="native CR1 consumer"):
+        ops_type(1, "consumer", candidate_max_context=4097, trusted_unique_candidates=True)
+    with pytest.raises(TypeError, match="must be a bool"):
+        ops_type(1, "consumer", trusted_unique_candidates=1)

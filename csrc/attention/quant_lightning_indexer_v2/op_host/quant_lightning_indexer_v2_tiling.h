@@ -108,6 +108,7 @@ constexpr uint32_t MX_SCALE_GROUP_SIZE = 32;   // MX量化每32个D维元素对�
 // ------------------candidate 两级TopK 常量------------------
 constexpr uint32_t CANDIDATE_MODE_SOURCE = 1;      // is_candidate_source: 输出候选块索引
 constexpr uint32_t CANDIDATE_MODE_CONSUMER = 2;    // use_candidate: 输入候选块索引, 候选内选topk
+constexpr uint32_t CANDIDATE_MODE_UNIQUE_CONSUMER = 4; // Source-produced unique block IDs, continuous gather.
 constexpr uint32_t CANDIDATE_MODE_OFF = 3;         // 关闭candidate功能(默认)
 constexpr uint32_t CANDIDATE_TOPK_BLOCKS_FIX = 2048;      // O2决策: 当前仅支持2048
 constexpr uint32_t CANDIDATE_BLOCK_SIZE_DEFAULT = 8;
@@ -135,6 +136,10 @@ TILING_DATA_FIELD_DEF(uint32_t, quantMode)
 TILING_DATA_FIELD_DEF(uint32_t, candidateMode)
 TILING_DATA_FIELD_DEF(uint32_t, candidateTopkBlocks)
 TILING_DATA_FIELD_DEF(uint32_t, candidateBlockSize)
+TILING_DATA_FIELD_DEF(uint32_t, candidateFused)
+TILING_DATA_FIELD_DEF(uint32_t, candidatePhysicalPages)
+TILING_DATA_FIELD_DEF(uint32_t, candidateSplit)
+TILING_DATA_FIELD_DEF(uint32_t, candidateProducerCores)
 END_TILING_DATA_DEF
 REGISTER_TILING_DATA_CLASS(QuantLightningIndexerV2, QLIV2TilingData)
 

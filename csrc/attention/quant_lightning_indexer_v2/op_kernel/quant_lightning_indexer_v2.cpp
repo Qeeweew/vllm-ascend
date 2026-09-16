@@ -19,6 +19,8 @@
 #include "arch35/quant_lightning_indexer_v2_kernel_arch35.h"
 #else
 #include "arch22/quant_lightning_indexer_v2_kernel_arch22.h"
+#include "arch22/quant_lightning_indexer_v41_candidate_fused.h"
+#include "arch22/quant_lightning_indexer_v41_paged_unique.h"
 #endif
 #include "quant_lightning_indexer_v2_template_tiling_key.h"
 using namespace QLIV2Kernel;
@@ -83,6 +85,16 @@ __global__ __aicore__ void quant_lightning_indexer_v2(
     }
 
 #else
+    if (tiling_data->candidateFused == 2) {
+        QLIV41PagedUnique::Run(query, key, weights, queryScale, keyScale, cuSeqlensQ, sequsedK,
+                             blockTable, candidateTopkIndex, sparseIndices, user, *tiling_data, &tPipe);
+        return;
+    }
+    if (tiling_data->candidateFused) {
+        QLIV41Candidate::Run(query, key, weights, queryScale, keyScale, cuSeqlensQ, sequsedK,
+                            blockTable, candidateTopkIndex, sparseIndices, user, *tiling_data, &tPipe);
+        return;
+    }
     INVOKE_LI_CANDIDATE_OP_IMPL(QLIV2Preload, int8_t, int8_t, float, uint16_t, int32_t, PAGE_ATTENTION,
                                 LI_LAYOUT(Q_LAYOUT_T), LI_LAYOUT(K_LAYOUT_T));
 #endif

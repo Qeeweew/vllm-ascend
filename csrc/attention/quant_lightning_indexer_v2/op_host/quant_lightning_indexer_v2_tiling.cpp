@@ -421,10 +421,10 @@ ge::graphStatus QLIV2InfoParser::CheckAttrParaInfo()
     uint32_t candidateMode = (opParamInfo_.candidateMode != nullptr) ?
                                  static_cast<uint32_t>(*opParamInfo_.candidateMode) : CANDIDATE_MODE_OFF;
     OP_CHECK_IF((candidateMode != CANDIDATE_MODE_SOURCE) && (candidateMode != CANDIDATE_MODE_CONSUMER) &&
-                    (candidateMode != CANDIDATE_MODE_OFF),
+                    (candidateMode != CANDIDATE_MODE_OFF) && (candidateMode != CANDIDATE_MODE_UNIQUE_CONSUMER),
                 OP_LOGE_FOR_INVALID_VALUE_WITH_REASON(opName_, "candidate_mode",
                                                       std::to_string(candidateMode),
-                                                      "Candidate_mode only supports 1(source), 2(consumer) or 3(off)"),
+                                                      "Candidate_mode supports 1(source), 2(consumer), 3(off), 4(unique consumer)"),
                 return ge::GRAPH_FAILED);
     if (candidateMode != CANDIDATE_MODE_OFF) {
         // candidate 功能当前仅在 arch22 (910b/910_93) 实现
@@ -463,11 +463,11 @@ ge::graphStatus QLIV2InfoParser::CheckAttrParaInfo()
                                                           std::to_string(candBlkSize),
                                                           "Candidate_block_size only supports 8 currently"),
                     return ge::GRAPH_FAILED);
-        if (candidateMode == CANDIDATE_MODE_CONSUMER) {
+        if (candidateMode == CANDIDATE_MODE_CONSUMER || candidateMode == CANDIDATE_MODE_UNIQUE_CONSUMER) {
             OP_CHECK_IF(opParamInfo_.candidateTopkIndex.tensor == nullptr,
                         OP_LOGE_FOR_INVALID_ARGUMENT_WITH_REASON(opName_, "candidate_topk_index",
                                                                  "candidate_topk_index input is required when "
-                                                                 "candidate_mode=2(consumer)"),
+                                                                 "candidate_mode=2/4(consumer)"),
                         return ge::GRAPH_FAILED);
         }
     }
@@ -1574,6 +1574,7 @@ void QLIV2InfoParser::GenerateInfo(QLIV2TilingInfo &QLIV2Info)
     QLIV2Info.s1Size = s1Size_;
     QLIV2Info.s2Size = s2Size_;
     QLIV2Info.gSize = gSize_;
+    QLIV2Info.qkHeadDim = headDim_;
 
     QLIV2Info.inputQType = inputQType_;
     QLIV2Info.inputKType = inputKType_;
@@ -1674,6 +1675,58 @@ ge::graphStatus QuantLightningIndexerV2Tiling::DoTiling(QLIV2TilingInfo *tilingI
     uint32_t aivNum = ascendcPlatform.GetCoreNumAiv();
     uint32_t aicNum = ascendcPlatform.GetCoreNumAic();
     uint32_t blockDim = ascendcPlatform.CalcTschBlockDim(aivNum, aicNum, aivNum);
+    // Candidate consumer specializations: generic paged mode2 and trusted
+    // unique direct-paged mode4. Dispatch reads shapes/attributes, not device values.
+    constexpr uint32_t CANDIDATE_ROW_BYTES = 156704;
+    // TND s1Size is total query rows, not batch count. Prefill uses a whole
+    // query per AIC; small T provisionally splits N, capped at eight workers.
+    // Thresholds remain subject to the complete-selector tuning sweep.
+    const bool uniqueConsumer = tilingInfo->candidateMode == CANDIDATE_MODE_UNIQUE_CONSUMER;
+    uint32_t candidateSplit = 1;
+    const uint32_t candidateAvailableCores = std::min(aicNum, aivNum / 2);
+    while (!uniqueConsumer && candidateSplit < 8 && tilingInfo->s1Size > 0 &&
+           uint64_t(tilingInfo->s1Size) * candidateSplit * 2 <= candidateAvailableCores) {
+        candidateSplit *= 2;
+    }
+    const uint32_t candidateProducerCores = std::min(candidateAvailableCores / candidateSplit,
+                                                   tilingInfo->s1Size) * candidateSplit;
+    constexpr uint64_t CANDIDATE_MAX_USER_WORKSPACE = 256ULL * 1024 * 1024;
+    const uint64_t candidateWorkspace = uniqueConsumer
+        ? 2ULL * candidateProducerCores * CANDIDATE_ROW_BYTES
+        : uint64_t(tilingInfo->s1Size) * CANDIDATE_ROW_BYTES + 2 * candidateProducerCores * 32;
+    const bool candidateFused = tilingInfo->npuArch == NpuArch::DAV_2201 &&
+        candidateWorkspace <= CANDIDATE_MAX_USER_WORKSPACE && candidateProducerCores > 0 && tilingInfo->n2Size == 1 &&
+        tilingInfo->gSize == 32 && tilingInfo->qkHeadDim == 128 && tilingInfo->cmpRatio == 1 &&
+        *tilingInfo->opParamInfo.quantMode == QUANT_MODE_INT8 && tilingInfo->sparseMode == 3 &&
+        (tilingInfo->candidateMode == CANDIDATE_MODE_CONSUMER || uniqueConsumer) &&
+        tilingInfo->candidateTopkBlocks == 2048 && tilingInfo->candidateBlockSize == 8 &&
+        tilingInfo->sparseCount == 512 && !tilingInfo->returnValue &&
+        tilingInfo->pageAttentionFlag && tilingInfo->inputQLayout == DataLayout::TND &&
+        tilingInfo->blockSize >= 8 && tilingInfo->blockSize % 8 == 0 &&
+        tilingInfo->s2Size <= (1 << 24) &&
+        tilingInfo->opParamInfo.cuSeqLensQ.tensor != nullptr &&
+        tilingInfo->opParamInfo.sequsedK.tensor != nullptr &&
+        tilingInfo->opParamInfo.outputIdxOffset.tensor == nullptr;
+    OP_CHECK_IF(uniqueConsumer && !candidateFused,
+                OP_LOGE(context_->GetNodeName(), "Unique consumer requires the H32/D128 CR1 TND candidate fused contract."),
+                return ge::GRAPH_FAILED);
+    OP_LOGI(context_->GetNodeName(),
+        "candidate fused=%d arch=%d aic=%u aiv=%u b=%u s1=%u n2=%u g=%u d=%u cr=%u qm=%d mask=%u "
+        "mode=%u blocks=%u block=%u topk=%u rv=%u pa=%d layout=%u page=%u s2=%u cu=%p sk=%p offset=%p",
+        candidateFused, static_cast<int>(tilingInfo->npuArch), aicNum, aivNum,
+        tilingInfo->bSize, tilingInfo->s1Size, tilingInfo->n2Size, tilingInfo->gSize, tilingInfo->qkHeadDim,
+        tilingInfo->cmpRatio, *tilingInfo->opParamInfo.quantMode, tilingInfo->sparseMode,
+        tilingInfo->candidateMode, tilingInfo->candidateTopkBlocks, tilingInfo->candidateBlockSize,
+        tilingInfo->sparseCount, tilingInfo->returnValue, tilingInfo->pageAttentionFlag,
+        static_cast<uint32_t>(tilingInfo->inputQLayout), tilingInfo->blockSize, tilingInfo->s2Size,
+        tilingInfo->opParamInfo.cuSeqLensQ.tensor, tilingInfo->opParamInfo.sequsedK.tensor,
+        tilingInfo->opParamInfo.outputIdxOffset.tensor);
+    if (candidateFused) {
+        blockDim = ascendcPlatform.CalcTschBlockDim(2 * candidateProducerCores, candidateProducerCores,
+                                                  2 * candidateProducerCores);
+        OP_LOGI(context_->GetNodeName(), "candidate fused schedule: T=%u B=%u split=%u producers=%u row_bytes=%u",
+                tilingInfo->s1Size, tilingInfo->bSize, candidateSplit, candidateProducerCores, CANDIDATE_ROW_BYTES);
+    }
     context_->SetBlockDim(blockDim);
 
     // -------------set workspacesize-----------------
@@ -1711,12 +1764,17 @@ ge::graphStatus QuantLightningIndexerV2Tiling::DoTiling(QLIV2TilingInfo *tilingI
         // 临时存储Decode中间参数信息大小: 2(头/尾)*8(s1Base)*16(paramNum)*sizeof(int64_t)*24=48k
         workspaceSize += V1_DECODE_DATA_NUM * S1_BASE_SIZE * V1_DECODE_PARAM_NUM * V1_DECODE_PARAM_ELEM_SIZE * aicNum;
     }
+    if (candidateFused) {
+        workspaceSize = ascendcPlatform.GetLibApiWorkSpaceSize() +
+                        candidateWorkspace;
+    }
     size_t *workSpaces = context_->GetWorkspaceSizes(1);
     workSpaces[0] = workspaceSize;
 
     // -------------set tilingdata-----------------
     // candidate (two-level topk) 输入校验: mode=2 时 candidate_topk_index 必须为 [B, S1, N2, candBlocks] int32
-    if (tilingInfo->candidateMode == CANDIDATE_MODE_CONSUMER) {
+    if (tilingInfo->candidateMode == CANDIDATE_MODE_CONSUMER ||
+        tilingInfo->candidateMode == CANDIDATE_MODE_UNIQUE_CONSUMER) {
         OP_CHECK_IF(tilingInfo->opParamInfo.candidateTopkIndex.desc == nullptr ||
                         tilingInfo->opParamInfo.candidateTopkIndex.desc->GetDataType() != ge::DT_INT32,
                     OP_LOGE("QuantLightningIndexerV2", "candidate_topk_index dtype only supports int32."),
@@ -1755,6 +1813,11 @@ ge::graphStatus QuantLightningIndexerV2Tiling::DoTiling(QLIV2TilingInfo *tilingI
     tilingData_.set_candidateMode(tilingInfo->candidateMode);
     tilingData_.set_candidateTopkBlocks(tilingInfo->candidateTopkBlocks);
     tilingData_.set_candidateBlockSize(tilingInfo->candidateBlockSize);
+    tilingData_.set_candidateFused(candidateFused ? (uniqueConsumer ? 2 : 1) : 0);
+    tilingData_.set_candidateSplit(candidateSplit);
+    tilingData_.set_candidateProducerCores(candidateProducerCores);
+    tilingData_.set_candidatePhysicalPages(candidateFused ?
+        tilingInfo->opParamInfo.key.shape->GetOriginShape().GetDim(0) : 0);
     tilingData_.SaveToBuffer(context_->GetRawTilingData()->GetData(), context_->GetRawTilingData()->GetCapacity());
     context_->GetRawTilingData()->SetDataSize(tilingData_.GetDataSize());
 

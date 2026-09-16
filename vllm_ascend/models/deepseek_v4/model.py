@@ -381,21 +381,11 @@ class DeepseekV41Attention(DeepseekV41AttentionProjections):
             else None
         )
         candidate_mode = "source" if self.candidate_source else "consumer" if self.candidate_consumer else "off"
-        candidate_max_context = None
-        if (
-            self.indexer is not None
-            and candidate_mode == "consumer"
-            and vllm_config is not None
-            and get_ascend_config().enable_indexer_candidate_decode
-        ):
-            candidate_max_context = vllm_config.model_config.max_model_len
         self.selector = (
-            AscendIndexerV41Ops(ratio, candidate_mode, candidate_max_context=candidate_max_context)
+            AscendIndexerV41Ops(ratio, candidate_mode, trusted_unique_candidates=candidate_mode == "consumer")
             if self.indexer is not None
             else None
         )
-        if candidate_max_context is not None:
-            self.selector.prepare_candidate_workspace(self.indexer.wq_b.weight.device)
         self._topk_buffer = topk_buffer
         self._candidate_buffer = candidate_buffer
         self._cache_context = None

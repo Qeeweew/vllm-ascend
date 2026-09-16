@@ -56,3 +56,31 @@ def assert_candidate_selection(indices, reference):
     assert torch.all(scores[lookup] >= cutoff - allowance[lookup])
     required = positions[scores > cutoff + allowance]
     assert set(required.tolist()) <= set(valid.tolist())
+
+
+def candidate_reference_vectorized(case, candidates):
+    """Same oracle with vectorized CPU membership for long prefill.
+
+    candidate_reference above remains unchanged as the frozen cross-check.
+    """
+    assert all(value.device.type == "cpu" for value in case.values() if isinstance(value, torch.Tensor))
+    length = max(0, int(case["sk"][0]))
+    page_size = case["k"].shape[1]
+    length = min(length, case["bt"].shape[1] * page_size)
+    positions = torch.arange(length)
+    allowed = torch.isin(positions // 8, candidates.flatten().long())
+    if case["cu"].tolist() != [0, 1]:
+        allowed.fill_(False)
+    physical = case["bt"][0, positions // page_size].long()
+    allowed &= (physical >= 0) & (physical < case["k"].shape[0])
+    positions = positions[allowed]
+    physical = physical[allowed]
+    keys = case["k"][physical, positions % page_size, 0].float()
+    scales = case["ks"][physical, positions % page_size, 0].float()
+    qk = ((case["q"][0].float() @ keys.T) / 1024).relu().half().float()
+    weights = (case["w"][0] * case["qs"][0]).half().float()
+    products = qk * weights[:, None]
+    scores = products.sum(0) * scales
+    eps = torch.finfo(torch.float32).eps
+    errors = products.abs().sum(0) * scales.abs() * (38 * eps / (1 - 38 * eps))
+    return dict(positions=positions, scores=scores, errors=errors)

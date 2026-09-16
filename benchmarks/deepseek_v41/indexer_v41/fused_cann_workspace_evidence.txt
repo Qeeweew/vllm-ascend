@@ -1,0 +1,43 @@
+CANN library: /usr/local/Ascend/cann-9.1.0/aarch64-linux/lib64/libtiling_api.a
+SHA256: 62e3f70e8718217857a59e732a9635859cc80812d7c00a5b3f832bf4a009d3f5
+DAV_2201 (2201): returns 0x1000000 = 16777216 bytes.
+
+<platform_ascendc::PlatformAscendC::GetLibApiWorkSpaceSize() const>:
+     fa8:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+     fac:	910003fd 	mov	x29, sp
+     fb0:	94000000 	bl	7e8 <platform_ascendc::PlatformAscendC::GetCurNpuArch() const>
+     fb4:	529fffe1 	mov	w1, #0xffff                	// #65535
+     fb8:	6b01001f 	cmp	w0, w1
+     fbc:	54000120 	b.eq	fe0 <platform_ascendc::PlatformAscendC::GetLibApiWorkSpaceSize() const+0x38>  // b.none
+     fc0:	7136d81f 	cmp	w0, #0xdb6
+     fc4:	52811321 	mov	w1, #0x899                 	// #2201
+     fc8:	7a411004 	ccmp	w0, w1, #0x4, ne  // ne = any
+     fcc:	52a00401 	mov	w1, #0x200000              	// #2097152
+     fd0:	52a02000 	mov	w0, #0x1000000             	// #16777216
+     fd4:	1a810000 	csel	w0, w0, w1, eq  // eq = none
+     fd8:	a8c17bfd 	ldp	x29, x30, [sp], #16
+     fdc:	d65f03c0 	ret
+     fe0:	90000000 	adrp	x0, 0 <platform_ascendc::PlatformAscendC::CalcTschNumBlocks(unsigned int, unsigned int, unsigned int) const [clone .part.9]>
+     fe4:	90000003 	adrp	x3, 0 <platform_ascendc::PlatformAscendC::CalcTschNumBlocks(unsigned int, unsigned int, unsigned int) const [clone .part.9]>
+     fe8:	91000000 	add	x0, x0, #0x0
+     fec:	91000063 	add	x3, x3, #0x0
+     ff0:	14000004 	b	1000 <platform_ascendc::PlatformAscendC::GetLibApiWorkSpaceSize() const+0x58>
+     ff4:	d503201f 	nop
+     ff8:	9a801063 	csel	x3, x3, x0, ne  // ne = any
+     ffc:	91000400 	add	x0, x0, #0x1
+    1000:	385ff001 	ldurb	w1, [x0, #-1]
+    1004:	7100bc3f 	cmp	w1, #0x2f
+    1008:	35ffff81 	cbnz	w1, ff8 <platform_ascendc::PlatformAscendC::GetLibApiWorkSpaceSize() const+0x50>
+    100c:	90000005 	adrp	x5, 0 <platform_ascendc::PlatformAscendC::CalcTschNumBlocks(unsigned int, unsigned int, unsigned int) const [clone .part.9]>
+    1010:	910000a5 	add	x5, x5, #0x0
+    1014:	9102a0a5 	add	x5, x5, #0xa8
+    1018:	528022a4 	mov	w4, #0x115                 	// #277
+    101c:	52800061 	mov	w1, #0x3                   	// #3
+    1020:	528008a0 	mov	w0, #0x45                  	// #69
+    1024:	90000002 	adrp	x2, 0 <platform_ascendc::PlatformAscendC::CalcTschNumBlocks(unsigned int, unsigned int, unsigned int) const [clone .part.9]>
+    1028:	91000042 	add	x2, x2, #0x0
+    102c:	94000000 	bl	0 <DlogRecord>
+    1030:	12800000 	mov	w0, #0xffffffff            	// #-1
+    1034:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    1038:	d65f03c0 	ret
+    103c:	d503201f 	nop

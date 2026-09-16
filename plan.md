@@ -5,9 +5,9 @@
 
 本文包含实施计划和验收记录。截至2026-09-16，48/48权重转换已完成；完整40层TP8 eager/graph、366.22GiB真实pinned Engram及五项文本graph smoke（含4243-token检索）已通过，详见 `benchmarks/deepseek_v41/FULL_MODEL_RESULT.md`。
 
-融合indexer已进入H32专门分块与搬运调优，候选不排序、不去重。r24连续workspace版本通过18项NPU/graph测试，完整selector T128/32K约956.56µs、T512/32K约2966.15µs，短上下文仍未达门槛。r26仅收紧H32的L1布局，但32K/128K完整延迟退化约6–9%，不默认采用；r27 N256通过18项正确性/graph测试，性能矩阵进行中，N512为独立后台构建实验。不同query的候选集合不同，不以dense/H64的Cube利用率作为硬门槛，按完整selector延迟、吞吐和workspace验收。详见 `benchmarks/deepseek_v41/indexer_v41/CONTIGUOUS_GATHER_RESULT.md`。
+融合indexer的连续K workspace方案已按用户要求撤回：禁止Vector先从分页cache读K、写连续GM，再由Cube重读。r24–r29仅保留历史失败证据，不再作为候选方案或继续调参。正式路径改为每个query直接按自己的候选分页GM→Cube L1；无候选排序、去重或跨query K复用假设，保留Cube QK＋ReLU＋head加权归约及融合top-k。H32调优以该直接搬运路径的完整selector延迟、吞吐和workspace为准，覆盖多batch和prefill。
 
-Router r3的84项NPU/graph正确性和48组独占卡性能测试通过；RoPE/cache r12的193项NPU、33项CPU和64组独占graph性能测试全部通过，plain RoPE T1024/H32/D128由243.158降至40.879µs。融合算子注册、Meta与模型接线已提交`00ce95d69`，189项框架CPU检查通过，完整模型融合验证待执行；生产安装仍是r12。DSpark专用AscendC metadata已通过58项NPU测试和96次变输入graph replay；真实TP8 proposer r9的15组场景（含context33、255/256及拒绝0–5）在8rank全部通过，CPU Markov选词75token完全一致，全部worker正常退出。原AICPU根因仍未确认，替换路径已解除该集成阻塞；当前proposer回归为B1/eager，完整DSpark context/query graph、多请求proposer和target/scheduler联动尚未完成。AICPU增量构建漏重链接问题已修复并提交`815a8bf02`。DSpark context/query graph已在TP8诊断中完成B1/2/3/4的11组同bucket逐层精确对照，每rank实际22+22次重放，CPU Markov核对120token一致；原未补齐eager有3组proposal差异，已定位到MoE放大，严格准入仍关闭，见 `benchmarks/deepseek_v41/DSPARK_GRAPH_RESULT.md`。DSpark必须开启且draft计算需要graph，具体context/query独立捕获边界与验收见[DSpark graph计划](benchmarks/deepseek_v41/DSPARK_GRAPH_PLAN.md)。完整模型视觉、native W4A16整模、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
+Router r3的84项NPU/graph正确性和48组独占卡性能测试通过；RoPE/cache r12的193项NPU、33项CPU和64组独占graph性能测试全部通过，plain RoPE T1024/H32/D128由243.158降至40.879µs。融合算子注册、Meta与模型接线已提交`00ce95d69`，189项框架CPU检查通过，完整模型融合验证待执行；生产安装仍是r12。DSpark专用AscendC metadata已通过58项NPU测试和96次变输入graph replay；真实TP8 proposer r9的15组场景（含context33、255/256及拒绝0–5）在8rank全部通过，CPU Markov选词75token完全一致，全部worker正常退出。原AICPU根因仍未确认，AscendC替换路径已解除该集成阻塞。DSpark context/query独立graph已实现；K5和K8以及K1/2的真实draft TP8诊断通过，多batch下同bucket eager/graph精确一致，跨padding形状的MoE专家边界变化已有实际路由证据。K1..8配置、metadata及状态容量正在收敛验证，K7/8需要真实16行ring和64KiB公共页；target/scheduler联动与DSpark开启的vllm bench仍待执行。AICPU增量构建漏重链接问题已修复并提交`815a8bf02`。DSpark context/query graph已在TP8诊断中完成B1/2/3/4的11组同bucket逐层精确对照，每rank实际22+22次重放，CPU Markov核对120token一致；原未补齐eager有3组proposal差异，已定位到MoE放大，严格准入仍关闭，见 `benchmarks/deepseek_v41/DSPARK_GRAPH_RESULT.md`。DSpark必须开启且draft计算需要graph，具体context/query独立捕获边界与验收见[DSpark graph计划](benchmarks/deepseek_v41/DSPARK_GRAPH_PLAN.md)。完整模型视觉、native W4A16整模、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
 
 ## 1. 目标与总体决策
 
@@ -23,7 +23,7 @@ Router r3的84项NPU/graph正确性和48组独占卡性能测试通过；RoPE/ca
 10. **融合indexer以多batch为主要验收范围。** B1局部优化和旧路径B8/B32回归不能作为交付。重新设计请求与候选块的核分配，至少覆盖B1/2/4/8/16/32、H32、CR1/CR2及混合请求长度；必须证明各形状实际进入融合路径，独立报告正确性、graph、完整selector延迟、吞吐、HBM和Cube/MTE/核负载指标。
 11. **按用户最新澄清，top-k仍融合，解耦Cube与Vector任务。** Candidate consumer的AIC分块完成分页INT8读取、QK、缩放/ReLU及head加权归约；单个AIV核负责一个query完整16384项分数的top-k及逻辑位置映射。用明确的分数缓冲、完成信号和生命周期协议，使AIC可继续计算后续query，AIV消费已完成query；重新计算排序scratch及192KiB UB预算。此前外部 `torch.topk` 提案已被此要求替代。禁止重新物化全量BF16候选key或多头QK，禁止用旧路径多batch回归代替新路径验收。16384上限仅适用于candidate consumer，source与CR2按各自实际语义处理。
 12. **融合indexer以prefill性能为首要优化目标。** 按有效query token数而非仅batch数选择tiling：token充足时优先不切分16384候选，依靠query间并行；token较少时比较有限split数，阈值和最大split数须由实测决定。覆盖单请求长prefill、多请求不等长prefill、混合prefill/decode和decode，验证每query causal可见范围。报告完整selector的prefill tokens/s、median/P95、Cube/MTE/Vector/同步等待和各核负载，不以decode局部收益代替prefill验收。
-13. **按用户最新修正，优先针对H32调优Cube分块与搬运。** 不同query具有不同候选集合，连续gather不能据此获得dense QLI的跨query K复用；不以旧H64/dense路径的Cube利用率作为硬门槛。候选按上游顺序消费，不增加候选排序或去重，保留最终top-k。比较H32的M/N/K分块、L1/L0布局与装载、FixPipe及搬运流水，以完整selector延迟、吞吐和workspace验收；多batch/prefill既有延迟门槛不放宽。
+13. **按用户最新修正，删除Vector提前搬K到连续GM workspace的路径。** 不同query的候选不能复用，不保留该实验分支。Cube按query候选直接分页GM→L1；候选不排序、不去重，保留融合top-k。针对H32分块与搬运，每项实验先列出实际依赖链、预计消除的指令/流量及可验证收益，不继续围绕已知非主要瓶颈盲目扫参数。以完整selector延迟、吞吐和workspace验收，多batch/prefill既有门槛不放宽。
 
 ## 2. 已核对的环境与源码基线
 
