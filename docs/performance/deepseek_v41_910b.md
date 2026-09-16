@@ -1,6 +1,6 @@
 # DeepSeek V4.1 Flash：910B × 8 阶段验证与性能报告
 
-**状态：未完成全模型验收。这是阶段报告，不是最终整机性能结论。**
+**状态：完整模型 eager/graph 执行验收通过，质量与最终性能验收未完成。**
 
 2026-09-15 后续真实 DSpark 逐层比对发现 `wo_a` 权重布局错误：Ascend
 loader 已转置为 `[groups, width, rank]`，V4.1 输出投影却按原布局重读。
@@ -9,10 +9,13 @@ loader 已转置为 `[groups, width, rank]`，V4.1 输出投影却按原布局�
 修复后的真实权重数值和整机性能需要重新验证。详情见
 [输出投影布局修复](../../benchmarks/deepseek_v41/WO_A_LAYOUT_CORRECTION.md)。
 
-截至 2026-09-15，本分支已完成独立算子、host offload 与有限范围
-TP8 eager/graph 集成验证。完整 40 层真实权重、两层真实全尺寸 Engram、
-长上下文、DSpark 和最终整机 profiling 尚未验收。下面保留通过、失败与
-待验证项各自的证据范围；算子加速比不能相乘或外推为整机加速比。
+2026-09-16，修复后的完整 40 层真实权重与两张真实 Engram 已通过
+TP8 eager/graph：每卡 26 次 graph replay，四组 raw-token prompt 的
+token 与 selected logprob 在重复运行和 eager/graph 间完全一致；
+16 次 host 注销及八 worker、EngineCore 正常退出。详细结果见
+[完整模型执行验收](../../benchmarks/deepseek_v41/FULL_MODEL_RESULT.md)。
+长上下文、语言质量、完整模型视觉/DSpark 和最终整机 profiling 仍待验收。
+以下保留历史证据范围；算子加速比不能相乘或外推为整机加速比。
 
 本文仅整理已归档数据，没有新增 NPU 测量。后续运行完成后应更新原始
 结果链接与状态，不能把准备脚本或正在运行的任务计为通过。
@@ -51,7 +54,7 @@ Candidate 使用已完成的 r12 全量算子构建，当前安装二进制和�
 [r12 manifest](../../benchmarks/deepseek_v41/indexer_v41/r12_candidate_integration_manifest.json)。
 这是接线后的快照，不回填此前 benchmark 的 Python 修订；旧版结果不覆盖后续二进制。
 
-## 2. 权重与量化清单：仍不完整
+## 2. 权重与量化清单：已完整发布
 
 源目录为 `/mnt/models/DeepSeek-V4.1-Flash`，目标为
 `/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32`。本次只读检查目标
@@ -59,20 +62,21 @@ Candidate 使用已完成的 r12 全量算子构建，当前安装二进制和�
 
 | 字段 | 观察值 |
 | --- | --- |
-| `complete` | `false` |
-| 已转换 shard entries | 46 / 48 |
-| 已转换文件 bytes 合计 | 331721285976 |
-| 缺源文件 | `model-00047-of-00048.safetensors`、`model-00048-of-00048.safetensors` |
-| 最终 `config.json` / `model.safetensors.index.json` | 均未发布 |
+| `complete` | `true` |
+| 已转换 shard entries | 48 / 48 |
+| 已转换文件 bytes 合计 | 725578295600 |
+| 缺源文件 | 无 |
+| 最终 `config.json` / `model.safetensors.index.json` | 均已发布 |
 | format version | 1 |
-| Manifest SHA256（本次快照） | `c7c17631cc6b1f88fe7e9ffd02fb139b4c1a3cbdaaede7629b18a4afa9b5f616` |
+| Manifest SHA256（完成清单） | `4d48bba36c91edca7cae890cd6186a7728f67603c8efc4ae358d1447ddab2bed` |
 | Source config SHA256 | `8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879` |
 | Source index SHA256 | `74b0686a3d2891980d5e303251b075a3bccae2c2ff650747db2620a649b98fa8` |
 
-该 SHA256 标识未完成清单的快照，续转后会变化。每个已转换 entry
-记录输出 SHA256、大小与 tensor dtype/shape；原始前 46 片的 header/
-大小指纹不等于全 payload 校验。真实全表发布需要完成最后两片 SHA256
-校验、续转与全输出 `--verify-only`，并确认 `complete=true`。
+该 SHA256 标识 2026-09-16 完成清单。每个转换 entry 记录输出 SHA256、
+大小与 tensor dtype/shape。最终元数据和尾片转换校验记录见
+[完整发布快照](../../benchmarks/deepseek_v41/full_conversion_publication_r1.json)。
+本次报告没有重新扫描数百 GiB payload；启动前 headers/stat 与 manifest
+检查不代替转换器保存的 payload 校验记录，也不宣称重复执行了全输出校验。
 
 转换契约为普通 FP8 反量化到 BF16；原有 BF16 dense 与 FP32 控制参数
 保持所需精度。MXFP4 routed experts 转 INT4，沿 K 轴 group32，BF16
@@ -275,19 +279,18 @@ r2显式shutdown-timeout30已验证8worker正常退出、无强杀/资源泄漏�
 
 | 项目 | 本阶段状态与下一份必要证据 |
 | --- | --- |
-| 源 Engram 47/48 下载 | pending；恢复目录 `.v41-recovery-3bd368ab0f3d` 与 `/tmp/v41-engram-recovery.log` 保留动态进度，完整 SHA256 后才发布 |
-| 最终转换 | pending；48 verified shards、`complete=true`、最终 config/index |
-| 真实全表 TP8 | pending；直接流式填 owned head ranges、真实行 oracle、16 owner placement、RSS/HBM peaks、checked cleanup |
-| 40 层真实推理 | pending；完整权重质量、eager/graph 一致性、长 prompt/多请求、真实 HBM 与 host 容量 |
+| 源 Engram 47/48 下载 | 已完成并发布，恢复器历史日志保留 |
+| 最终转换 | 完成；48 shards、`complete=true`、最终 config/index 已发布 |
+| 真实全表 TP8 | factory 通过：366.22 GiB/16 owner 同驻留、144 行 oracle、160 replay、400 NUMA 页及完整 cleanup；整模再次通过行检查和注销 |
+| 40 层真实推理 | eager/graph 一致性通过；每卡当前 allocated 39.5538 GiB，reserved eager 42.2188 / graph 44.0977 GiB。质量、长 prompt/多请求与 peak HBM 仍待验收 |
 | HTTP 清理 | r2无强杀/泄漏且8worker正常退出；保留关闭后output-handler时序日志，见HTTP报告 |
-| Candidate TP8 | 40 层/E8 合成 graph 功能通过；真实 E384 全模型与整机性能仍 pending |
-| DSpark | aux、draft/loader、K5非因果attention与placeholder组件已有实现和组件测试；准入仍关闭，registry、真实权重整体验证及rollback待完成，见 [DSpark audit](../../benchmarks/deepseek_v41/DSPARK_INTEGRATION_AUDIT.md) |
+| Candidate TP8 | 拆分实验继续关闭。新融合 QLI 为必需交付，独立 agent 实现/构建中；其数值、workspace 和完整 selector 性能尚未验收 |
+| DSpark | 真实三层独立 stage oracle 通过；真实 runner/proposer 首测加载成功，但首请求 SparseFlashMlaMetadata 参数无效，正在定位。准入保持关闭，scheduler/rollback/serving 未验收 |
 | 整机 timeline profile | 三层fixture已完成8rank采集及离线导出；40层真实整机仍未采集，不推导最终性能结论 |
 
-完整装载仍需确保八卡同时有足够剩余 HBM。此前 NPU7 存在约 34 GiB
-外部占用；小 fixture 成功不证明该占用下能放入真实 40 层。该数值是
-历史资源阻断记录，下一次全模型启动前需重新只读检查，不能当作当前
-实时占用或擅自终止外部任务。当前没有全模型可用性的内存证据。
+用户已释放此前卡 7 的外部任务。完整模型的已归档运行证明上述限定
+配置可以装载并执行；每次新运行仍检查实时八卡 HBM。当前 allocator
+观察值不能当作 peak HBM 或长上下文/多请求的容量保证。
 
 `msprof --help`、Torch-NPU CPU/NPU profiler 与 timeline/kernel/memory
 parser imports 已通过；后续三层HTTP真实采集和离线解析亦通过。

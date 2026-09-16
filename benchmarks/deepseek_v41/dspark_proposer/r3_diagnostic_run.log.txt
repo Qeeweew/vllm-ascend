@@ -1,0 +1,1059 @@
+[W916 01:09:55.742904630 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+<frozen runpy>:128: RuntimeWarning: 'torch.distributed.run' found in sys.modules after import of package 'torch.distributed', but prior to execution of 'torch.distributed.run'; this may result in unpredictable behaviour
+[W916 01:10:22.170389100 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:10:25.179665850 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:31 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:31 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:31 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:31 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:31 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:31 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:31 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:32 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 01:10:32 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 01:10:32 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 01:10:32 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:32 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 01:10:32 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:32 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 01:10:32 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+2026-09-16 01:10:43,759 - 3578623 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 01:10:43,963 - 3578625 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 01:10:44,060 - 3578620 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+2026-09-16 01:10:44,179 - 3578627 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+2026-09-16 01:10:44,229 - 3578621 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 01:10:44,313 - 3578624 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+WARNING 09-16 01:10:44 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+2026-09-16 01:10:44,581 - 3578626 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:44 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:44 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:44 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:44 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+2026-09-16 01:10:44,659 - 3578622 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+WARNING 09-16 01:10:44 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:44 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+WARNING 09-16 01:10:44 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+WARNING 09-16 01:10:44 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 01:10:44 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:44 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:44 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:44 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 01:10:44 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 01:10:44 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:44 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:44 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:44 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 01:10:44 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 01:10:45 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:45 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 01:10:45 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:45 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 09-16 01:10:45 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 01:10:45 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:45 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 09-16 01:10:45 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 01:10:45 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:45 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 01:10:45 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+WARNING 09-16 01:10:45 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 01:10:45 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:45 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 09-16 01:10:45 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 01:10:45 [model.py:2030] Using max model len 256
+WARNING 09-16 01:10:45 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 01:10:46 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+INFO 09-16 01:10:47 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:47 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:47 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:47 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:47 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:47 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:48 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:48 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 01:10:48 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:48 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:48 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:48 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:48 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:48 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:48 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:48 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:48 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:48 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:48 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:48 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:48 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:48 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:48 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:48 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:49 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:49 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:49 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 01:10:49 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:49 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 01:10:49 [model.py:2030] Using max model len 1048576
+INFO 09-16 01:10:49 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:49 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:49 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:50 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:50 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:50 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:50 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:50 [vllm.py:1773] Cudagraph is disabled under eager mode
+INFO 09-16 01:10:50 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:50 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:50 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:50 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+WARNING 09-16 01:10:50 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:50 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:50 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:50 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:50 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 01:10:50 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:50 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:50 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 01:10:50 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:50 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:50 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:50 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:50 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:50 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:50 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:50 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:50 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:50 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:50 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:50 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:50 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:50 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:50 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:50 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:50 [vllm.py:1773] Cudagraph is disabled under eager mode
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+WARNING 09-16 01:10:50 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:50 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:50 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 01:10:50 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:50 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:50 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:50 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:50 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:50 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:50 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:50 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:50 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:50 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:50 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:50 [vllm.py:1773] Cudagraph is disabled under eager mode
+INFO 09-16 01:10:50 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:50 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:50 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:50 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+WARNING 09-16 01:10:50 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:50 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:50 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:50 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:50 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 01:10:50 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:50 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:50 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 01:10:50 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:50 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:50 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:50 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:50 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:50 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 01:10:50 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:50 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:50 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:50 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:50 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:50 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:50 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:50 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:50 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:50 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:50 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:50 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:50 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:50 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:50 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:50 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:50 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:50 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:50 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:50 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:50 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 01:10:50 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 01:10:50 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 01:10:50 [parallel_state.py:1827] world_size=8 rank=1 local_rank=1 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:50 [parallel_state.py:1827] world_size=8 rank=3 local_rank=3 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:51 [parallel_state.py:1827] world_size=8 rank=0 local_rank=0 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:51 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:51 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:51 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:51 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:51 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:51 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 01:10:51 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:51 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:51 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 01:10:51 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:51 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:51 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:51 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:51 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:51 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:51 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 01:10:51 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 01:10:51 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 01:10:51 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 01:10:51 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 01:10:51 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 01:10:51 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 01:10:51 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 01:10:51 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 01:10:51 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:10:51 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:10:51 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 01:10:51 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:10:51 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:10:51 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 01:10:51 [parallel_state.py:1827] world_size=8 rank=4 local_rank=4 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:51 [parallel_state.py:1827] world_size=8 rank=7 local_rank=7 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:51 [parallel_state.py:1827] world_size=8 rank=5 local_rank=5 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:51 [parallel_state.py:1827] world_size=8 rank=6 local_rank=6 distributed_init_method=env:// backend=hccl
+INFO 09-16 01:10:51 [parallel_state.py:1827] world_size=8 rank=2 local_rank=2 distributed_init_method=env:// backend=hccl
+[W916 01:11:11.100063680 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.118289420 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.148678400 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.537970260 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.544042620 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.544858740 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.755080920 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 01:11:11.899151970 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[Gloo] Rank [Gloo] Rank 02 is connected to [Gloo] Rank  is connected to 7[Gloo] Rank 57 peer ranks. 4[Gloo] Rank  is connected to  peer ranks. Expected number of connected peer ranks is :  is connected to 67Expected number of connected peer ranks is : 77 is connected to  peer ranks. 7
+ peer ranks. 7Expected number of connected peer ranks is : 
+Expected number of connected peer ranks is :  peer ranks. 77Expected number of connected peer ranks is : 7
+
+
+[Gloo] Rank 1 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 3 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 7 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank [Gloo] Rank 30[Gloo] Rank 4 is connected to  is connected to 2 is connected to 77 is connected to 7 peer ranks.  peer ranks. 7 peer ranks. Expected number of connected peer ranks is : [Gloo] Rank Expected number of connected peer ranks is :  peer ranks. Expected number of connected peer ranks is : 777Expected number of connected peer ranks is : 7
+ is connected to 
+7
+7
+ peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 51 is connected to  is connected to 77 peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 77
+
+[Gloo] Rank 6 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank [Gloo] Rank [Gloo] Rank 00[Gloo] Rank 0 is connected to  is connected to [Gloo] Rank 0 is connected to 000 is connected to 0 peer ranks.  peer ranks.  is connected to 0 peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 0 peer ranks. Expected number of connected peer ranks is : 00 peer ranks. Expected number of connected peer ranks is : 0
+
+Expected number of connected peer ranks is : 0
+0
+
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank [Gloo] Rank 0 is connected to 00 is connected to  peer ranks. 0Expected number of connected peer ranks is :  peer ranks. 0Expected number of connected peer ranks is : 
+0
+[Gloo] Rank [Gloo] Rank 00 is connected to  is connected to 00 peer ranks.  peer ranks. [Gloo] Rank Expected number of connected peer ranks is : Expected number of connected peer ranks is : 000
+ is connected to 
+0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank [Gloo] Rank 0 is connected to 00 is connected to  peer ranks. [Gloo] Rank 0Expected number of connected peer ranks is :  peer ranks. 00Expected number of connected peer ranks is :  is connected to 
+[Gloo] Rank 000[Gloo] Rank 
+ peer ranks.  is connected to [Gloo] Rank 0Expected number of connected peer ranks is : 0 is connected to 00 peer ranks. 0 is connected to 
+Expected number of connected peer ranks is :  peer ranks. 00Expected number of connected peer ranks is :  peer ranks. 
+0Expected number of connected peer ranks is : 
+0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank [Gloo] Rank 0 is connected to 00 is connected to [Gloo] Rank  peer ranks. 00Expected number of connected peer ranks is :  peer ranks.  is connected to 0Expected number of connected peer ranks is : 0
+0 peer ranks. 
+Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 1 is connected to 4[Gloo] Rank 7 is connected to  peer ranks. 27Expected number of connected peer ranks is :  is connected to  peer ranks. 77Expected number of connected peer ranks is : 
+ peer ranks. 7Expected number of connected peer ranks is : 
+7
+[Gloo] Rank 7 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 6 is connected to 37 is connected to  peer ranks. 7Expected number of connected peer ranks is :  peer ranks. 7Expected number of connected peer ranks is : 
+7
+INFO 09-16 01:11:18 [parallel_state.py:2267] rank 0 in world size 8 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+[Gloo] Rank 5 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 02 is connected to  is connected to 77 peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 77
+
+rank 0: constructing actual NPUModelRunnerrank 2: constructing actual NPUModelRunner
+
+[Gloo] Rank 1 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 3 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 4 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 65 is connected to [Gloo] Rank  is connected to 777 peer ranks.  is connected to  peer ranks. Expected number of connected peer ranks is : 7Expected number of connected peer ranks is : 7 peer ranks. 7
+Expected number of connected peer ranks is : 
+7
+rank 1: constructing actual NPUModelRunner
+rank 3: constructing actual NPUModelRunner
+rank 4: constructing actual NPUModelRunner
+rank 7: constructing actual NPUModelRunner
+rank 6: constructing actual NPUModelRunner
+rank 5: constructing actual NPUModelRunner
+[rank0]:[W916 01:11:19.211434550 NPUCachingAllocator.cpp:202] Warning: The current CANN and HDK(driver) versions require processing for 32 padding size, with memory allocation. (function operator())
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 01:11:19 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 01:11:19 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+rank 2: actual proposer.load_model
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+rank 7: actual proposer.load_model
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+rank 6: actual proposer.load_model
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+rank 1: actual proposer.load_model
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+rank 3: actual proposer.load_model
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+rank 0: actual proposer.load_model
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+rank 4: actual proposer.load_model
+rank 5: actual proposer.load_model
+WARNING 09-16 01:11:20 [compressed_tensors_config.py:251] Acceleration for non-quantized schemes is not supported by Compressed Tensors. Falling back to UnquantizedLinearMethod
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [compressed_tensors_config.py:176] Using the vLLM Ascend llmcompressor Quantization now!
+INFO 09-16 01:11:20 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 01:11:20 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+INFO 09-16 01:11:20 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 01:11:20 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 01:11:20 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r3/config
+INFO 09-16 01:11:20 [weight_utils.py:895] Filesystem type for checkpoints: EXT4. Checkpoint size: 8.31 GiB. Available RAM: 1936.53 GiB.
+INFO 09-16 01:11:20 [weight_utils.py:918] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+Loading safetensors checkpoint shards:   0% Completed | 0/3 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  33% Completed | 1/3 [00:00<00:00,  2.08it/s]
+Loading safetensors checkpoint shards:  67% Completed | 2/3 [00:01<00:00,  1.94it/s]
+Loading safetensors checkpoint shards: 100% Completed | 3/3 [00:01<00:00,  1.84it/s]
+Loading safetensors checkpoint shards: 100% Completed | 3/3 [00:01<00:00,  1.88it/s]
+
+INFO 09-16 01:11:22 [default_loader.py:430] Loading weights took 1.70 seconds
+INFO 09-16 01:11:27 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:27 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 01:11:28 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+rank 0: case 0 sequence=9 rejected=None completedrank 1: case 0 sequence=9 rejected=None completed
+
+rank 2: case 0 sequence=9 rejected=None completed
+rank 3: case 0 sequence=9 rejected=None completed
+rank 6: case 0 sequence=9 rejected=None completedrank 7: case 0 sequence=9 rejected=None completed
+
+rank 4: case 0 sequence=9 rejected=None completedrank 5: case 0 sequence=9 rejected=None completed
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank0]:     raise SystemExit(main())
+[rank0]:                      ^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank0]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank0]:              ^^^^^^^^^
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank0]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank0]:     proposer._propose(
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank0]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank0]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank0]:     attn_metadata = builder.build_for_drafting(
+[rank0]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank0]:     return self.build(
+[rank0]:            ^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank0]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank0]:     torch.npu.synchronize()
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank0]:     return torch_npu._C._npu_synchronize()
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank0]: [ERROR] 2026-09-16-01:11:31 (PID:3578620, Device:0, RankID:0) ERR00100 PTA call acl api failed
+[rank0]: [Error]: The aicpu execution is abnormal. 
+[rank0]:         Rectify the fault based on the error information in the ascend log.
+[rank0]: E39999: Inner Error!
+[rank0]: E39999[PID: 3578620] 2026-09-16-01:11:31.340.618 (E39999):  The error from device(chipId:0, dieId:0), serial number is 74, an exception occurred during AICPU execution, stream_id:33, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank0]: TraceBack (most recent call last):
+[rank0]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank0]:        AI CPU kernel execution failed, device_id=0, stream_id=33, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank0]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank1]:     raise SystemExit(main())
+[rank1]:                      ^^^^^^
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank1]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank1]:              ^^^^^^^^^
+[rank1]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank1]:     return func(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank1]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank1]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank1]:     proposer._propose(
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank1]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank1]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank1]:     attn_metadata = builder.build_for_drafting(
+[rank1]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank1]:     return self.build(
+[rank1]:            ^^^^^^^^^^^
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank1]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank1]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank1]:     torch.npu.synchronize()
+[rank1]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank1]:     return torch_npu._C._npu_synchronize()
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank1]: [ERROR] 2026-09-16-01:11:31 (PID:3578621, Device:1, RankID:1) ERR00100 PTA call acl api failed
+[rank1]: [Error]: The aicpu execution is abnormal. 
+[rank1]:         Rectify the fault based on the error information in the ascend log.
+[rank1]: E39999: Inner Error!
+[rank1]: E39999[PID: 3578621] 2026-09-16-01:11:31.340.643 (E39999):  The error from device(chipId:1, dieId:0), serial number is 41, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank1]: TraceBack (most recent call last):
+[rank1]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank1]:        AI CPU kernel execution failed, device_id=1, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank1]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank2]:     raise SystemExit(main())
+[rank2]:                      ^^^^^^
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank2]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank2]:              ^^^^^^^^^
+[rank2]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank2]:     return func(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank2]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank2]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank2]:     proposer._propose(
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank2]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank2]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank2]:     attn_metadata = builder.build_for_drafting(
+[rank2]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank2]:     return self.build(
+[rank2]:            ^^^^^^^^^^^
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank2]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank2]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank2]:     torch.npu.synchronize()
+[rank2]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank2]:     return torch_npu._C._npu_synchronize()
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank2]: [ERROR] 2026-09-16-01:11:31 (PID:3578622, Device:2, RankID:2) ERR00100 PTA call acl api failed
+[rank2]: [Error]: The aicpu execution is abnormal. 
+[rank2]:         Rectify the fault based on the error information in the ascend log.
+[rank2]: E39999: Inner Error!
+[rank2]: E39999[PID: 3578622] 2026-09-16-01:11:31.348.912 (E39999):  The error from device(chipId:2, dieId:0), serial number is 4, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank2]: TraceBack (most recent call last):
+[rank2]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank2]:        AI CPU kernel execution failed, device_id=2, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank2]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank3]:     raise SystemExit(main())
+[rank3]:                      ^^^^^^
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank3]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank3]:              ^^^^^^^^^
+[rank3]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank3]:     return func(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank3]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank3]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank3]:     proposer._propose(
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank3]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank3]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank3]:     attn_metadata = builder.build_for_drafting(
+[rank3]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank3]:     return self.build(
+[rank3]:            ^^^^^^^^^^^
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank3]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank3]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank3]:     torch.npu.synchronize()
+[rank3]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank3]:     return torch_npu._C._npu_synchronize()
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank3]: [ERROR] 2026-09-16-01:11:31 (PID:3578623, Device:3, RankID:3) ERR00100 PTA call acl api failed
+[rank3]: [Error]: The aicpu execution is abnormal. 
+[rank3]:         Rectify the fault based on the error information in the ascend log.
+[rank3]: E39999: Inner Error!
+[rank3]: E39999[PID: 3578623] 2026-09-16-01:11:31.348.741 (E39999):  The error from device(chipId:3, dieId:0), serial number is 8, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank3]: TraceBack (most recent call last):
+[rank3]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank3]:        AI CPU kernel execution failed, device_id=3, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank3]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank6]: Traceback (most recent call last):
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank6]:     raise SystemExit(main())
+[rank6]:                      ^^^^^^
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank6]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank6]:              ^^^^^^^^^
+[rank6]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank6]:     return func(*args, **kwargs)
+[rank6]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank6]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank6]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank6]:     proposer._propose(
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank6]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank6]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank6]:     attn_metadata = builder.build_for_drafting(
+[rank6]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank6]:     return self.build(
+[rank6]:            ^^^^^^^^^^^
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank6]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank6]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank6]:     torch.npu.synchronize()
+[rank6]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank6]:     return torch_npu._C._npu_synchronize()
+[rank6]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank6]: [ERROR] 2026-09-16-01:11:31 (PID:3578626, Device:6, RankID:6) ERR00100 PTA call acl api failed
+[rank6]: [Error]: The aicpu execution is abnormal. 
+[rank6]:         Rectify the fault based on the error information in the ascend log.
+[rank6]: E39999: Inner Error!
+[rank6]: E39999[PID: 3578626] 2026-09-16-01:11:31.349.541 (E39999):  The error from device(chipId:6, dieId:0), serial number is 35, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank6]: TraceBack (most recent call last):
+[rank6]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank6]:        AI CPU kernel execution failed, device_id=6, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank6]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank7]: Traceback (most recent call last):
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank7]:     raise SystemExit(main())
+[rank7]:                      ^^^^^^
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank7]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank7]:              ^^^^^^^^^
+[rank7]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank7]:     return func(*args, **kwargs)
+[rank7]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank7]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank7]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank7]:     proposer._propose(
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank7]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank7]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank7]:     attn_metadata = builder.build_for_drafting(
+[rank7]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank7]:     return self.build(
+[rank7]:            ^^^^^^^^^^^
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank7]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank7]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank7]:     torch.npu.synchronize()
+[rank7]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank7]:     return torch_npu._C._npu_synchronize()
+[rank7]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank7]: [ERROR] 2026-09-16-01:11:31 (PID:3578627, Device:7, RankID:7) ERR00100 PTA call acl api failed
+[rank7]: [Error]: The aicpu execution is abnormal. 
+[rank7]:         Rectify the fault based on the error information in the ascend log.
+[rank7]: E39999: Inner Error!
+[rank7]: E39999[PID: 3578627] 2026-09-16-01:11:31.350.647 (E39999):  The error from device(chipId:7, dieId:0), serial number is 962, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank7]: TraceBack (most recent call last):
+[rank7]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank7]:        AI CPU kernel execution failed, device_id=7, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank7]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank5]: Traceback (most recent call last):
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank5]:     raise SystemExit(main())
+[rank5]:                      ^^^^^^
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank5]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank5]:              ^^^^^^^^^
+[rank5]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank5]:     return func(*args, **kwargs)
+[rank5]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank5]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank5]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank5]:     proposer._propose(
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank5]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank5]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank5]:     attn_metadata = builder.build_for_drafting(
+[rank5]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank5]:     return self.build(
+[rank5]:            ^^^^^^^^^^^
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank5]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank5]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank5]:     torch.npu.synchronize()
+[rank5]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank5]:     return torch_npu._C._npu_synchronize()
+[rank5]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank5]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank5]: [ERROR] 2026-09-16-01:11:31 (PID:3578625, Device:5, RankID:5) ERR00100 PTA call acl api failed
+[rank5]: [Error]: The aicpu execution is abnormal. 
+[rank5]:         Rectify the fault based on the error information in the ascend log.
+[rank5]: E39999: Inner Error!
+[rank5]: E39999[PID: 3578625] 2026-09-16-01:11:31.351.985 (E39999):  The error from device(chipId:5, dieId:0), serial number is 1, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank5]: TraceBack (most recent call last):
+[rank5]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank5]:        AI CPU kernel execution failed, device_id=5, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank5]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank4]: Traceback (most recent call last):
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 409, in <module>
+[rank4]:     raise SystemExit(main())
+[rank4]:                      ^^^^^^
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 401, in main
+[rank4]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank4]:              ^^^^^^^^^
+[rank4]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank4]:     return func(*args, **kwargs)
+[rank4]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 304, in run
+[rank4]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank4]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 190, in one_case
+[rank4]:     proposer._propose(
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1074, in _propose
+[rank4]:     multi_steps_attn_metadata, attn_metadata_i = self.build_draft_attn_metadata(
+[rank4]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 2463, in build_draft_attn_metadata
+[rank4]:     attn_metadata = builder.build_for_drafting(
+[rank4]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/sources/vllm/vllm/v1/attention/backend.py", line 714, in build_for_drafting
+[rank4]:     return self.build(
+[rank4]:            ^^^^^^^^^^^
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/attention/dsa_v41.py", line 343, in build
+[rank4]:     self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
+[rank4]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 139, in observed
+[rank4]:     torch.npu.synchronize()
+[rank4]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+[rank4]:     return torch_npu._C._npu_synchronize()
+[rank4]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]: RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507018
+[rank4]: [ERROR] 2026-09-16-01:11:31 (PID:3578624, Device:4, RankID:4) ERR00100 PTA call acl api failed
+[rank4]: [Error]: The aicpu execution is abnormal. 
+[rank4]:         Rectify the fault based on the error information in the ascend log.
+[rank4]: E39999: Inner Error!
+[rank4]: E39999[PID: 3578624] 2026-09-16-01:11:31.351.591 (E39999):  The error from device(chipId:4, dieId:0), serial number is 478, an exception occurred during AICPU execution, stream_id:47, task_id:48617, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank4]: TraceBack (most recent call last):
+[rank4]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank4]:        AI CPU kernel execution failed, device_id=4, stream_id=47, task_id=48617, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank4]:        rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank0]:[W916 01:11:31.416965700 NPUStream.cpp:734] Warning: NPU warning, error code is 507018[Error]: 
+[Error]: The aicpu execution is abnormal. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Inner Error!
+EE9999[PID: 3578620] 2026-09-16-01:11:31.387.418 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+TraceBack (most recent call last):
+ (function npuSynchronizeUsedDevices)
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578620, Device:0, RankID:0) ERR00100 PTA call acl api failed
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578620] 2026-09-16-01:11:31.389.385 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank0]:W0916 01:11:31.390000 3578620 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578621, Device:1, RankID:1) ERR00100 PTA call acl api failed
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578621] 2026-09-16-01:11:31.389.785 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank1]:W0916 01:11:31.390000 3578621 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[W916 01:11:31.426593610 NPUStream.cpp:716] Warning: NPU warning, error code is 507018[Error]: 
+[Error]: The aicpu execution is abnormal. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Inner Error!
+EE9999[PID: 3578620] 2026-09-16-01:11:31.397.258 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578622, Device:2, RankID:2) ERR00100 PTA call acl api failed
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578622] 2026-09-16-01:11:31.400.181 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank2]:W0916 01:11:31.400000 3578622 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578623, Device:3, RankID:3) ERR00100 PTA call acl api failed
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578623] 2026-09-16-01:11:31.399.974 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank3]:W0916 01:11:31.400000 3578623 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578626, Device:6, RankID:6) ERR00100 PTA call acl api failed
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578626] 2026-09-16-01:11:31.402.196 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank6]:W0916 01:11:31.402000 3578626 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578627, Device:7, RankID:7) ERR00100 PTA call acl api failed
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578627] 2026-09-16-01:11:31.403.123 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank7]:W0916 01:11:31.403000 3578627 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578625, Device:5, RankID:5) ERR00100 PTA call acl api failed
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578625] 2026-09-16-01:11:31.405.920 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank5]:W0916 01:11:31.406000 3578625 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-01:11:31 (PID:3578624, Device:4, RankID:4) ERR00100 PTA call acl api failed
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3578624] 2026-09-16-01:11:31.405.814 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank4]:W0916 01:11:31.406000 3578624 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+/usr/local/python3.12.13/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked shared_memory objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+W0916 01:11:40.118000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578620 closing signal SIGTERM
+W0916 01:11:40.120000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578621 closing signal SIGTERM
+W0916 01:11:40.121000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578622 closing signal SIGTERM
+W0916 01:11:40.123000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578623 closing signal SIGTERM
+W0916 01:11:40.125000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578624 closing signal SIGTERM
+W0916 01:11:40.126000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578626 closing signal SIGTERM
+W0916 01:11:40.128000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3578627 closing signal SIGTERM
+E0916 01:11:41.312000 3577888 site-packages/torch/distributed/elastic/multiprocessing/api.py:984] failed (exitcode: 1) local_rank: 5 (pid: 3578625) of binary: /home/xwj/workspace/deepseek-v41-flash/vllm-ascend/../.venv/bin/python
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/run.py", line 995, in <module>
+    main()
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/run.py", line 982, in run
+    elastic_launch(
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+benchmarks/deepseek_v41/check_dspark_proposer_tp8.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 3578620)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 1 (local_rank: 1)
+  exitcode  : -15 (pid: 3578621)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3578621
+[3]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 2 (local_rank: 2)
+  exitcode  : -15 (pid: 3578622)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3578622
+[4]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 3 (local_rank: 3)
+  exitcode  : -15 (pid: 3578623)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3578623
+[5]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 4 (local_rank: 4)
+  exitcode  : -15 (pid: 3578624)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3578624
+[6]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 6 (local_rank: 6)
+  exitcode  : -15 (pid: 3578626)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3578626
+[7]:
+  time      : 2026-09-16_01:11:41
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 7 (local_rank: 7)
+  exitcode  : -15 (pid: 3578627)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3578627
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-09-16_01:11:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 5 (local_rank: 5)
+  exitcode  : 1 (pid: 3578625)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+[ERROR] 2026-09-16-01:11:42 (PID:3577888, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception

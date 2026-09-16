@@ -1,0 +1,682 @@
+[W916 00:57:49.221960890 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+<frozen runpy>:128: RuntimeWarning: 'torch.distributed.run' found in sys.modules after import of package 'torch.distributed', but prior to execution of 'torch.distributed.run'; this may result in unpredictable behaviour
+[W916 00:58:15.622295880 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:58:18.810607400 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 09-16 00:58:25 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:25 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:25 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:25 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:25 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:25 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:25 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:25 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:25 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:25 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:25 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:25 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:26 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:26 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:26 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:26 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:26 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:26 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:26 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:26 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:26 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:26 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:26 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:26 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:26 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:26 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 00:58:26 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 00:58:26 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 00:58:26 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+INFO 09-16 00:58:26 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+2026-09-16 00:58:37,931 - 3545323 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 00:58:38 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:38 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+WARNING 09-16 00:58:38 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+2026-09-16 00:58:38,782 - 3545325 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 00:58:38 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:38 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:38 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:38 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+2026-09-16 00:58:38,873 - 3545321 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 00:58:38,971 - 3545324 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 00:58:39,059 - 3545328 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 00:58:39,178 - 3545327 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+2026-09-16 00:58:39,204 - 3545322 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+2026-09-16 00:58:39,358 - 3545326 - ServiceProfiler - INFO - VLLM_USE_V1 not set, auto-detected via vLLM 0.1.dev1+g836bb3839.empty: default 0
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+WARNING 09-16 00:58:39 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+WARNING 09-16 00:58:39 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+WARNING 09-16 00:58:39 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 00:58:39 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:39 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 09-16 00:58:39 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:39 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 00:58:39 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.netloader.netloader.ModelNetLoaderElastic'>` with load format `netloader`
+INFO 09-16 00:58:39 [__init__.py:112] Registered model loader `<class 'vllm_ascend.model_loader.rfork.rfork_loader.RForkModelLoader'>` with load format `rfork`
+INFO 09-16 00:58:39 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:39 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 00:58:39 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+WARNING 09-16 00:58:39 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 00:58:39 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:39 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:39 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 09-16 00:58:40 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:40 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:40 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:40 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 00:58:40 [indexer_topk.py:29] Failed to import the DeepSelect extension (vllm._deepselect_C): No module named 'vllm._deepselect_C'
+INFO 09-16 00:58:40 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:40 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:40 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:40 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 00:58:40 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+INFO 09-16 00:58:40 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:40 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+INFO 09-16 00:58:40 [model.py:2030] Using max model len 256
+WARNING 09-16 00:58:40 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+WARNING 09-16 00:58:41 [patch_triton.py:332] NPU Triton causal_conv1d_update is unavailable (cannot import name 'causal_conv1d_update_npu' from 'vllm_ascend.ops.triton.mamba.causal_conv1d' (/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/ops/triton/mamba/causal_conv1d.py)); falling back to the PyTorch implementation, which syncs per request and therefore stalls ACL graph capture at decode-FULL.
+INFO 09-16 00:58:41 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:42 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:42 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:42 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:42 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:42 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:42 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:42 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:43 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:43 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:43 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:43 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:43 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:43 [config.py:849] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+INFO 09-16 00:58:43 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:43 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:43 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:43 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:43 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:43 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:43 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:43 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:43 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:43 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:43 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:43 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:43 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:43 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:43 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:43 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:43 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:43 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:43 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:43 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:43 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:43 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:43 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:43 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:44 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:44 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:44 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:44 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:44 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:44 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:44 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:44 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:44 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:44 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:44 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:44 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:44 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:44 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:44 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:44 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:44 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:44 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:44 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:44 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:44 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:44 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:44 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:44 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:44 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:44 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:44 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:44 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:44 [registry.py:146] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 09-16 00:58:44 [model.py:900] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+INFO 09-16 00:58:44 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:44 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:44 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:44 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:44 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 09-16 00:58:44 [model.py:2030] Using max model len 1048576
+INFO 09-16 00:58:44 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:44 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:44 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:44 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:44 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:44 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:44 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:44 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:44 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:44 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:44 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:44 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:44 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:44 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:44 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:45 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:45 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:45 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:45 [parallel_state.py:1827] world_size=8 rank=2 local_rank=2 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:45 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:45 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:45 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:45 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:45 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:45 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:45 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:45 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:45 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:45 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:45 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:45 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:45 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:45 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:45 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:45 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:45 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:45 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:45 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:45 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:45 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:45 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:45 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:45 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:45 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:45 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:45 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:45 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:45 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:45 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:45 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:45 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:45 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:45 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:45 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:45 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:45 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:45 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:45 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:45 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+INFO 09-16 00:58:45 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:45 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:45 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+WARNING 09-16 00:58:45 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:45 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:45 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:45 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:45 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:45 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:45 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:45 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:45 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:45 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:45 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:45 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:45 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:45 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:45 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:45 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:45 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:45 [parallel_state.py:1827] world_size=8 rank=0 local_rank=0 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:45 [speculative.py:1651] Overriding draft model max model len from 1048576 to 256
+INFO 09-16 00:58:45 [parallel.py:883] Using external launcher for distributed inference.
+INFO 09-16 00:58:45 [parallel.py:964] Disabling V1 multiprocessing for external launcher.
+INFO 09-16 00:58:45 [parallel_state.py:1827] world_size=8 rank=4 local_rank=4 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:45 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:45 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:45 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:45 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:45 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:45 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:45 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:45 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:45 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:45 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:45 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:45 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:45 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:45 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:45 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:45 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:45 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:45 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:45 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:45 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:45 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:45 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:45 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:45 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:45 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:45 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:45 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:45 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:45 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:45 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:46 [parallel_state.py:1827] world_size=8 rank=7 local_rank=7 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:46 [parallel_state.py:1827] world_size=8 rank=3 local_rank=3 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:46 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=256.
+WARNING 09-16 00:58:46 [vllm.py:1547] Enforce eager set, disabling torch.compile and CUDAGraphs. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none
+WARNING 09-16 00:58:46 [vllm.py:1570] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.
+INFO 09-16 00:58:46 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+WARNING 09-16 00:58:46 [vllm.py:2128] max_num_scheduled_tokens is set to 256 based on the speculative decoding settings. This may lead to suboptimal performance. Consider increasing max_num_batched_tokens to accommodate the additional draft token slots, or decrease num_speculative_tokens.
+INFO 09-16 00:58:46 [vllm.py:1773] Cudagraph is disabled under eager mode
+WARNING 09-16 00:58:46 [platform.py:638] GPU-specific parameter is not supported on Ascend. parameter=disable_cascade_attn, value=True, action: resetting to False.
+WARNING 09-16 00:58:46 [platform.py:695] Speculative quantization is set but Ascend automatically uses the main model's quantization method. parameter=quantization, action: resetting to None. 
+INFO 09-16 00:58:46 [platform.py:850] The timeout interval of the HCCL operator is 1836s. Timeout in seconds for execute_model RPC calls in multiprocessing must be greater than 1836s, Set VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS=3000
+INFO 09-16 00:58:46 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:58:46 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:58:46 [ascend_config.py:632] FlashComm1 is disabled. Using flashinfer_all2allv as the all2all backend.
+INFO 09-16 00:58:46 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:58:46 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:58:46 [compilation.py:336] Enabled custom fusions: norm_quant, act_quant
+INFO 09-16 00:58:46 [parallel_state.py:1827] world_size=8 rank=6 local_rank=6 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:46 [parallel_state.py:1827] world_size=8 rank=1 local_rank=1 distributed_init_method=env:// backend=hccl
+INFO 09-16 00:58:46 [parallel_state.py:1827] world_size=8 rank=5 local_rank=5 distributed_init_method=env:// backend=hccl
+[W916 00:59:05.121836940 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:05.690602290 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:05.849531320 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:06.202295760 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:06.221145900 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:06.619893560 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:06.620496350 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W916 00:59:06.801692170 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[Gloo] Rank 0 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 1 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank [Gloo] Rank 523 is connected to  is connected to  is connected to 777 peer ranks.  peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : Expected number of connected peer ranks is : 7[Gloo] Rank 77
+4
+
+ is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 76 is connected to  is connected to 77 peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 77
+
+[Gloo] Rank [Gloo] Rank [Gloo] Rank 601 is connected to  is connected to  is connected to 777 peer ranks.  peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : Expected number of connected peer ranks is : 777
+
+
+[Gloo] Rank 2 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 5 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 7 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 34 is connected to  is connected to 77 peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 77
+
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank [Gloo] Rank 00 is connected to  is connected to 00 peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 00
+
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank [Gloo] Rank [Gloo] Rank 610 is connected to  is connected to  is connected to 777 peer ranks.  peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : Expected number of connected peer ranks is : 77
+7
+
+[Gloo] Rank 2 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 3 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 5[Gloo] Rank  is connected to 74 peer ranks.  is connected to Expected number of connected peer ranks is : INFO 09-16 00:59:12 [parallel_state.py:2267] rank 0 in world size 8 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+77[Gloo] Rank 
+ peer ranks. 7Expected number of connected peer ranks is :  is connected to 77
+ peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank [Gloo] Rank 01 is connected to  is connected to 77 peer ranks.  peer ranks. Expected number of connected peer ranks is : Expected number of connected peer ranks is : 77
+
+[Gloo] Rank 3 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 2 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+rank 1: constructing actual NPUModelRunnerrank 0: constructing actual NPUModelRunner
+
+[Gloo] Rank 4 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 6 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 5 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+[Gloo] Rank 7 is connected to 7 peer ranks. Expected number of connected peer ranks is : 7
+rank 3: constructing actual NPUModelRunner
+rank 2: constructing actual NPUModelRunner
+rank 4: constructing actual NPUModelRunner
+rank 6: constructing actual NPUModelRunner
+rank 5: constructing actual NPUModelRunnerrank 7: constructing actual NPUModelRunner
+
+[rank0]:[W916 00:59:13.582919470 NPUCachingAllocator.cpp:202] Warning: The current CANN and HDK(driver) versions require processing for 32 padding size, with memory allocation. (function operator())
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+INFO 09-16 00:59:13 [platform.py:1352] FA3 will not be enabled when rl_config.enable_training_consistency is false. Note that Ascend NPU will use its registered plugin backend instead.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+WARNING 09-16 00:59:13 [__init__.py:205] min_p and logit_bias parameters won't work with speculative decoding.
+rank 7: actual proposer.load_model
+rank 5: actual proposer.load_model
+INFO 09-16 00:59:14 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:14 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:14 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:14 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:14 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:14 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+INFO 09-16 00:59:14 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:14 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:14 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:14 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:14 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:14 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+rank 3: actual proposer.load_model
+INFO 09-16 00:59:14 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:14 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:14 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:14 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:14 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:14 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+rank 6: actual proposer.load_model
+rank 4: actual proposer.load_model
+rank 0: actual proposer.load_model
+INFO 09-16 00:59:15 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:15 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:15 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:15 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:15 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:15 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+INFO 09-16 00:59:15 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:15 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:15 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:15 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:15 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:15 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:15 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+INFO 09-16 00:59:15 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:15 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:15 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:15 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:15 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+rank 1: actual proposer.load_model
+rank 2: actual proposer.load_model
+WARNING 09-16 00:59:15 [compressed_tensors_config.py:251] Acceleration for non-quantized schemes is not supported by Compressed Tensors. Falling back to UnquantizedLinearMethod
+INFO 09-16 00:59:15 [compressed_tensors_config.py:176] Using the vLLM Ascend llmcompressor Quantization now!
+INFO 09-16 00:59:15 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:15 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:15 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:15 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:15 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:15 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+INFO 09-16 00:59:15 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['native'])
+INFO 09-16 00:59:15 [ascend_config.py:230] Dynamic EPLB is False
+INFO 09-16 00:59:15 [ascend_config.py:231] The number of redundant experts is 0
+INFO 09-16 00:59:15 [platform.py:1077] Compilation disabled, using eager mode by default
+INFO 09-16 00:59:15 [platform.py:1329] Set PYTORCH_NPU_ALLOC_CONF=expandable_segments:True
+INFO 09-16 00:59:15 [llm_base_proposer.py:333] [spec_decode/base] Loading draft model: method=dspark, load_format=None, model=/tmp/v41-dspark-proposer-r2/config
+INFO 09-16 00:59:15 [weight_utils.py:895] Filesystem type for checkpoints: EXT4. Checkpoint size: 8.31 GiB. Available RAM: 1933.26 GiB.
+INFO 09-16 00:59:15 [weight_utils.py:918] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+Loading safetensors checkpoint shards:   0% Completed | 0/3 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  33% Completed | 1/3 [00:00<00:00,  2.24it/s]
+Loading safetensors checkpoint shards:  67% Completed | 2/3 [00:00<00:00,  2.10it/s]
+Loading safetensors checkpoint shards: 100% Completed | 3/3 [00:01<00:00,  1.99it/s]
+Loading safetensors checkpoint shards: 100% Completed | 3/3 [00:01<00:00,  2.03it/s]
+
+INFO 09-16 00:59:16 [default_loader.py:430] Loading weights took 1.60 seconds
+INFO 09-16 00:59:22 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:22 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:22 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:22 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:22 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:22 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:23 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:23 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:23 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:23 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:23 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:23 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:24 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:24 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+INFO 09-16 00:59:24 [llm_base_proposer.py:507] [spec_decode/base] Detected DSpark model without its own embed_tokens in the checkpoint. Sharing target model embedding weights with the draft model.
+INFO 09-16 00:59:24 [llm_base_proposer.py:564] [spec_decode/base] Loading EAGLE/DFLASH LM head weights from the target model.
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 340, in <module>
+[rank0]:     raise SystemExit(main())
+[rank0]:                      ^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 332, in main
+[rank0]:     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
+[rank0]:              ^^^^^^^^^
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 238, in run
+[rank0]:     record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/benchmarks/deepseek_v41/check_dspark_proposer_tp8.py", line 134, in one_case
+[rank0]:     proposer._propose(
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1191, in _propose
+[rank0]:     draft_token_ids = run_draft()
+[rank0]:                       ^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/spec_decode/llm_base_proposer.py", line 1291, in _run_merged_draft
+[rank0]:     ret_hidden_states = self.model(**model_kwargs)
+[rank0]:                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/models/deepseek_v4/dspark.py", line 761, in forward
+[rank0]:     return self.model(input_ids, positions, inputs_embeds)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/models/deepseek_v4/dspark.py", line 695, in forward
+[rank0]:     hidden = embedded[:, None, :].expand(-1, self.hc_mult, -1).contiguous()
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: RuntimeError: The Inner error is reported as above. The process exits for this inner error, and the current working event is 0xfffe7d8cd7d8.
+[rank0]: Since the operator is called asynchronously, the stacktrace may be inaccurate. If you want to get the accurate stacktrace, please set the environment variable ASCEND_LAUNCH_BLOCKING=1.
+[rank0]: Note: ASCEND_LAUNCH_BLOCKING=1 will force ops to run in synchronous mode, resulting in performance degradation. Please unset ASCEND_LAUNCH_BLOCKING in time after debugging.
+[rank0]: [ERROR] 2026-09-16-00:59:31 (PID:3545321, Device:0, RankID:0) ERR00100 PTA call acl api failed.
+[rank0]: E39999: Inner Error!
+[rank0]: E39999[PID: 3545321] 2026-09-16-00:59:30.841.382 (E39999):  The error from device(chipId:0, dieId:0), serial number is 73, an exception occurred during AICPU execution, stream_id:33, task_id:47896, errcode:1, msg:execute kernel param invalid.[FUNC:ProcessStarsAicpuErrorInfo][FILE:device_error_proc.cc][LINE:1189]
+[rank0]: TraceBack (most recent call last):
+[rank0]:        An error occurred in the kernel task, retCode=0x2a, [aicpu exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+[rank0]:        AI CPU kernel execution failed, device_id=0, stream_id=33, task_id=47896, soName=3940923783266727466_5449544.so, funcName=RunCpuKernel, kernelName=SparseFlashMlaMetadata, errorCode=0x2a.[FUNC:PrintAicpuErrorInfo][FILE:davinci_kernel_task.cc][LINE:988]
+[rank0]:        Failed to submit record task, retCode=0x715002a.[FUNC:Record][FILE:event.cc][LINE:459]
+[rank0]:        rtEventRecord execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+[rank0]:[W916 00:59:31.390930250 NPUStream.cpp:734] Warning: NPU warning, error code is 507018[Error]: 
+[Error]: The aicpu execution is abnormal. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Inner Error!
+EE9999[PID: 3545321] 2026-09-16-00:59:31.361.368 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+TraceBack (most recent call last):
+ (function npuSynchronizeUsedDevices)
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] Failed to shutdown process group during NPU exit.
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] Traceback (most recent call last):
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500]   File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/distributed/distributed_c10d.py", line 498, in _destructor_process_group
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500]     pg_to_shutdown.shutdown()
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] RuntimeError: synchronize:../torch_npu/csrc/core/npu/NPUStream.cpp:414 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(stream()), error code is 507018
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] [ERROR] 2026-09-16-00:59:31 (PID:3545321, Device:0, RankID:0) ERR00100 PTA call acl api failed
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] [Error]: The aicpu execution is abnormal. 
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500]         Rectify the fault based on the error information in the ascend log.
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999: Inner Error!
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] EE9999[PID: 3545321] 2026-09-16-00:59:31.363.870 (EE9999):  rtStreamSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] TraceBack (most recent call last):
+[rank0]:W0916 00:59:31.365000 3545321 site-packages/torch_npu/distributed/distributed_c10d.py:500] 
+[W916 00:59:31.402817140 NPUStream.cpp:716] Warning: NPU warning, error code is 507018[Error]: 
+[Error]: The aicpu execution is abnormal. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Inner Error!
+EE9999[PID: 3545321] 2026-09-16-00:59:31.373.243 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=aicpu exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+/usr/local/python3.12.13/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked shared_memory objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+W0916 00:59:38.415000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545322 closing signal SIGTERM
+W0916 00:59:38.418000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545323 closing signal SIGTERM
+W0916 00:59:38.419000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545324 closing signal SIGTERM
+W0916 00:59:38.421000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545325 closing signal SIGTERM
+W0916 00:59:38.423000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545326 closing signal SIGTERM
+W0916 00:59:38.424000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545327 closing signal SIGTERM
+W0916 00:59:38.426000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3545328 closing signal SIGTERM
+E0916 00:59:40.124000 3542953 site-packages/torch/distributed/elastic/multiprocessing/api.py:984] failed (exitcode: 1) local_rank: 0 (pid: 3545321) of binary: /home/xwj/workspace/deepseek-v41-flash/vllm-ascend/../.venv/bin/python
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/run.py", line 995, in <module>
+    main()
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/run.py", line 982, in run
+    elastic_launch(
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+benchmarks/deepseek_v41/check_dspark_proposer_tp8.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 1 (local_rank: 1)
+  exitcode  : -15 (pid: 3545322)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545322
+[2]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 2 (local_rank: 2)
+  exitcode  : -15 (pid: 3545323)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545323
+[3]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 3 (local_rank: 3)
+  exitcode  : -15 (pid: 3545324)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545324
+[4]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 4 (local_rank: 4)
+  exitcode  : -15 (pid: 3545325)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545325
+[5]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 5 (local_rank: 5)
+  exitcode  : -15 (pid: 3545326)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545326
+[6]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 6 (local_rank: 6)
+  exitcode  : -15 (pid: 3545327)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545327
+[7]:
+  time      : 2026-09-16_00:59:40
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 7 (local_rank: 7)
+  exitcode  : -15 (pid: 3545328)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 3545328
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-09-16_00:59:38
+  host      : a13-10u-a800t-a2-gpuserver-04
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 3545321)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+[ERROR] 2026-09-16-00:59:41 (PID:3542953, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception

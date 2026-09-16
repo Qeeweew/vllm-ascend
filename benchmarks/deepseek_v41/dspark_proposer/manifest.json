@@ -1,0 +1,28 @@
+{
+  "r2_prepare.json": "df70c56c2876ef17a4ee87b98d9a6d2a5f03f924bb6f54e7f698ec7e2936255c",
+  "r2_failed_rank0.json": "ac8c64947cd084d1d22a5a065084f9e642a80eed9cb8d904a6317d23eb09b783",
+  "r2_failed_run.log.txt": "a949923a096a5ec74084a697c4e63e9022a7f3e21727462424972216bd69e8c4",
+  "oracle_cpu_r2.log.txt": "85a3c5d33659064d23b846e615495d91afc9340aa772c02eae5f2b4b3df8c98d",
+  "tested_source_sha256": {
+    "benchmarks/deepseek_v41/check_dspark_proposer_tp8.py": "287e0503be435f60b570305cf6047bb07088e7027e62567f16f9aba200dd4dc7",
+    "tests/ut/models/test_dspark_proposer_oracle.py": "2904783b85cf43ba80feac0a7a3723307eabf21ed27381615cd9432fc7e052e0"
+  },
+  "r3_diagnostic_run.log.txt": "a372ce8e85d3b894ef6bd009e38f85cd302062bd5a639ba2d20a62ea349eca4f",
+  "r3_metadata_rank0.json": "4c29b3c8885ebfcfac0cb6d0230873de7ee85e8881a81dd694f0d28a6b20a7bd",
+  "r3_metadata_rank1.json": "e7ad9257ab6c68f02b16106808afceb4f0a124933fa4837af8f926b3d820260f",
+  "r3_metadata_rank2.json": "1d14a5bb2de5a512a7a0ca20484153c45cd3081a17df6dca6ade23f4c842936e",
+  "r3_metadata_rank3.json": "462e08482d274695ad424100653032c9d28c15754ede42b21a581e9331158d5c",
+  "r3_metadata_rank4.json": "155b979fa2ad0af8df2e5f8d94d148d3c3795cd1a14a47e0012d3de3d6fa4f8d",
+  "r3_metadata_rank5.json": "fe1f6efcbb3160304471c2dd265a04efce0cd093f2c9e575894b0b9ff93ac22c",
+  "r3_metadata_rank6.json": "211490e4ed2af9d811de2814c5adcf9ba2c62c741823a404abbda5c2d5164178",
+  "r3_metadata_rank7.json": "d9735286b234a16bf245ec93a933f356c5e846d90a979e783015e31dfff1dd09",
+  "r3_rank0.json": "b9815aa65ace4ff207dcd72ef21caa770b6001e6bb2ec219d01e8801c1cc3bb6",
+  "r3_rank1.json": "e439f7ae00a4ac6f71bfb6fcc37f79a3ea34ef050636ac34afbe567c9124e016",
+  "r3_rank2.json": "6b7a3a8129cd985bc1e8d9ac0c9c41b54ef2650459406c25677f7d95adeb432c",
+  "r3_rank3.json": "438a85d35da56d7540c9bc80b9ded8ee95605df29767365605d0318f8abdf279",
+  "r3_rank4.json": "f554b5ca09ac38e010c2116ac1dc1fa85848f2ec105d7b4c6505057b662a2e17",
+  "r3_rank5.json": "8ab81c5e76072246733e2d56073946405811d5d9b9432f5ad1c9abbd3027a976",
+  "r3_rank6.json": "1fc06475c8c05fbb15b4ff36fa84ffee9ce82fc7bc9d8d6b6fca16c62b16ec6c",
+  "r3_rank7.json": "774f4c606556115e170fbc8d6bb1f64b2c7c1d12845fbfc347bc24d9ab09208d",
+  "diagnostic_source_sha256": "bdb5ec1a529651b0abf49152228f9443494bb159246497d2fb2c6510d104008e"
+}
