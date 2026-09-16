@@ -316,6 +316,18 @@ def main():
         "status": "prepared_only",
         "model_name": name,
         "command": command,
+        # Record inherited performance settings alongside CLI arguments.
+        # A missing value means the variable was unset, not an explicit override.
+        "environment": {
+            key: os.environ.get(key)
+            for key in (
+                "ASCEND_RT_VISIBLE_DEVICES",
+                "HCCL_DETERMINISTIC",
+                "OMP_NUM_THREADS",
+                "VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS",
+                "VLLM_CUSTOM_SCOPES_FOR_PROFILING",
+            )
+        },
         "cli_validation": validate_server_args(values),
         "preflight": build_preflight(
             args.source,
