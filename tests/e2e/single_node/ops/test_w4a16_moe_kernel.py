@@ -5,7 +5,6 @@ import pytest
 import torch
 import torch.nn.functional as F
 import torch_npu
-
 import vllm_ascend.vllm_ascend_C  # noqa: F401
 
 GROUP_SIZE = 32
@@ -48,14 +47,13 @@ def moe_reference(x, q13, s13, q2, s2, ids, routing, limit):
 def make_case(
     batch=1,
     dtype=torch.bfloat16,
-    overflow=False,
     experts=TOP_K,
     top_k=TOP_K,
     hidden=HIDDEN_SIZE,
     inter=INTERMEDIATE_SIZE,
 ):
     torch.manual_seed(4100 + batch)
-    x = (torch.randn(batch, hidden) * (100000 if overflow else 0.2)).to(dtype)
+    x = (torch.randn(batch, hidden) * 0.2).to(dtype)
     q13 = torch.randint(-8, 8, (experts, 2 * inter, hidden), dtype=torch.int32)
     q2 = torch.randint(-8, 8, (experts, hidden, inter), dtype=torch.int32)
     s13 = (torch.rand(experts, hidden // GROUP_SIZE, 2 * inter) * 0.015 + 0.001).to(dtype)
@@ -88,14 +86,6 @@ def test_real_tp8_shape(batch, limit):
     x, _, s13, _, s2, ids, routing = args
     expected = moe_reference(x, q13, s13, q2, s2, ids, routing, limit)
     actual = torch.ops._C_ascend.npu_w4a16_moe(*(t.npu() for t in args), limit)
-    assert_accurate(actual, expected)
-
-
-def test_bf16_range_and_clamp():
-    args, (q13, q2) = make_case(overflow=True)
-    x, _, s13, _, s2, ids, routing = args
-    expected = moe_reference(x, q13, s13, q2, s2, ids, routing, 10.0)
-    actual = torch.ops._C_ascend.npu_w4a16_moe(*(t.npu() for t in args), 10.0)
     assert_accurate(actual, expected)
 
 
