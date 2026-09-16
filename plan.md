@@ -17,6 +17,8 @@
 8. **用户授权使用独立 sub-agent 开发算子，并要求严格性能验收。** 主任务负责数值契约、接口、集成与最终验收；算子任务在明确文件范围内交给sub-agent。全部功能适配完成后继续做整机profiling和优化，形成可复现报告，这是交付的一部分。
 9. **DSpark是最终交付硬要求。** 必须通过真实三层draft proposer、target verification、接受/拒绝及回滚、target/draft NPU graph协调和服务端请求，并单独报告DSpark端到端性能。组件oracle和标准自回归通过不能替代这些验收；当前metadata故障必须修复后才能开放生产准入。
 10. **融合indexer以多batch为主要验收范围。** B1局部优化和旧路径B8/B32回归不能作为交付。重新设计请求与候选块的核分配，至少覆盖B1/2/4/8/16/32、H32、CR1/CR2及混合请求长度；必须证明各形状实际进入融合路径，独立报告正确性、graph、完整selector延迟、吞吐、HBM和Cube/MTE/核负载指标。
+11. **按用户最新澄清，top-k仍融合，解耦Cube与Vector任务。** Candidate consumer的AIC分块完成分页INT8读取、QK、缩放/ReLU及head加权归约；单个AIV核负责一个query完整16384项分数的top-k及逻辑位置映射。用明确的分数缓冲、完成信号和生命周期协议，使AIC可继续计算后续query，AIV消费已完成query；重新计算排序scratch及192KiB UB预算。此前外部 `torch.topk` 提案已被此要求替代。禁止重新物化全量BF16候选key或多头QK，禁止用旧路径多batch回归代替新路径验收。16384上限仅适用于candidate consumer，source与CR2按各自实际语义处理。
+12. **融合indexer以prefill性能为首要优化目标。** 按有效query token数而非仅batch数选择tiling：token充足时优先不切分16384候选，依靠query间并行；token较少时比较有限split数，阈值和最大split数须由实测决定。覆盖单请求长prefill、多请求不等长prefill、混合prefill/decode和decode，验证每query causal可见范围。报告完整selector的prefill tokens/s、median/P95、Cube/MTE/Vector/同步等待和各核负载，不以decode局部收益代替prefill验收。
 
 ## 2. 已核对的环境与源码基线
 

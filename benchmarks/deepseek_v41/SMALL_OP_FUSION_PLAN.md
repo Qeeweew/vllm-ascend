@@ -105,10 +105,17 @@ Main store input is pre-RoPE BF16 [T,512]; index store input is normalized,
 pre-RoPE BF16 [T,128]. Projection and RMSNorm remain outside these first stores.
 Caches use existing [blocks,page,1,D] layouts, including gapped axis-zero
 strides and nonzero storage offsets. Main cache is BF16; index cache INT8 and
-scale cache FP16 [blocks,page,1,1]. Reject unsupported inner strides.
+scale cache FP16 [blocks,page,1] or [blocks,page,1,1]. Reject unsupported inner strides.
 The native ACLNN interfaces receive explicit axis-zero element-stride attrs
 from the Torch binding; key and scale strides are independent. Their pointers
 already include storage offsets, which must not be added a second time.
+The actual runner packs INT8 keys and FP16 scales into the same raw pages.
+These two output views may share storage when their byte page strides match
+and their page regions are disjoint, including across page boundaries. With
+`delta = (scale_byte_offset - key_byte_offset) mod page_stride_bytes`, require
+`delta >= page * 128` and `delta + page * 2 <= page_stride_bytes`.
+Storage shared between an input and an output remains unsupported. Tests must
+cover the actual packed layout, nonzero raw offsets and untouched raw bytes.
 
 For CR1/2, rotate at floor(position/CR)*CR. Physical `slots` already address
 compressed cache rows and must NOT be divided again. Publish CR2 only at the
