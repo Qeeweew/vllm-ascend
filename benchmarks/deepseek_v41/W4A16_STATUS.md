@@ -165,10 +165,17 @@ ordinary runner. Isolated real MoE inputs match the FP32 native contract
 more closely than CANN's additional BF16 rounding boundaries; see
 [W4A16_REAL_NUMERICS.md](W4A16_REAL_NUMERICS.md).
 
-Real-run numerical acceptance remains open: same-engine CANN repetitions
-already differ at first-layer attention, before MoE. This is being localized
-with all-rank projection/reduction traces, rather than changing native MoE
-arithmetic. Remaining acceptance includes full-model loading and quality,
-full-size host Engram, stable operator timing, TPOT/TTFT including
-communication, and final model memory/profile checks. Enable by default
-only after those gates pass.
+The earlier repeatability discrepancy was localized to BF16 HCCL reduction
+ordering and removed in the measured sample with strict determinism; see
+`ATTENTION_REPEAT_NUMERICS.md`. A later independent checkpoint oracle also
+exposed and corrected the `wo_a` layout error; see
+`WO_A_LAYOUT_CORRECTION.md`. The complete
+40-layer model with CANN W4A16 and both real pinned-host Engram tables has since
+passed eager/graph raw-token checks and five graph-mode text smoke cases;
+see `FULL_MODEL_RESULT.md`. Those runs did not enable native W4A16 decode.
+
+Remaining native-decode acceptance includes the full 40-layer model with
+real host tables, stable operator timing, TTFT/TPOT and throughput from
+`vllm bench`, including TP communication, and final memory/profile checks.
+The text smoke is not a general quality benchmark. Enable by default only
+after the applicable gates pass.

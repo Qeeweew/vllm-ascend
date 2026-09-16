@@ -12,12 +12,26 @@ class V41FullModelWorker(NPUWorker):
             self.full_load_records = records
             super().load_model()
 
-    def start_full_model_audit(self, source):
+    def start_full_model_audit(self, source, with_vision=False):
         model = self.model_runner.get_model()
         language = model.get_language_model()
         assert len(language.model.layers) == 40
         assert language.config.engram_num_embeddings == [384006168, 384016682]
-        assert model.vision is None and model.aligner is None
+        assert (model.vision is not None) == with_vision
+        assert (model.aligner is not None) == with_vision
+        self.full_encoder_spans = []
+        if with_vision:
+            import torch
+
+            original_encoder = model.embed_multimodal
+
+            def observe_encoder(**kwargs):
+                assert not torch.npu.is_current_stream_capturing()
+                spans = original_encoder(**kwargs)
+                self.full_encoder_spans.extend(int(span.shape[0]) for span in spans)
+                return spans
+
+            model.embed_multimodal = observe_encoder
         runtime = self.model_runner.engram_runtime
         reports, _ = inspect_tables(runtime, source, self.vllm_config.model_config.model, self.full_load_records)
         self.full_graph_replays = 0
@@ -50,9 +64,12 @@ class V41FullModelWorker(NPUWorker):
             "prepared": runtime._prepared,
             "offload_steps": runtime.offload._step,
             "graph_replays": self.full_graph_replays,
+            "encoder_spans": list(self.full_encoder_spans),
             "memory": process_memory(),
             "device_allocated_bytes": torch.npu.memory_allocated(),
             "device_reserved_bytes": torch.npu.memory_reserved(),
+            "device_peak_allocated_bytes_since_worker_start": torch.npu.max_memory_allocated(),
+            "device_peak_reserved_bytes_since_worker_start": torch.npu.max_memory_reserved(),
         }
 
     def finish_full_model_audit(self):

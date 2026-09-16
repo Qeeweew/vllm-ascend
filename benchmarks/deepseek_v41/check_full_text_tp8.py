@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Small real-checkpoint chat/long-context smoke, not a quality benchmark.
+"""Small real-checkpoint chat/long-context/image smoke, not a quality benchmark.
 
 Default mode tokenizes with the official V4.1 chat encoder on CPU. Explicit
 --run requires a free TP8 window. Save outputs even if an answer check fails.
@@ -55,6 +55,12 @@ def execute(args, report):
     from vllm import LLM, SamplingParams
 
     llm = None
+    with_vision = args.image is not None
+    photo = None
+    if with_vision:
+        from smoke_mm_runner_tp8 import load_photo
+
+        photo, _ = load_photo(args.image)
     try:
         llm = LLM(
             model=str(args.checkpoint),
@@ -64,7 +70,13 @@ def execute(args, report):
             worker_cls="full_model_worker.V41FullModelWorker",
             load_format="safetensors",
             safetensors_load_strategy="lazy",
-            additional_config={"enable_w4a16_decode": args.native_decode, "engram_numa_nodes": list(NUMA_NODES)},
+            additional_config={
+                "enable_w4a16_decode": args.native_decode,
+                "enable_v41_rope": args.fused_rope,
+                "enable_v41_cache_store": args.fused_cache_store,
+                "enable_v41_router": args.fused_router,
+                "engram_numa_nodes": list(NUMA_NODES),
+            },
             enforce_eager=not args.graph,
             compilation_config={
                 "mode": 0,
@@ -73,7 +85,7 @@ def execute(args, report):
                 "compile_mm_encoder": False,
             },
             max_model_len=8192,
-            max_num_batched_tokens=128,
+            max_num_batched_tokens=1024 if with_vision else 128,
             max_num_seqs=1,
             block_size=32,
             kv_cache_memory_bytes=512 * 1024**2,
@@ -81,16 +93,20 @@ def execute(args, report):
             async_scheduling=False,
             enable_prefix_caching=False,
             disable_chunked_mm_input=True,
-            limit_mm_per_prompt={"image": 0},
+            limit_mm_per_prompt={"image": int(with_vision)},
             skip_mm_profiling=True,
+            mm_encoder_tp_mode="weights",
             shutdown_timeout=180,
         )
-        report["workers_loaded"] = llm.collective_rpc("start_full_model_audit", args=(str(args.source),))
+        report["workers_loaded"] = llm.collective_rpc("start_full_model_audit", args=(str(args.source), with_vision))
         params = SamplingParams(temperature=0, max_tokens=32, logprobs=1)
         report["answers"] = []
         for case in report["cases"]:
             started = time.perf_counter()
-            output = llm.generate([{"prompt_token_ids": case["prompt_token_ids"]}], params, use_tqdm=False)[0]
+            prompt = {"prompt_token_ids": case["prompt_token_ids"]}
+            if case.get("with_image"):
+                prompt["multi_modal_data"] = {"image": photo}
+            output = llm.generate([prompt], params, use_tqdm=False)[0]
             answer = output.outputs[0]
             selected = [row[token].logprob for token, row in zip(answer.token_ids, answer.logprobs, strict=True)]
             report["answers"].append(
@@ -111,6 +127,8 @@ def execute(args, report):
             initial = loaded["state"]
             assert initial["rows"] == final["rows"] and initial["mask"] == final["mask"]
             assert not final["prepared"] and final["offload_steps"] > initial["offload_steps"]
+            assert initial["image_mask"] == final["image_mask"]
+            assert final["encoder_spans"] == ([189] if with_vision else [])
             if args.graph:
                 assert final["graph_replays"] > 0
         report["checks_passed"] = all(answer["finite"] and answer["answer_matches"] for answer in report["answers"])
@@ -145,6 +163,10 @@ def main():
     parser.add_argument("--run", action="store_true")
     parser.add_argument("--graph", action="store_true")
     parser.add_argument("--native-decode", action="store_true")
+    parser.add_argument("--fused-rope", action="store_true")
+    parser.add_argument("--fused-cache-store", action="store_true")
+    parser.add_argument("--fused-router", action="store_true")
+    parser.add_argument("--image", type=Path, help="Optional fixed hato.jpg fixture; runs real vision before text")
     args = parser.parse_args()
     if args.output.exists():
         parser.error("Use a new result path")
@@ -152,6 +174,28 @@ def main():
 
     tokenizer = get_tokenizer(str(args.checkpoint), tokenizer_mode="deepseek_v41")
     prepared = cases()
+    photo_info = None
+    if args.image is not None:
+        from smoke_mm_runner_tp8 import load_photo
+
+        _, photo_info = load_photo(args.image)
+        if photo_info["source_sha256"] != "8f7e776cf614298af55cb64b7116a513c37f8710959fb90a5e2babedece489b4":
+            parser.error("The fixed image oracle requires the original hato.jpg fixture")
+        prepared.insert(
+            0,
+            {
+                "name": "image_animal",
+                "prompt": [
+                    {"type": "image_url", "image_url": {"url": "fixture:hato.jpg"}},
+                    {
+                        "type": "text",
+                        "text": "Which animal is closest to the camera? Answer with one lowercase English word.",
+                    },
+                ],
+                "expected": "pigeon",
+                "with_image": True,
+            },
+        )
     for case in prepared:
         case["prompt_token_ids"] = tokenizer.apply_chat_template(
             [{"role": "user", "content": case["prompt"]}], thinking=False, tokenize=True
@@ -164,9 +208,13 @@ def main():
         "cases": prepared,
         # Add 1 GiB over the short-run admission floor for the larger KV pool
         # and long-context workspace. Actual peaks still require observation.
-        "preflight": build_preflight(args.source, args.checkpoint, reserve_gib=9),
+        "preflight": build_preflight(args.source, args.checkpoint, reserve_gib=11 if args.image else 9),
+        "photo": photo_info,
         "graph": args.graph,
         "native_decode": args.native_decode,
+        "fused_rope": args.fused_rope,
+        "fused_cache_store": args.fused_cache_store,
+        "fused_router": args.fused_router,
         "thinking": False,
         "quality_benchmark": False,
         "performance_benchmark": False,
