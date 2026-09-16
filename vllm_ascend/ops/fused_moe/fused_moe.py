@@ -16,6 +16,8 @@
 #
 from __future__ import annotations
 
+from contextlib import contextmanager
+
 import torch
 import torch.nn.functional as F
 from vllm.distributed import (
@@ -38,7 +40,7 @@ from vllm.utils.torch_utils import direct_register_custom_op
 from vllm_ascend.ascend_forward_context import _EXTRA_CTX, MoECommType
 from vllm_ascend.distributed.parallel_state import get_mc2_group
 from vllm_ascend.ops.fused_moe.dataclass.shared_experts import PreparedSharedExpertInput, RoutedMoEMilestones
-from vllm_ascend.ops.fused_moe.moe_comm_method import get_moe_comm_method, setup_moe_comm_method
+from vllm_ascend.ops.fused_moe.moe_comm_method import AllGatherCommImpl, get_moe_comm_method, setup_moe_comm_method
 from vllm_ascend.ops.fused_moe.routed_experts import AscendRoutedExperts
 from vllm_ascend.ops.fused_moe.shared_experts import (
     AscendSharedExperts,
@@ -179,6 +181,8 @@ direct_register_custom_op(
 
 
 class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
+    _layer_allgather_comm: AllGatherCommImpl | None = None
+
     def __init__(
         self,
         layer_name,
@@ -236,6 +240,11 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
                 self._forward_entry = torch.ops.vllm.ascend_moe_forward_shared_sp
 
         setup_moe_comm_method(self.moe_config)
+        # Target and draft can have different expert counts/top-k. Keep the
+        # EP=1 dispatcher before another model replaces the global default.
+        # EP>1 retains the existing shared communication-buffer lifecycle.
+        if self.moe_config.ep_size == 1:
+            self._layer_allgather_comm = get_moe_comm_method(MoECommType.ALLGATHER)
         alltoall_comm = get_moe_comm_method(MoECommType.ALLTOALL)
         if alltoall_comm is not None:
             expert_ids_per_ep_rank = getattr(alltoall_comm.token_dispatcher, "expert_ids_per_ep_rank", None)
@@ -444,6 +453,19 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
             router_output_ready = shared_input_ready
         return router_logits, shared_input_ready, router_output_ready
 
+    @contextmanager
+    def _moe_comm_context(self):
+        comm = self._layer_allgather_comm
+        if comm is None or _EXTRA_CTX.moe_comm_type != MoECommType.ALLGATHER:
+            yield
+            return
+        previous = _EXTRA_CTX.moe_comm_method
+        _EXTRA_CTX.moe_comm_method = comm
+        try:
+            yield
+        finally:
+            _EXTRA_CTX.moe_comm_method = previous
+
     def _forward_impl(
         self,
         hidden_states: torch.Tensor,
@@ -452,7 +474,7 @@ class AscendMoERunner(MoERunner):  # type: ignore[no-redef]
         input_ids: torch.Tensor | None = None,
         image_token_mask: torch.Tensor | None = None,
     ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
-        with self._sequence_parallel_context():
+        with self._sequence_parallel_context(), self._moe_comm_context():
             routing_kwargs = {"image_token_mask": image_token_mask} if image_token_mask is not None else {}
             shared_hidden_states = shared_experts_input if shared_experts_input is not None else hidden_states
             if self.ascend_shared_experts is None:
