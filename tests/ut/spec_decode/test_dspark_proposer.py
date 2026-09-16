@@ -281,12 +281,19 @@ class _DSparkProposerTestBase:
     @staticmethod
     def _make_vllm_config(hf_config: SimpleNamespace, draft_sample_method: str) -> SimpleNamespace:
         """Build the minimal config consumed by the DSpark initializer."""
-        draft_model_config = SimpleNamespace(hf_config=hf_config, get_hidden_size=lambda: _HIDDEN_SIZE)
+        draft_model_config = SimpleNamespace(
+            hf_config=hf_config,
+            get_hidden_size=lambda: _HIDDEN_SIZE,
+            architectures=getattr(hf_config, "architectures", []),
+        )
         return SimpleNamespace(
+            compilation_config=SimpleNamespace(mode=0, cudagraph_mode=CUDAGraphMode.FULL_DECODE_ONLY),
+            model_config=SimpleNamespace(enforce_eager=False),
             speculative_config=SimpleNamespace(
                 draft_sample_method=draft_sample_method,
                 draft_model_config=draft_model_config,
-            )
+                enforce_eager=False,
+            ),
         )
 
     @classmethod
@@ -1072,3 +1079,14 @@ class TestInitializeAttnBackend(_DSparkProposerTestBase):
         assert set(proposer.draft_attn_groups[0].layer_names) == set(draft_layers)
         assert proposer.draft_attn_groups[0].kv_cache_group_id == 0
         assert proposer._layer_group_idx == [0] * 5
+
+
+@pytest.mark.parametrize("architecture,expected", [("DSparkV41DraftModel", True), ("DSparkDraftModel", False)])
+def test_v41_native_graph_does_not_require_torch_compile(architecture, expected):
+    proposer = _DSparkProposerTestBase._make_proposer(
+        max_num_tokens=16,
+        num_reqs=2,
+        block_size=5,
+        hf_config=SimpleNamespace(architectures=[architecture], sample_from_anchor=True),
+    )
+    assert proposer.use_cuda_graph is expected

@@ -25,6 +25,47 @@ query capture alone does not put all DSpark computation into NPU graph.
 
 ## Capture boundaries
 
+The working implementation is `spec_decode/dspark_v41_graph.py`, attached by
+the V4.1 proposer when FULL graph mode is configured. It does not depend on
+`torch.compile`: both families capture native operations directly. Context
+row and query request buckets are independent powers of two plus their exact
+capacity endpoints. Startup warms and captures every bucket; requests before
+capture raise an error. Raw auxiliary states, positions, boundaries, lengths,
+page tables and output proposals have persistent storage. Padded context slots
+are -1; padded query boundaries repeat the active terminal offset and have
+zero lengths. Query capture includes visibility and AscendC scheduling.
+
+Initial execution scope is K5/anchor-first, greedy draft, DP1/CP1 and no LoRA.
+TP8 real-weight graph validation is in progress with B1/2/3/4, including B3 in
+the B4 bucket. The r3 run captured and replayed both families, but comparing
+9-row eager context with a 16-row graph bucket was not bit-exact in BF16 logits
+and KV, despite identical proposals. This failure is retained. The next run
+adds an eager execution at the identical bucket shape to distinguish padding
+numerics from replay errors, retaining the original unpadded proposal check.
+This is not yet full graph acceptance or a performance result.
+
+The r4 same-bucket comparison is exact for proposals, logits and all three KV
+caches in its first four cases (B1 contexts 9/33/129, then B3 with contexts
+9/33/129 and rejections 0/1/2). It stops at that B3 case because one request's
+proposals differ from the original unpadded eager execution. The strict gate
+remains failed. Per-rank journals and failures are retained in `dspark_graph/`.
+A single-NPU real-weight context projection probe independently confirms
+shape-sensitive BF16 output: 171 versus 256 rows changes 132 of 875,520 values,
+maximum absolute difference 0.0078125. Both paths have nearly identical error
+against an FP32 reference. This isolates an initial perturbation, not the
+cause of every downstream difference. Per-layer observation is prepared to
+locate amplification in attention/MoE. The explicit benchmark-only
+`--graph-padding-diagnostic` can continue same-bucket checks while recording
+unpadded drift; its result is diagnostic and cannot satisfy graph admission.
+
+R5 completes all 11 TP8 cases in that diagnostic mode: all observed stages,
+logits, KV and proposals are exact against same-bucket eager. Each rank runs
+22 actual replays per graph family; all 120 tokens match the CPU Markov oracle
+and every worker exits cleanly. Original unpadded proposals differ in three
+cases. The first large amplification in case 3 occurs in the second block's
+MoE; expert-choice analysis and real-target acceptance remain required. See
+[graph diagnostic results](DSPARK_GRAPH_RESULT.md) for scope and evidence.
+
 Use two independently bucketed graph families, ordered on the same stream:
 
 1. Context graph: combine target layers 37/38/39 through main projection and

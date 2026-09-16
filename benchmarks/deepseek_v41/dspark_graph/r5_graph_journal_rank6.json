@@ -1,0 +1,1551 @@
+[
+  {
+    "case": 0,
+    "sequence": [
+      9
+    ],
+    "rejected": [
+      0
+    ],
+    "eager_proposals": [
+      [
+        10759,
+        104603,
+        8564,
+        72668,
+        122257
+      ]
+    ],
+    "graph_proposals": [
+      [
+        10759,
+        104603,
+        8564,
+        72668,
+        122257
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        10759,
+        104603,
+        8564,
+        72668,
+        122257
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.25,
+    "unpadded_cache_max_abs": [
+      6.103515625e-05,
+      0.015625,
+      0.0234375
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.00048828125,
+        "unpadded_different_values": 8
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 3.0517578125e-05,
+        "unpadded_different_values": 6
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 2334
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.046875,
+        "unpadded_different_values": 17213
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.09375,
+        "unpadded_different_values": 52254
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 20014
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1484375,
+        "unpadded_different_values": 21963
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 84962
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.3125,
+        "unpadded_different_values": 21650
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.5,
+        "unpadded_different_values": 22805
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 2.0,
+        "unpadded_different_values": 91614
+      }
+    }
+  },
+  {
+    "case": 1,
+    "sequence": [
+      33
+    ],
+    "rejected": [
+      0
+    ],
+    "eager_proposals": [
+      [
+        304,
+        611,
+        260,
+        1017,
+        1836
+      ]
+    ],
+    "graph_proposals": [
+      [
+        304,
+        611,
+        260,
+        1017,
+        1836
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        304,
+        611,
+        260,
+        1017,
+        1836
+      ]
+    ],
+    "unpadded_logits_max_abs": 5.8828125,
+    "unpadded_cache_max_abs": [
+      0.00390625,
+      0.015625,
+      0.0234375
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 4,
+      "281468291229712": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 25
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 42
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 12200
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 19679
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 69880
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 21014
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.203125,
+        "unpadded_different_values": 22346
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.3125,
+        "unpadded_different_values": 88375
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.375,
+        "unpadded_different_values": 22091
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 10.51171875,
+        "unpadded_different_values": 23576
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 13.65625,
+        "unpadded_different_values": 94603
+      }
+    }
+  },
+  {
+    "case": 2,
+    "sequence": [
+      129
+    ],
+    "rejected": [
+      0
+    ],
+    "eager_proposals": [
+      [
+        231,
+        16,
+        342,
+        5922,
+        3394
+      ]
+    ],
+    "graph_proposals": [
+      [
+        231,
+        16,
+        342,
+        5922,
+        3394
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        231,
+        16,
+        342,
+        5922,
+        3394
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.3359375,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.027099609375
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 92
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 96
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 13152
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 19718
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 72859
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 21081
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 22127
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 88977
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.203125,
+        "unpadded_different_values": 22305
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.5,
+        "unpadded_different_values": 23064
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 1.5,
+        "unpadded_different_values": 93342
+      }
+    }
+  },
+  {
+    "case": 3,
+    "sequence": [
+      9,
+      33,
+      129
+    ],
+    "rejected": [
+      0,
+      1,
+      2
+    ],
+    "eager_proposals": [
+      [
+        1393,
+        19508,
+        18,
+        16,
+        37157
+      ],
+      [
+        10759,
+        51372,
+        1320,
+        426,
+        53
+      ],
+      [
+        31,
+        7534,
+        18,
+        426,
+        864
+      ]
+    ],
+    "graph_proposals": [
+      [
+        1393,
+        19508,
+        18,
+        16,
+        37157
+      ],
+      [
+        10759,
+        51372,
+        1320,
+        426,
+        53
+      ],
+      [
+        31,
+        7534,
+        18,
+        426,
+        864
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        1393,
+        19508,
+        18,
+        16,
+        37157
+      ],
+      [
+        10759,
+        716,
+        15,
+        7449,
+        1600
+      ],
+      [
+        31,
+        7534,
+        18,
+        426,
+        864
+      ]
+    ],
+    "unpadded_logits_max_abs": 8.9921875,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.69140625
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 4,
+      "281468291224816": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.015625,
+        "unpadded_different_values": 134
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 156
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 39492
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 59517
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 219669
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 62579
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 6.0234375,
+        "unpadded_different_values": 67560
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 5.90234375,
+        "unpadded_different_values": 268233
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 7.75,
+        "unpadded_different_values": 69509
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 25.75,
+        "unpadded_different_values": 71632
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 24.453125,
+        "unpadded_different_values": 287124
+      }
+    }
+  },
+  {
+    "case": 4,
+    "sequence": [
+      17,
+      41,
+      113
+    ],
+    "rejected": [
+      1,
+      2,
+      3
+    ],
+    "eager_proposals": [
+      [
+        295,
+        100815,
+        14,
+        554,
+        295
+      ],
+      [
+        11620,
+        223,
+        939,
+        24,
+        695
+      ],
+      [
+        241,
+        42988,
+        28609,
+        2635,
+        4
+      ]
+    ],
+    "graph_proposals": [
+      [
+        295,
+        100815,
+        14,
+        554,
+        295
+      ],
+      [
+        11620,
+        223,
+        939,
+        24,
+        695
+      ],
+      [
+        241,
+        42988,
+        28609,
+        2635,
+        4
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        295,
+        100815,
+        14,
+        554,
+        295
+      ],
+      [
+        438,
+        223,
+        939,
+        24,
+        695
+      ],
+      [
+        241,
+        42988,
+        28609,
+        2635,
+        4
+      ]
+    ],
+    "unpadded_logits_max_abs": 12.1875,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.92578125
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 6,
+      "281468291224816": 4
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 117
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 113
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 34923
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.09375,
+        "unpadded_different_values": 58502
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.12890625,
+        "unpadded_different_values": 210584
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 62556
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 6.28125,
+        "unpadded_different_values": 67012
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 6.484375,
+        "unpadded_different_values": 267391
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 4.96875,
+        "unpadded_different_values": 68315
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 42.75,
+        "unpadded_different_values": 70615
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 49.0,
+        "unpadded_different_values": 284073
+      }
+    }
+  },
+  {
+    "case": 5,
+    "sequence": [
+      64,
+      64,
+      64,
+      64
+    ],
+    "rejected": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "eager_proposals": [
+      [
+        355,
+        82,
+        1143,
+        81,
+        6150
+      ],
+      [
+        45154,
+        1930,
+        2291,
+        481,
+        116135
+      ],
+      [
+        115841,
+        17,
+        21192,
+        223,
+        792
+      ],
+      [
+        253,
+        435,
+        1200,
+        2366,
+        56928
+      ]
+    ],
+    "graph_proposals": [
+      [
+        355,
+        82,
+        1143,
+        81,
+        6150
+      ],
+      [
+        45154,
+        1930,
+        2291,
+        481,
+        116135
+      ],
+      [
+        115841,
+        17,
+        21192,
+        223,
+        792
+      ],
+      [
+        253,
+        435,
+        1200,
+        2366,
+        56928
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        355,
+        82,
+        1143,
+        81,
+        6150
+      ],
+      [
+        45154,
+        1930,
+        2291,
+        481,
+        116135
+      ],
+      [
+        115841,
+        17,
+        21192,
+        223,
+        792
+      ],
+      [
+        253,
+        435,
+        1200,
+        2366,
+        56928
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.0,
+    "unpadded_cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 8,
+      "281468291224816": 6
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 6,
+    "sequence": [
+      255,
+      256
+    ],
+    "rejected": [
+      0,
+      0
+    ],
+    "eager_proposals": [
+      [
+        3682,
+        72,
+        3760,
+        16,
+        539
+      ],
+      [
+        10759,
+        201,
+        15,
+        19,
+        16
+      ]
+    ],
+    "graph_proposals": [
+      [
+        3682,
+        72,
+        3760,
+        16,
+        539
+      ],
+      [
+        10759,
+        201,
+        15,
+        19,
+        16
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        3682,
+        72,
+        3760,
+        16,
+        539
+      ],
+      [
+        10759,
+        201,
+        15,
+        19,
+        16
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.0,
+    "unpadded_cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 8,
+      "281468291224816": 6,
+      "281468291232976": 2,
+      "281468291227312": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 7,
+    "sequence": [
+      255,
+      256
+    ],
+    "rejected": [
+      4,
+      5
+    ],
+    "eager_proposals": [
+      [
+        85,
+        29,
+        2513,
+        678,
+        23917
+      ],
+      [
+        31,
+        25,
+        463,
+        44624,
+        302
+      ]
+    ],
+    "graph_proposals": [
+      [
+        85,
+        29,
+        2513,
+        678,
+        23917
+      ],
+      [
+        31,
+        25,
+        463,
+        44624,
+        302
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        85,
+        29,
+        2513,
+        678,
+        23917
+      ],
+      [
+        31,
+        25,
+        463,
+        44624,
+        302
+      ]
+    ],
+    "unpadded_logits_max_abs": 0.0,
+    "unpadded_cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 8,
+      "281468291224816": 6,
+      "281468291232976": 4,
+      "281468291227312": 4
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0,
+        "unpadded_different_values": 0
+      }
+    }
+  },
+  {
+    "case": 8,
+    "sequence": [
+      33,
+      9,
+      65
+    ],
+    "rejected": [
+      5,
+      0,
+      1
+    ],
+    "eager_proposals": [
+      [
+        253,
+        343,
+        3567,
+        4508,
+        14
+      ],
+      [
+        294,
+        7231,
+        42557,
+        6514,
+        9553
+      ],
+      [
+        61,
+        18,
+        16,
+        4480,
+        734
+      ]
+    ],
+    "graph_proposals": [
+      [
+        253,
+        343,
+        3567,
+        4508,
+        14
+      ],
+      [
+        294,
+        7231,
+        42557,
+        6514,
+        9553
+      ],
+      [
+        61,
+        18,
+        16,
+        4480,
+        734
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        253,
+        343,
+        3567,
+        4508,
+        14
+      ],
+      [
+        294,
+        7231,
+        42557,
+        6514,
+        9553
+      ],
+      [
+        61,
+        18,
+        16,
+        4480,
+        734
+      ]
+    ],
+    "unpadded_logits_max_abs": 10.40625,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      1.0107421875
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 6,
+      "281468291229712": 2,
+      "281468291225584": 8,
+      "281468291224816": 8,
+      "281468291232976": 4,
+      "281468291227312": 4,
+      "281468291231440": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 77
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 81
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 40236
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 59537
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 217708
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.25,
+        "unpadded_different_values": 62489
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 4.7265625,
+        "unpadded_different_values": 67435
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 5.30859375,
+        "unpadded_different_values": 267098
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 9.75,
+        "unpadded_different_values": 68296
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 25.0,
+        "unpadded_different_values": 70486
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 30.75,
+        "unpadded_different_values": 283226
+      }
+    }
+  },
+  {
+    "case": 9,
+    "sequence": [
+      33
+    ],
+    "rejected": [
+      1
+    ],
+    "eager_proposals": [
+      [
+        10,
+        6615,
+        11,
+        790,
+        14414
+      ]
+    ],
+    "graph_proposals": [
+      [
+        10,
+        6615,
+        11,
+        790,
+        14414
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        10,
+        32133,
+        1766,
+        97858,
+        2292
+      ]
+    ],
+    "unpadded_logits_max_abs": 5.46484375,
+    "unpadded_cache_max_abs": [
+      0.00390625,
+      0.015625,
+      0.029296875
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 8,
+      "281468291229712": 4,
+      "281468291225584": 8,
+      "281468291224816": 8,
+      "281468291232976": 4,
+      "281468291227312": 4,
+      "281468291231440": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 25
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 35
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 14048
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.078125,
+        "unpadded_different_values": 19585
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.15625,
+        "unpadded_different_values": 75227
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.234375,
+        "unpadded_different_values": 21267
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.203125,
+        "unpadded_different_values": 22561
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.34375,
+        "unpadded_different_values": 89681
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.375,
+        "unpadded_different_values": 22523
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 23.5,
+        "unpadded_different_values": 23921
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 27.28125,
+        "unpadded_different_values": 95858
+      }
+    }
+  },
+  {
+    "case": 10,
+    "sequence": [
+      9,
+      33,
+      129
+    ],
+    "rejected": [
+      2,
+      3,
+      4
+    ],
+    "eager_proposals": [
+      [
+        18,
+        16,
+        9611,
+        603,
+        15
+      ],
+      [
+        17,
+        8338,
+        73298,
+        28,
+        13742
+      ],
+      [
+        69,
+        26,
+        71,
+        15,
+        939
+      ]
+    ],
+    "graph_proposals": [
+      [
+        18,
+        16,
+        9611,
+        603,
+        15
+      ],
+      [
+        17,
+        8338,
+        73298,
+        28,
+        13742
+      ],
+      [
+        69,
+        26,
+        71,
+        15,
+        939
+      ]
+    ],
+    "logits_max_abs": 0.0,
+    "rejected_logits_max_abs": 0.0,
+    "cache_max_abs": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "unpadded_proposals": [
+      [
+        18,
+        16,
+        9611,
+        603,
+        15
+      ],
+      [
+        17,
+        8338,
+        73298,
+        28,
+        13742
+      ],
+      [
+        69,
+        26,
+        71,
+        15,
+        939
+      ]
+    ],
+    "unpadded_logits_max_abs": 6.6015625,
+    "unpadded_cache_max_abs": [
+      0.0078125,
+      0.015625,
+      0.023681640625
+    ],
+    "actual_graph_replays": {
+      "281468291233936": 2,
+      "281468291225968": 8,
+      "281468291229712": 4,
+      "281468291225584": 10,
+      "281468291224816": 10,
+      "281468291232976": 4,
+      "281468291227312": 4,
+      "281468291231440": 2
+    },
+    "stages": {
+      "context_projection": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0078125,
+        "unpadded_different_values": 113
+      },
+      "context_norm": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0009765625,
+        "unpadded_different_values": 118
+      },
+      "layer0_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 23417
+      },
+      "layer0_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.0625,
+        "unpadded_different_values": 38487
+      },
+      "layer0_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.125,
+        "unpadded_different_values": 138532
+      },
+      "layer1_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.1875,
+        "unpadded_different_values": 42317
+      },
+      "layer1_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.15625,
+        "unpadded_different_values": 44295
+      },
+      "layer1_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.2578125,
+        "unpadded_different_values": 177442
+      },
+      "layer2_attention": {
+        "graph_exact": true,
+        "unpadded_max_abs": 0.5625,
+        "unpadded_different_values": 57294
+      },
+      "layer2_moe": {
+        "graph_exact": true,
+        "unpadded_max_abs": 64.5,
+        "unpadded_different_values": 66939
+      },
+      "layer2_output": {
+        "graph_exact": true,
+        "unpadded_max_abs": 76.25,
+        "unpadded_different_values": 264442
+      }
+    }
+  }
+]

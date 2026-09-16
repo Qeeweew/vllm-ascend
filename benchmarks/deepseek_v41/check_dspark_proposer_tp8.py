@@ -15,9 +15,35 @@ import traceback
 from pathlib import Path
 
 import torch
-from check_dspark_v41_tp8 import PEAK_BUDGET_BYTES, component_config
+from check_dspark_v41_tp8 import PEAK_BUDGET_BYTES
+from check_dspark_v41_tp8 import component_config as eager_component_config
 from check_dspark_v41_tp8 import prepare as prepare_components
 from dspark_v41_reference import ConvertedWeights
+
+
+def component_config(args):
+    if not getattr(args, "graph", False):
+        return eager_component_config(args)
+    from vllm.engine.arg_utils import EngineArgs
+
+    return EngineArgs(
+        model=str(args.output / "config"),
+        tokenizer=str(args.source),
+        tensor_parallel_size=8,
+        max_model_len=256,
+        max_num_batched_tokens=512,
+        max_num_seqs=4,
+        dtype="bfloat16",
+        enforce_eager=False,
+        block_size=32,
+        async_scheduling=False,
+        enable_prefix_caching=False,
+        distributed_executor_backend="external_launcher",
+        limit_mm_per_prompt={"image": 0},
+        additional_config={"enable_w4a16_decode": False},
+        compilation_config={"mode": 0, "cudagraph_mode": "FULL_DECODE_ONLY", "cudagraph_capture_sizes": [6, 12, 24]},
+        speculative_config={"method": "dspark", "num_speculative_tokens": 5},
+    ).create_engine_config()
 
 
 def cases():
@@ -37,9 +63,14 @@ def prepare(args):
         (fixture / shard).symlink_to((args.checkpoint / shard).resolve())
     (fixture / "model.safetensors.index.json").write_text(json.dumps({"weight_map": index}, indent=2) + "\n")
     config = component_config(args)
+    requested_cases = cases()
+    if args.graph:
+        from dspark_graph_cases import graph_cases
+
+        requested_cases = graph_cases()
     result = {
         "status": "prepared_only",
-        "cases": cases(),
+        "cases": requested_cases,
         "source": str(args.source),
         "checkpoint": str(args.checkpoint),
         "draft_shards": sorted(set(index.values())),
@@ -50,6 +81,7 @@ def prepare(args):
         "real_proposer_propose": True,
         "scheduler_acceptance_validated": False,
         "graph_validated": False,
+        "requested_graph_validation": args.graph,
         "peak_budget_bytes": PEAK_BUDGET_BYTES,
         "manifest_sha256": hashlib.sha256((args.checkpoint / "conversion_manifest.json").read_bytes()).hexdigest(),
         "npu_initialized": torch.npu.is_initialized(),
@@ -80,10 +112,10 @@ def initialize_caches(proposer, config, device):
 
     caches = [layer.self_attn.swa_cache_layer for layer in proposer.model.model.layers]
     for cache in caches:
-        cache.bind_kv_cache(torch.zeros((8, 32, 1, 512), dtype=torch.bfloat16, device=device))
+        cache.bind_kv_cache(torch.zeros((8 * proposer.max_batch_size, 32, 1, 512), dtype=torch.bfloat16, device=device))
     names = [cache.prefix for cache in caches]
     spec = caches[0].get_kv_cache_spec(config)
-    kv_config = KVCacheConfig(8, [], [KVCacheGroupSpec(names, spec, is_eagle_group=True)])
+    kv_config = KVCacheConfig(8 * proposer.max_batch_size, [], [KVCacheGroupSpec(names, spec, is_eagle_group=True)])
     proposer.initialize_attn_backend(kv_config, [32])
     return caches
 
@@ -309,27 +341,49 @@ def run(args):
             proposer.load_model(target)
             assert proposer.model.model.embed_tokens is target.model.embed_tokens
             assert proposer.model.lm_head is target.lm_head
-            assert not proposer.use_cuda_graph and proposer.parallel_drafting
+            assert proposer.use_cuda_graph == args.graph and proposer.parallel_drafting
             if torch.npu.max_memory_allocated() >= PEAK_BUDGET_BYTES:
                 raise RuntimeError("Draft loading exceeded fixed 8 GiB per-rank budget")
             caches = initialize_caches(proposer, config, device)
             if args.observe_metadata:
                 observe_metadata(proposer, args.output / f"metadata_rank{rank}.json")
             records = []
-            for index, (sequence, rejected) in enumerate(cases()):
-                status["phase"] = f"case_{index}"
-                record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
-                if rejected:
-                    perturbed = one_case(
-                        proposer, config, caches, sequence, rejected, record["seed"], device, perturb_rejected=True
-                    )
-                    assert torch.equal(record["raw_logits"], perturbed["raw_logits"])
-                    assert torch.equal(record["proposals"], perturbed["proposals"])
-                    record["rejected_aux_perturbation_exact"] = True
-                records.append(record)
-                status["cases"].append({key: record[key] for key in ("sequence", "rejected", "seed", "slots")})
-                status["cases"][-1]["proposals"] = record["proposals"].tolist()
-                print(f"rank {rank}: case {index} sequence={sequence} rejected={rejected} completed", flush=True)
+            if args.graph:
+                from dspark_graph_cases import run_graph_cases
+
+                status["phase"] = "graph_capture_and_cases"
+                records, status["graph"] = run_graph_cases(
+                    proposer,
+                    config,
+                    caches,
+                    device,
+                    rank,
+                    args.output,
+                    padding_diagnostic=args.graph_padding_diagnostic,
+                )
+                status["graph_padding_diagnostic"] = args.graph_padding_diagnostic
+                status["cases"] = [
+                    {
+                        **{key: record[key] for key in ("sequence", "rejected", "seed", "slots")},
+                        "proposals": record["proposals"].tolist(),
+                    }
+                    for record in records
+                ]
+            else:
+                for index, (sequence, rejected) in enumerate(cases()):
+                    status["phase"] = f"case_{index}"
+                    record = one_case(proposer, config, caches, sequence, rejected, (100, 0, 129264)[index % 3], device)
+                    if rejected:
+                        perturbed = one_case(
+                            proposer, config, caches, sequence, rejected, record["seed"], device, perturb_rejected=True
+                        )
+                        assert torch.equal(record["raw_logits"], perturbed["raw_logits"])
+                        assert torch.equal(record["proposals"], perturbed["proposals"])
+                        record["rejected_aux_perturbation_exact"] = True
+                    records.append(record)
+                    status["cases"].append({key: record[key] for key in ("sequence", "rejected", "seed", "slots")})
+                    status["cases"][-1]["proposals"] = record["proposals"].tolist()
+                    print(f"rank {rank}: case {index} sequence={sequence} rejected={rejected} completed", flush=True)
             torch.npu.synchronize()
             status["peak_allocated_bytes"] = torch.npu.max_memory_allocated()
             status["reserved_bytes"] = torch.npu.memory_reserved()
@@ -380,8 +434,15 @@ def compare(args):
     head = weights.read("mtp.2.markov_head.head.weight")
     results = []
     for record in torch.load(args.output / "rank0.pt", map_location="cpu", weights_only=True):
-        predicted = greedy_reference(record["raw_logits"], embed, head, record["seed"])
-        actual = record["proposals"][0].tolist()
+        if args.graph:
+            predicted = [
+                greedy_reference(record["raw_logits"][b * 5 : (b + 1) * 5], embed, head, 100 + record["seed"] + b)
+                for b in range(len(record["sequence"]))
+            ]
+            actual = record["proposals"].tolist()
+        else:
+            predicted = greedy_reference(record["raw_logits"], embed, head, record["seed"])
+            actual = record["proposals"][0].tolist()
         results.append(
             {
                 "sequence": record["sequence"],
@@ -392,13 +453,18 @@ def compare(args):
             }
         )
     diagnostic = any(r.get("diagnostic_metadata_sync", False) for r in ranks)
+    padding_diagnostic = any(r.get("graph_padding_diagnostic", False) for r in ranks)
     report = {
-        "status": ("diagnostic_passed" if diagnostic else "passed") if all(r["exact"] for r in results) else "failed",
+        "status": ("diagnostic_passed" if diagnostic or padding_diagnostic else "passed")
+        if all(r["exact"] for r in results)
+        else "failed",
         "diagnostic_metadata_sync": diagnostic,
         "cases": results,
         "all_rank_proposals_exact": True,
         "target_aux_synthetic": True,
         "scheduler_validated": False,
+        "graph_validated": args.graph and not padding_diagnostic,
+        "graph_padding_diagnostic": padding_diagnostic,
         "peak_allocated_bytes": max(r["peak_allocated_bytes"] for r in ranks),
     }
     (args.output / "comparison.json").write_text(json.dumps(report, indent=2) + "\n")
@@ -410,11 +476,21 @@ def main():
     parser.add_argument("--source", type=Path, default=Path("/mnt/models/DeepSeek-V4.1-Flash"))
     parser.add_argument("--checkpoint", type=Path, default=Path("/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--graph", action="store_true", help="Validate independently bucketed context/query graph replay"
+    )
     parser.add_argument("--observe-metadata", action="store_true", help="Diagnostic only: synchronizes metadata inputs")
+    parser.add_argument(
+        "--graph-padding-diagnostic",
+        action="store_true",
+        help="Diagnostic only: record padding drift and require exact same-bucket replay",
+    )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--run", action="store_true")
     mode.add_argument("--compare", action="store_true")
     args = parser.parse_args()
+    if args.graph_padding_diagnostic and not args.graph:
+        parser.error("--graph-padding-diagnostic requires --graph")
     result = run(args) if args.run else compare(args) if args.compare else prepare(args)
     if result is not None:
         print(json.dumps(result), flush=True)

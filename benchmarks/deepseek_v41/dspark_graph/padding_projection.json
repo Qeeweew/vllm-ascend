@@ -1,0 +1,32 @@
+[
+  {
+    "rows": 9,
+    "bucket": 16,
+    "max_abs": 0.00048828125,
+    "different_values": 8,
+    "total_values": 46080,
+    "nrmse": 3.6939600249752402e-06,
+    "unpadded_cpu_fp32_nrmse": 0.0016604256816208363,
+    "padded_cpu_fp32_nrmse": 0.0016604256816208363
+  },
+  {
+    "rows": 33,
+    "bucket": 64,
+    "max_abs": 0.0078125,
+    "different_values": 21,
+    "total_values": 168960,
+    "nrmse": 3.522878250805661e-05,
+    "unpadded_cpu_fp32_nrmse": 0.0016581100644543767,
+    "padded_cpu_fp32_nrmse": 0.0016581100644543767
+  },
+  {
+    "rows": 171,
+    "bucket": 256,
+    "max_abs": 0.0078125,
+    "different_values": 132,
+    "total_values": 875520,
+    "nrmse": 2.6814033844857477e-05,
+    "unpadded_cpu_fp32_nrmse": 0.0016629266319796443,
+    "padded_cpu_fp32_nrmse": 0.0016629267483949661
+  }
+]

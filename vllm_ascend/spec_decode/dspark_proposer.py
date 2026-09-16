@@ -18,6 +18,7 @@ from vllm_ascend.attention.dsa_v41 import AscendV41CacheMetadataBuilder
 from vllm_ascend.attention.utils import enable_pcp
 from vllm_ascend.ops.triton.spec_decode.utils import copy_and_expand_dflash_and_dspark_inputs_kernel
 from vllm_ascend.spec_decode.dflash_proposer import AscendDflashProposer, _compute_num_programs
+from vllm_ascend.spec_decode.dspark_v41_graph import DSparkV41GraphRunner
 from vllm_ascend.spec_decode.utils import DynamicSpecScheduler
 
 
@@ -70,8 +71,19 @@ class AscendDSparkProposer(AscendDflashProposer):
                 num_speculative_tokens=self.num_speculative_tokens,
                 device=device,
             )
-        # DSpark runs eager only (Ascend cudagraph unsupported on this path).
-        self.use_cuda_graph = False
+        self._v41_graph = None
+        self._is_v41_draft = "DSparkV41DraftModel" in getattr(self.draft_model_config, "architectures", ())
+        # Other draft architectures retain their existing capture contract.
+        if self._is_v41_draft:
+            # These fixed-shape native graphs do not require torch.compile.
+            # The generic runner's _use_aclgraph additionally gates on it.
+            self.use_cuda_graph = (
+                vllm_config.compilation_config.cudagraph_mode.has_full_cudagraphs()
+                and not vllm_config.model_config.enforce_eager
+                and not vllm_config.speculative_config.enforce_eager
+            )
+        else:
+            self.use_cuda_graph = False
         # Max query tokens depend on whether sampling from anchor or not.
         self.max_query_tokens = self.max_batch_size * self.num_query_per_req
         # Position ids for the draft query block [max_query_tokens].
@@ -105,6 +117,21 @@ class AscendDSparkProposer(AscendDflashProposer):
         self._per_group_query_slot_mapping_buffers: dict[int, torch.Tensor] = {}
         self._per_group_context_slot_mapping_buffers: dict[int, torch.Tensor] = {}
         self._context_slot_mapping_buffers: list[torch.Tensor | None] | None = None
+
+    def load_model(self, model):
+        super().load_model(model)
+        if self._is_v41_draft and self.use_cuda_graph:
+            self._v41_graph = DSparkV41GraphRunner(self)
+
+    def _propose(self, *args, **kwargs):
+        if self._v41_graph is not None:
+            return self._v41_graph.propose(*args, **kwargs)
+        return super()._propose(*args, **kwargs)
+
+    def build_model_inputs_first_pass(self, num_input_tokens, context_slots):
+        if self._v41_graph is None:
+            super().build_model_inputs_first_pass(num_input_tokens, context_slots)
+        # V4.1 graph context KV was produced by its independent context graph.
 
     def _compute_confidence(
         self,
@@ -218,6 +245,8 @@ class AscendDSparkProposer(AscendDflashProposer):
             attn_group.kv_cache_group_id: torch.zeros(self.max_num_tokens, dtype=torch.int32, device=self.device)
             for attn_group in self.draft_attn_groups
         }
+        if getattr(self, "_v41_graph", None) is not None:
+            self._v41_graph.initialize_metadata()
 
     def set_per_group_attn_metadata(
         self,
@@ -261,7 +290,10 @@ class AscendDSparkProposer(AscendDflashProposer):
         }
         self._context_slot_mapping_buffers = None
         self._dflash_num_context = int(cad.query_start_loc_cpu[batch_size])
-        self._dflash_hidden_states[: self._dflash_num_context] = target_hidden_states[: self._dflash_num_context]
+        if getattr(self, "_v41_graph", None) is not None:
+            self._v41_graph.stage_aux(target_hidden_states, self._dflash_num_context)
+        else:
+            self._dflash_hidden_states[: self._dflash_num_context] = target_hidden_states[: self._dflash_num_context]
 
         token_indices_to_sample = torch.empty(
             num_sample_total,
@@ -379,6 +411,10 @@ class AscendDSparkProposer(AscendDflashProposer):
         is_profile=False,
         **kwargs,
     ) -> None:
+        if getattr(self, "_v41_graph", None) is not None and not is_profile:
+            if aclgraph_runtime_mode == CUDAGraphMode.FULL:
+                self._v41_graph.capture()
+            return
         num_query_total = num_reqs * self.num_query_per_req
         num_query_tokens = min(num_query_total if num_reqs > 0 else num_tokens, self.max_query_tokens)
 
