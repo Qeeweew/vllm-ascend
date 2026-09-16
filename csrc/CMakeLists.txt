@@ -485,6 +485,7 @@ if (BUILD_OPS_RTY_KERNEL)
                 ${OP_BUILD_TOOL}
                 $<TARGET_FILE:op_host_aclnn>
                 ${base_aclnn_binary_dir}
+                DEPENDS op_host_aclnn ${OP_BUILD_TOOL}
         )
     endif ()
 
@@ -501,6 +502,7 @@ if (BUILD_OPS_RTY_KERNEL)
                 ${OP_BUILD_TOOL}
                 $<TARGET_FILE:op_host_aclnnInner>
                 ${base_aclnn_binary_dir}/inner
+                DEPENDS op_host_aclnnInner ${OP_BUILD_TOOL}
         )
     endif ()
 
@@ -517,6 +519,7 @@ if (BUILD_OPS_RTY_KERNEL)
                 ${OP_BUILD_TOOL}
                 $<TARGET_FILE:op_host_aclnnExc>
                 ${base_aclnn_binary_dir}/exc
+                DEPENDS op_host_aclnnExc ${OP_BUILD_TOOL}
         )
     endif ()
 

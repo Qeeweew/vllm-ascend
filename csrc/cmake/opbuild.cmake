@@ -39,6 +39,7 @@ function(gen_opbuild_target)
                              ${OP_BUILD_TOOL}
                              $<TARGET_FILE:gen_op_host_${OPBUILD_PREFIX}>
                              ${OPBUILD_OUT_DIR}/${OPBUILD_OUT_SUB_DIR}
+                     DEPENDS gen_op_host_${OPBUILD_PREFIX} ${OP_BUILD_TOOL}
   )
 
   add_custom_target(${OPBUILD_TARGET}
