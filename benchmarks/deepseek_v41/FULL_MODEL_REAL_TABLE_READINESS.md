@@ -1,5 +1,11 @@
 # Full-model and real-table acceptance readiness
 
+Current results (2026-09-16): conversion is complete and the user released
+device 7. Real-table factory acceptance passed; see
+[ENGRAM_REAL_FACTORY_RESULT.md](ENGRAM_REAL_FACTORY_RESULT.md). The full
+40-layer eager run also passed; see [FULL_MODEL_RESULT.md](FULL_MODEL_RESULT.md).
+The preparation snapshots below preserve the earlier admission state.
+
 CPU preparation snapshot: 2026-09-15 23:53 UTC. **Neither real full-table
 loading nor full-model execution has been run by these harnesses.** The r2
 reports read all 48 source headers and verified 47 published converted shard
