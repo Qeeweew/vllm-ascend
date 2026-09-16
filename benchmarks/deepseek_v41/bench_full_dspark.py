@@ -2,7 +2,7 @@
 """Real 40-layer TP8 DSpark serving benchmark; CPU preparation unless --run.
 
 Example (use a fresh output directory):
-  ASCEND_RT_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 HCCL_DETERMINISTIC=strict \
+  ASCEND_RT_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 \
     OMP_NUM_THREADS=4 ../.venv/bin/python benchmarks/deepseek_v41/bench_full_dspark.py \
     --run --output /tmp/v41-full-dspark-bench-r1
 
@@ -85,7 +85,7 @@ def serve_values(args, name):
         str(int(args.kv_gib * GIB)),
         "--gpu-memory-utilization",
         "0.9",
-        "--no-async-scheduling",
+        "--async-scheduling" if args.async_scheduling else "--no-async-scheduling",
         "--no-enable-prefix-caching",
         "--disable-chunked-mm-input",
         "--limit-mm-per-prompt",
@@ -276,13 +276,24 @@ def main():
     parser.add_argument("--port", type=int, default=18141)
     parser.add_argument("--dspark-tokens", type=int, choices=range(1, 9), default=5)
     parser.add_argument("--disable-dspark", action="store_true", help="Explicit autoregressive comparison mode")
+    parser.add_argument(
+        "--async-scheduling",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Overlap scheduling with model execution; use --no-async-scheduling for a synchronous comparison.",
+    )
     parser.add_argument("--profile-after-bench", action="store_true", help="Collect separate bounded torch NPU traces")
     parser.add_argument("--profile-warmup", action="store_true", help="Profile warmup before measurement")
     parser.add_argument("--input-lengths", nargs="+", type=int, choices=(128, 1024), default=[128, 1024])
     parser.add_argument("--concurrencies", nargs="+", type=int, choices=(1, 4, 8), default=[1, 4, 8])
     parser.add_argument("--num-prompts", type=int, choices=(16, 32), default=16)
     parser.add_argument("--kv-gib", type=float, default=2)
-    parser.add_argument("--chunk-size", type=int, default=128)
+    parser.add_argument(
+        "--chunk-size",
+        type=int,
+        default=2048,
+        help="Scheduler token budget per step; independent of the W4A16 decode kernel token threshold.",
+    )
     parser.add_argument("--startup-timeout", type=float, default=1800)
     parser.add_argument(
         "--native-decode", action="store_true", help="Enable optimized W4 decode; default uses CANN W4A16"
@@ -347,8 +358,6 @@ def main():
     try:
         if os.environ.get("ASCEND_RT_VISIBLE_DEVICES") != "0,1,2,3,4,5,6,7":
             raise ValueError("Require physical devices 0..7 in order for real Engram NUMA mapping")
-        if os.environ.get("HCCL_DETERMINISTIC") != "strict":
-            raise ValueError("Require HCCL_DETERMINISTIC=strict")
         if report["preflight"]["status"] != "ready_for_scheduled_launch":
             raise ValueError("Full-model capacity/conversion preflight is not ready")
         with socket.socket() as probe:

@@ -31,24 +31,30 @@ def arguments(tmp_path):
         port=18141,
         dspark_tokens=5,
         disable_dspark=False,
+        async_scheduling=True,
         profile_after_bench=False,
         profile_warmup=False,
         native_decode=False,
         fused_rope=False,
         fused_cache_store=False,
         fused_router=False,
-        chunk_size=128,
+        chunk_size=2048,
         kv_gib=2,
     )
 
 
-def test_real_cli_accepts_dspark_graph_and_benchmark_commands(tmp_path):
+@pytest.mark.parametrize("async_scheduling", [False, True])
+def test_real_cli_accepts_dspark_graph_and_benchmark_commands(tmp_path, async_scheduling):
     import torch
     from vllm.benchmarks.serve import add_cli_args
     from vllm.utils.argparse_utils import FlexibleArgumentParser
 
     args = arguments(tmp_path)
+    args.async_scheduling = async_scheduling
     server = bench.serve_values(args, "owned-model")
+    scheduling_flag = "--async-scheduling" if async_scheduling else "--no-async-scheduling"
+    assert scheduling_flag in server
+    assert server[server.index("--max-num-batched-tokens") + 1] == "2048"
     assert bench.validate_server_args(server)["npu_initialized"] is False
     spec = json.loads(server[server.index("--speculative-config") + 1])
     assert spec == {"method": "dspark", "num_speculative_tokens": 5}
