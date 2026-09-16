@@ -23,7 +23,9 @@
 #include <c10/util/Exception.h>
 #include <dlfcn.h>
 #include <functional>
+#include <memory>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include <torch_npu/csrc/framework/utils/CalcuOpUtil.h>
@@ -736,20 +738,26 @@ typedef void (*ReleaseHugeMem)(void *, bool);
     TORCH_CHECK(workspace_status == 0,                                        \
                 "call " #aclnn_api " failed, detail:", aclGetRecentErrMsg()); \
     void *workspace_addr = nullptr;                                           \
+    at::Tensor workspace_tensor;                                              \
     if (workspace_size != 0) {                                                \
       at::TensorOptions options =                                             \
           at::TensorOptions(torch_npu::utils::get_npu_device_type());         \
-      auto workspace_tensor =                                                 \
+      workspace_tensor =                                                      \
           at::empty({workspace_size}, options.dtype(kByte));                  \
       workspace_addr = const_cast<void *>(workspace_tensor.storage().data()); \
     }                                                                         \
+    /* Queue slots may retain copies of the handler after execution. Share  \
+       one owner and release its tensor immediately after submission. */    \
+    auto workspace_owner =                                                   \
+        std::make_shared<at::Tensor>(std::move(workspace_tensor));             \
     auto acl_call = [converted_params, workspace_addr, workspace_size,        \
-                     acl_stream, executor]() -> int {                         \
+                     workspace_owner, acl_stream, executor]() -> int {       \
       typedef int (*OpApiFunc)(void *, uint64_t, aclOpExecutor *,             \
                                const aclrtStream);                            \
       OpApiFunc opApiFunc = reinterpret_cast<OpApiFunc>(opApiFuncAddr);       \
       auto api_ret =                                                          \
           opApiFunc(workspace_addr, workspace_size, executor, acl_stream);    \
+      workspace_owner->reset();                                               \
       TORCH_CHECK(api_ret == 0, "call " #aclnn_api " failed, detail:",        \
                   aclGetRecentErrMsg());                                      \
       ReleaseConvertTypes(converted_params);                                  \

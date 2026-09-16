@@ -1,0 +1,40 @@
+[W916 02:42:33.813465910 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 09-16 02:42:39 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 09-16 02:42:39 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 09-16 02:42:39 [__init__.py:57] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 09-16 02:42:39 [__init__.py:272] Platform plugin ascend is activated
+INFO 09-16 02:42:40 [platform.py:69] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+{"isolated_extension": "/home/xwj/workspace/deepseek-v41-flash/artifacts/small-ops-bindings/r1/install/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so", "extension_sha256": "22d1d373655ecb9d9c7e0b40b58b03b47b8471c7fd57fd84777c1f1665cf841f", "candidate_opp": "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/_cann_ops_custom/vendors/custom_transformer"}
+[W916 02:42:52.726823470 NPUCachingAllocator.cpp:202] Warning: The current CANN and HDK(driver) versions require processing for 32 padding size, with memory allocation. (function operator())
+{
+  "status": "passed",
+  "requested_task_queue_mode": 1,
+  "extension": "/home/xwj/workspace/deepseek-v41-flash/artifacts/small-ops-bindings/r1/install/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so",
+  "extension_sha256": "22d1d373655ecb9d9c7e0b40b58b03b47b8471c7fd57fd84777c1f1665cf841f",
+  "opapi_library": "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/vllm_ascend/_cann_ops_custom/vendors/custom_transformer/op_api/lib/libcust_opapi.so",
+  "opapi_sha256": "86129507ed75d66998e06903e2e3dfef906c3a91cc95154c06209750d87623aa",
+  "torch_npu_version": "2.10.0.post4",
+  "torch_npu_commit": "5dd8ef3f9b375b5ae4a83538d5785754148c3302",
+  "visible_devices": "1",
+  "actual_task_queue_mode": 1,
+  "acl_launch_blocking": "0",
+  "iterations": 96,
+  "burst": 12,
+  "graph_validated": false,
+  "real_proposer_validated": false,
+  "performance_measurement": false,
+  "workspace_bytes": {
+    "9_context": 16777728,
+    "9_query": 16777728,
+    "33_context": 16777728,
+    "33_query": 16777728,
+    "129_context": 16778752,
+    "129_query": 16777728
+  },
+  "checked_iterations": 96,
+  "maximum_attention_abs_error": 5.696527659893036e-05,
+  "cache_bitwise_checks": 288,
+  "attention_checks": 288,
+  "peak_allocated_bytes": 8580786176,
+  "peak_reserved_bytes": 9168748544
+}
