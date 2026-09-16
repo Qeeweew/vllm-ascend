@@ -236,3 +236,174 @@ def test_factory_cannot_publish_pass_until_every_owner_release_and_worker_exit()
     assert factory.final_status(report) == "failed_cleanup"
     report["status"] = "failed"
     assert factory.final_status(report) == "failed"
+
+
+@pytest.fixture
+def dispatch_audit(monkeypatch):
+    """Exercise observer logic with no NPU graph or operator execution."""
+    import vllm.forward_context as forward_context
+
+    monkeypatch.setitem(sys.modules, "vllm_ascend.worker.worker", SimpleNamespace(NPUWorker=object))
+    worker_module = load_script("full_model_worker")
+    capturing = [False]
+    context = SimpleNamespace(
+        batch_descriptor=forward_context.BatchDescriptor(num_tokens=4, num_reqs=4),
+        cudagraph_runtime_mode="FULL",
+    )
+    monkeypatch.setattr(forward_context, "get_forward_context", lambda: context)
+    monkeypatch.setattr(torch.npu, "is_current_stream_capturing", lambda: capturing[0])
+    failure = RuntimeError("original submission failed")
+    sentinels = {}
+    for name in ("v41_rope", "v41_main_cache_store", "v41_index_cache_store", "v41_moe_router", "npu_w4a16_moe"):
+        sentinels[name] = object()
+
+        def native(value, *, keyword=None, _sentinel=sentinels[name]):
+            if value == "fail":
+                raise failure
+            return value, keyword, _sentinel
+
+        monkeypatch.setattr(torch.ops._C_ascend, name, native, raising=False)
+
+    class GraphWrapper:
+        def __init__(self, runnable):
+            self.runnable = runnable
+            self.runtime_mode = "FULL"
+            self.concrete_aclgraph_entries = {}
+            self.fail_replay = False
+
+        def __call__(self, *args, **kwargs):
+            if context.cudagraph_runtime_mode != self.runtime_mode:
+                return self.runnable(*args, **kwargs)
+            entry = self.concrete_aclgraph_entries.setdefault(context.batch_descriptor, SimpleNamespace(aclgraph=None))
+            if entry.aclgraph is not None:
+                if self.fail_replay:
+                    raise failure
+                return entry.output
+            capturing[0] = True
+            try:
+                output = self.runnable(*args, **kwargs)
+            finally:
+                capturing[0] = False
+            entry.aclgraph, entry.output = object(), output
+            return output
+
+    monkeypatch.setitem(sys.modules, "vllm_ascend.compilation.acl_graph", SimpleNamespace(ACLGraphWrapper=GraphWrapper))
+    worker = worker_module.V41FullModelWorker()
+    worker._observe_native_dispatch()
+
+    def snapshot():
+        return {
+            "operator_dispatch": dict(worker.full_operator_dispatch),
+            "graph_dispatch": worker._inspect_graph_dispatch(),
+        }
+
+    return SimpleNamespace(
+        worker=worker,
+        wrapper=GraphWrapper,
+        context=context,
+        failure=failure,
+        sentinels=sentinels,
+        snapshot=snapshot,
+        smoke=load_script("check_full_text_tp8"),
+    )
+
+
+def test_dispatch_observer_preserves_native_results_and_exceptions(dispatch_audit):
+    audit = dispatch_audit
+    for name, sentinel in audit.sentinels.items():
+        native = getattr(torch.ops._C_ascend, name)
+        assert native(123, keyword=456) == (123, 456, sentinel)
+        label = "w4_native" if name == "npu_w4a16_moe" else name
+        assert audit.worker.full_operator_dispatch[f"{label}_eager"] == 1
+        with pytest.raises(RuntimeError) as error:
+            native("fail")
+        assert error.value is audit.failure
+        assert audit.worker.full_operator_dispatch[f"{label}_eager"] == 1
+    assert not audit.worker._inspect_graph_dispatch()
+
+
+def test_dispatch_audit_requires_same_wrapper_entry_and_graph(dispatch_audit):
+    audit = dispatch_audit
+    native = audit.wrapper(lambda: torch.ops._C_ascend.npu_w4a16_moe(123))
+    unrelated = audit.wrapper(lambda: "fallback")
+    result = native()
+    assert unrelated() == "fallback"
+    # Warmup replay must not count as a request, but capture provenance survives.
+    assert native() is result
+    audit.worker._start_request_dispatch_audit()
+    assert all(row["request_replays"] == 0 for row in audit.worker._inspect_graph_dispatch())
+    assert unrelated() == "fallback"
+    check = audit.smoke.check_native_dispatch
+    with pytest.raises(AssertionError, match="no request replay"):
+        check(audit.snapshot(), enabled=True, name="w4_native", graph=True)
+    # Both wrappers have the SAME descriptor, including T. Only this replay counts.
+    assert native() is result
+    check(audit.snapshot(), enabled=True, name="w4_native", graph=True)
+    rows = audit.worker._inspect_graph_dispatch()
+    assert len({row["wrapper_id"] for row in rows}) == 2
+    assert rows[0]["descriptor"] == rows[1]["descriptor"]
+    assert rows[0]["captured_native_ops"] == {"w4_native": 1}
+    assert rows[1]["captured_native_ops"] == {}
+    json.dumps(audit.snapshot())
+    # Replacing the graph within the same entry must not inherit old evidence.
+    audit.worker._start_request_dispatch_audit()
+    entry = native.concrete_aclgraph_entries[audit.context.batch_descriptor]
+    entry.aclgraph = object()
+    assert native() is result
+    with pytest.raises(AssertionError, match="no request replay"):
+        check(audit.snapshot(), enabled=True, name="w4_native", graph=True)
+
+
+def test_dispatch_audit_separates_descriptors_and_failed_calls(dispatch_audit):
+    audit = dispatch_audit
+    graph = audit.wrapper(lambda value: torch.ops._C_ascend.v41_rope(value))
+    with pytest.raises(RuntimeError) as error:
+        graph("fail")
+    assert error.value is audit.failure
+    assert audit.worker._full_capture_stack == []
+    assert not audit.worker._inspect_graph_dispatch()
+    first = graph(123)
+    first_descriptor = audit.context.batch_descriptor
+    audit.context.batch_descriptor = type(first_descriptor)(num_tokens=4, num_reqs=1)
+    # Same token bucket, different batch descriptor and concrete entry.
+    graph.runnable = lambda value: value
+    assert graph(456) == 456
+    audit.worker._start_request_dispatch_audit()
+    assert graph(789) == 456
+    with pytest.raises(AssertionError, match="no request replay"):
+        audit.smoke.check_native_dispatch(audit.snapshot(), enabled=True, name="v41_rope", graph=True)
+    audit.context.batch_descriptor = first_descriptor
+    graph.fail_replay = True
+    before = audit.worker.full_graph_replays
+    with pytest.raises(RuntimeError) as error:
+        graph(123)
+    assert error.value is audit.failure
+    assert audit.worker.full_graph_replays == before
+    assert all(row["request_replays"] == 0 for row in audit.worker._inspect_graph_dispatch()[:1])
+    graph.fail_replay = False
+    assert graph(123) is first
+    audit.smoke.check_native_dispatch(audit.snapshot(), enabled=True, name="v41_rope", graph=True)
+
+
+def test_dispatch_audit_discards_partial_capture_and_preserves_eager_path(dispatch_audit):
+    audit = dispatch_audit
+
+    def partial_capture():
+        torch.ops._C_ascend.v41_moe_router(123)
+        raise audit.failure
+
+    graph = audit.wrapper(partial_capture)
+    with pytest.raises(RuntimeError) as error:
+        graph()
+    assert error.value is audit.failure
+    assert audit.worker.full_operator_dispatch["v41_moe_router_capture"] == 1
+    assert not audit.worker._inspect_graph_dispatch()
+    # Successful eager submission is reported without inventing a graph.
+    audit.context.cudagraph_runtime_mode = "NONE"
+    graph.runnable = lambda: torch.ops._C_ascend.v41_moe_router(456)
+    assert graph() == (456, None, audit.sentinels["v41_moe_router"])
+    audit.smoke.check_native_dispatch(audit.snapshot(), enabled=True, name="v41_moe_router", graph=False)
+    with pytest.raises(AssertionError, match="no request replay"):
+        audit.smoke.check_native_dispatch(audit.snapshot(), enabled=True, name="v41_moe_router", graph=True)
+    with pytest.raises(AssertionError):
+        audit.smoke.check_native_dispatch(audit.snapshot(), enabled=False, name="v41_moe_router", graph=False)

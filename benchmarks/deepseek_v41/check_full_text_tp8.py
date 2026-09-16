@@ -50,6 +50,21 @@ def answer_matches(case, text):
     return text.strip() == case["expected"]
 
 
+def check_native_dispatch(final, *, enabled, name, graph):
+    """Require replay of the same concrete graph that captured the native op."""
+    counts = final["operator_dispatch"]
+    calls = counts.get(f"{name}_eager", 0) + counts.get(f"{name}_capture", 0)
+    if not enabled:
+        assert calls == 0, name
+        return
+    assert calls > 0, name
+    if graph:
+        assert any(
+            entry["request_replays"] > 0 and entry["captured_native_ops"].get(name, 0) > 0
+            for entry in final["graph_dispatch"]
+        ), f"{name}: no request replay of its captured graph entry"
+
+
 def execute(args, report):
     """Run the production model, record every answer and check resource cleanup."""
     from vllm import LLM, SamplingParams
@@ -131,6 +146,14 @@ def execute(args, report):
             assert final["encoder_spans"] == ([189] if with_vision else [])
             if args.graph:
                 assert final["graph_replays"] > 0
+            for enabled, name in (
+                (args.native_decode, "w4_native"),
+                (args.fused_rope, "v41_rope"),
+                (args.fused_cache_store, "v41_main_cache_store"),
+                (args.fused_cache_store, "v41_index_cache_store"),
+                (args.fused_router, "v41_moe_router"),
+            ):
+                check_native_dispatch(final, enabled=enabled, name=name, graph=args.graph)
         report["checks_passed"] = all(answer["finite"] and answer["answer_matches"] for answer in report["answers"])
     except Exception as error:
         report["error"] = f"{type(error).__name__}: {error}"
