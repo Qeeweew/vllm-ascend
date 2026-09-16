@@ -1,6 +1,6 @@
 # Real DSpark proposer integration
 
-Status on 2026-09-16: **first TP8 attempt failed**. This result does not
+Status on 2026-09-16: **real TP8 proposer remains blocked at context 33**. This result does not
 invalidate the passed independent draft stage or maximum-context component
 tests, but demonstrates that those tests did not cover the real proposer
 integration. Production DSpark admission remains disabled.
@@ -108,3 +108,40 @@ The subsequent complete-model graph run passed all five exact-answer cases;
 see `FULL_MODEL_RESULT.md` and the unchanged `full_text_graph_r1` evidence.
 These checks are not a general quality or quantization benchmark, and elapsed
 times are diagnostic. This target success does not resolve the DSpark failure.
+
+## Guarded AICPU diagnostic and graph requirement
+
+The native build was missing file dependencies for AICPU object/archive
+relinking. Commit `815a8bf02` fixes this, with four actual Ninja/Make fixtures;
+restoring the old rule causes all four regressions to fail. A successful
+build exit alone did not prove a changed diagnostic library was linked.
+
+After complete rebuild and source/library hash checks, isolated diagnostic
+r3 passes a real NPU self-test: the mandatory Python guard reads the device
+marker and stops before attention. Output has 1024 INT32 elements / 4096
+bytes. The runtime unknown-rank flag can coexist with concrete dimensions;
+the diagnostic now records the flag without discarding valid descriptors.
+
+Guarded proposer r7 uses the rebuilt failure-only r5 vendor and r3 Torch
+extension. All eight ranks pass context 9, then context 33 fails before a
+diagnostic record is readable. The runtime reports errcode 1 / invalid
+execution parameters; no Prepare validation branch is established. All
+workers exited, and a post-run device check found no remaining processes.
+A separate NPU probe alternates lengths 14/38/134/260/261 for 21 metadata
+calls successfully, so changing lengths alone does not reproduce the error.
+Neither probe is final correctness or performance acceptance. The queue and
+AICPU entry/parameter lifecycle remain under investigation.
+
+`r7_diagnostic_manifest.json`, `r7_aicpu_diagnostic_rank*.json` and
+`channel_selftest_r3.json` preserve the new evidence and exact raw-log hashes.
+Production DSpark admission is still closed while this is fixed; this is
+unfinished adaptation, not an accepted autoregressive fallback. DSpark must
+be enabled in the final configuration, with actual draft NPU graph replay.
+See [the graph plan](DSPARK_GRAPH_PLAN.md) for context/query capture boundaries
+and the remaining full-target verification, rollback and benchmark gates.
+
+Diagnostic r8 repeats r7 with `TASK_QUEUE_ENABLE=0`: all eight ranks again
+pass context 9 and fail context 33 with errcode 1 and no device diagnostic
+marker. Disabling the Torch launch queue does not resolve this failure.
+`r8_queue0_summary.json` preserves each rank record hash and the raw log hash.
+All eight devices were idle after launcher cleanup.

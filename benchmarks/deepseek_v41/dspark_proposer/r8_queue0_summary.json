@@ -1,0 +1,77 @@
+{
+  "status": "failed",
+  "task_queue_enable": 0,
+  "guarded_diagnostic": true,
+  "context9_passed_ranks": 8,
+  "failed_context": 33,
+  "device_error_code": 1,
+  "rank_records": [
+    {
+      "rank": "aicpu_diagnostic_rank0.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "80daace3455b23037cc2e4423a250f157ade37bebe65d4b75e705a443a4ffb7b"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank1.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "5788f62f9a5161b0f10d0b3827fe10a6a96f330b972169ca51dbd3f3de3e63ec"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank2.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "cf41cb1f51b52b1b1149b69fd1b5189c8bcf7dee8241a0550b83a8ae7d12a4e3"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank3.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "3152bc56a621fd1fd748d35a6b10bf9bb31c6b2b4a9b8e60cdf26961b06116ec"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank4.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "32c758ca953504c859a7b1401da0241097ef0466410bd4510fe7723641881d79"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank5.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "9ddd68eb65f4ec3eae6d1e05797091bf1c4030c903044a4c92e9bb7122af496d"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank6.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "ccc5376685eff55b9e6c503bf7840b68beeafa192a9e5215b8c050cd10af39d8"
+    },
+    {
+      "rank": "aicpu_diagnostic_rank7.json",
+      "statuses": [
+        "completed_original_metadata",
+        "native_or_device_error_before_record"
+      ],
+      "sha256": "f4b2cd43b23b458d08d8029c2b331348ae2b0e0e50f5e65ed18c907513f2b025"
+    }
+  ],
+  "raw_log": "/tmp/v41-dspark-proposer-r8-queue0.log",
+  "raw_log_sha256": "c0a6f9b553f0dbf00cc968d55e553c2148c77d859249d0d8a5a7591b707cb4ef",
+  "production_modified": false
+}
