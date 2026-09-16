@@ -673,6 +673,9 @@ class DeepseekV41DSparkModel(nn.Module):
             raise ValueError("V4.1 DSpark context positions must be one-dimensional")
         if context_slot_mapping is not None and len(context_slot_mapping) != len(self.layers):
             raise ValueError("V4.1 DSpark requires one context slot mapping per draft layer")
+        # Proposer metadata uses INT32; the fused rotary kernel requires INT64.
+        # Cast once for all draft layers, within the captured context graph.
+        context_positions = context_positions.to(torch.int64)
         for stage, layer in enumerate(self.layers):
             attn = layer.self_attn
             projected = attn.fused_wqa_wkv(context_states)
@@ -697,7 +700,7 @@ class DeepseekV41DSparkModel(nn.Module):
         # Keep virtual positions in cache metadata; only the RoPE lookup for
         # padded end-of-context queries uses a legal placeholder. The draft
         # builder independently masks their cache slots and attention rows.
-        rope_positions = torch.where((positions >= 0) & (positions < self.max_position), positions, 0)
+        rope_positions = torch.where((positions >= 0) & (positions < self.max_position), positions, 0).to(torch.int64)
         for layer in self.layers:
             hidden, pre = layer(rope_positions, hidden, pre, input_ids=input_ids, image_token_mask=image_mask)
         return mhc_collapse(hidden, pre)

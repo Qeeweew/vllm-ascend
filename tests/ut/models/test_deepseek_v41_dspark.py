@@ -275,12 +275,14 @@ def test_three_real_v41_blocks_use_delayed_mix_and_prenorm_terminal_hidden(monke
     assert not any("hc_head" in name for name, _ in model.named_parameters())
 
 
-def test_draft_rope_padding_preserves_virtual_positions():
+@pytest.mark.parametrize("position_dtype", [torch.int32, torch.int64])
+def test_draft_rope_padding_preserves_virtual_positions(position_dtype):
     observed = []
     rope_cache = torch.arange(129)
 
     class Layer(nn.Module):
         def forward(self, positions, hidden, pre, **kwargs):
+            assert positions.dtype == torch.int64
             observed.append(rope_cache[positions])
             return hidden, pre
 
@@ -288,7 +290,7 @@ def test_draft_rope_padding_preserves_virtual_positions():
     nn.Module.__init__(model)
     model.hidden_size, model.hc_mult, model.max_position = 8, 4, 129
     model.layers = nn.ModuleList([Layer(), Layer(), Layer()])
-    positions = torch.tensor([126, 127, 128, 129, 130, -1])
+    positions = torch.tensor([126, 127, 128, 129, 130, -1], dtype=position_dtype)
     original = positions.clone()
     embedded = torch.ones((6, 8), dtype=torch.bfloat16)
     output = model(torch.zeros(6, dtype=torch.int64), positions, inputs_embeds=embedded)
@@ -298,7 +300,8 @@ def test_draft_rope_padding_preserves_virtual_positions():
     assert torch.equal(output, embedded)
 
 
-def test_context_uses_same_projected_target_and_each_layer_slots(monkeypatch):
+@pytest.mark.parametrize("position_dtype", [torch.int32, torch.int64])
+def test_context_uses_same_projected_target_and_each_layer_slots(monkeypatch, position_dtype):
     model = draft_module.DeepseekV41DSparkModel.__new__(draft_module.DeepseekV41DSparkModel)
     nn.Module.__init__(model)
     model.hidden_size = 4
@@ -308,7 +311,12 @@ def test_context_uses_same_projected_target_and_each_layer_slots(monkeypatch):
         attn.q_rank = 2
         attn.fused_wqa_wkv = lambda x, stage=stage: torch.cat((x[:, :2], x * (stage + 1)), dim=1)
         attn.kv_norm = nn.Identity()
-        attn.rotate = lambda x, pos: x + pos[:, None]
+
+        def rotate(x, pos):
+            assert pos.dtype == torch.int64
+            return x + pos[:, None]
+
+        attn.rotate = rotate
         attn.swa_cache_layer = SimpleNamespace(prefix=f"layer{stage}", kv_cache=torch.zeros(1))
         layer = nn.Module()
         layer.self_attn = attn
@@ -318,7 +326,7 @@ def test_context_uses_same_projected_target_and_each_layer_slots(monkeypatch):
         draft_module, "write_main_cache_v41", lambda cache, x, slots: observed.append((cache, x, slots))
     )
     context = torch.arange(8, dtype=torch.bfloat16).reshape(2, 4)
-    positions = torch.tensor([31, 32])
+    positions = torch.tensor([31, 32], dtype=position_dtype)
     slots = [torch.tensor([5, 8]), None, torch.tensor([31, 1])]
     model.precompute_and_store_context_kv(context, positions, slots)
     assert len(observed) == 2
