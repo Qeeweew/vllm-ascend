@@ -1,0 +1,137 @@
+{
+  "revision": "r3",
+  "device": "NPU2",
+  "collection_owner": "root",
+  "kernel_sha256": "f475af9b3a86d9a1b2e070c8c5503d8ae02e8207ab84ab59a20add0fa531b072",
+  "extension_sha256": "64931ce51efb20c460b64cae5aea4b5eeb24ecb1ac29ec256f3ef62fde36cb13",
+  "driver_log_sha256": "5dba53b6e3906524ce9225c480000cc6faa4e9bcde55d1f8f93052f3ff2a724c",
+  "scope": "kernel profile only; accepted=false in profile fixture JSON does not represent performance benchmark failure",
+  "cases": [
+    {
+      "case": "profile-r3-e384-t1-hash",
+      "original_profile": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/profile-r3-e384-t1-hash/OPPROF_20260916034126_NEPDEGUJKDSGXAAR",
+      "revision": "r3",
+      "process_exit_code": 0,
+      "basic": {
+        "Op Name": "V41MoeRouter_a69d2c39e21295ba21ee92f0021f7769_0",
+        "Op Type": "vector",
+        "Task Duration(us)": "5.220000",
+        "Block Dim": "1",
+        "Mix Block Dim": "NA",
+        "Device Id": "2",
+        "Pid": "4021101",
+        "Current Freq": "1800",
+        "Rated Freq": "1800",
+        "": ""
+      },
+      "active_cycle_weighted_ratios": {
+        "aiv_vec_ratio": 0.07231,
+        "aiv_scalar_ratio": 0.48277499999999995,
+        "aiv_mte2_ratio": 0.236096,
+        "aiv_mte3_ratio": 0.021752
+      },
+      "summed_wait_time_over_summed_aiv_time": {
+        "aiv_scalar_wait_time(us)": 0.30758370370370375,
+        "aiv_scalar_wait_ib_time(us)": 0.29876550264550267
+      },
+      "files": [
+        {
+          "file": "profiles/profile-r3-e384-t1-hash/OpBasicInfo.csv",
+          "sha256": "1dc718ec13699bd68116aae0b6c376a369ebb88e006072e06198c590611ce87e"
+        },
+        {
+          "file": "profiles/profile-r3-e384-t1-hash/PipeUtilization.csv",
+          "sha256": "9a3a09b9f399591129dcff08f183163ffde746e1b5739ffc6abcde89a850eae4"
+        },
+        {
+          "file": "profile-r3-e384-t1-hash.json",
+          "sha256": "ea87a3b34fd03728a3d87a87eec83bb399edf5f1bd2d8a2644a3f60ae6a4fda0"
+        }
+      ]
+    },
+    {
+      "case": "profile-r3-e384-t128-dynamic",
+      "original_profile": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/profile-r3-e384-t128-dynamic/OPPROF_20260916034201_MKOKZSYFZASXIRMQ",
+      "revision": "r3",
+      "process_exit_code": 0,
+      "basic": {
+        "Op Name": "V41MoeRouter_a69d2c39e21295ba21ee92f0021f7769_0",
+        "Op Type": "vector",
+        "Task Duration(us)": "11.320000",
+        "Block Dim": "40",
+        "Mix Block Dim": "NA",
+        "Device Id": "2",
+        "Pid": "4025514",
+        "Current Freq": "1800",
+        "Rated Freq": "1800",
+        "": ""
+      },
+      "active_cycle_weighted_ratios": {
+        "aiv_vec_ratio": 0.2736100410368341,
+        "aiv_scalar_ratio": 0.41828106149694855,
+        "aiv_mte2_ratio": 0.32604300372972544,
+        "aiv_mte3_ratio": 0.06617759236284923
+      },
+      "summed_wait_time_over_summed_aiv_time": {
+        "aiv_scalar_wait_time(us)": 0.6565564866159005,
+        "aiv_scalar_wait_ib_time(us)": 0.014160155383928933
+      },
+      "files": [
+        {
+          "file": "profiles/profile-r3-e384-t128-dynamic/OpBasicInfo.csv",
+          "sha256": "fd23aafe10e3c904e3e23282bd5c819c5c9a8ab7e29dd2a42e78b28302c5ff1d"
+        },
+        {
+          "file": "profiles/profile-r3-e384-t128-dynamic/PipeUtilization.csv",
+          "sha256": "4adce8a7d91fbc624ca07cdcefada76750b6ec70bae4037fe0413ad99443919e"
+        },
+        {
+          "file": "profile-r3-e384-t128-dynamic.json",
+          "sha256": "0eead177cbae7cbe1876417d1d81ca0462843b65c48f5204032925da820fad3f"
+        }
+      ]
+    },
+    {
+      "case": "profile-r3-e128-t5-dynamic",
+      "original_profile": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/profile-r3-e128-t5-dynamic/OPPROF_20260916034234_LPEJLTEACBXRYBWG",
+      "revision": "r3",
+      "process_exit_code": 0,
+      "basic": {
+        "Op Name": "V41MoeRouter_a69d2c39e21295ba21ee92f0021f7769_0",
+        "Op Type": "vector",
+        "Task Duration(us)": "3.060000",
+        "Block Dim": "5",
+        "Mix Block Dim": "NA",
+        "Device Id": "2",
+        "Pid": "4027938",
+        "Current Freq": "1800",
+        "Rated Freq": "1800",
+        "": ""
+      },
+      "active_cycle_weighted_ratios": {
+        "aiv_vec_ratio": 0.19088982729007634,
+        "aiv_scalar_ratio": 0.5544898322117315,
+        "aiv_mte2_ratio": 0.2843008626456408,
+        "aiv_mte3_ratio": 0.07563241964644435
+      },
+      "summed_wait_time_over_summed_aiv_time": {
+        "aiv_scalar_wait_time(us)": 0.49010655274379344,
+        "aiv_scalar_wait_ib_time(us)": 0.06056640886129467
+      },
+      "files": [
+        {
+          "file": "profiles/profile-r3-e128-t5-dynamic/OpBasicInfo.csv",
+          "sha256": "eb8a81af2fd8526f92486206c0126b8b380636052b4f6c9aa5f7ca0161e2e013"
+        },
+        {
+          "file": "profiles/profile-r3-e128-t5-dynamic/PipeUtilization.csv",
+          "sha256": "bdc3376cf3fb1bd3e52a9140667ae8158921e15caadd7d274c6f7360f053307c"
+        },
+        {
+          "file": "profile-r3-e128-t5-dynamic.json",
+          "sha256": "ef8897faebee8631cdb64c48e4c4690880402b647b98f41352052045aabb7ff3"
+        }
+      ]
+    }
+  ]
+}

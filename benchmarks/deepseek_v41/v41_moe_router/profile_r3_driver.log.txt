@@ -1,0 +1,3 @@
+{'experts': 384, 'rows': 1, 'mode': 'hash', 'exitcode': 0, 'output': '/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/profile-r3-e384-t1-hash'}
+{'experts': 384, 'rows': 128, 'mode': 'dynamic', 'exitcode': 0, 'output': '/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/profile-r3-e384-t128-dynamic'}
+{'experts': 128, 'rows': 5, 'mode': 'dynamic', 'exitcode': 0, 'output': '/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/profile-r3-e128-t5-dynamic'}

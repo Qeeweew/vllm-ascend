@@ -1,0 +1,23 @@
+{
+  "accepted": false,
+  "cases": [
+    {
+      "experts": 384,
+      "rows": 1,
+      "mode": "hash",
+      "profile": "fused"
+    }
+  ],
+  "gate": {
+    "rounds": 5,
+    "samples": 20,
+    "unroll": 32,
+    "routed_scaling_factor": 1.5,
+    "priority_median_and_p95_speedup": 1.1111111111111112,
+    "other_max_latency_ratio": 1.03,
+    "max_round_spread": 0.03,
+    "weight_rtol": 2e-06,
+    "weight_atol": 2e-07,
+    "ids": "exact"
+  }
+}

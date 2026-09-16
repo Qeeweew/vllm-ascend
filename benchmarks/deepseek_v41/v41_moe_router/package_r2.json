@@ -1,0 +1,19 @@
+{
+  "package": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/r2/cann-ops-transformer-v41_router_candidate_linux-aarch64.run",
+  "package_sha256": "15873af293da440e091a36061de17e10e2cac5c789559b5309a8464d65218bc0",
+  "kernel_sha256": "dff8b264e5c27733e9cf0a0304de15340eb8f1936d630c4af0294a65f878c28b",
+  "source_sha256": "1347a99d80aad9fa3888f258289316db6328c94aee1f1d4a8ace5897526a8ded",
+  "raw_source": "/home/xwj/workspace/deepseek-v41-flash/vllm-ascend/csrc/moe/v41_moe_router/op_kernel/v41_moe_router.cpp",
+  "snapshot_source": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/build-r1/csrc/moe/v41_moe_router/op_kernel/v41_moe_router.cpp",
+  "copied_source": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/build-r1/csrc/build/binary/ascend910b/src/v41_moe_router/op_kernel/v41_moe_router.cpp",
+  "installed_source": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/r2/opp/vendors/v41_router_candidate_transformer/op_impl/ai_core/tbe/v41_router_candidate_transformer_impl/ascendc/v41_moe_router/v41_moe_router.cpp",
+  "built_kernel": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/build-r1/csrc/build/binary/ascend910b/bin/v41_moe_router/V41MoeRouter_a69d2c39e21295ba21ee92f0021f7769.o",
+  "installed_kernel": "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-router/r2/opp/vendors/v41_router_candidate_transformer/op_impl/ai_core/tbe/kernel/ascend910b/v41_moe_router/V41MoeRouter_a69d2c39e21295ba21ee92f0021f7769.o",
+  "build_log": "/tmp/v41-router-build-r2.log",
+  "build_log_sha256": "e96ddd03bebc0ac1084f40cd412afd3cc16d4d255b2e5845ef5b5627dd2caba5",
+  "native_accuracy_accepted": true,
+  "native_performance_accepted": false,
+  "native_correctness_log_sha256": "49f68e7e9475bb8db6d68de5223260280a91f91ffac95a0704f01c6b3c7abc0d",
+  "extension_sha256": "22d1d373655ecb9d9c7e0b40b58b03b47b8471c7fd57fd84777c1f1665cf841f",
+  "native_correctness_tests": 84
+}
