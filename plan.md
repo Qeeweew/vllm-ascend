@@ -565,6 +565,13 @@ AscendC技能采用 `ascendc-op-dev`。API、模板、硬件行为从当前CANN�
 - 完整headers预检得到target静态设备权重估计39.299GiB/rank、两张真实Engram共366.221833GiB pinned host。48.549GiB/rank启动余量为估算准入线，非实测峰值；卡7外部占用当前不满足要求。不会干预外部进程，同时准备低HBM的真实全表factory加载与行oracle验证。
 - 真实全表factory及完整40层eager/graph验收脚本已准备，默认只执行CPU预检；记录48源headers、47已发布转换headers及cgroup v1容量。独立factory使用实际生产加载/注册路径，计划检查16个owner、144个源FP8→转换BF16→host行oracle和变化输入graph replay；整模graph要求同权重、backend和prompt的已通过eager参考。上述真实加载和整模运行尚未执行，准备记录不能视为验收通过。命令、容量推导和剩余门槛见`benchmarks/deepseek_v41/FULL_MODEL_REAL_TABLE_READINESS.md`。
 
+### 12.11 完整权重发布与融合 lightning indexer 必需交付
+
+- 2026-09-16最后分片转换完成：48个转换分片、`complete=true`、最终config/index已发布。用户已释放卡7，最新完整模型CPU准入没有blocker。真实Engram全表factory通过：366.22GiB/16owner同驻留、144行oracle、160次graph replay、400页NUMA采样、16次注销及8worker正常退出；详见`benchmarks/deepseek_v41/ENGRAM_REAL_FACTORY_RESULT.md`，不代表完整40层或HCCL验收。完整40层eager验收已启动。
+- 用户明确要求融合lightning indexer作为最终必需项，已分配独立算子任务，优先参考`https://gitcode.com/G_W_E/ops-transformer/tree/qli_opt/attention`并优化现有完整QLI实现。此前gather→独立BMM→score→topk的拆分实验不能作为最终交付，`enable_indexer_candidate_decode`继续关闭。
+- 融合必须保持候选块、分页、量化/舍入、head加权、top-k和NPU graph合同，消除拆分路径的候选BF16 bank及完整QK等大中间张量；同时验收数值、workspace/HBM以及完整selector的多轮median/P95，不能仅报告计算内核耗时。
+- 当前允许先用已有完整lightning indexer完成真实整模测试；融合完成后必须接入重验质量、图重放及整机性能，不能因已有路径可运行就关闭此必需项。
+
 ## 13. 算子 sub-agent 的职责与严格性能验收
 
 ### 13.1 子任务边界
