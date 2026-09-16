@@ -121,3 +121,36 @@ def test_token_normalization_preserves_spaces_empty_and_byte_tokens():
     mapping, size = compressed_token_map(Tokenizer())
     assert mapping.tolist() == [0, 0, 0, 1, 1, 2, 3, 4, 5]
     assert size == 6
+
+
+@pytest.mark.parametrize("chunk", [1, 6, 128])
+def test_batched_hash_ragged_strided_inputs_match_scalar(chunk):
+    hasher = make_hasher()
+    generator = torch.Generator().manual_seed(41 + chunk)
+    packed, masks, offsets, positions, priors, prior_masks = [], [], [0], [], [], []
+    expected = [[], []]
+    for request in range(8):
+        start = request % 5
+        count = 0 if request == 3 else max(1, chunk - request % 3)
+        ids = torch.randint(0, 6, (start + count,), generator=generator)
+        mask = torch.rand(start + count, generator=generator) > 0.2
+        packed.append(ids[start:])
+        masks.append(mask[start:])
+        positions.append(start)
+        offsets.append(offsets[-1] + count)
+        priors.append([int(ids[p]) if p >= 0 else -1 for p in range(start - 1, start - 4, -1)])
+        prior_masks.append([bool(mask[p]) if p >= 0 else False for p in range(start - 1, start - 4, -1)])
+        if count:
+            for layer, reference in enumerate(scalar_reference(hasher, ids, mask)):
+                expected[layer].append(reference[start:])
+    # NumPy must honor Tensor strides, without retaining mutable input views
+    # in the returned hashes.
+    ids = torch.stack((torch.cat(packed), torch.cat(packed)), 1)[:, 0]
+    mask = torch.stack((torch.cat(masks), torch.cat(masks)), 1)[:, 0]
+    actual = hasher.hash_chunk(
+        ids, offsets, positions, torch.tensor(priors), token_mask=mask, lookback_mask=torch.tensor(prior_masks)
+    )
+    ids.zero_()
+    for result, rows in zip(actual, expected):
+        assert result.is_contiguous()
+        torch.testing.assert_close(result, torch.cat(rows), atol=0, rtol=0)

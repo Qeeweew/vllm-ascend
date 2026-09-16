@@ -176,34 +176,45 @@ class HostEngramHasher:
         for mask, ids in ((token_mask, input_ids), (lookback_mask, lookback_ids)):
             if mask is not None and (mask.device.type != "cpu" or mask.dtype != torch.bool or mask.shape != ids.shape):
                 raise ValueError("Token masks must be CPU bool with matching shape")
-        if (input_ids < 0).any() or (input_ids >= self.token_map.numel()).any():
+        # Small host batches are dominated by per-request Torch dispatch.
+        # NumPy reads the same CPU storage and constructs all request windows
+        # together. Hash arithmetic remains signed int64, including remainder.
+        ids = input_ids.numpy()
+        mapping = self.token_map.numpy()
+        if np.any(ids < 0) or np.any(ids >= mapping.size):
             raise ValueError("Invalid input token ID")
-        tokens = self.token_map[input_ids]
+        tokens = mapping[ids]
         if token_mask is not None:
-            tokens = tokens.masked_fill(~token_mask, -1)
-        windows = torch.empty((input_ids.numel(), self.max_ngram), dtype=torch.int64, device="cpu")
-        for req, position in enumerate(start_positions):
-            first, end = starts[req : req + 2]
-            if end == first:
-                continue
-            needed = min(position, depth)
-            prior = lookback_ids[req, :needed]
-            if (prior < 0).any() or (prior >= self.token_map.numel()).any():
-                raise ValueError("Actual lookback token IDs are required; async placeholders are not history")
-            history = torch.full((depth,), self.pad_id, dtype=torch.int64, device="cpu")
-            if needed:
-                previous = self.token_map[prior]
-                if lookback_mask is not None:
-                    previous = previous.masked_fill(~lookback_mask[req, :needed], -1)
-                history[-needed:] = previous.flip(0)
-            sequence = torch.cat((history, tokens[first:end]))
-            windows[first:end] = sequence.unfold(0, self.max_ngram, 1).flip(-1)
-        blocked = (windows == -1).to(torch.int32).cumsum(-1) > 0
-        windows.masked_fill_(blocked, self.pad_id)
-        products = windows[:, None, :] * self.multipliers
-        rolling, hashes = products[:, :, 0], []
+            tokens = np.where(token_mask.numpy(), tokens, -1)
+        boundaries = np.asarray(starts, dtype=np.int64)
+        prior = lookback_ids.numpy()
+        needed = np.minimum(np.asarray(start_positions, dtype=np.int64), depth)
+        used = (np.arange(depth)[None, :] < needed[:, None]) & (np.diff(boundaries)[:, None] > 0)
+        if np.any(used & ((prior < 0) | (prior >= mapping.size))):
+            raise ValueError("Actual lookback token IDs are required; async placeholders are not history")
+        previous = np.full(prior.shape, self.pad_id, dtype=np.int64)
+        previous[used] = mapping[prior[used]]
+        if lookback_mask is not None:
+            previous[used & ~lookback_mask.numpy()] = -1
+
+        rows = np.arange(ids.size, dtype=np.int64)
+        request = np.searchsorted(boundaries[1:], rows, side="right")
+        first = boundaries[request, None]
+        indices = rows[:, None] - np.arange(self.max_ngram)[None, :]
+        prior_indices = np.clip(first - indices - 1, 0, depth - 1)
+        windows = np.where(
+            indices >= first,
+            tokens[np.maximum(indices, 0)],
+            previous[request[:, None], prior_indices],
+        )
+        windows[np.logical_or.accumulate(windows == -1, axis=-1)] = self.pad_id
+        products = windows[:, None, :] * self.multipliers.numpy()
+        rolling, hashes = products[:, :, 0].copy(), []
+        primes = self.primes.numpy()
         for shift in range(1, self.max_ngram):
-            rolling = rolling ^ products[:, :, shift]
-            hashes.append(rolling[:, :, None] % self.primes[:, shift - 1])
-        output = torch.cat(hashes, -1) + self.offsets
-        return tuple(output[:, layer].contiguous() for layer in range(len(self.layout.layer_ids)))
+            rolling ^= products[:, :, shift]
+            hashes.append(rolling[:, :, None] % primes[:, shift - 1])
+        output = np.concatenate(hashes, axis=-1) + self.offsets.numpy()
+        return tuple(
+            torch.from_numpy(np.ascontiguousarray(output[:, layer])) for layer in range(len(self.layout.layer_ids))
+        )
