@@ -162,6 +162,8 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         self.residual = torch.empty_like(self.lengths)
         self.table = torch.full((self.max_requests, self.max_blocks), -1, dtype=torch.int32, device=device)
         self.schedule = torch.zeros(1024, dtype=torch.int32, device=device)
+        self._metadata_key = None
+        self._metadata = None
         self.draft_swa_indices: torch.Tensor | None = None
         self.draft_swa_lengths: torch.Tensor | None = None
 
@@ -275,14 +277,11 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         """
         common = common_attn_metadata
         tokens, batch = common.slot_mapping.numel(), common.num_reqs
-        draft_indices = draft_lengths = None
         if self.draft_swa_indices is not None:
             if getattr(common, "causal", None) is not False:
                 raise ValueError("DSpark draft metadata requires common.causal=False")
             if tokens > self.draft_swa_indices.shape[0]:
                 raise ValueError("DSpark query bucket exceeds its prepared capacity")
-            draft_indices = self.draft_swa_indices[:tokens]
-            draft_lengths = self.draft_swa_lengths[:tokens]
         if tokens > self.max_tokens or batch > self.max_requests:
             raise ValueError("V4.1 batch exceeds its preallocated metadata capacity")
         if common.positions is None or common.positions.numel() < tokens:
@@ -290,36 +289,37 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         if common.block_table_tensor.shape[0] < batch or common.block_table_tensor.shape[1] > self.max_blocks:
             raise ValueError("V4.1 logical block table does not fit its configured context capacity")
         required_sequence = getattr(common, "max_seq_len", 0)
-        if draft_indices is not None:
+        if self.draft_swa_indices is not None:
             # The proposer keeps virtual draft queries even at the context end.
             # Only their in-range prefix/query keys require logical pages.
             required_sequence = min(required_sequence, self.max_sequence)
         if required_sequence > common.block_table_tensor.shape[1] * self.logical_block_size:
             raise ValueError("V4.1 requires full logical block-table columns, not a rebased sliding-window table")
-        positions, requests, slots = self.positions[:tokens], self.requests[:tokens], self.slots[:tokens]
-        cu_q, lengths, table = self.cu_q[: batch + 1], self.lengths[:batch], self.table[:batch]
-        cmp_lengths = self.cmp_lengths[:batch] if self.role != "swa" else None
-        residual = self.residual[:batch] if self.role != "swa" and self.compress_ratio == 2 else None
-        num_prefills, num_decode_tokens = (
+        # Builders already own one in-flight set of device buffers. Reuse its
+        # Python object/views while the bucket is unchanged; never cache host
+        # classification or values read from the common device inputs.
+        key = (tokens, batch, self.draft_swa_indices is not None)
+        if self._metadata_key != key:
+            self._metadata = AscendV41CacheMetadata(
+                self.role,
+                self.compress_ratio,
+                self.physical_block_size,
+                self.positions[:tokens],
+                self.cu_q[: batch + 1],
+                self.lengths[:batch],
+                self.table[:batch],
+                self.slots[:tokens],
+                self.requests[:tokens],
+                self.schedule,
+                self.cmp_lengths[:batch] if self.role != "swa" else None,
+                self.residual[:batch] if self.role != "swa" and self.compress_ratio == 2 else None,
+                draft_swa_indices=self.draft_swa_indices[:tokens] if self.draft_swa_indices is not None else None,
+                draft_swa_lengths=self.draft_swa_lengths[:tokens] if self.draft_swa_lengths is not None else None,
+            )
+            self._metadata_key = key
+        metadata = self._metadata
+        metadata.num_prefills, metadata.num_decode_tokens = (
             self._execution_counts(common) if preparation is None else preparation.execution_counts(self, common)
-        )
-        metadata = AscendV41CacheMetadata(
-            self.role,
-            self.compress_ratio,
-            self.physical_block_size,
-            positions,
-            cu_q,
-            lengths,
-            table,
-            slots,
-            requests,
-            self.schedule,
-            cmp_lengths,
-            residual,
-            num_prefills,
-            num_decode_tokens,
-            draft_indices,
-            draft_lengths,
         )
 
         if preparation is None:

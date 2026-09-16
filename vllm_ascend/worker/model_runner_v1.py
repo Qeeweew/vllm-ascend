@@ -1053,8 +1053,8 @@ class NPUModelRunner(GPUModelRunner):
         if runtime is None:
             return super()._preprocess(scheduler_output, num_input_tokens, intermediate_tensors)
 
-        # _prepare_inputs has enqueued final device corrections on the current
-        # compute stream. Snapshot once, BEFORE upstream clamps
+        # Normal execution queued the snapshot before metadata; standalone
+        # callers snapshot here after _prepare_inputs. Finish BEFORE upstream clamps
         # speculative -1 IDs or performs multimodal embedding lookup. Only
         # padding positions change in upstream _preprocess; real query bounds
         # exclude those rows. Prompt image masks are seeded in request history.
@@ -1076,14 +1076,17 @@ class NPUModelRunner(GPUModelRunner):
         runtime = getattr(self, "engram_runtime", None)
         if runtime is None:
             return
-        rows, mask = runtime.prepare(
-            self.input_batch.req_ids,
-            self.input_ids.gpu[:num_tokens_padded],
-            positions,
-            self.query_start_loc.gpu[:self.input_batch.num_reqs + 1],
-            num_tokens_padded,
-            token_mask=model_kwargs.get("engram_token_mask"),
-        )
+        if runtime.snapshot_pending:
+            rows, mask = runtime.finish_prepare()
+        else:
+            rows, mask = runtime.prepare(
+                self.input_batch.req_ids,
+                self.input_ids.gpu[:num_tokens_padded],
+                positions,
+                self.query_start_loc.gpu[:self.input_batch.num_reqs + 1],
+                num_tokens_padded,
+                token_mask=model_kwargs.get("engram_token_mask"),
+            )
         model_kwargs["engram_rows"] = rows
         model_kwargs["engram_token_mask"] = mask
         model_kwargs["image_token_mask"] = runtime.image_token_mask[:num_tokens_padded]
@@ -2492,6 +2495,20 @@ class NPUModelRunner(GPUModelRunner):
                         batch_desc.num_reqs,
                     )
 
+                # Final device inputs and real request boundaries are ready.
+                # Snapshot before metadata kernels; _preprocess waits for only
+                # this DMA event, then hashes while metadata runs on the NPU.
+                runtime = getattr(self, "engram_runtime", None)
+                if runtime is not None:
+                    runtime.begin_prepare(
+                        self.input_batch.req_ids,
+                        self.input_ids.gpu[:num_tokens_padded],
+                        (self.mrope_positions.gpu[:, :num_tokens_padded]
+                         if self.uses_mrope else self.positions[:num_tokens_padded]),
+                        self.query_start_loc.gpu[:num_reqs + 1],
+                        num_tokens_padded,
+                    )
+
                 with record_function_or_nullcontext("v41::metadata_prepare"):
                     (attn_metadata, spec_decode_common_attn_metadata) = self._build_attention_metadata(
                         num_tokens=num_tokens_unpadded,
@@ -3439,12 +3456,20 @@ class NPUModelRunner(GPUModelRunner):
                 )
             else:
                 blk_table = self.input_batch.block_table[kv_cache_gid]
-                slot_mapping = blk_table.slot_mapping.gpu[:num_tokens_padded]
-                blk_table_tensor = blk_table.get_device_tensor()[:num_reqs_padded]
+                if self.v41_metadata_preparation is not None:
+                    blk_table_tensor, slot_mapping = self.v41_metadata_preparation.group_views(
+                        kv_cache_gid, blk_table.get_device_tensor(), blk_table.slot_mapping.gpu,
+                        num_reqs_padded, num_tokens_padded,
+                    )
+                else:
+                    slot_mapping = blk_table.slot_mapping.gpu[:num_tokens_padded]
+                    blk_table_tensor = blk_table.get_device_tensor()[:num_reqs_padded]
                 # Fill unused with -1. Needed for reshape_and_cache in full cuda
                 # graph mode. `blk_table_tensor` -1 to match mamba PAD_SLOT_ID
-                slot_mapping[num_tokens:num_tokens_padded].fill_(-1)
-                blk_table_tensor[num_reqs:num_reqs_padded].fill_(0)
+                if num_tokens < num_tokens_padded:
+                    slot_mapping[num_tokens:num_tokens_padded].fill_(-1)
+                if num_reqs < num_reqs_padded:
+                    blk_table_tensor[num_reqs:num_reqs_padded].fill_(0)
             if self.model_config.enable_return_routed_experts and kv_cache_gid == 0:
                 if self.routed_experts_initialized:
                     # snapshot slot_mapping into a private device

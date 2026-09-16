@@ -33,6 +33,15 @@ class V41MetadataPreparation:
     def __init__(self):
         self.graphs: dict[tuple, _PreparationGraph] = {}
         self.pool = None
+        self._group_views = {}
+
+    def group_views(self, group, table, slots, batch, tokens):
+        """Keep only the current bucket per group, retaining its base tensors."""
+        entry = self._group_views.get(group)
+        if entry is None or entry[0] is not table or entry[1] is not slots or entry[2:4] != (batch, tokens):
+            entry = (table, slots, batch, tokens, table[:batch], slots[:tokens])
+            self._group_views[group] = entry
+        return entry[4], entry[5]
 
     def batch(self, *, capture=False, use_graph=False):
         return V41MetadataBatch(self, capture=capture, use_graph=use_graph)
@@ -45,13 +54,24 @@ class V41MetadataBatch:
         self.use_graph = use_graph
         self.tasks = []
         self.counts = {}
+        self._bindings = {}
+
+    def _binding(self, tensor):
+        # Groups share most input tensor objects in a step. Retain references
+        # until run() so Python cannot recycle an identity in this cache.
+        key = id(tensor)
+        entry = self._bindings.get(key)
+        if entry is None:
+            entry = (tensor, _tensor_binding(tensor))
+            self._bindings[key] = entry
+        return entry[1]
 
     def execution_counts(self, builder, common):
         key = (
             common.num_reqs,
             common.num_actual_tokens,
-            _tensor_binding(getattr(common, "query_start_loc_cpu", None)),
-            _tensor_binding(getattr(common, "is_prefilling", None)),
+            self._binding(getattr(common, "query_start_loc_cpu", None)),
+            self._binding(getattr(common, "is_prefilling", None)),
         )
         if key not in self.counts:
             self.counts[key] = builder._execution_counts(common)
@@ -67,7 +87,7 @@ class V41MetadataBatch:
                 metadata.positions.numel(),
                 common.num_reqs,
                 *(
-                    _tensor_binding(getattr(common, name))
+                    self._binding(getattr(common, name))
                     for name in ("positions", "query_start_loc", "seq_lens", "block_table_tensor")
                 ),
             )

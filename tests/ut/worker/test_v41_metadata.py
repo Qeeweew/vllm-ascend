@@ -3,6 +3,7 @@
 from copy import copy
 from unittest.mock import patch
 
+import pytest
 import torch
 
 from tests.ut.attention.test_dsa_v41_metadata import make_builder, make_common, make_execution_common
@@ -88,3 +89,47 @@ def test_host_execution_counts_shared_only_within_current_batch():
         outputs = [builder.build(0, common, preparation=batch) for builder in builders]
         assert classify.call_count == 2
         assert all(output.num_decode_tokens == 1 and output.num_prefills == 1 for output in outputs)
+
+
+def test_reuse_metadata_views_refresh_classification_and_validate_each_step():
+    owner = V41MetadataPreparation()
+    common = make_execution_common([1, 1], [False, False])
+    builder = make_builder("main", 2)
+    first = builder.build(0, common, preparation=owner.batch())
+    views = (first.positions, first.block_table, first.slot_mapping)
+    common.is_prefilling[0] = True
+    second = builder.build(0, common, preparation=owner.batch())
+    assert second is first
+    assert all(a is b for a, b in zip(views, (second.positions, second.block_table, second.slot_mapping)))
+    assert (second.num_prefills, second.num_decode_tokens) == (1, 1)
+    common.max_seq_len = 1024
+    with pytest.raises(ValueError, match="full logical"):
+        builder.build(0, common, preparation=owner.batch())
+    common.max_seq_len = 36
+    common.slot_mapping = common.slot_mapping[:2]
+    third = builder.build(0, common, preparation=owner.batch())
+    assert third is not first
+    assert third.positions.numel() == 2
+    assert first.positions.numel() == 4
+
+
+def test_group_views_reuse_and_invalidate_base_and_bucket_without_aliasing_groups():
+    owner = V41MetadataPreparation()
+    table = torch.arange(16).view(4, 4)
+    slots = torch.arange(16)
+    a = owner.group_views(0, table, slots, 2, 8)
+    b = owner.group_views(0, table, slots, 2, 8)
+    assert all(x is y for x, y in zip(a, b))
+    table[0, 0] = 99
+    assert b[0][0, 0] == 99
+    replaced = table.clone() + 1
+    c = owner.group_views(0, replaced, slots, 2, 8)
+    assert c[0][0, 0] == 100
+    assert a[0][0, 0] == 99
+    other = owner.group_views(1, table, slots.clone(), 1, 4)
+    assert other[0].shape == (1, 4)
+    assert other[1].data_ptr() != c[1].data_ptr()
+    resized = owner.group_views(0, replaced, slots, 3, 6)
+    assert resized[0].shape == (3, 4)
+    assert resized[1].numel() == 6
+    assert len(owner._group_views) == 2

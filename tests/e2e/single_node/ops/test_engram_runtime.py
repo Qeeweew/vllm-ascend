@@ -15,7 +15,8 @@ from vllm_ascend.worker.engram_runtime import EngramRuntime
 
 @torch.inference_mode()
 @pytest.mark.parametrize("seeded_prompt", [False, True])
-def test_final_device_inputs_prefix_rollback_mask_and_graph(seeded_prompt):
+@pytest.mark.parametrize("split_snapshot", [False, True])
+def test_final_device_inputs_prefix_rollback_mask_and_graph(seeded_prompt, split_snapshot):
     config = SimpleNamespace(
         engram_layer_ids=[1, 14],
         engram_max_ngram_size=4,
@@ -56,7 +57,23 @@ def test_final_device_inputs_prefix_rollback_mask_and_graph(seeded_prompt):
         mask[: len(tokens)].copy_(torch.tensor(masks))
         boundaries[1] = len(tokens)
         step_mask = None if seeded_prompt and start < prompt.numel() else mask
-        return runtime.prepare(["request"], device_ids, positions, boundaries, 8, token_mask=step_mask)
+        if not split_snapshot:
+            return runtime.prepare(["request"], device_ids, positions, boundaries, 8, token_mask=step_mask)
+        requests = ["request"]
+        runtime.begin_prepare(requests, device_ids, positions, boundaries, 8, token_mask=step_mask)
+        assert runtime.snapshot_pending
+        with pytest.raises(RuntimeError, match="consumed"):
+            runtime.begin_prepare(requests, device_ids, positions, boundaries, 8)
+        # Subsequent same-stream work can overwrite producer buffers: the
+        # snapshot must retain final values at begin_prepare, including masks.
+        requests[0] = "not-the-snapshotted-request"
+        device_ids.fill_(31)
+        positions.zero_()
+        mask.zero_()
+        boundaries.zero_()
+        result = runtime.finish_prepare()
+        assert not runtime.snapshot_pending
+        return result
 
     rows, live_mask = stage([1], 0, [True])
     runtime.wait_ready()
@@ -117,3 +134,59 @@ def test_final_device_inputs_prefix_rollback_mask_and_graph(seeded_prompt):
     assert image_snapshots[0].cpu().tolist() == [False, True, False, False, False, False, False, False]
     for actual in image_snapshots[1:]:
         assert not actual.cpu().any()
+
+
+@torch.inference_mode()
+def test_split_snapshot_multibatch_reorder_and_rejection():
+    config = SimpleNamespace(
+        engram_layer_ids=[1],
+        engram_max_ngram_size=4,
+        engram_n_heads=2,
+        engram_vocab_size=11,
+        engram_num_embeddings=[1000],
+        engram_head_dim=256,
+    )
+    layout = HostEngramLayout.from_config(config)
+    hasher = HostEngramHasher(layout, torch.arange(32), 32, 0)
+    heads, ranges = layout.head_shard(0, 0, 1)
+    table = torch.arange(ranges[-1][1] * 256).reshape(-1, 256).remainder(127).bfloat16()
+    shard = EngramTableShard(torch.empty_like(table, pin_memory=True).copy_(table), heads, ranges)
+    runtimes = [
+        EngramRuntime(EngramRequestHistory(hasher), EngramOffloadManager([shard], 8, torch.device("npu")))
+        for _ in range(2)
+    ]
+    for runtime in runtimes:
+        for request in ("a", "b", "c"):
+            runtime.history.reset_request(request, torch.tensor([1, 2, 3, 4, 5, 6]))
+    # Different query counts, request reordering/removal, and rejection of a
+    # previously executed speculative suffix. Remaining rows are graph padding.
+    cases = [
+        (["a", "b", "c"], [[7, 8], [9], [10, 11, 12]], [6, 6, 6]),
+        (["c", "a"], [[13], [14, 15]], [7, 7]),
+        (["a", "c"], [[16], [17, 18]], [9, 8]),
+    ]
+    for requests, chunks, starts in cases:
+        ids = torch.full((8,), -1, dtype=torch.int64, device="npu")
+        positions = torch.full_like(ids, -1)
+        flat = [token for chunk in chunks for token in chunk]
+        ids[: len(flat)].copy_(torch.tensor(flat))
+        positions[: len(flat)].copy_(
+            torch.tensor([p for chunk, start in zip(chunks, starts) for p in range(start, start + len(chunk))])
+        )
+        boundaries = torch.tensor(
+            [0, *torch.tensor([len(c) for c in chunks]).cumsum(0).tolist()], dtype=torch.int32, device="npu"
+        )
+        expected, expected_mask = runtimes[0].prepare(requests, ids, positions, boundaries, 8)
+        runtimes[1].begin_prepare(requests, ids, positions, boundaries, 8)
+        ids.fill_(31)
+        positions.zero_()
+        boundaries.zero_()
+        actual, actual_mask = runtimes[1].finish_prepare()
+        for runtime in runtimes:
+            runtime.wait_ready()
+        torch.testing.assert_close(actual[0], expected[0], rtol=0, atol=0)
+        torch.testing.assert_close(actual_mask, expected_mask)
+        for runtime in runtimes:
+            runtime.mark_consumed()
+    for runtime in runtimes:
+        runtime.close()
