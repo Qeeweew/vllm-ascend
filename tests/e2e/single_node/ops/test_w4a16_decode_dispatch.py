@@ -2,6 +2,7 @@
 from types import SimpleNamespace
 from unittest.mock import patch
 
+import pytest
 import torch
 import torch_npu
 from vllm.model_executor.layers.fused_moe.activation import MoEActivation
@@ -13,8 +14,9 @@ from vllm_ascend.quantization.methods.wna16.w4a16 import AscendW4A16FusedMoEMeth
 MODULE = "vllm_ascend.quantization.methods.wna16.w4a16"
 
 
-def test_real_dispatch_and_graph_with_high_expert_ids():
-    args, (q13, q2) = make_case(2)
+@pytest.mark.parametrize("batch", [2, 8, 128])
+def test_real_dispatch_and_graph_with_high_expert_ids(batch):
+    args, (q13, q2) = make_case(batch)
     x, w13, s13, w2, s2, ids, routing = args
     ids.copy_(torch.tensor([0, 63, 127, 191, 255, 383], dtype=torch.int32).expand_as(ids))
     layer = SimpleNamespace(
@@ -29,9 +31,10 @@ def test_real_dispatch_and_graph_with_high_expert_ids():
     )
     method = object.__new__(AscendW4A16FusedMoEMethod)
     method.enable_native_decode, method.dynamic_eplb, method.group_size = True, False, 32
+    method.native_decode_max_tokens = 128
     comm = object.__new__(AllGatherCommImpl)
     comm.moe_config = SimpleNamespace(ep_size=1, activation=MoEActivation.SILU, swiglu_limit=10.0)
-    metadata = SimpleNamespace(attn_metadata={"attn": SimpleNamespace(num_prefills=0, num_decode_tokens=2)})
+    metadata = SimpleNamespace(attn_metadata={"attn": SimpleNamespace(num_prefills=0, num_decode_tokens=batch)})
     xn, ids_n, routing_n = x.npu(), ids.npu(), routing.npu()
     with (
         patch(f"{MODULE}._EXTRA_CTX", SimpleNamespace(moe_comm_method=comm)),

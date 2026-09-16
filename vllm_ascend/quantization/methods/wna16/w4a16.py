@@ -24,6 +24,7 @@ from vllm.config import get_current_vllm_config
 from vllm.forward_context import get_forward_context
 from vllm.model_executor.layers.fused_moe.activation import MoEActivation
 
+from vllm_ascend import envs
 from vllm_ascend.ascend_config import get_ascend_config
 from vllm_ascend.ascend_forward_context import _EXTRA_CTX
 from vllm_ascend.ops.fused_moe.dataclass.fused_experts import build_fused_experts_input
@@ -35,9 +36,6 @@ from vllm_ascend.utils import dispose_tensor
 
 from ..base import AscendMoEScheme, QuantType
 from ..registry import register_scheme
-
-# E384 hot-expert graph tests regress at B8; B1/2/4 pass median and P95 gates.
-_W4A16_DECODE_MAX_TOKENS = 4
 
 
 def unpack_from_int32(
@@ -210,6 +208,7 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
         vllm_config = get_current_vllm_config()
         self.group_size = vllm_config.quant_config.quant_description.get("group_size", 32)
         self.enable_native_decode = get_ascend_config().enable_w4a16_decode
+        self.native_decode_max_tokens = envs.VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS
         self.dynamic_eplb = False if vllm_config.use_v2_model_runner else get_ascend_config().eplb_config.dynamic_eplb
 
     def get_weight(
@@ -269,7 +268,7 @@ class AscendW4A16FusedMoEMethod(AscendMoEScheme):
     def _can_use_native_decode(self, layer, x, topk_ids, moe_comm_method) -> bool:
         if not self.enable_native_decode or self.group_size != 32 or self.dynamic_eplb:
             return False
-        if x.dtype != torch.bfloat16 or not 0 < x.shape[0] <= _W4A16_DECODE_MAX_TOKENS:
+        if x.dtype != torch.bfloat16 or not 0 < x.shape[0] <= self.native_decode_max_tokens:
             return False
         if x.shape[1] != 5120 or topk_ids.shape[1] != 6 or layer.w2_weight_packed.shape[1] != 288:
             return False

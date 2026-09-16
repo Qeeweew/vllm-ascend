@@ -462,7 +462,8 @@ class AscendConfig:
     multistream_dsv4_dsa_overlap: bool = True
     enable_prefill_mc2: bool = False
     # Experimental 910B V4.1 TP8 signed-scale group32 decode (H5120/I288,
-    # top6, B<=4). Larger batches and prefill keep CANN grouped matmul.
+    # top6). VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS controls the decode limit
+    # (default 128); larger batches and prefill keep CANN grouped matmul.
     # Opt in for eight-card validation; leave off until E2E performance passes.
     enable_w4a16_decode: bool = False
     # Experimental V4.1 CR1 candidate consumer, one query and one request.

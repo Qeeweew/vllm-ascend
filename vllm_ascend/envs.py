@@ -35,7 +35,19 @@ def _strict_binary_env(name: str, default: str = "0") -> bool:
     return value == "1"
 
 
+def _nonnegative_int_env(name: str, default: str) -> int:
+    value = int(os.getenv(name, default))
+    if value < 0:
+        raise ValueError(f"{name} must be a nonnegative integer")
+    return value
+
+
 env_variables: dict[str, Callable[[], Any]] = {
+    # Maximum tokens for the opt-in 910B V4.1 native W4A16 decode path.
+    # Default 128, measured with uniformly distributed E384/top6 routing.
+    # Nonnegative integer; 0 disables this path. Read at model construction,
+    # before graph capture. Hot expert routing can favor a smaller threshold.
+    "VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS": lambda: _nonnegative_int_env("VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS", "128"),
     # max compile thread number for package building. Usually, it is set to
     # the number of CPU cores. If not set, the default value is None, which
     # means all number of CPU cores will be used.

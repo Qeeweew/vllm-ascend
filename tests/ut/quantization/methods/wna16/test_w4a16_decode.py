@@ -17,6 +17,7 @@ MODULE = "vllm_ascend.quantization.methods.wna16.w4a16"
 def fixture():
     method = object.__new__(AscendW4A16FusedMoEMethod)
     method.enable_native_decode = True
+    method.native_decode_max_tokens = 128
     method.group_size = 32
     method.dynamic_eplb = False
     comm = object.__new__(AllGatherCommImpl)
@@ -40,7 +41,9 @@ def fixture():
     return method, comm, layer, context, x, ids
 
 
-@pytest.mark.parametrize("batch, expected", [(1, True), (2, True), (4, True), (5, False), (8, False), (64, False)])
+@pytest.mark.parametrize(
+    "batch, expected", [(1, True), (4, True), (6, True), (8, True), (64, True), (128, True), (129, False)]
+)
 def test_measured_decode_boundary(batch, expected):
     method, comm, layer, context, x, ids = fixture()
     with (
@@ -48,6 +51,35 @@ def test_measured_decode_boundary(batch, expected):
         patch(f"{MODULE}.torch.ops._C_ascend.npu_w4a16_moe", create=True),
     ):
         assert method._can_use_native_decode(layer, x.expand(batch, -1), ids.expand(batch, -1), comm) == expected
+
+
+@pytest.mark.parametrize("limit", [0, 4, 128])
+def test_decode_threshold_environment_is_read_at_construction(monkeypatch, limit):
+    monkeypatch.setenv("VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS", str(limit))
+    config = SimpleNamespace(
+        quant_config=SimpleNamespace(quant_description={"group_size": 32}), use_v2_model_runner=True
+    )
+    with (
+        patch(f"{MODULE}.get_current_vllm_config", return_value=config),
+        patch(f"{MODULE}.get_ascend_config", return_value=SimpleNamespace(enable_w4a16_decode=True)),
+    ):
+        method = AscendW4A16FusedMoEMethod()
+    assert method.native_decode_max_tokens == limit
+    _, comm, layer, context, x, ids = fixture()
+    with (
+        patch(f"{MODULE}.get_forward_context", return_value=context),
+        patch(f"{MODULE}.torch.ops._C_ascend.npu_w4a16_moe", create=True),
+    ):
+        assert method._can_use_native_decode(layer, x.expand(8, -1), ids.expand(8, -1), comm) == (limit >= 8)
+
+
+@pytest.mark.parametrize("value", ["-1", "bad", "1.5"])
+def test_invalid_decode_threshold_is_rejected(monkeypatch, value):
+    from vllm_ascend import envs
+
+    monkeypatch.setenv("VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS", value)
+    with pytest.raises(ValueError):
+        _ = envs.VLLM_ASCEND_W4A16_DECODE_MAX_TOKENS
 
 
 @pytest.mark.parametrize(
