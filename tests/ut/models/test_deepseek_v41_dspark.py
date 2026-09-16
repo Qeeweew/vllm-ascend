@@ -252,6 +252,7 @@ def test_three_real_v41_blocks_use_delayed_mix_and_prenorm_terminal_hidden(monke
     nn.Module.__init__(model)
     model.layers = nn.ModuleList(blocks)
     model.hidden_size, model.hc_mult = 5120, 4
+    model.max_position = 256
     embedded = torch.linspace(-1, 1, 10240).reshape(2, 5120).to(torch.bfloat16)
     ids = torch.tensor([128799, 129264])  # Both remain text in the drafter.
     positions = torch.tensor([127, 128])
@@ -272,6 +273,29 @@ def test_three_real_v41_blocks_use_delayed_mix_and_prenorm_terminal_hidden(monke
     expected = (expected.float() * pre[..., None]).sum(1).to(torch.bfloat16)
     torch.testing.assert_close(actual, expected, rtol=0, atol=0)
     assert not any("hc_head" in name for name, _ in model.named_parameters())
+
+
+def test_draft_rope_padding_preserves_virtual_positions():
+    observed = []
+    rope_cache = torch.arange(129)
+
+    class Layer(nn.Module):
+        def forward(self, positions, hidden, pre, **kwargs):
+            observed.append(rope_cache[positions])
+            return hidden, pre
+
+    model = draft_module.DeepseekV41DSparkModel.__new__(draft_module.DeepseekV41DSparkModel)
+    nn.Module.__init__(model)
+    model.hidden_size, model.hc_mult, model.max_position = 8, 4, 129
+    model.layers = nn.ModuleList([Layer(), Layer(), Layer()])
+    positions = torch.tensor([126, 127, 128, 129, 130, -1])
+    original = positions.clone()
+    embedded = torch.ones((6, 8), dtype=torch.bfloat16)
+    output = model(torch.zeros(6, dtype=torch.int64), positions, inputs_embeds=embedded)
+    assert torch.equal(positions, original)
+    assert len(observed) == 3
+    assert all(torch.equal(value, torch.tensor([126, 127, 128, 0, 0, 0])) for value in observed)
+    assert torch.equal(output, embedded)
 
 
 def test_context_uses_same_projected_target_and_each_layer_slots(monkeypatch):

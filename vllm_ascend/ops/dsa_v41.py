@@ -26,11 +26,15 @@ def build_dspark_v41_swa_indices(
     num_cache_blocks: int,
     indices_output: torch.Tensor,
     lengths_output: torch.Tensor,
+    max_model_len: int | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Write fixed-K5 noncausal visibility into caller-owned device buffers.
 
     Official DSpark uses [max(prefix_length - 128, 0), sequence_length) for
-    every query in the block: 128 prefix tokens plus all five draft queries.
+    every valid query in the block: 128 prefix tokens plus all valid draft
+    queries. ``seqused_kv`` retains the virtual prefix + 5 length, including
+    padded queries beyond max_model_len. Clamping it before this helper would
+    shift the prefix backwards and expose the wrong window.
     Unlike the old V4 helper's physical slots, arch22 SparseFlashMla consumes
     LOGICAL token IDs and applies the block table itself. Invalid page entries
     become -1, without compacting later valid columns. Lengths cover the full
@@ -57,12 +61,16 @@ def build_dspark_v41_swa_indices(
         raise ValueError("DSpark output buffers must be contiguous")
     if page_size % 16 or not 16 <= page_size <= 1024 or num_cache_blocks <= 0:
         raise ValueError("DSpark requires a valid BF16 cache page size and positive block count")
+    capacity = block_table.shape[1] * page_size
+    if max_model_len is not None:
+        if max_model_len <= 0:
+            raise ValueError("DSpark max_model_len must be positive")
+        capacity = min(capacity, max_model_len)
     query_lengths = cu_seqlens_q[1:].long() - cu_seqlens_q[:-1].long()
     prefix_lengths = seqused_kv.long() - query_lengths
     starts = (prefix_lengths - 128).clamp_min(0)
-    visible_lengths = (seqused_kv.long() - starts).clamp(0, 133)
+    visible_lengths = (seqused_kv.long().clamp_max(capacity) - starts).clamp(0, 133)
     request_valid = (query_lengths == 5) & (prefix_lengths >= 0)
-    request_valid &= seqused_kv <= block_table.shape[1] * page_size
     columns = torch.arange(256, device=block_table.device)
     positions = starts[:, None] + columns[None, :]
     logical_pages = positions // page_size
@@ -75,6 +83,8 @@ def build_dspark_v41_swa_indices(
     request_ids = torch.searchsorted(cu_seqlens_q[1:].contiguous(), rows, right=True).clamp_max(batch - 1)
     row_valid = (rows >= cu_seqlens_q[0]) & (rows < cu_seqlens_q[-1])
     row_valid &= request_valid[request_ids]
+    query_positions = prefix_lengths[request_ids] + rows - cu_seqlens_q[request_ids]
+    row_valid &= (query_positions >= 0) & (query_positions < capacity)
     indices_output[:, 0].copy_(torch.where(row_valid[:, None], logical_indices[request_ids], -1))
     lengths_output[:, 0].copy_(torch.where(row_valid, visible_lengths[request_ids], 0).int())
     return indices_output, lengths_output
@@ -254,7 +264,7 @@ class AscendDSAV41Ops:
             if draft
             else {}
         )
-        return torch.ops._C_ascend.npu_sparse_flash_mla(
+        output, lse = torch.ops._C_ascend.npu_sparse_flash_mla(
             query,
             ori_kv=swa_cache,
             cmp_kv=cmp_cache,
@@ -279,3 +289,11 @@ class AscendDSAV41Ops:
             return_softmax_lse=return_softmax_lse,
             **draft_kwargs,
         )
+        if draft:
+            # Native attention skips zero-span rows without initializing its
+            # output. Do not propagate allocator contents/NaNs into draft HC.
+            padding = metadata.draft_swa_lengths[:, 0] == 0
+            output.masked_fill_(padding[:, None, None], 0)
+            if return_softmax_lse:
+                lse.masked_fill_(padding[None, :, None], 0)
+        return output, lse

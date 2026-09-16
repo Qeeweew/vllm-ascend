@@ -17,7 +17,7 @@ from vllm_ascend.attention.utils import AscendCommonAttentionMetadata
 from vllm_ascend.core.kv_cache_interface import AscendV41IndexerCacheSpec, AscendV41MainCacheSpec, AscendV41SWACacheSpec
 
 
-def make_builder(role, ratio=1, device="cpu"):
+def make_builder(role, ratio=1, device="cpu", max_model_len=256):
     spec_type = {"main": AscendV41MainCacheSpec, "index": AscendV41IndexerCacheSpec, "swa": AscendV41SWACacheSpec}[role]
     args = dict(
         block_size=32 * ratio,
@@ -36,7 +36,7 @@ def make_builder(role, ratio=1, device="cpu"):
     spec = spec_type(**args)
     config = SimpleNamespace(
         scheduler_config=SimpleNamespace(max_num_batched_tokens=16, max_num_seqs=4),
-        model_config=SimpleNamespace(max_model_len=256, hf_config=SimpleNamespace(num_attention_heads=64)),
+        model_config=SimpleNamespace(max_model_len=max_model_len, hf_config=SimpleNamespace(num_attention_heads=64)),
         parallel_config=SimpleNamespace(tensor_parallel_size=8),
     )
     return AscendV41CacheMetadataBuilder(spec, ["layer.cache"], config, torch.device(device))
@@ -294,3 +294,64 @@ def test_draft_builder_rejects_wrong_role_causal_and_capacity(native_metadata):
     common.causal = True
     with pytest.raises(ValueError, match="causal=False"):
         draft.build(0, common)
+
+
+@pytest.mark.parametrize("maximum", [128, 129])
+@pytest.mark.parametrize("rejected", range(6))
+def test_draft_maximum_context_retains_valid_queries(native_metadata, maximum, rejected):
+    builder = make_builder("swa", max_model_len=maximum)
+    pages = (maximum + 31) // 32
+    table = torch.arange(3 * pages, dtype=torch.int32).flip(0).reshape(3, pages)
+    bind_draft_cache(builder, torch.empty((3 * pages, 32, 1, 512), dtype=torch.bfloat16))
+    builder.enable_dspark_device_metadata(16)
+    prefixes = [maximum - rejected, 17, maximum - 2]
+    positions = [p + i for p in prefixes for i in range(5)] + [maximum + 9]
+    common = SimpleNamespace(
+        positions=torch.tensor(positions),
+        query_start_loc=torch.tensor([0, 5, 10, 15], dtype=torch.int32),
+        seq_lens=torch.tensor([p + 5 for p in prefixes], dtype=torch.int32),
+        block_table_tensor=table,
+        slot_mapping=torch.empty(16, dtype=torch.int64),
+        num_reqs=3,
+        num_actual_tokens=15,
+        max_query_len=5,
+        max_seq_len=max(prefixes) + 5,
+        causal=False,
+    )
+    metadata = builder.build(0, common)
+    assert metadata.seqused_kv.tolist() == [min(p + 5, maximum) for p in prefixes]
+    assert common.seq_lens.tolist() == [p + 5 for p in prefixes]
+    assert metadata.positions.tolist() == positions  # Logical positions are never clamped.
+    assert native_metadata[0].call_args.kwargs["seqused_ori_kv"] is metadata.seqused_kv
+    for row, position in enumerate(positions):
+        valid = row < 15 and position < maximum
+        if not valid:
+            assert metadata.slot_mapping[row] == -1
+            assert metadata.token_to_req_indices[row] == -1
+            assert metadata.draft_swa_lengths[row] == 0
+            assert torch.all(metadata.draft_swa_indices[row] == -1)
+            continue
+        request = row // 5
+        expected_slot = int(table[request, position // 32]) * 32 + position % 32
+        assert metadata.slot_mapping[row] == expected_slot
+        visible = list(range(max(prefixes[request] - 128, 0), min(prefixes[request] + 5, maximum)))
+        assert metadata.draft_swa_lengths[row] == len(visible)
+        assert metadata.draft_swa_indices[row, 0, : len(visible)].tolist() == visible
+
+
+def test_draft_empty_middle_request_has_zero_native_length(native_metadata):
+    builder = make_builder("swa", max_model_len=129)
+    bind_draft_cache(builder, torch.empty((5, 32, 1, 512), dtype=torch.bfloat16))
+    builder.enable_dspark_device_metadata(16)
+    common = make_draft_common()
+    common.num_reqs, common.num_actual_tokens, common.max_seq_len = 3, 10, 132
+    common.positions = torch.tensor([124, 125, 126, 127, 128, 127, 128, 129, 130, 131, -1])
+    common.slot_mapping = torch.empty(11, dtype=torch.int64)
+    common.query_start_loc = torch.tensor([0, 5, 5, 10], dtype=torch.int32)
+    common.seq_lens = torch.tensor([129, 17, 132], dtype=torch.int32)
+    common.block_table_tensor = common.block_table_tensor.repeat(3, 1)
+    metadata = builder.build(0, common)
+    assert metadata.seqused_kv.tolist() == [129, 0, 129]
+    assert common.seq_lens.tolist() == [129, 17, 132]
+    assert metadata.token_to_req_indices.tolist() == [0, 0, 0, 0, 0, 2, 2, -1, -1, -1, -1]
+    assert metadata.draft_swa_lengths[:, 0].tolist() == [129] * 7 + [0] * 4

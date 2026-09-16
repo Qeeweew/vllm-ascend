@@ -584,6 +584,7 @@ class DeepseekV41DSparkModel(nn.Module):
             raise ValueError("Ascend V4.1 DSpark does not support EP, sequence parallel or EPLB")
         self.hidden_size = config.hidden_size
         self.hc_mult = config.hc_mult
+        self.max_position = vllm_config.model_config.max_model_len
         self.target_layer_ids = tuple(config.dspark_target_layer_ids)
         self.num_dspark_layers = int(getattr(config, "n_mtp_layers", None) or config.num_nextn_predict_layers)
         if self.num_dspark_layers != 3 or len(self.target_layer_ids) != 3:
@@ -695,8 +696,12 @@ class DeepseekV41DSparkModel(nn.Module):
         pre = torch.zeros((hidden.shape[0], self.hc_mult), dtype=torch.float32, device=hidden.device)
         pre[:, 0] = 1
         image_mask = torch.zeros(hidden.shape[0], dtype=torch.bool, device=hidden.device)
+        # Keep virtual positions in cache metadata; only the RoPE lookup for
+        # padded end-of-context queries uses a legal placeholder. The draft
+        # builder independently masks their cache slots and attention rows.
+        rope_positions = torch.where((positions >= 0) & (positions < self.max_position), positions, 0)
         for layer in self.layers:
-            hidden, pre = layer(positions, hidden, pre, input_ids=input_ids, image_token_mask=image_mask)
+            hidden, pre = layer(rope_positions, hidden, pre, input_ids=input_ids, image_token_mask=image_mask)
         return mhc_collapse(hidden, pre)
 
 

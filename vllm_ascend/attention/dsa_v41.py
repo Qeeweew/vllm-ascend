@@ -284,7 +284,12 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             raise ValueError("V4.1 metadata requires a device position for every bucket token")
         if common.block_table_tensor.shape[0] < batch or common.block_table_tensor.shape[1] > self.max_blocks:
             raise ValueError("V4.1 logical block table does not fit its configured context capacity")
-        if getattr(common, "max_seq_len", 0) > common.block_table_tensor.shape[1] * self.logical_block_size:
+        required_sequence = getattr(common, "max_seq_len", 0)
+        if draft_indices is not None:
+            # The proposer keeps K5 virtual queries even at the context end.
+            # Only their in-range prefix/query keys require logical pages.
+            required_sequence = min(required_sequence, self.max_sequence)
+        if required_sequence > common.block_table_tensor.shape[1] * self.logical_block_size:
             raise ValueError("V4.1 requires full logical block-table columns, not a rebased sliding-window table")
         positions, requests, slots = self.positions[:tokens], self.requests[:tokens], self.slots[:tokens]
         cu_q, lengths, table = self.cu_q[: batch + 1], self.lengths[:batch], self.table[:batch]
@@ -320,11 +325,21 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
                     num_cache_blocks=cache.shape[0],
                     indices_output=draft_indices,
                     lengths_output=draft_lengths,
+                    max_model_len=self.max_sequence,
                 )
             else:
                 draft_indices.fill_(-1)
                 draft_lengths.zero_()
             slots.masked_fill_(slots >= cache.shape[0] * self.physical_block_size, -1)
+            padded_query = (positions < 0) | (positions >= self.max_sequence) | (draft_lengths[:, 0] == 0)
+            slots.masked_fill_(padded_query, -1)
+            requests.masked_fill_(padded_query, -1)
+            # Derive visibility above from the original virtual prefix + K5,
+            # then bound native scheduling without mutating common.seq_lens.
+            lengths.clamp_(0, self.max_sequence)
+            # Empty request slots must not claim a nonzero native KV interval
+            # at the duplicated query boundary of the next active request.
+            lengths.masked_fill_(cu_q[1:] == cu_q[:-1], 0)
         self._refresh_schedule(cu_q, lengths, cmp_lengths, residual, batch, draft_lengths)
         num_prefills, num_decode_tokens = self._execution_counts(common)
         return AscendV41CacheMetadata(

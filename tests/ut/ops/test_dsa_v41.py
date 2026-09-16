@@ -144,6 +144,7 @@ def test_dspark_metadata_and_forward_explicit_contract():
     assert build.call_args.kwargs["ori_mask_mode"] == 0
     assert build.call_args.kwargs["ori_topk"] == 256
     assert build.call_args.kwargs["ori_topk_length"] is spans
+    assert meta.seqused_kv is lengths  # Keep caller-owned length updates visible during graph replay.
     query = torch.empty((5, 8, 512), dtype=torch.bfloat16)
     cache = torch.empty((1, 32, 1, 512), dtype=torch.bfloat16)
     with patch("torch.ops._C_ascend.npu_sparse_flash_mla", return_value=(query, torch.empty(0)), create=True) as native:
@@ -165,3 +166,62 @@ def test_dspark_metadata_and_forward_explicit_contract():
         )
     with pytest.raises(ValueError, match="together"):
         ops.build_metadata(offsets, lengths, table, max_seqlen_q=5, max_seqlen_kv=160, draft_swa_indices=indices)
+
+
+@pytest.mark.parametrize("maximum", [128, 129])
+@pytest.mark.parametrize("rejected", range(6))
+def test_dspark_end_queries_do_not_shift_virtual_prefix(maximum, rejected):
+    pages = (maximum + 31) // 32
+    prefix = maximum - rejected
+    indices = torch.empty((7, 1, 256), dtype=torch.int32)
+    lengths = torch.empty((7, 1), dtype=torch.int32)
+    with patch.object(torch.Tensor, "item", side_effect=AssertionError("host read")):
+        build_dspark_v41_swa_indices(
+            torch.arange(pages, dtype=torch.int32).flip(0)[None],
+            torch.tensor([0, 5], dtype=torch.int32),
+            torch.tensor([prefix + 5], dtype=torch.int32),
+            page_size=32,
+            num_cache_blocks=pages,
+            indices_output=indices,
+            lengths_output=lengths,
+            max_model_len=maximum,
+        )
+    visible = list(range(max(0, prefix - 128), min(prefix + 5, maximum)))
+    for row in range(7):
+        if row < min(rejected, 5):
+            assert indices[row, 0, : len(visible)].tolist() == visible
+            assert lengths[row] == len(visible)
+        else:
+            assert torch.all(indices[row] == -1)
+            assert lengths[row] == 0
+
+
+def test_dspark_zero_span_masks_uninitialized_native_output_and_lse():
+    ops = AscendDSAV41Ops(0)
+    indices = torch.full((5, 1, 256), -1, dtype=torch.int32)
+    spans = torch.tensor([[129], [129], [0], [0], [0]], dtype=torch.int32)
+    with patch("torch.ops._C_ascend.npu_sparse_flash_mla_metadata", return_value=torch.zeros(1024), create=True):
+        metadata = ops.build_metadata(
+            torch.tensor([0, 5], dtype=torch.int32),
+            torch.tensor([129], dtype=torch.int32),
+            torch.zeros((1, 5), dtype=torch.int32),
+            max_seqlen_q=5,
+            max_seqlen_kv=129,
+            draft_swa_indices=indices,
+            draft_swa_lengths=spans,
+        )
+    assert metadata.seqused_kv.tolist() == [129]
+    native_output = torch.full((5, 8, 512), float("nan"), dtype=torch.bfloat16)
+    native_output[:2].fill_(3)
+    native_lse = torch.full((1, 5, 8), float("nan"))
+    native_lse[:, :2].fill_(4)
+    with patch("torch.ops._C_ascend.npu_sparse_flash_mla", return_value=(native_output, native_lse), create=True):
+        output, lse = ops.forward(
+            torch.empty_like(native_output),
+            torch.empty((5, 32, 1, 512), dtype=torch.bfloat16),
+            torch.zeros(8),
+            metadata,
+            return_softmax_lse=True,
+        )
+    assert torch.all(output[:2] == 3) and torch.all(lse[:, :2] == 4)
+    assert torch.all(output[2:] == 0) and torch.all(lse[:, 2:] == 0)
