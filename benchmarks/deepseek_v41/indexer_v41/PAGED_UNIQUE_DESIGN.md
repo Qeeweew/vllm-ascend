@@ -34,7 +34,9 @@ manual hooks通过。包SHA：
 18项native测试已通过（64.37s）：T1–1024 prefill、多batch decode B1/8/32/64、
 混合多batch prefill、真实source唯一性→consumer、负score/不足512，以及bucket
 128/2048各16次变化输入graph replay。测试日志在r31/native-full.log。
-完整selector性能及全模型集成尚未验证；旧连续路径的READY527µs不能外推。
+完整selector八组性能及全核profile已完成，未达性能门槛，详见
+[PAGED_UNIQUE_RESULT.md](PAGED_UNIQUE_RESULT.md)。全模型集成仍待验证；
+旧连续路径的READY527µs不能外推。
 后续profile同时列kernel wall、每核query数和各核累计counter，避免把累计等待
 当成单query阶段时延。性能门槛仍为主要prefill至少1.2×且非目标退化不超过3%。
 
@@ -42,3 +44,11 @@ AIC在metadata-ready之后、读取复用record之前，使用CANN的
 `CacheLine::ENTIRE_DATA_CACHE` / `DcciDst::CACHELINE_OUT` 失效标量GM cache，
 使state与所有candidate offset属于本query代次。仅失效state一条cache line不能
 保护循环复用的offset表；r30构建因审计发现这一点被r31替代，未进入设备测试。
+
+性能对照中原先简称dense的路径准确名称是 **full-scan + candidate mask**。
+它仍接收同一份candidate并使用mode2，先计算整个context的QK，再在top-k前
+抑制候选外score，并非unrestricted top-k。三路输出分别通过受限候选集合oracle，
+允许cutoff tie和有界FP归约误差的边界替换，不要求ID张量bitwise相同。
+旧full-scan路径在合法候选不足512时可能保留集合外ID作为填充；r31必须补-1。
+本轮8shape经CPU枚举最少3586个合法候选位置，未触发该旧限制；详细证据与
+比较范围见[PAGED_UNIQUE_RESULT.md](PAGED_UNIQUE_RESULT.md)。
