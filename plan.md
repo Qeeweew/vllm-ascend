@@ -3,7 +3,11 @@
 调研日期：2026-09-15。目标仓库：个人 fork `https://github.com/Qeeweew/vllm-ascend.git`。
 开发分支：`deepseek-v41-910b-w4a16-engram`，已从本地 `main` 创建。
 
-本文包含实施计划和验收记录。截至2026-09-16，48/48权重转换已完成；完整40层TP8 eager/graph、366.22GiB真实pinned Engram及五项文本graph smoke（含4243-token检索）已通过，详见 `benchmarks/deepseek_v41/FULL_MODEL_RESULT.md`。融合H32 indexer r14仅验证了B1特化，B8/B32仍走旧路径；该范围不足，已撤回整体完成结论，正在重做多batch分块与验收。RoPE/cache/router融合仍在隔离编译与验收。真实DSpark proposer仍有metadata报错，生产准入关闭；完整模型视觉、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
+本文包含实施计划和验收记录。截至2026-09-16，48/48权重转换已完成；完整40层TP8 eager/graph、366.22GiB真实pinned Engram及五项文本graph smoke（含4243-token检索）已通过，详见 `benchmarks/deepseek_v41/FULL_MODEL_RESULT.md`。
+
+融合indexer已从r14的B1特化重写为按query调度的r17，真实ragged多请求、16次输入变化graph replay、T1024 prefill通过。性能尚未通过：独占卡T128/32K约1.33ms，旧QLI约1.07ms；T512/4K退化2.76×，而T128/128K与T512/128K分别加速约1.64×/1.58×。旧QLI的M128在4个query间复用K，新candidate M32失去该复用，并有全query预处理等待；正在对照原 `qli_opt` 与当前QLI源码及全核profiling，再决定tiling/流水修改，不把长上下文收益外推到全部prefill。
+
+Router r3的84项NPU/graph正确性和48组独占卡性能测试通过；RoPE/cache r9的187项正确性通过，但plain RoPE T1024/H32/D128仍回退约21%，r10优化后台构建中。框架接入181项CPU测试及16项编译扩展Meta/FakeTensor测试通过；新功能默认关闭，生产安装仍是r12。真实DSpark proposer在context9通过、context33的metadata报错，隔离AICPU诊断包构建中，生产准入关闭。完整模型视觉、native W4A16整模、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
 
 ## 1. 目标与总体决策
 
