@@ -1,0 +1,85 @@
+{
+  "status": "prepared_only",
+  "cases": [
+    [
+      9,
+      null
+    ],
+    [
+      33,
+      null
+    ],
+    [
+      129,
+      null
+    ],
+    [
+      255,
+      0
+    ],
+    [
+      255,
+      1
+    ],
+    [
+      255,
+      2
+    ],
+    [
+      255,
+      3
+    ],
+    [
+      255,
+      4
+    ],
+    [
+      255,
+      5
+    ],
+    [
+      256,
+      0
+    ],
+    [
+      256,
+      1
+    ],
+    [
+      256,
+      2
+    ],
+    [
+      256,
+      3
+    ],
+    [
+      256,
+      4
+    ],
+    [
+      256,
+      5
+    ]
+  ],
+  "source": "/mnt/models/DeepSeek-V4.1-Flash",
+  "checkpoint": "/mnt/models/DeepSeek-V4.1-Flash-W4A16-G32",
+  "draft_shards": [
+    "model-00044-of-00048.safetensors",
+    "model-00045-of-00048.safetensors",
+    "model-00046-of-00048.safetensors"
+  ],
+  "draft_architecture": [
+    "DSparkV41DraftModel"
+  ],
+  "target_aux": "synthetic deterministic BF16; no target layers executed",
+  "real_runner_constructor": true,
+  "real_proposer_load_model": true,
+  "real_proposer_propose": true,
+  "scheduler_acceptance_validated": false,
+  "graph_validated": false,
+  "peak_budget_bytes": 8589934592,
+  "manifest_sha256": "4d48bba36c91edca7cae890cd6186a7728f67603c8efc4ae358d1447ddab2bed",
+  "npu_initialized": false,
+  "schedule_backend": "AscendC V41DsparkMetadata candidate"
+}

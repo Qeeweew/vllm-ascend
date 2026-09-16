@@ -65,6 +65,7 @@ def test_compiled_schemas_preserve_output_mutations():
         "v41_main_cache_store": ("cache",),
         "v41_index_cache_store": ("key_cache", "scale_cache"),
         "v41_moe_router": ("weights", "expert_ids"),
+        "v41_dspark_metadata": ("schedule",),
     }.items():
         schema = getattr(torch.ops._C_ascend, name).default._schema
         assert not schema.returns
@@ -99,3 +100,38 @@ def test_compiled_meta_rejects_aliasing_and_wrong_dtype():
         torch.ops._C_ascend.v41_rope(x, pos, table, table, x)
     with pytest.raises(RuntimeError, match="dtype/device mismatch"):
         torch.ops._C_ascend.v41_rope(x, pos.int(), table, table, torch.empty_like(x))
+
+
+@pytest.mark.parametrize("fake", [False, True])
+@pytest.mark.parametrize("batch,tokens", [(0, 0), (1, 5), (32, 160), (4096, 32768)])
+def test_compiled_dspark_metadata_contract(fake, batch, tokens):
+    with FakeTensorMode() if fake else nullcontext():
+        device = "cpu" if fake else "meta"
+        cu_q = torch.empty(batch + 1, dtype=torch.int32, device=device)
+        lengths = torch.empty(batch, dtype=torch.int32, device=device)
+        topk = torch.empty((tokens, 1), dtype=torch.int32, device=device)
+        schedule = torch.empty(1024, dtype=torch.int32, device=device)
+        assert torch.ops._C_ascend.v41_dspark_metadata(cu_q, lengths, topk, schedule) is None
+
+
+@pytest.mark.parametrize("fake", [False, True])
+def test_compiled_dspark_metadata_rejects_invalid_buffers(fake):
+    with FakeTensorMode() if fake else nullcontext():
+        device = "cpu" if fake else "meta"
+        cu_q = torch.empty(3, dtype=torch.int32, device=device)
+        lengths = torch.empty(2, dtype=torch.int32, device=device)
+        topk = torch.empty((10, 1), dtype=torch.int32, device=device)
+        schedule = torch.empty(1024, dtype=torch.int32, device=device)
+        op = torch.ops._C_ascend.v41_dspark_metadata
+        with pytest.raises(RuntimeError, match="boundaries"):
+            op(cu_q[:-1], lengths, topk, schedule)
+        with pytest.raises(RuntimeError, match="1024 INT32"):
+            op(cu_q, lengths, topk, schedule[:-1])
+        with pytest.raises(RuntimeError, match="share input storage"):
+            op(schedule[:3], lengths, topk, schedule)
+        with pytest.raises(RuntimeError, match="contiguous"):
+            op(cu_q, lengths, topk, torch.empty(2048, dtype=torch.int32, device=device)[::2])
+        with pytest.raises(RuntimeError, match="dtype/device"):
+            op(cu_q.long(), lengths, topk, schedule)
+        with pytest.raises(RuntimeError, match="32768 query"):
+            op(cu_q, lengths, torch.empty((32769, 1), dtype=torch.int32, device=device), schedule)

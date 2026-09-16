@@ -1,9 +1,11 @@
 # Real DSpark proposer integration
 
-Status on 2026-09-16: **real TP8 proposer remains blocked at context 33**. This result does not
-invalidate the passed independent draft stage or maximum-context component
-tests, but demonstrates that those tests did not cover the real proposer
-integration. Production DSpark admission remains disabled.
+Status on 2026-09-16: **real TP8 proposer passes all 15 cases with AscendC
+metadata**, including context 33. All eight ranks agree, the independent CPU
+Markov selection oracle passes exactly, and every worker exits cleanly. The
+original AICPU failure's root cause remains unresolved. Full target/draft graph,
+scheduler and serving acceptance remain outstanding; production DSpark
+admission remains disabled until those gates pass.
 
 `check_dspark_proposer_tp8.py` constructs the real `NPUModelRunner`, takes
 its actual drafter and invokes `proposer.load_model` and `_propose`. The
@@ -19,7 +21,38 @@ visibility, finite logits and sequential Markov greedy selection. Rejected
 auxiliary rows are perturbed to check that they cannot change logits or
 proposals. Every rank must agree and clean up its distributed state.
 
-## Evidence
+## AscendC replacement: r9 acceptance
+
+The specialized `V41DsparkMetadata` operator writes the caller-owned 1024-word
+INT32 schedule directly on NPU. Attention visibility, sparse indices, cache
+layout and the SMLA computation are unchanged. Its independent 58-case NPU
+suite covers B1/2/4/8/16/32 and 96 changed-input graph replays; see
+[metadata results](v41_dspark_metadata/RESULTS.md).
+
+The uninstrumented r9 proposer run uses the r6 Torch extension, the isolated
+metadata vendor and unchanged production vendor. No diagnostic guard,
+metadata observation synchronization or task-queue override is enabled.
+Contexts 9/33/129 and 255/256 with rejection counts 0–5 all pass on eight
+ranks. Perturbing rejected auxiliary rows leaves logits and proposals exactly
+unchanged. The independent CPU sequential Markov oracle matches all 75
+proposed tokens, and rank proposals agree exactly. Maximum Torch allocation
+is 4,490,209,280 bytes per rank, below the fixed 8 GiB ceiling. Launcher exit
+is zero, all ranks record distributed cleanup, and no NPU worker remains.
+
+This harness uses one request per case, three real draft blocks, real shared
+embedding/head and synthetic target auxiliary states. It executes the proposer
+eagerly to isolate the metadata repair. It does not establish full DSpark
+graph, multi-request proposer, target verification, scheduler rollback,
+serving or end-to-end performance. Those remain required; eager execution is
+an intermediate correctness result. The production installation is unchanged.
+
+Preserved evidence: `dspark_proposer/r9_comparison.json`, eight `r9_rank*.json`
+files, `r9_prepared.json`, and `r9_manifest.json` with log, tensor and native
+artifact hashes. Raw execution and CPU comparison logs remain at
+`/tmp/v41-dspark-proposer-r9-ascendc.log` and
+`/tmp/v41-dspark-proposer-r9-ascendc-compare.log`.
+
+## Original AICPU failure evidence
 
 - CPU preparation passed with the complete conversion manifest; NPU remained
   uninitialized. `dspark_proposer/r2_prepare.json` records the exact scope.

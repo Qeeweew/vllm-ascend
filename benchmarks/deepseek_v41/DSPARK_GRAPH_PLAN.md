@@ -8,10 +8,14 @@ unfinished work.
 ## Verified starting point
 
 The three real draft blocks pass independent stage oracles (contexts 9, 33,
-129). Real proposer integration still fails in SparseFlashMlaMetadata. The
-AICPU diagnostic channel now passes a device self-test; the guarded TP8 run
-must identify the actual failure before any production validation changes.
-No serving, acceptance-rate or draft graph result is claimed.
+129). The original AICPU metadata path fails at context 33 in real proposer
+integration; its root cause remains unresolved. The specialized AscendC
+replacement passes 58 NPU tests, including multi-request final-attention
+comparisons and 96 changed-input graph replays. Uninstrumented TP8 proposer
+r9 then passes all 15 cases on eight ranks, including context 33, with exact
+CPU Markov selection and clean teardown. This replacement does not change attention
+visibility or relax production validation. No serving, acceptance-rate or
+complete draft graph result is claimed.
 
 Upstream vLLM at 836bb3839ffefcda8283ea7d41671a89e1a613df captures the
 parallel draft backbone and sequential Markov sampling in

@@ -1,0 +1,326 @@
+{
+  "rank": 1,
+  "status": "executed_pending_cpu_selection_oracle",
+  "cases": [
+    {
+      "sequence": 9,
+      "rejected": null,
+      "seed": 100,
+      "slots": [
+        233,
+        234,
+        235,
+        236,
+        237
+      ],
+      "proposals": [
+        [
+          3692,
+          70,
+          4611,
+          28,
+          582
+        ]
+      ]
+    },
+    {
+      "sequence": 33,
+      "rejected": null,
+      "seed": 0,
+      "slots": [
+        193,
+        194,
+        195,
+        196,
+        197
+      ],
+      "proposals": [
+        [
+          60914,
+          922,
+          18245,
+          753,
+          3571
+        ]
+      ]
+    },
+    {
+      "sequence": 129,
+      "rejected": null,
+      "seed": 129264,
+      "slots": [
+        97,
+        98,
+        99,
+        100,
+        101
+      ],
+      "proposals": [
+        [
+          66,
+          418,
+          2619,
+          33474,
+          18059
+        ]
+      ]
+    },
+    {
+      "sequence": 255,
+      "rejected": 0,
+      "seed": 100,
+      "slots": [
+        31,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          10759,
+          201,
+          15,
+          19,
+          16
+        ]
+      ]
+    },
+    {
+      "sequence": 255,
+      "rejected": 1,
+      "seed": 0,
+      "slots": [
+        30,
+        31,
+        -1,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          20638,
+          2077,
+          16,
+          539,
+          15
+        ]
+      ]
+    },
+    {
+      "sequence": 255,
+      "rejected": 2,
+      "seed": 129264,
+      "slots": [
+        29,
+        30,
+        31,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          66,
+          362,
+          13026,
+          16,
+          539
+        ]
+      ]
+    },
+    {
+      "sequence": 255,
+      "rejected": 3,
+      "seed": 100,
+      "slots": [
+        28,
+        29,
+        30,
+        31,
+        -1
+      ],
+      "proposals": [
+        [
+          10759,
+          855,
+          22045,
+          52964,
+          201
+        ]
+      ]
+    },
+    {
+      "sequence": 255,
+      "rejected": 4,
+      "seed": 0,
+      "slots": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "proposals": [
+        [
+          369,
+          43132,
+          387,
+          17,
+          27860
+        ]
+      ]
+    },
+    {
+      "sequence": 255,
+      "rejected": 5,
+      "seed": 129264,
+      "slots": [
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "proposals": [
+        [
+          369,
+          223,
+          939,
+          23,
+          53869
+        ]
+      ]
+    },
+    {
+      "sequence": 256,
+      "rejected": 0,
+      "seed": 100,
+      "slots": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          9,
+          85,
+          16,
+          539,
+          15
+        ]
+      ]
+    },
+    {
+      "sequence": 256,
+      "rejected": 1,
+      "seed": 0,
+      "slots": [
+        31,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          62247,
+          337,
+          1187,
+          16,
+          539
+        ]
+      ]
+    },
+    {
+      "sequence": 256,
+      "rejected": 2,
+      "seed": 129264,
+      "slots": [
+        30,
+        31,
+        -1,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          16781,
+          832,
+          201,
+          15,
+          19
+        ]
+      ]
+    },
+    {
+      "sequence": 256,
+      "rejected": 3,
+      "seed": 100,
+      "slots": [
+        29,
+        30,
+        31,
+        -1,
+        -1
+      ],
+      "proposals": [
+        [
+          10759,
+          223,
+          2012,
+          16,
+          539
+        ]
+      ]
+    },
+    {
+      "sequence": 256,
+      "rejected": 4,
+      "seed": 0,
+      "slots": [
+        28,
+        29,
+        30,
+        31,
+        -1
+      ],
+      "proposals": [
+        [
+          70401,
+          28,
+          6939,
+          284,
+          16
+        ]
+      ]
+    },
+    {
+      "sequence": 256,
+      "rejected": 5,
+      "seed": 129264,
+      "slots": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "proposals": [
+        [
+          66,
+          832,
+          362,
+          260,
+          223
+        ]
+      ]
+    }
+  ],
+  "diagnostic_metadata_sync": false,
+  "phase": "case_14",
+  "peak_allocated_bytes": 4490209280,
+  "reserved_bytes": 5016387584,
+  "distributed_cleanup": true
+}

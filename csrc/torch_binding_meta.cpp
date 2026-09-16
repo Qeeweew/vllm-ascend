@@ -44,6 +44,10 @@ constexpr int64_t DSA_SLOT_MAPPING_FLAT = 1;
 constexpr int64_t DSA_SLOT_MAPPING_BLOCK_OFFSET = 2;
 
 #ifdef VLLM_ENABLE_V41_KERNELS
+void v41_dspark_metadata_meta(const at::Tensor &cu_q, const at::Tensor &lengths,
+                              const at::Tensor &topk_lengths, at::Tensor &schedule)
+{ v41::dspark_metadata(cu_q, lengths, topk_lengths, schedule); }
+
 void v41_rope_meta(const at::Tensor &x, const at::Tensor &positions,
     const at::Tensor &cos, const at::Tensor &sin, at::Tensor &output, bool inverse)
 { v41::rope(x, positions, cos, sin, output); }
@@ -2213,6 +2217,7 @@ TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 namespace {
 TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 #ifdef VLLM_ENABLE_V41_KERNELS
+    ops.impl("v41_dspark_metadata", &vllm_ascend::meta::v41_dspark_metadata_meta);
     ops.impl("v41_rope", &vllm_ascend::meta::v41_rope_meta);
     ops.impl("v41_main_cache_store", &vllm_ascend::meta::v41_main_cache_store_meta);
     ops.impl("v41_index_cache_store", &vllm_ascend::meta::v41_index_cache_store_meta);

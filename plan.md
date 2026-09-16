@@ -7,7 +7,7 @@
 
 融合indexer已从r14的B1特化重写为按query调度的r17，真实ragged多请求、16次输入变化graph replay、T1024 prefill通过。性能尚未通过：独占卡T128/32K约1.33ms，旧QLI约1.07ms；T512/4K退化2.76×，而T128/128K与T512/128K分别加速约1.64×/1.58×。旧QLI的M128在4个query间复用K，新candidate M32失去该复用，并有全query预处理等待；正在对照原 `qli_opt` 与当前QLI源码及全核profiling，再决定tiling/流水修改，不把长上下文收益外推到全部prefill。
 
-Router r3的84项NPU/graph正确性和48组独占卡性能测试通过；RoPE/cache r12的193项NPU、33项CPU和64组独占graph性能测试全部通过，plain RoPE T1024/H32/D128由243.158降至40.879µs。融合算子注册、Meta与模型接线已提交`00ce95d69`，189项框架CPU检查通过，完整模型融合验证待执行；生产安装仍是r12。真实DSpark proposer的metadata故障仍在定位，诊断输出通道已完成NPU自测。AICPU增量构建漏重链接问题已修复并提交`815a8bf02`。DSpark必须开启且draft计算需要graph，具体context/query独立捕获边界与验收见[DSpark graph计划](benchmarks/deepseek_v41/DSPARK_GRAPH_PLAN.md)。完整模型视觉、native W4A16整模、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
+Router r3的84项NPU/graph正确性和48组独占卡性能测试通过；RoPE/cache r12的193项NPU、33项CPU和64组独占graph性能测试全部通过，plain RoPE T1024/H32/D128由243.158降至40.879µs。融合算子注册、Meta与模型接线已提交`00ce95d69`，189项框架CPU检查通过，完整模型融合验证待执行；生产安装仍是r12。DSpark专用AscendC metadata已通过58项NPU测试和96次变输入graph replay；真实TP8 proposer r9的15组场景（含context33、255/256及拒绝0–5）在8rank全部通过，CPU Markov选词75token完全一致，全部worker正常退出。原AICPU根因仍未确认，替换路径已解除该集成阻塞；当前proposer回归为B1/eager，完整DSpark context/query graph、多请求proposer和target/scheduler联动尚未完成。AICPU增量构建漏重链接问题已修复并提交`815a8bf02`。DSpark必须开启且draft计算需要graph，具体context/query独立捕获边界与验收见[DSpark graph计划](benchmarks/deepseek_v41/DSPARK_GRAPH_PLAN.md)。完整模型视觉、native W4A16整模、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
 
 ## 1. 目标与总体决策
 

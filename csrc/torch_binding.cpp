@@ -88,6 +88,14 @@
 namespace vllm_ascend {
 
 #ifdef VLLM_ENABLE_V41_KERNELS
+void v41_dspark_metadata(const at::Tensor &cu_q, const at::Tensor &lengths,
+                         const at::Tensor &topk_lengths, at::Tensor &schedule)
+{
+    v41::dspark_metadata(cu_q, lengths, topk_lengths, schedule);
+    // Empty batches still clear caller-owned state left by an earlier replay.
+    EXEC_NPU_CMD(aclnnV41DsparkMetadata, cu_q, lengths, topk_lengths, schedule);
+}
+
 void v41_rope(const at::Tensor &x, const at::Tensor &positions,
               const at::Tensor &cos, const at::Tensor &sin, at::Tensor &output, bool inverse)
 {
@@ -3030,6 +3038,8 @@ TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 {
 #ifdef VLLM_ENABLE_V41_KERNELS
+    ops.def("v41_dspark_metadata(Tensor cu_q, Tensor lengths, Tensor topk_lengths, Tensor(a!) schedule) -> ()");
+    ops.impl("v41_dspark_metadata", torch::kPrivateUse1, &vllm_ascend::v41_dspark_metadata);
     ops.def("v41_rope(Tensor x, Tensor positions, Tensor cos, Tensor sin, Tensor(a!) output, bool inverse=False) -> ()");
     ops.impl("v41_rope", torch::kPrivateUse1, &vllm_ascend::v41_rope);
     ops.def("v41_main_cache_store(Tensor x, Tensor positions, Tensor slots, Tensor cos, Tensor sin, "

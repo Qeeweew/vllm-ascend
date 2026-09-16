@@ -91,8 +91,13 @@ def native_metadata():
             create=True,
             return_value=torch.full((1024,), 42, dtype=torch.int32),
         ) as index,
+        patch(
+            "torch.ops._C_ascend.v41_dspark_metadata",
+            create=True,
+            side_effect=lambda cu, lengths, topk, output: output.fill_(99),
+        ) as draft,
     ):
-        yield attention, index
+        yield attention, index, draft
 
 
 @pytest.mark.parametrize("role,ratio", [("swa", 1), ("main", 1), ("main", 2), ("index", 1), ("index", 2)])
@@ -108,7 +113,7 @@ def test_physical_slots_and_device_boundaries(native_metadata, role, ratio):
         assert meta.seqused_cmp_kv.tolist() == [65 // ratio, 6 // ratio]
     if ratio == 2:
         assert meta.cmp_residual_kv.tolist() == [1, 0]
-    attention, index = native_metadata
+    attention, index, _ = native_metadata
     assert (attention.call_count, index.call_count) == ((0, 1) if role == "index" else (1, 0))
 
 
@@ -262,9 +267,10 @@ def test_draft_builder_is_explicit_and_target_stays_causal(native_metadata):
     assert converted.draft_swa_lengths is first.draft_swa_lengths
     assert first.draft_swa_lengths[:, 0].tolist() == [133] * 5 + [0, 0]
     assert first.draft_swa_indices[0, 0, :133].tolist() == list(range(133))
-    assert native_metadata[0].call_args.kwargs["ori_mask_mode"] == 0
-    assert native_metadata[0].call_args.kwargs["ori_topk"] == 256
-    assert native_metadata[0].call_args.kwargs["ori_topk_length"] is first.draft_swa_lengths
+    assert native_metadata[0].call_count == 1  # Only the target used AICPU.
+    assert native_metadata[2].call_args.args[2] is first.draft_swa_lengths
+    assert native_metadata[2].call_args.args[3] is first.schedule
+    assert first.schedule.eq(99).all()
     addresses = (first.draft_swa_indices.data_ptr(), first.draft_swa_lengths.data_ptr(), first.schedule.data_ptr())
     common.block_table_tensor[0, 4] = 99
     again = draft.build(0, common)
@@ -296,6 +302,17 @@ def test_draft_builder_rejects_wrong_role_causal_and_capacity(native_metadata):
         draft.build(0, common)
 
 
+@pytest.mark.parametrize("heads,requests,queries", [(4, 4, 8), (8, 4097, 8), (8, 4, 32769)])
+def test_draft_schedule_rejects_unsupported_partition_before_allocation(heads, requests, queries):
+    builder = make_builder("swa")
+    builder.num_heads = heads
+    builder.max_requests = requests
+    with pytest.raises(ValueError, match="schedule requires H8"):
+        builder.enable_dspark_device_metadata(queries)
+    assert builder.draft_swa_indices is None
+    assert builder.draft_swa_lengths is None
+
+
 @pytest.mark.parametrize("maximum", [128, 129])
 @pytest.mark.parametrize("rejected", range(6))
 def test_draft_maximum_context_retains_valid_queries(native_metadata, maximum, rejected):
@@ -322,7 +339,7 @@ def test_draft_maximum_context_retains_valid_queries(native_metadata, maximum, r
     assert metadata.seqused_kv.tolist() == [min(p + 5, maximum) for p in prefixes]
     assert common.seq_lens.tolist() == [p + 5 for p in prefixes]
     assert metadata.positions.tolist() == positions  # Logical positions are never clamped.
-    assert native_metadata[0].call_args.kwargs["seqused_ori_kv"] is metadata.seqused_kv
+    assert native_metadata[2].call_args.args[1] is metadata.seqused_kv
     for row, position in enumerate(positions):
         valid = row < 15 and position < maximum
         if not valid:

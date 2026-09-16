@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "schedule_backend": "AscendC V41DsparkMetadata",
+  "tp": 8,
+  "request_batch": 1,
+  "cases_per_rank": 15,
+  "diagnostic_metadata_sync": false,
+  "graph_validated": false,
+  "full_target_validated": false,
+  "scheduler_validated": false,
+  "production_install_replaced": false,
+  "launcher_exit_code": 0,
+  "all_workers_cleaned_up": true,
+  "artifact_sha256": {
+    "/tmp/v41-dspark-proposer-r9-ascendc/prepared.json": "66ee5c976442eeba3d64ad8761226e0864f6b4314c2b43b2f64da3f40704f6cc",
+    "/tmp/v41-dspark-proposer-r9-ascendc/comparison.json": "de305e10387d6528abed1955dcb1ce9ddaf3f95af3ecf606723e3bff15ed19be",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank0.json": "105ce61992f3627f6ccce3d8c1693e9b0b8271bff0bf333d558d16163c6aa1aa",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank1.json": "9063fec2c502c98c04b86230984466135eff0408cd722316ead37dd9089788a1",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank2.json": "b5e480f559bbc08097d9afbddb9e4579d5f14217cb8c1c1b8b2f9f4def2f899e",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank3.json": "92398cdede0cae23ab30d69f03162bc4164b4600f81df40bad14496328edf1cd",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank4.json": "2482de1643161d7e102025e69627e492597567fb1d44ca9de8e027e02e7ad08e",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank5.json": "87d6d6a1798444e3303a0a1585f4841eb21aae5c949eedbd9077f798cf5f3125",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank6.json": "e086d75a3d8d69e34afdc6234c86e65b6147c3441fe6b33ce4cf1bff9c49ce4b",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank7.json": "530d9575ccecbb218469d8fc8a0f2b8071724631f16eca9af7fdb2f211138276",
+    "/tmp/v41-dspark-proposer-r9-ascendc.log": "d050e473c51ec1df6776ee605c7d53264b6ba37bf505e967f97b5af24c719805",
+    "/tmp/v41-dspark-proposer-r9-ascendc-compare.log": "4084e6ddba782ae07e61e32459535ea531d253032b97f6a2898645e978f6e7e0",
+    "/tmp/v41-dspark-proposer-r9-ascendc/rank0.pt": "d2d94765f98890f500ef308cd7bb04b0ba8ad23ab333301044cd8d0372ec3e44"
+  },
+  "native_artifacts": {
+    "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-dspark-metadata/r1/source/build_out/cann-ops-transformer-v41_dspark_metadata_candidate_linux-aarch64.run": "47a8c8a95681badf72a614bb6d71604fa2ad6ab1713e051c135829f6a1a4242d",
+    "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-dspark-metadata/r1/source/build/binary/ascend910b/bin/v41_dspark_metadata/V41DsparkMetadata_321b9d7506ef00782cc284d2b8e7bd65.o": "3ef1f629a28177018312c56187ff91a4b91c41cfbbcd5eee6abb2517698079b3",
+    "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-dspark-metadata/r1/opp/vendors/v41_dspark_metadata_candidate_transformer/op_impl/ai_core/tbe/kernel/ascend910b/v41_dspark_metadata/V41DsparkMetadata_321b9d7506ef00782cc284d2b8e7bd65.o": "3ef1f629a28177018312c56187ff91a4b91c41cfbbcd5eee6abb2517698079b3",
+    "/home/xwj/workspace/deepseek-v41-flash/artifacts/small-ops-bindings/r6/install/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so": "92a84c6b33851c62ea1daac49c364ed7ad6c92653b56a47c62bc6c84c94fa5e5",
+    "/home/xwj/workspace/deepseek-v41-flash/artifacts/v41-dspark-metadata/r1/msprof-b32/OPPROF_20260916045446_TDSBOXLHHDIPGTEN/dump/aicore_binary.o": "3ef1f629a28177018312c56187ff91a4b91c41cfbbcd5eee6abb2517698079b3"
+  }
+}

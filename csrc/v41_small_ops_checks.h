@@ -22,6 +22,24 @@ inline void no_alias(const at::Tensor &output,
     }
 }
 
+inline void dspark_metadata(const at::Tensor &cu_q, const at::Tensor &lengths,
+                            const at::Tensor &topk_lengths, const at::Tensor &schedule)
+{
+    tensor(cu_q, cu_q, at::kInt);
+    tensor(lengths, cu_q, at::kInt);
+    tensor(topk_lengths, cu_q, at::kInt);
+    tensor(schedule, cu_q, at::kInt);
+    TORCH_CHECK(cu_q.dim() == 1 && cu_q.size(0) >= 1 && lengths.dim() == 1 &&
+                cu_q.size(0) == lengths.size(0) + 1, "DSpark metadata requires [B+1] boundaries and [B] lengths");
+    TORCH_CHECK(topk_lengths.dim() == 2 && topk_lengths.size(1) == 1,
+                "DSpark metadata requires [T,1] top-k lengths");
+    TORCH_CHECK(lengths.size(0) <= 4096 && topk_lengths.size(0) <= 32768,
+                "DSpark metadata supports at most 4096 requests and 32768 query tokens");
+    TORCH_CHECK(schedule.dim() == 1 && schedule.size(0) == 1024,
+                "DSpark metadata requires 1024 INT32 schedule words");
+    no_alias(schedule, {&cu_q, &lengths, &topk_lengths});
+}
+
 inline void rope_inputs(const at::Tensor &x, const at::Tensor &positions,
                         const at::Tensor &cos, const at::Tensor &sin)
 {

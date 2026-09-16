@@ -174,6 +174,8 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         """
         if self.role != "swa":
             raise ValueError("DSpark draft metadata requires a SWA-only CR0 cache group")
+        if self.num_heads != 8 or self.max_requests > 4096 or max_query_tokens > 32768:
+            raise ValueError("V4.1 DSpark schedule requires H8, at most 4096 requests and 32768 query tokens")
         if not 0 < max_query_tokens <= self.max_tokens:
             raise ValueError("DSpark query capacity must fit the preallocated metadata capacity")
         if self.draft_swa_indices is not None:
@@ -212,6 +214,12 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
         if batch == 0:
             self.schedule.zero_()
             return
+        if draft_lengths is not None:
+            # The fixed H8/CR0 draft fits each <=256-key candidate row in one
+            # SMLA tile. Generate its schedule directly into persistent device
+            # storage; graph replay sees current boundaries without AICPU.
+            torch.ops._C_ascend.v41_dspark_metadata(cu_q, lengths, draft_lengths, self.schedule)
+            return
         if self.role == "index":
             schedule = torch.ops._C_ascend.npu_quant_lightning_indexer_v2_metadata(
                 num_heads_q=32,
@@ -233,8 +241,6 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
             )
         else:
             ratio = 0 if self.role == "swa" else self.compress_ratio
-            draft = draft_lengths is not None
-            draft_kwargs = {"ori_topk": 256, "ori_topk_length": draft_lengths} if draft else {}
             schedule = torch.ops._C_ascend.npu_sparse_flash_mla_metadata(
                 num_heads_q=self.num_heads,
                 num_heads_kv=1,
@@ -249,15 +255,14 @@ class AscendV41CacheMetadataBuilder(AttentionMetadataBuilder[AscendV41CacheMetad
                 max_seqlen_cmp_kv=self.max_sequence // ratio if ratio else 0,
                 cmp_topk=AscendDSAV41Ops.TOPK if ratio else 0,
                 cmp_ratio=ratio,
-                ori_mask_mode=0 if draft else 4,
+                ori_mask_mode=4,
                 cmp_mask_mode=3,
-                ori_win_left=132 if draft else 127,
+                ori_win_left=127,
                 ori_win_right=0,
                 layout_q="TND",
                 layout_kv="PA_BBND",
                 has_ori_kv=True,
                 has_cmp_kv=bool(ratio),
-                **draft_kwargs,
             )
         self.schedule.copy_(schedule)
 
