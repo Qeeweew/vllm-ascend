@@ -17,6 +17,7 @@ from vllm_ascend.worker.model_runner_v1 import NPUModelRunner
 def runner_with_runtime():
     runner = NPUModelRunner.__new__(NPUModelRunner)
     runner.engram_runtime = Mock()
+    runner.engram_runtime.snapshot_pending = False
     runner.engram_runtime.image_token_mask = torch.zeros(16, dtype=torch.bool)
     runner.model = SimpleNamespace()
     return runner
@@ -340,8 +341,40 @@ def preprocess_runner(active_token, *, has_runtime=True, embedding_error=False):
         history = actual_history()
         history.reset_request("a", torch.tensor([1, 2]))
         offload = Mock(shards=[object()], max_tokens=2, device=torch.device("cpu"))
-        offload.prepare.return_value = (torch.zeros(2, 2, 4),)
-        runner.engram_runtime = EngramRuntime(history, offload)
+        rows = (torch.zeros(2, 2, 4),)
+        offload.acquire_staging.return_value = rows
+        # Exercise the current split snapshot lifecycle on CPU. Device DMA
+        # and native gather are covered by the NPU integration tests.
+        runtime = EngramRuntime.__new__(EngramRuntime)
+        runtime.history, runtime.offload = history, offload
+        runtime.token_mask = torch.zeros(2, dtype=torch.bool)
+        runtime.image_token_mask = torch.zeros(2, dtype=torch.bool)
+        runtime._snapshot_device = torch.empty(9, dtype=torch.int64)
+        runtime._snapshot_host = torch.empty_like(runtime._snapshot_device)
+        runtime._snapshot_ready = Mock()
+        runtime._snapshot_pending = None
+        runtime._prepared = runtime._closed = False
+        runtime.lookup = Mock()
+
+        def gather(*args, outputs, bucket_tokens, **kwargs):
+            return history.hasher.hash_chunk(*args, **kwargs)
+
+        runtime.lookup.gather_into.side_effect = gather
+
+        def submit(bucket, count, token_mask, image_mask):
+            runtime.token_mask.zero_()[:count].copy_(token_mask)
+            runtime.image_token_mask.zero_()[:count].copy_(image_mask)
+            return rows
+
+        offload.submit_staging.side_effect = submit
+        original_begin = runtime.begin_prepare
+
+        def begin(*args, **kwargs):
+            with patch("torch.npu.current_stream", return_value=None):
+                return original_begin(*args, **kwargs)
+
+        runtime.begin_prepare = begin
+        runner.engram_runtime = runtime
     scheduler = SimpleNamespace(total_num_scheduled_tokens=1, scheduled_spec_decode_tokens={"a": [-1]})
     return runner, scheduler
 
@@ -361,7 +394,7 @@ def test_real_preprocess_rejects_placeholder_before_clamp_embedding_or_hash(monk
     assert runner.input_ids.gpu.tolist() == [-1, -1]
     runner.model.embed_input_ids.assert_not_called()
     hash_chunk.assert_not_called()
-    runtime.offload.prepare.assert_not_called()
+    runtime.offload.submit_staging.assert_not_called()
     assert not runtime._prepared
     # Rejection did not commit token 0 or an invalid history position.
     runtime.history.prepare(["a"], torch.tensor([3]), torch.tensor([2]), [0, 1])
@@ -372,25 +405,18 @@ def test_real_preprocess_uses_one_snapshot_before_clamp_and_one_forward_lifecycl
     runner, scheduler = preprocess_runner(active_token)
     runtime = runner.engram_runtime
     monkeypatch.setattr(torch.npu, "is_current_stream_capturing", lambda: False)
-    snapshots = []
-    original_cpu = torch.Tensor.cpu
-
-    def snapshot_cpu(tensor, *args, **kwargs):
-        snapshots.append(tensor.clone())
-        return original_cpu(tensor, *args, **kwargs)
-
-    monkeypatch.setattr(torch.Tensor, "cpu", snapshot_cpu)
     with patch("vllm.v1.worker.gpu_model_runner.get_pp_group", return_value=SimpleNamespace(is_first_rank=True)):
         runner._sanitize_placeholder_input_ids_for_forward(scheduler, 2)
         result = runner._preprocess(scheduler, 2)
-    assert len(snapshots) == 1
-    assert snapshots[0].tolist() == [active_token, -1, 2, 99, 0, 1]
+    runtime._snapshot_ready.record.assert_called_once()
+    runtime._snapshot_ready.synchronize.assert_called_once()
+    assert runtime._snapshot_host[:6].tolist() == [active_token, -1, 2, 99, 0, 1]
     assert runner.input_ids.gpu.tolist() == [active_token, 0]
     assert runner.positions.tolist() == [2, 0]
     assert runner.model.embed_input_ids.call_args.args[0].tolist() == [active_token]
     assert result[4]["engram_token_mask"].tolist() == [True, False]
     assert runtime._prepared
-    runtime.offload.prepare.assert_called_once()
+    runtime.offload.submit_staging.assert_called_once()
     runtime.offload.wait_ready.assert_not_called()
     runtime.wait_ready()
     runtime.mark_consumed()
