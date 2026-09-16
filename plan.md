@@ -3,7 +3,7 @@
 调研日期：2026-09-15。目标仓库：个人 fork `https://github.com/Qeeweew/vllm-ascend.git`。
 开发分支：`deepseek-v41-910b-w4a16-engram`，已从本地 `main` 创建。
 
-本文包含实施计划和验收记录。当前已完成46/48权重分片转换、独立环境editable安装、重写compressor、W4A16 decode复用、Engram pinned offload及366.22GiB合成全容量验证。真实三层E384文本TP8 eager/graph已运行，strict HCCL下CANN输出逐位一致；真实32层视觉塔及三层语言模型的照片eager和生产注册入口graph请求已通过，8rank正常释放Engram并退出。完整40层真实模型、真实全Engram、长上下文、DSpark及最终整机profiling仍未验收，源47/48仍在下载。详细最新证据见12.7–12.8，后续章节中的早期状态保留为调研记录。后台编译与集成工作并行推进。
+本文包含实施计划和验收记录。截至2026-09-16，48/48权重转换已完成；完整40层TP8 eager/graph、366.22GiB真实pinned Engram及五项文本graph smoke（含4243-token检索）已通过，详见 `benchmarks/deepseek_v41/FULL_MODEL_RESULT.md`。融合H32 indexer r14仅验证了B1特化，B8/B32仍走旧路径；该范围不足，已撤回整体完成结论，正在重做多batch分块与验收。RoPE/cache/router融合仍在隔离编译与验收。真实DSpark proposer仍有metadata报错，生产准入关闭；完整模型视觉、DSpark、长上下文及最终 `vllm bench` / 整机profiling尚未完成。后续早期状态保留为调研记录，不能视为最新进度。后台编译与外围接入并行推进。
 
 ## 1. 目标与总体决策
 
@@ -15,6 +15,8 @@
 6. 新增设备算子使用 AscendC。小批量 GEMV 与大批量 Cube grouped GEMM 分开优化；CATLASS 提供矩阵乘基础组件，不引入 CUDA/Triton 新算子作为交付实现。
 7. **用户指定：compressor 算子重写，旧实现不作为正确性基础；矩阵乘法必须独立拿出来。** 保持模块职责简单，先做独立 projection、CR1/CR2 压缩/归一化、cache insertion，不延续旧算子复杂流水。
 8. **用户授权使用独立 sub-agent 开发算子，并要求严格性能验收。** 主任务负责数值契约、接口、集成与最终验收；算子任务在明确文件范围内交给sub-agent。全部功能适配完成后继续做整机profiling和优化，形成可复现报告，这是交付的一部分。
+9. **DSpark是最终交付硬要求。** 必须通过真实三层draft proposer、target verification、接受/拒绝及回滚、target/draft NPU graph协调和服务端请求，并单独报告DSpark端到端性能。组件oracle和标准自回归通过不能替代这些验收；当前metadata故障必须修复后才能开放生产准入。
+10. **融合indexer以多batch为主要验收范围。** B1局部优化和旧路径B8/B32回归不能作为交付。重新设计请求与候选块的核分配，至少覆盖B1/2/4/8/16/32、H32、CR1/CR2及混合请求长度；必须证明各形状实际进入融合路径，独立报告正确性、graph、完整selector延迟、吞吐、HBM和Cube/MTE/核负载指标。
 
 ## 2. 已核对的环境与源码基线
 
