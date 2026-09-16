@@ -23,6 +23,7 @@ from vllm.model_executor.models.utils import sequence_parallel_chunk
 from vllm_ascend.ascend_forward_context import _EXTRA_CTX, MoECommType
 from vllm_ascend.device.device_op import DeviceOperator
 from vllm_ascend.ops.fused_moe.router.grouped_topk_router import AscendGroupedTopKRouter
+from vllm_ascend.ops.v41_moe_router import v41_moe_router
 
 DEEPSEEK_V4_IMAGE_SENTINEL_BASE_ID = 129257
 DEEPSEEK_V4_IMAGE_SENTINEL_COUNT = 5
@@ -106,6 +107,7 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
         select_experts_fn: Callable[..., tuple[torch.Tensor, torch.Tensor]] | None = None,
         image_sentinel_count: int = DEEPSEEK_V4_IMAGE_SENTINEL_COUNT,
         require_image_token_mask: bool = False,
+        enable_v41_router: bool = False,
     ):
         super().__init__(
             top_k=top_k,
@@ -128,6 +130,7 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
         self.image_sentinel_lo = image_sentinel_lo
         self.image_sentinel_count = image_sentinel_count
         self.require_image_token_mask = require_image_token_mask
+        self.enable_v41_router = require_image_token_mask and enable_v41_router
 
     def _select_experts(
         self,
@@ -222,6 +225,25 @@ class AscendFusedTopKRouter(AscendGroupedTopKRouter):
                 input_ids = None
                 tid2eid_ones = None
             if self.bias_vl is not None and input_ids is not None:
+                if self.enable_v41_router and (router_logits.shape[1], self.top_k) in ((384, 6), (128, 3)):
+                    weights = torch.empty(
+                        (router_logits.shape[0], self.top_k), dtype=torch.float32, device=router_logits.device
+                    )
+                    ids = torch.empty_like(weights, dtype=torch.int32)
+                    v41_moe_router(
+                        router_logits,
+                        input_ids,
+                        image_token_mask,
+                        tid2eid_ones,
+                        self.e_score_correction_bias,
+                        self.bias_vl,
+                        weights,
+                        ids,
+                        self.top_k,
+                        self.renormalize,
+                        self.routed_scaling_factor,
+                    )
+                    return weights, ids.to(torch.int32 if indices_type is None else indices_type)
                 topk_weights, topk_ids = select_deepseek_v4_vision_experts(
                     router_logits=router_logits,
                     input_ids=input_ids,

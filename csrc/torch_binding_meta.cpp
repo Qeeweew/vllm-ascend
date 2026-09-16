@@ -33,6 +33,10 @@
  * See below for real examples.
  */
 
+#ifdef VLLM_ENABLE_V41_KERNELS
+#include "v41_small_ops_checks.h"
+#endif
+
 namespace vllm_ascend {
 namespace meta {
 const int64_t INT4_NUMS_IN_INT32 = 8;
@@ -40,6 +44,25 @@ constexpr int64_t DSA_SLOT_MAPPING_FLAT = 1;
 constexpr int64_t DSA_SLOT_MAPPING_BLOCK_OFFSET = 2;
 
 #ifdef VLLM_ENABLE_V41_KERNELS
+void v41_rope_meta(const at::Tensor &x, const at::Tensor &positions,
+    const at::Tensor &cos, const at::Tensor &sin, at::Tensor &output, bool inverse)
+{ v41::rope(x, positions, cos, sin, output); }
+
+void v41_main_cache_store_meta(const at::Tensor &x, const at::Tensor &positions,
+    const at::Tensor &slots, const at::Tensor &cos, const at::Tensor &sin, at::Tensor &cache, int64_t ratio)
+{ v41::main_store(x, positions, slots, cos, sin, cache, ratio); }
+
+void v41_index_cache_store_meta(const at::Tensor &x, const at::Tensor &positions,
+    const at::Tensor &slots, const at::Tensor &cos, const at::Tensor &sin,
+    at::Tensor &keys, at::Tensor &scales, int64_t ratio)
+{ v41::index_store(x, positions, slots, cos, sin, keys, scales, ratio); }
+
+void v41_moe_router_meta(const at::Tensor &logits, const at::Tensor &token_ids,
+    const at::Tensor &image_mask, const c10::optional<at::Tensor> &table,
+    const c10::optional<at::Tensor> &text_bias, const at::Tensor &image_bias,
+    at::Tensor &weights, at::Tensor &ids, int64_t k, bool renormalize, double scale)
+{ v41::router(logits, token_ids, image_mask, table, text_bias, image_bias, weights, ids, k, scale); }
+
 void engram_gate_meta(const at::Tensor &hidden, const at::Tensor &kv,
                       const at::Tensor &q_weight, const at::Tensor &k_weight,
                       const at::Tensor &token_mask, at::Tensor &output, double eps)
@@ -2190,6 +2213,10 @@ TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 namespace {
 TORCH_LIBRARY_IMPL_EXPAND(CONCAT(_C, _ascend), Meta, ops) {
 #ifdef VLLM_ENABLE_V41_KERNELS
+    ops.impl("v41_rope", &vllm_ascend::meta::v41_rope_meta);
+    ops.impl("v41_main_cache_store", &vllm_ascend::meta::v41_main_cache_store_meta);
+    ops.impl("v41_index_cache_store", &vllm_ascend::meta::v41_index_cache_store_meta);
+    ops.impl("v41_moe_router", &vllm_ascend::meta::v41_moe_router_meta);
     ops.impl("compressor_v41", &vllm_ascend::meta::compressor_v41_meta);
     ops.impl("engram_gate", &vllm_ascend::meta::engram_gate_meta);
     ops.impl("indexer_v41_candidate_gather", &vllm_ascend::meta::indexer_v41_candidate_gather_meta);

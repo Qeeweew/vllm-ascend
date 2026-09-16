@@ -2,9 +2,10 @@
 
 Status: CPU contract tests and complete isolated package build r3 pass; native
 accuracy and graph checks passed (84 tests) with the new workspace-safe binding.
-Performance is not yet accepted. See `package_r3.json` and `RESULT.md`.
-Do not enable production dispatch before the baseline probe, exact ID/weight,
-changed-input graph and frozen whole-chain performance gates all pass.
+All 48 exclusive NPU2 performance cases passed with the r3 kernel/binding,
+scaling 1.5 and graph unroll 256. See `package_r3.json` and `RESULT.md`.
+Production dispatch remains disabled pending complete-model integration
+validation; operator accuracy and performance do not establish model throughput.
 
 ## Build and native API
 

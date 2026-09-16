@@ -108,6 +108,20 @@ class TestRlConfig(TestBase):
 
 
 class TestAscendConfig(TestBase):
+    def test_v41_fusions_are_typed_and_independently_opt_in(self):
+        base = {"sparse_kv_offload_config": SimpleNamespace(enabled=False)}
+        flags = ("enable_v41_rope", "enable_v41_cache_store", "enable_v41_router")
+        for flag in flags:
+            with self.subTest(flag=flag):
+                self.assertFalse(getattr(AscendConfig(**base), flag))
+                enabled = AscendConfig(**base, **{flag: True})
+                self.assertTrue(getattr(enabled, flag))
+                for other in set(flags) - {flag}:
+                    self.assertFalse(getattr(enabled, other))
+                self.assertFalse(getattr(AscendConfig(**base, **{flag: "false"}), flag))
+                with self.assertRaises(ValueError):
+                    AscendConfig(**base, **{flag: "invalid"})
+
     def test_engram_numa_nodes_are_optional_strict_nonnegative_integers(self):
         base = {"sparse_kv_offload_config": SimpleNamespace(enabled=False)}
         self.assertIsNone(AscendConfig(**base).engram_numa_nodes)

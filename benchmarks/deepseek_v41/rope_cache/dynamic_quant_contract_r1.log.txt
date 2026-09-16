@@ -1,0 +1,295 @@
+[W916 02:18:08.712870780 FunctionLoader.cpp:48] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+[W916 02:18:15.401681530 NPUCachingAllocator.cpp:202] Warning: The current CANN and HDK(driver) versions require processing for 32 padding size, with memory allocation. (function operator())
+{
+  "output": "/tmp/v41-dynamic-quant-contract-r1.json",
+  "cases": [
+    {
+      "tokens": 1,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 1,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 2,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 3,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 4,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 5,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 6,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 7,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 8,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 9,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 10,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 11,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 12,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 13,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 14,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1,
+      "pattern_offset": 15,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 2,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 4,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 6,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 8,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 10,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 12,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 2,
+      "pattern_offset": 14,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 4,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 4,
+      "pattern_offset": 4,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 4,
+      "pattern_offset": 8,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 4,
+      "pattern_offset": 12,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 16,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 64,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 128,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    },
+    {
+      "tokens": 1024,
+      "pattern_offset": 0,
+      "scale_dtype": "torch.float32",
+      "nonzero_quant_exact": true,
+      "fp32_scale_bits_exact": true,
+      "fp16_scale_bits_exact": true,
+      "mismatched_quant_count": 0
+    }
+  ]
+}

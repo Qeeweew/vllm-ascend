@@ -110,6 +110,7 @@ from vllm_ascend.ops.engram_gate import engram_gate
 from vllm_ascend.ops.mhc_v41 import mhc_collapse, mhc_post, mhc_pre_delayed
 from vllm_ascend.ops.rope_dsv4 import ComplexExpRotaryEmbedding
 from vllm_ascend.ops.triton.mul_add import muls_add_triton
+from vllm_ascend.ops.v41_rope_cache import v41_index_cache_store, v41_main_cache_store, v41_rope
 from vllm_ascend.patch.worker.patch_deepseek_v41_mm import (
     DeepseekV41VLDummyInputsBuilder,
     DeepseekV41VLMultiModalProcessor,
@@ -156,6 +157,9 @@ class DeepseekV41AttentionProjections(nn.Module):
             raise ValueError("Unsupported V4.1 attention ratio or TP partition")
         self.head_dim = config.head_dim
         self.rope_dim = config.qk_rope_head_dim
+        ascend_config = get_ascend_config()
+        self.enable_fused_rope = getattr(ascend_config, "enable_v41_rope", False)
+        self.enable_fused_cache_store = getattr(ascend_config, "enable_v41_cache_store", False)
         self.local_heads = config.num_attention_heads // tp
         self.local_groups = config.o_groups // tp
         self.q_rank = config.q_lora_rank
@@ -235,6 +239,9 @@ class DeepseekV41AttentionProjections(nn.Module):
 
     def rotate(self, value: torch.Tensor, positions: torch.Tensor, *, inverse: bool = False) -> torch.Tensor:
         """Rotate the last RoPE dimensions, preserving BF16 rounding boundaries."""
+        if getattr(self, "enable_fused_rope", False):
+            output = torch.empty_like(value, memory_format=torch.contiguous_format)
+            return v41_rope(value, positions, self.rope_cos, self.rope_sin, output, inverse=inverse)
         cos = self.rope_cos[positions]
         sin = self.rope_sin[positions]
         if value.ndim == 3:
@@ -247,13 +254,13 @@ class DeepseekV41AttentionProjections(nn.Module):
         return torch.cat((value[..., : -self.rope_dim], rotated.to(value.dtype)), dim=-1)
 
     def project_inputs(
-        self, hidden_states: torch.Tensor, positions: torch.Tensor
+        self, hidden_states: torch.Tensor, positions: torch.Tensor, *, rotate_kv: bool = True
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         qr, kv = self.fused_wqa_wkv(hidden_states).split([self.q_rank, self.head_dim], dim=-1)
         qr = self.q_norm(qr.contiguous())
         kv = self.kv_norm(kv.contiguous())
         query = self.wq_b(qr).view(-1, self.local_heads, self.head_dim)
-        return qr, self.rotate(query, positions), self.rotate(kv, positions)
+        return qr, self.rotate(query, positions), self.rotate(kv, positions) if rotate_kv else kv
 
     def project_output(self, attention: torch.Tensor, positions: torch.Tensor) -> torch.Tensor:
         output = self.rotate(attention, positions, inverse=True)
@@ -497,34 +504,59 @@ class DeepseekV41Attention(DeepseekV41AttentionProjections):
         if self.is_draft_layer != (batch.attention.draft_swa_indices is not None):
             raise ValueError("V4.1 draft attention requires explicit noncausal metadata; target attention forbids it")
         tokens = hidden_states.shape[0]
-        qr, query, swa = self.project_inputs(hidden_states, positions)
-        write_main_cache_v41(batch.swa_cache, swa, batch.swa_slots)
+        if self.enable_fused_cache_store:
+            qr, query, swa = self.project_inputs(hidden_states, positions, rotate_kv=False)
+            v41_main_cache_store(swa, positions, batch.swa_slots, self.rope_cos, self.rope_sin, batch.swa_cache)
+        else:
+            qr, query, swa = self.project_inputs(hidden_states, positions)
+            write_main_cache_v41(batch.swa_cache, swa, batch.swa_slots)
         if self.compressor is not None:
             if batch.compressor is None or batch.main_slots is None or batch.index_slots is None:
                 raise ValueError("V4.1 KV source requires compressor metadata and main/index write slots")
             projected = self.compressor.project(hidden_states)
             latent = torch.empty((tokens, 512), dtype=torch.bfloat16, device=hidden_states.device)
             self.compressor(projected, positions, batch.compressor, latent)
-            group_positions = (positions // self.compress_ratio) * self.compress_ratio
             key = self.indexer.project_key(latent)
-            key, scale = self.selector.quantize(self.rotate(key, group_positions))
-            write_index_cache_v41(
-                batch.index_cache,
-                batch.index_scale_cache,
-                key,
-                scale,
-                batch.index_slots,
-                positions=positions,
-                compress_ratio=self.compress_ratio,
-            )
-            main = self.rotate(latent, group_positions)
-            write_main_cache_v41(
-                batch.main_cache,
-                main,
-                batch.main_slots,
-                positions=positions,
-                compress_ratio=self.compress_ratio,
-            )
+            if self.enable_fused_cache_store:
+                v41_index_cache_store(
+                    key,
+                    positions,
+                    batch.index_slots,
+                    self.rope_cos,
+                    self.rope_sin,
+                    batch.index_cache,
+                    batch.index_scale_cache,
+                    compress_ratio=self.compress_ratio,
+                )
+                v41_main_cache_store(
+                    latent,
+                    positions,
+                    batch.main_slots,
+                    self.rope_cos,
+                    self.rope_sin,
+                    batch.main_cache,
+                    compress_ratio=self.compress_ratio,
+                )
+            else:
+                group_positions = (positions // self.compress_ratio) * self.compress_ratio
+                key, scale = self.selector.quantize(self.rotate(key, group_positions))
+                write_index_cache_v41(
+                    batch.index_cache,
+                    batch.index_scale_cache,
+                    key,
+                    scale,
+                    batch.index_slots,
+                    positions=positions,
+                    compress_ratio=self.compress_ratio,
+                )
+                main = self.rotate(latent, group_positions)
+                write_main_cache_v41(
+                    batch.main_cache,
+                    main,
+                    batch.main_slots,
+                    positions=positions,
+                    compress_ratio=self.compress_ratio,
+                )
         if self.indexer is not None:
             if batch.indexer is None or batch.topk is None:
                 raise ValueError("V4.1 index source requires indexer metadata and shared top-k buffer")

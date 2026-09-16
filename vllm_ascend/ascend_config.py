@@ -323,6 +323,9 @@ class AscendConfig:
             "enable_prefill_mc2": false,
             "enable_w4a16_decode": false,
             "enable_indexer_candidate_decode": false,
+            "enable_v41_rope": false,
+            "enable_v41_cache_store": false,
+            "enable_v41_router": false,
             "engram_numa_nodes": null,
             "multistream_overlap_shared_expert": false,
             "enable_kv_nz": false,
@@ -465,6 +468,11 @@ class AscendConfig:
     # Experimental V4.1 CR1 candidate consumer, one query and one request.
     # Keep opt-in until full-model quality and TP8 performance are accepted.
     enable_indexer_candidate_decode: bool = False
+    # Experimental arch22 V4.1 fusions. Independently selectable for numerical
+    # and whole-model A/B validation; disabled until native/graph/perf gates pass.
+    enable_v41_rope: bool = False
+    enable_v41_cache_store: bool = False
+    enable_v41_router: bool = False
     # Explicit host table placement indexed by TP rank; None preserves the
     # default pinned allocator. Nodes are never inferred from device indices.
     engram_numa_nodes: list[Annotated[int, Field(strict=True, ge=0)]] | None = None

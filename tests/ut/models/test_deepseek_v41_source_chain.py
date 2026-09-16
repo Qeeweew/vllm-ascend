@@ -198,7 +198,8 @@ def metadata_for_step(chain, positions):
 
 
 @torch.inference_mode()
-def test_full_chain_top512_candidates_and_swa_retirement_across_steps(chain, monkeypatch):
+@pytest.mark.parametrize("fused_stores", [False, True])
+def test_full_chain_top512_candidates_and_swa_retirement_across_steps(chain, monkeypatch, fused_stores):
     trace = []
     state = SimpleNamespace(epoch=0, metadata=None)
     monkeypatch.setattr(model_module, "get_forward_context", lambda: SimpleNamespace(attn_metadata=state.metadata))
@@ -210,13 +211,38 @@ def test_full_chain_top512_candidates_and_swa_retirement_across_steps(chain, mon
 
     monkeypatch.setattr(torch.ops._C_ascend, "npu_scatter_nd_update_sk", scatter, raising=False)
 
+    def fused_main(x, positions, slots, cos, sin, cache, *, compress_ratio=1):
+        # Synthetic rotate below adds one; the fused store must receive values
+        # BEFORE rotation and ORIGINAL positions, including CR2 odd boundaries.
+        assert torch.equal(positions, state.metadata[chain.modules[0].prefix + ".swa_cache"].positions)
+        model_module.write_main_cache_v41(
+            cache, (x + 1).contiguous(), slots, positions=positions, compress_ratio=compress_ratio
+        )
+
+    def fused_index(x, positions, slots, cos, sin, keys, scales, *, compress_ratio=1):
+        assert torch.equal(positions, state.metadata[chain.modules[0].prefix + ".swa_cache"].positions)
+        model_module.write_index_cache_v41(
+            keys,
+            scales,
+            (x + 1).to(torch.int8),
+            torch.ones(x.shape[0], dtype=torch.float16),
+            slots,
+            positions=positions,
+            compress_ratio=compress_ratio,
+        )
+
+    monkeypatch.setattr(model_module, "v41_main_cache_store", fused_main)
+    monkeypatch.setattr(model_module, "v41_index_cache_store", fused_index)
+
     def install(layer, module):
-        def inputs(hidden, positions):
+        module.enable_fused_cache_store = fused_stores
+
+        def inputs(hidden, positions, *, rotate_kv=True):
             tokens = hidden.shape[0]
             return (
                 hidden[:, :16],
                 torch.zeros(tokens, 8, 512, dtype=torch.bfloat16),
-                torch.full((tokens, 512), layer + 80, dtype=torch.bfloat16),
+                torch.full((tokens, 512), layer + (80 if rotate_kv else 79), dtype=torch.bfloat16),
             )
 
         monkeypatch.setattr(module, "project_inputs", inputs)

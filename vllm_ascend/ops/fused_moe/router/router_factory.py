@@ -6,6 +6,7 @@ from vllm.distributed.eplb.eplb_state import EplbLayerState
 from vllm.model_executor.layers.fused_moe import FusedMoERouter
 from vllm.model_executor.layers.fused_moe.router.custom_routing_router import CustomRoutingRouter
 
+from vllm_ascend.ascend_config import get_ascend_config
 from vllm_ascend.device.hardware_profile import HardwareCapability, get_current_hardware_profile
 from vllm_ascend.ops.fused_moe.router.fused_topk_router import DEEPSEEK_V4_IMAGE_SENTINEL_COUNT
 from vllm_ascend.ops.fused_moe.router.fused_topk_router import (
@@ -116,6 +117,7 @@ def create_ascend_fused_moe_router(
             image_sentinel_lo=image_sentinel_lo,
             image_sentinel_count=image_sentinel_count,
             require_image_token_mask=require_image_token_mask,
+            enable_v41_router=require_image_token_mask and getattr(get_ascend_config(), "enable_v41_router", False),
         )
     return AscendGroupedTopKRouter(
         top_k=top_k,

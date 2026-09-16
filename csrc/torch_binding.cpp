@@ -33,6 +33,7 @@
 #include "moe/rms_norm_cast/rms_norm_cast_torch_adpt.h"
 #ifdef VLLM_ENABLE_V41_KERNELS
 #include "moe/w4a16_moe/w4a16_moe_torch_adpt.h"
+#include "v41_small_ops_checks.h"
 #endif
 #ifdef VLLM_ENABLE_ATB_AND_DIRECT_KERNELS
 #include "batch_matmul_transpose/batch_matmul_transpose_torch_adpt.h"
@@ -87,6 +88,47 @@
 namespace vllm_ascend {
 
 #ifdef VLLM_ENABLE_V41_KERNELS
+void v41_rope(const at::Tensor &x, const at::Tensor &positions,
+              const at::Tensor &cos, const at::Tensor &sin, at::Tensor &output, bool inverse)
+{
+    v41::rope(x, positions, cos, sin, output);
+    if (x.size(0) == 0) return;
+    EXEC_NPU_CMD(aclnnV41Rope, x, positions, cos, sin, output, inverse);
+}
+
+void v41_main_cache_store(const at::Tensor &x, const at::Tensor &positions,
+    const at::Tensor &slots, const at::Tensor &cos, const at::Tensor &sin,
+    at::Tensor &cache, int64_t ratio)
+{
+    v41::main_store(x, positions, slots, cos, sin, cache, ratio);
+    if (x.size(0) == 0) return;
+    int64_t page_stride = cache.stride(0);
+    EXEC_NPU_CMD(aclnnV41MainCacheStore, x, positions, slots, cos, sin, cache, ratio, page_stride);
+}
+
+void v41_index_cache_store(const at::Tensor &x, const at::Tensor &positions,
+    const at::Tensor &slots, const at::Tensor &cos, const at::Tensor &sin,
+    at::Tensor &key_cache, at::Tensor &scale_cache, int64_t ratio)
+{
+    v41::index_store(x, positions, slots, cos, sin, key_cache, scale_cache, ratio);
+    if (x.size(0) == 0) return;
+    int64_t key_page_stride = key_cache.stride(0);
+    int64_t scale_page_stride = scale_cache.stride(0);
+    EXEC_NPU_CMD(aclnnV41IndexCacheStore, x, positions, slots, cos, sin, key_cache, scale_cache,
+                 ratio, key_page_stride, scale_page_stride);
+}
+
+void v41_moe_router(const at::Tensor &logits, const at::Tensor &token_ids,
+    const at::Tensor &image_mask, const c10::optional<at::Tensor> &tid2eid,
+    const c10::optional<at::Tensor> &text_bias, const at::Tensor &image_bias,
+    at::Tensor &weights, at::Tensor &expert_ids, int64_t top_k, bool renormalize, double scale)
+{
+    v41::router(logits, token_ids, image_mask, tid2eid, text_bias, image_bias, weights, expert_ids, top_k, scale);
+    if (logits.size(0) == 0) return;
+    EXEC_NPU_CMD(aclnnV41MoeRouter, logits, token_ids, image_mask, tid2eid, text_bias,
+                 image_bias, weights, expert_ids, top_k, renormalize, scale);
+}
+
 void compressor_v41(
     const at::Tensor& kv_score, const at::Tensor& positions,
     const at::Tensor& slot_mapping, const at::Tensor& query_start_loc,
@@ -2988,6 +3030,18 @@ TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 TORCH_LIBRARY_EXPAND(CONCAT(_C, _ascend), ops)
 {
 #ifdef VLLM_ENABLE_V41_KERNELS
+    ops.def("v41_rope(Tensor x, Tensor positions, Tensor cos, Tensor sin, Tensor(a!) output, bool inverse=False) -> ()");
+    ops.impl("v41_rope", torch::kPrivateUse1, &vllm_ascend::v41_rope);
+    ops.def("v41_main_cache_store(Tensor x, Tensor positions, Tensor slots, Tensor cos, Tensor sin, "
+            "Tensor(a!) cache, int compress_ratio=1) -> ()");
+    ops.impl("v41_main_cache_store", torch::kPrivateUse1, &vllm_ascend::v41_main_cache_store);
+    ops.def("v41_index_cache_store(Tensor key, Tensor positions, Tensor slots, Tensor cos, Tensor sin, "
+            "Tensor(a!) key_cache, Tensor(b!) scale_cache, int compress_ratio=1) -> ()");
+    ops.impl("v41_index_cache_store", torch::kPrivateUse1, &vllm_ascend::v41_index_cache_store);
+    ops.def("v41_moe_router(Tensor logits, Tensor token_ids, Tensor image_mask, Tensor? tid2eid, "
+            "Tensor? text_bias, Tensor image_bias, Tensor(a!) weights, Tensor(b!) expert_ids, "
+            "int top_k=6, bool renormalize=True, float routed_scaling_factor=1.0) -> ()");
+    ops.impl("v41_moe_router", torch::kPrivateUse1, &vllm_ascend::v41_moe_router);
     ops.def("compressor_v41(Tensor kv_score, Tensor positions, Tensor slot_mapping, "
             "Tensor query_start_loc, Tensor token_to_req_indices, Tensor norm_weight, "
             "Tensor(a!) state_cache, Tensor(b!) latent_out, int compress_ratio, "
