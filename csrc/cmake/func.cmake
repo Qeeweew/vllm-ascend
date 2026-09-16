@@ -811,6 +811,9 @@ function(add_aicpu_kernel_modules)
 endfunction()
 
 function(add_aicpu_cust_kernel_modules op_name aicpu_sources aicpu_jsons)
+  # Fresh custom builds must enable the top-level link/JSON/install stage.
+  # Registering an object target alone otherwise produces an incomplete package.
+  set(ENABLE_AICPU ON CACHE BOOL "enable aicpu kernel" FORCE)
   set(target_name ${op_name}_obj)
   if(NOT TARGET ${target_name})
     add_library(${target_name} OBJECT)
