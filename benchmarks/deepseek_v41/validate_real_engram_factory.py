@@ -147,6 +147,27 @@ def record_owners(source):
     return owners
 
 
+def final_status(report):
+    if report["status"] != "resident_checks_passed_cleanup_pending":
+        return report["status"]
+    releases = [event for event in report["events"] if event["event"] == "released"]
+    exits = [event for event in report["events"] if event["event"] == "worker_exit"]
+    complete = (
+        len(releases) == 8
+        and {event["rank"] for event in releases} == set(range(8))
+        and all(
+            event["success"]
+            and not event["cleanup_errors"]
+            and sum(item["event"] == "unregistered" for item in event["registration_events"]) == 2
+            for event in releases
+        )
+        and len(exits) == 8
+        and len({event["pid"] for event in exits}) == 8
+        and all(event["exitcode"] == 0 for event in exits)
+    )
+    return "passed" if complete else "failed_cleanup"
+
+
 def main():
     """Admit complete real tables, retain all TP owners together, then require every release acknowledgement."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -218,7 +239,7 @@ def main():
                 workers.append((process, parent))
                 receive(parent, process, "ready")
             assert all(process.is_alive() for process, _ in workers)
-            report["status"] = "passed"
+            report["status"] = "resident_checks_passed_cleanup_pending"
             emit({"event": "all_16_real_owners_resident", "payload_bytes": preflight["host_pinned_bytes"]})
         except BaseException as error:
             report["status"] = "failed"
@@ -253,6 +274,7 @@ def main():
                         process.join(timeout=30)
                 finally:
                     pipe.close()
+    report["status"] = final_status(report)
     emit({"event": "finished", "status": report["status"]})
     return 0 if report["status"] in {"passed", "prepared_only"} else 1
 

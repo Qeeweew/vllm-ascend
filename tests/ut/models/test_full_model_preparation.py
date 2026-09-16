@@ -211,3 +211,28 @@ def test_matching_eager_reference_reaches_capacity_admission_without_npu(tmp_pat
     )
     assert driver.main() == 1
     assert json.loads(output.read_text())["status"] == "blocked_before_launch"
+
+
+def test_factory_cannot_publish_pass_until_every_owner_release_and_worker_exit():
+    report = {"status": "resident_checks_passed_cleanup_pending", "events": []}
+    assert factory.final_status(report) == "failed_cleanup"
+    for rank in range(8):
+        report["events"].append(
+            {
+                "event": "released",
+                "rank": rank,
+                "success": True,
+                "cleanup_errors": [],
+                "registration_events": [{"event": "unregistered"}, {"event": "unregistered"}],
+            }
+        )
+        assert factory.final_status(report) == "failed_cleanup"
+        report["events"].append({"event": "worker_exit", "pid": 100 + rank, "exitcode": 0})
+        assert factory.final_status(report) == ("passed" if rank == 7 else "failed_cleanup")
+    report["events"][-1]["exitcode"] = 1
+    assert factory.final_status(report) == "failed_cleanup"
+    report["events"][-1]["exitcode"] = 0
+    report["events"][-2]["registration_events"].pop()
+    assert factory.final_status(report) == "failed_cleanup"
+    report["status"] = "failed"
+    assert factory.final_status(report) == "failed"
