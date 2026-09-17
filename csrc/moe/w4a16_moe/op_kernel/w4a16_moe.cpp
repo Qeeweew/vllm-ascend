@@ -16,9 +16,7 @@ struct IsBFloat16<bfloat16_t> : std::true_type {};
 // -----------------------------------------------------------------------------
 // Constants
 // -----------------------------------------------------------------------------
-constexpr int32_t BLOCK_SIZE       = 128; // 一次处理的计算块大小
 constexpr int32_t GROUP_SIZE       = 32;  // 现在的量化 group 大小
-constexpr int32_t GROUPS_PER_BLOCK = BLOCK_SIZE / GROUP_SIZE; // 4个
 constexpr int32_t COMPUTE_ROWS     = 32;  // 每次内循环拷贝计算的行数
 constexpr int32_t PACK_RATIO       = 8;
 constexpr int32_t GROUP_TILE       = 8;
@@ -174,7 +172,7 @@ private:
     static constexpr int TILE_LEN = 1024;
 };
 
-template<typename T, typename OutputT = T>
+template<typename T, typename OutputT = T, int32_t K_BLOCK = 128, int32_t N_TILE = 2048>
 class KernelGroupedGemvW4A16Moe {
 public:
     __aicore__ inline KernelGroupedGemvW4A16Moe() {}
@@ -269,14 +267,14 @@ private:
         w_local[1] = LocalTensor<int32_t>(TPosition::VECIN, addr, COMPUTE_ROWS * tile_n_packed);
         addr += (uint32_t)(COMPUTE_ROWS * tile_n_packed * sizeof(int32_t));
 
-        // 保留 4 个 Scale 行缓存
+        // One scale row per quantization group in this K block.
         s_local = LocalTensor<T>(TPosition::VECIN, addr, GROUPS_PER_BLOCK * TILE_N);
         addr += (uint32_t)(GROUPS_PER_BLOCK * TILE_N * sizeof(T));
 
         y_fp32 = LocalTensor<float>(TPosition::VECOUT, addr, TILE_N);
         addr += (uint32_t)(TILE_N * sizeof(float));
 
-        // 开辟 4 组计算和的缓存区，用于延迟乘 Scale
+        // Independent FP16 sums retain the original 32-element group order.
         group_acc = LocalTensor<half>(TPosition::VECCALC, addr, GROUPS_PER_BLOCK * TILE_N);
         addr += (uint32_t)(GROUPS_PER_BLOCK * TILE_N * sizeof(half) + 256);
 
@@ -326,7 +324,7 @@ private:
 
         DataCopyPadExtParams<T> pad{false, 0, 0, 0};
 
-        // 将属于这个Block里的 4 行 Scale 读出来
+        // Load the scales belonging to this K block.
         uint64_t sz_offset = (uint64_t)expert_id * (uint64_t)total_groups * (uint64_t)out_dim +
                              base_group * (uint64_t)out_dim +
                              (uint64_t)n_offset;
@@ -384,9 +382,8 @@ private:
         SetFlag<HardEvent::MTE2_V>(EID_MTE2_V);
         WaitFlag<HardEvent::MTE2_V>(EID_MTE2_V);
 
-        // 如果是 BF16，需要转换为 half 供后续计算使用
-        // 使用 y_fp32 的前 64 个 float (256 bytes) 作为中转，可以容纳 128 个 float
-        // 转换流程：bf16 -> fp32 -> fp16
+        // Convert BF16 activations through FP32 scratch in w_half before
+        // reusing that scratch for dequantized weights.
         if constexpr (IsBFloat16<T>::value) {
             LocalTensor<float> f_tmp = w_half.template ReinterpretCast<float>();
             LocalTensor<half> x_half = x_local.template ReinterpretCast<half>();
@@ -399,7 +396,7 @@ private:
         PrefetchW(expert_id, b_idx, 0, n_offset, cur_n_len, 0);
         SetFlag<HardEvent::MTE2_V>(EID_MTE2_V);
 
-        // 初始化 4 个 group 的累加器
+        // Initialize the independent quantization-group accumulators.
         Duplicate(group_acc, (half)0.0f, GROUPS_PER_BLOCK * TILE_N);
 
         int32_t cur_n_packed = cur_n_len / PACK_RATIO;
@@ -416,12 +413,12 @@ private:
                 PrefetchW(expert_id, b_idx, k_inner + COMPUTE_ROWS, n_offset, cur_n_len, next_buf);
                 SetFlag<HardEvent::MTE2_V>(EID_MTE2_V);
             } else {
-                // 最后一次拷贝 4 个对应的 Scale
+                // Prefetch all corresponding scales after the final weights.
                 PrefetchS(expert_id, b_idx, n_offset, cur_n_len); // codespell:ignore prefetchs
                 SetFlag<HardEvent::MTE2_V>(EID_MTE2_V);
             }
 
-            // 计算该 32 行该放入哪个 group_acc
+            // Select the accumulator for these 32 K elements.
             int step = k_inner / COMPUTE_ROWS;
             LocalTensor<half> current_acc = group_acc[step * TILE_N];
 
@@ -438,11 +435,10 @@ private:
         WaitFlag<HardEvent::MTE2_V>(EID_MTE2_V);
 
         // 对称量化，省去了 zero-point offset 补偿
-        // 遍历 4 个分组，将 4 个 FP16 Group累加器 分别乘上对应的 Scale 后加入全局 Float 累加器中
+        // Scale each FP16 group and accumulate in FP32 in ascending K order.
         if constexpr (IsBFloat16<T>::value) {
-            // 对于 BF16，需要复用 w_half 作为 fp32 workspace
-            // w_half 大小为 GROUP_TILE * TILE_N = 8 * 2048 个 half
-            // 作为 fp32 可以容纳 8192 个 float，足够覆盖 cur_n_len (<= 2048)
+            // Reuse w_half for two TILE_N-wide FP32 vectors. GROUP_TILE=8
+            // reserves enough space for both the group sum and its scale.
             LocalTensor<float> f_acc = w_half.template ReinterpretCast<float>();
             LocalTensor<float> f_scale = f_acc[TILE_N];
 
@@ -550,7 +546,9 @@ private:
     bool is_broadcast_x = false;
     bool is_weighted_sum = false;
 
-    static constexpr int32_t TILE_N = 2048;
+    static constexpr int32_t BLOCK_SIZE = K_BLOCK;
+    static constexpr int32_t GROUPS_PER_BLOCK = K_BLOCK / GROUP_SIZE;
+    static constexpr int32_t TILE_N = N_TILE;
 };
 
 // -----------------------------------------------------------------------------
@@ -652,12 +650,25 @@ __aicore__ inline void fused_moe_small_bs_impl(
 
     // Phase 1: W13 Gemv (Broadcast X = true, Weighted = false, FP32 output)
     {
-        KernelGroupedGemvW4A16Moe<T, float> op_w13;
-        op_w13.Init(x, w13_weight, w13_scales,
-                    expert_ids, w13_out_ptr, nullptr,
-                    total_tokens, hidden_size, inter_size * 2, num_experts, top_k,
-                    true, false);
-        op_w13.Process();
+        // V4.1 W13 fits its whole N=576 row in UB. For an evenly divided
+        // workload, coarsening K leaves each core's K range unchanged while
+        // reducing activation DMA/casts and block-boundary fences fourfold.
+        if (hidden_size == 5120 && inter_size == 288 &&
+            (total_tokens * (5120 / 512)) % GetBlockNum() == 0) {
+            KernelGroupedGemvW4A16Moe<T, float, 512, 576> op_w13;
+            op_w13.Init(x, w13_weight, w13_scales,
+                        expert_ids, w13_out_ptr, nullptr,
+                        total_tokens, hidden_size, inter_size * 2, num_experts, top_k,
+                        true, false);
+            op_w13.Process();
+        } else {
+            KernelGroupedGemvW4A16Moe<T, float> op_w13;
+            op_w13.Init(x, w13_weight, w13_scales,
+                        expert_ids, w13_out_ptr, nullptr,
+                        total_tokens, hidden_size, inter_size * 2, num_experts, top_k,
+                        true, false);
+            op_w13.Process();
+        }
     }
 
     AscendC::SyncAll();
